@@ -61,7 +61,6 @@
 				continuous: true,
 				include_docs: true
 			});
-			$rootScope.$broadcast('cm.databaseReady');
 		};
 
 		var doReplicate = function() {
@@ -153,6 +152,7 @@
 					log.warn("Unsure how to handle connection management; starting replication and hoping for the best.");
 					startReplication();
 				}
+				$rootScope.$broadcast('cm.databaseReady');
 			}, 10);
 		};
 
