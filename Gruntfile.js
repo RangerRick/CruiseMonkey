@@ -33,17 +33,17 @@ module.exports = function (grunt) {
       styles: {
         files: ['<%= yeoman.app %>/styles/{,*/}*.css'],
         tasks: ['copy:styles', 'autoprefixer']
-      },
-      livereload: {
-        options: {
-          livereload: '<%= connect.options.livereload %>'
-        },
-        files: [
-          '<%= yeoman.app %>/{,*/}*.html',
-          '.tmp/styles/{,*/}*.css',
-          '{.tmp,<%= yeoman.app %>}/scripts/{,*/}*.js',
-          '<%= yeoman.app %>/images/{,**/}*.{png,jpg,jpeg,gif,webp,svg}'
-        ]
+//      },
+//      livereload: {
+//        options: {
+//          livereload: '<%= connect.options.livereload %>'
+//        },
+//        files: [
+//          '<%= yeoman.app %>/{,*/}*.html',
+//          '.tmp/styles/{,*/}*.css',
+//          '{.tmp,<%= yeoman.app %>}/scripts/{,*/}*.js',
+//          '<%= yeoman.app %>/images/{,**/}*.{png,jpg,jpeg,gif,webp,svg}'
+//        ]
       }
     },
     autoprefixer: {
@@ -64,15 +64,15 @@ module.exports = function (grunt) {
         hostname: 'localhost',
         livereload: 35729
       },
-      livereload: {
-        options: {
-          open: true,
-          base: [
-            '.tmp',
-            '<%= yeoman.app %>'
-          ]
-        }
-      },
+//      livereload: {
+//        options: {
+//          open: true,
+//          base: [
+//            '.tmp',
+//            '<%= yeoman.app %>'
+//          ]
+//        }
+//      },
       test: {
         options: {
           port: 9001,
@@ -147,7 +147,7 @@ module.exports = function (grunt) {
         httpImagesPath: '/images',
         httpGeneratedImagesPath: '/images/generated',
         httpFontsPath: '/font',
-        relativeAssets: false
+        relativeAssets: true
       },
       dist: {},
       server: {
@@ -167,7 +167,8 @@ module.exports = function (grunt) {
           src: [
             '<%= yeoman.dist %>/scripts/{,*/}*.js',
             '<%= yeoman.dist %>/styles/{,*/}*.css',
-            '<%= yeoman.dist %>/images/{,**/}*.{png,jpg,jpeg,gif,webp,svg}',
+            '<%= yeoman.dist %>/images/spinner.gif',
+            '<%= yeoman.dist %>/images/entypo/**/*.{png,svg}',
             '<%= yeoman.dist %>/font/*'
           ]
         }
@@ -377,7 +378,7 @@ module.exports = function (grunt) {
       'clean:server',
       'concurrent:server',
       'autoprefixer',
-      'connect:livereload',
+//      'connect:livereload',
       'watch'
     ]);
   });
