@@ -1,0 +1,539 @@
+$fontPath: "../font" !default;
+$imagePath: "../images" !default;
+
+$yellowSVG: "#{$imagePath}/entypo/yellow/SVG";
+$greySVG: "#{$imagePath}/entypo/grey/SVG";
+
+@font-face {
+	font-family: Hero;
+	src: url("#{$fontPath}/hero.otf");
+}
+
+@font-face {
+	font-family: Dekar;
+	src: url("#{$fontPath}/dekar.otf");
+}
+
+@font-face {
+	font-family: Casper;
+	src: url("#{$fontPath}/casper.ttf");
+}
+
+@font-face {
+	font-family: Intro;
+	src: url("#{$fontPath}/intro.otf");
+	font-weight: 700;
+}
+
+@font-face {
+	font-family: Nexa;
+	src: url("#{$fontPath}/nexa-bold.otf");
+	font-weight: 700;
+}
+
+@font-face {
+	font-family: Zag;
+	src: url("#{$fontPath}/zag-bold.otf");
+	font-weight: 600;
+}
+
+$cmBabyBlue: #ddf2ff;
+
+$defaultFont: Hero, sans-serif;
+/* $headerFont: Intro, Dekar, sans-serif; */
+$eventListFont: Casper, sans-serif;
+$sidebarHeaderFont: Nexa, Hero, sans-serif;
+$headerFont: $sidebarHeaderFont;
+
+$gutterShadow: 0px 0px 5px 6px rgba(0,0,0,0.4);
+$gutterTransition: all 0.1s ease-out;
+$gutterSeparator: 1px solid #aaa;
+
+$gutterBG: #ccc;
+$gutterColor: black;
+
+$gutterDisabledColor: #bbb;
+
+$gutterSelectedBG: #333;
+$gutterSelectedColor: white;
+
+$gutterHoverBG: $cmBabyBlue;
+$gutterHoverColor: black;
+
+$simpleBorder: 1px solid black;
+
+$headerColor: white;
+$headerBG: black;
+
+$contentBG: #f8f8f8;
+
+$mainBG: white;
+$alternateBG: $cmBabyBlue;
+
+$navWidth: 250px;
+
+body {
+  font-family: $defaultFont;
+	color: #444;
+}
+
+a:link,
+a:visited,
+a:hover {
+	color: #000;
+	text-decoration: none;
+}
+
+/*
+ * Mobile Navigation Stuff
+ */
+.mobile-header {
+	-webkit-transform:translate(0px,0px);
+	-moz-transform:translate(0px,0px);
+	-o-transform:translate(0px,0px);
+	-ms-transform:translate(0px,0px);
+	transform:translate(0px,0px);
+
+	color: $headerColor;
+	background-color: $headerBG;
+	
+  font-family: $headerFont;
+  font-size: larger;
+	-webkit-overflow-scrolling: auto;
+	overflow-scrolling: auto;
+	overflow: hidden;
+
+	.title {
+		font-size: 24px;
+	}
+	.actions {
+		position: absolute;
+		top: 4px;
+		right: 10px;
+		height: 36px;
+		/* z-index: 1; */
+		display: block;
+
+		.action {
+			position: relative;
+			-moz-user-select: none;
+			-webkit-user-select: none;
+			-ms-user-select: none;
+			user-select: none;
+			display: inline-block;
+			background-position: center center;
+			background-size: 26px 26px;
+			width: 32px;
+			height: 32px;
+
+			.icon {
+				background-position: center center;
+				background-repeat: no-repeat;
+				background-size: 26px 26px;
+				width: 32px;
+				height: 32px;
+			}
+			.icon-add          { background-image: url("#{$yellowSVG}/plus.svg")         }
+			.icon-arrow-right4 { background-image: url("#{$yellowSVG}/arrow-right4.svg") }
+			.icon-arrow-left4  { background-image: url("#{$yellowSVG}/arrow-left4.svg")  }
+		}
+	}
+}
+
+.mobile-footer {
+
+}
+
+.mobile-frame {
+	-webkit-transition: $gutterTransition;
+	-moz-transition: $gutterTransition;
+	transition: $gutterTransition;
+	-webkit-transition: $gutterTransition;
+}
+
+.mobile-content {
+	background-color: $contentBG;
+}
+
+.mobile-nav-inner {
+	height: 100%;
+	min-height: 100%;
+}
+
+.mobile-nav {
+	-webkit-transform:translate(0px,0px);
+	-moz-transform:translate(0px,0px);
+	-o-transform:translate(0px,0px);
+	-ms-transform:translate(0px,0px);
+	transform:translate(0px,0px);
+
+	color: $gutterColor;
+	background-color: $gutterBG;
+	box-shadow: inset -.0625em 0 .625em rgba(0,0,0,.6);
+
+	.nav {
+		height: 100%;
+		min-height: 100%;
+		cursor: default;
+		margin: 0;
+		padding: 0;
+		list-style-type: none;
+		background-color: transparent;
+		color: $gutterColor;
+
+		-webkit-touch-callout: none;
+		-webkit-user-select: none;
+		-khtml-user-select: none;
+		-moz-user-select: none;
+		-ms-user-select: none;
+		user-select: none;
+	}
+
+	.nav > li.bottom {
+		position: absolute;
+		bottom: 0;
+		border-top: $gutterSeparator;
+		border-bottom: none;
+	}
+
+	.nav > li.sidebar-header {
+		display: inline-block;
+		width: $navWidth;
+		text-align: center;
+		padding-top: 20px;
+		padding-bottom: 20px;
+		font-family: $sidebarHeaderFont;
+		font-weight: bold;
+		font-size: 26px;
+	}
+
+	.nav > li.sidebar-header:hover, .nav > li.sidebar-header:focus {
+		color: $gutterColor;
+		background-color: transparent;
+	}
+
+	.nav > li {
+		display: inline-block;
+		width: $navWidth;
+		border-bottom: $gutterSeparator;
+		color: $gutterColor;
+
+		a {
+			display: block;
+			padding: 10px;
+			color: $gutterColor;
+			background-color: transparent;
+			width: $navWidth - 20;
+			height: 100%;
+		}
+	}
+
+	.nav > li:hover, .nav > li:focus {
+		color: $gutterHoverColor;
+		background-color: $gutterHoverBG;
+
+		a, a:hover, a:focus {
+			color: $gutterHoverColor;
+		}
+	}
+
+	.nav > li.selected {
+		color: $gutterSelectedColor;
+		background-color: $gutterSelectedBG;
+
+		a, a:hover, a:focus {
+			color: $gutterSelectedColor;
+		}
+	}
+
+	.nav > li.disabled {
+		color: $gutterDisabledColor;
+		background-color: transparent;
+
+		:hover, :focus {
+			background-color: transparent;
+		}
+		a, a:hover, a:focus {
+			color: $gutterDisabledColor;
+		}
+	}
+
+}
+
+.mobile-nav-toggle {
+	width: 30px;
+	height: 30px;
+	margin: 5px .625em;
+	float: left;
+	border: 1px solid white;
+	color: #eee;
+	background-color: #555;
+	background-position: center;
+	background-image: url("#{$greySVG}/menu.svg");
+	background-size: 20px 20px;
+
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+
+	background-repeat: no-repeat;
+	/* background-origin: */
+	/* background-clip: */
+	background-attachment: scroll;
+	outline: none;
+	border-radius: 3px;
+	overflow: hidden;
+	text-align: left;
+	text-indent: 150%;
+	-webkit-appearance: none;
+	appearance: none;
+}
+
+.mobile-header-inner,
+.mobile-content-inner,
+.mobile-footer-inner {
+	padding: 0;
+}
+
+.mobile-header-inner {
+	float: left;
+	height: 31px;
+	margin: 0;
+	padding: 9px 0 0 0;
+}
+
+.mobile-content h1 {
+	padding: 0;
+}
+
+.mobile-content-inner {
+	padding: 0;
+}
+
+.list-entry {
+	border-bottom: $simpleBorder;
+	padding: 10px;
+
+	input {
+		display: none;
+	}
+
+	input + label {
+		-moz-user-select: none;
+		-webkit-user-select: none;
+		-ms-user-select:none;
+		user-select:none;
+		display: block;
+		background:url("#{$greySVG}/star2.svg") no-repeat;
+		background-position: center center;
+		background-size:26px 26px;
+		width: 32px;
+		height: 32px;
+	}
+
+	.favorite input[type=checkbox] + label {
+		background:url("#{$greySVG}/star2.svg") no-repeat;
+	}
+
+	.favorite input[type=checkbox]:checked + label {
+		background:url("#{$yellowSVG}/star2.svg") no-repeat;
+	}
+
+	.trash input + label {
+		background:url("#{$yellowSVG}/trash.svg") no-repeat;
+	}
+
+	.public input[type=checkbox] + label {
+		background:url("#{$greySVG}/eye.svg") no-repeat;
+	}
+
+	.public input[type=checkbox]:checked + label {
+		background:url("#{$yellowSVG}/eye.svg") no-repeat;
+	}
+
+	.edit input + label {
+		background:url("#{$yellowSVG}/pencil.svg") no-repeat;
+	}
+}
+
+/*
+.list-entry:nth-child(odd) {
+	background: $mainBG;
+}
+
+.list-entry:nth-child(even) {
+	background: $alternateBG;
+}
+*/
+
+/*
+ * Events
+ */
+
+.event-list {
+	font-family: $eventListFont;
+	
+	.odd {
+		background-color: $mainBG;
+	}
+	.even {
+		background-color: $alternateBG;
+	}
+
+	.header {
+		font-family: $headerFont;
+		font-size: 20px;
+		padding: 5px;
+		color: $headerColor;
+		background-color: $headerBG;
+	}
+}
+
+.summary {
+	font-size: 15pt;
+	font-weight: bold;
+	padding: 2px;
+	margin-right: 32px;
+	min-height: 32px;
+	vertical-align: middle;
+}
+
+.mine .summary {
+	margin-right: 96px;
+}
+
+.createdBy,.time,.location {
+	font-weight: bold;
+	font-size: 12pt;
+	padding: 2px;
+}
+
+.description {
+	margin-top: 12px;
+	padding: 2px;
+	font-size: 12pt;
+}
+
+.name {
+	font-size: 12pt;
+	font-weight: bold;
+}
+
+.favorite,.trash,.public,.edit {
+	float: right;
+	display: inline-block;
+	width: 32px;
+	height: 32px;
+	top: 2px;
+	z-index: 1;
+}
+
+/*
+ * Deck Plans
+ */
+
+.deck-plans {
+	overflow-x: hidden;
+	width: 100%;
+	user-drag: none;
+	-moz-user-select: none;
+	-webkit-user-drag: none;
+
+	img {
+		display: block;
+		width: 90%;
+		max-width: 500px;
+		margin: auto;
+		margin-bottom: 10px;
+		padding: 10px;
+		user-drag: none;
+		-moz-user-select: none;
+		-webkit-user-drag: none;
+	}
+	div.arrow {
+		position: absolute;
+		width: 5%;
+		min-width: 40px;
+		top: 40px;
+		bottom: 0;
+		height: 100%;
+		img {
+			position: absolute;
+			top: 0;
+			bottom: 0;
+			padding: 0;
+			margin-top: auto;
+			margin-bottom: auto;
+		}
+	}
+	.left {
+		left: $navWidth;
+	}
+	.right {
+		right: 0;
+	}
+}
+
+/*
+ * Pop-Ups
+ */
+.c-container {
+	position: relative;
+	width: 100%;
+	height: 100%;
+}
+.c-centered {
+	width: 280px;
+	height: 200px;
+	overflow: auto;
+	margin: auto;
+	position: absolute;
+	top: 0;
+	bottom: 0;
+	left: 0;
+	right: 0;
+}
+
+/*
+ * Event Pop-Up
+ */
+.modal {
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	width: 100%;
+	height: 100%;
+	background-color: $mainBG;
+}
+
+.add-event-form {
+	table {
+		width: 320px;
+		overflow: auto;
+		margin-left: auto;
+		margin-right: auto;
+		position: absolute;
+		left: 0;
+		right: 0;
+	}
+	h3 {
+		padding: 5px;
+		font-weight: 900;
+	}
+	td {
+		padding: 5px;
+	}
+	.buttons {
+		button: {
+			display: inline-block;
+		}
+		text-align: right;
+	}
+}
+
+form.add-event-form {
+	position: relative;
+	width: 100%;
+	height: 100%;
+}

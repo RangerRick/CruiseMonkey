@@ -1,0 +1,60 @@
+<style>
+.login {
+}
+.login div {
+	height: 40px;
+}
+.login .label {
+	line-height: 40px;
+	color: black;
+}
+.login .header {
+	margin-top: 10px;
+	padding-top: 10px;
+	padding-bottom: 10px;
+	font-size: larger;
+	font-weight: 900;
+}
+.login input {
+	font-size: smaller;
+	margin: 5px;
+}
+.login button {
+	margin: 5px;
+}
+.login .buttons {
+	float: right;
+}
+.login td {
+	padding: 0;
+}
+.mobile-content-inner {
+	width: 100%;
+	height: 100%;
+}
+</style>
+<form name="loginForm" class="c-container css-form" novalidate>
+	<div class="c-centered">
+		<table class="login">
+			<tr>
+				<td colspan="3" class="header">Log In to Twit-Arrrr</td>
+			</tr>
+			<tr>
+				<td class="label">Username:</td>
+				<td colspan="2"><input type="text" autocapitalize="off" ng-model="user.username" name="uUsername" autofocus required /></td>
+			</tr>
+			<tr>
+				<td class="label">Password:</td>
+				<td colspan="2"><input type="password" ng-model="user.password" name="uPassword" required /></td>
+			</tr>
+			<tr><td colspan="3">&nbsp;</td></tr>
+			<tr>
+				<td>&nbsp;</td>
+				<td colspan="2" class="buttons">
+					<button type="reset" ng-click="reset()" ng-disabled="isUnchanged(user)">Reset</button>
+					<button type="submit" ng-click="update(user)" ng-disabled="form.$invalid || isUnchanged(user)">Log In</button>
+				</td>
+			</tr>
+		</table>
+	</div>
+</form>

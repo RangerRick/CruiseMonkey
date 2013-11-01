@@ -1,0 +1,76 @@
+<script type="text/ng-template" id="edit-event.html">
+	<div class="modal-header">
+	</div>
+	<div class="modal-body">
+		<form name="form" class="add-event-form" novalidate>
+			<input type="hidden" name="eId" value="{{event._id}}" />
+			<input type="hidden" name="eType" value="{{event.type}}" />
+			<table>
+				<tr>
+					<th class="header" colspan="2">
+						<h3>Add an Event</h3>
+					</th>
+				<tr>
+					<td class="label">Summary:</td>
+					<td class="input"><input type="text" ng-model="event.summary" name="eSummary" required /></td>
+				</tr>
+				<tr>
+					<td class="label">Description:</td>
+					<td class="input"><textarea ng-model="event.description" name="eDescription" /></td>
+				</tr>
+				<tr>
+					<td class="label">Event Start:</td>
+					<td class="input"><input type="datetime-local" ng-model="event.start" /></td>
+				</tr>
+				<tr>
+					<td class="label">Event End:</td>
+					<td class="input"><input type="datetime-local" ng-model="event.end" /></td>
+				</tr>
+				<tr>
+					<td class="label">Location:</td>
+					<td class="input">
+						<input type="text" ng-model="event.location" name="eLocation" />
+					</td>
+				</tr>
+				<tr>
+					<td class="label">Make Public?</td>
+					<td class="input">
+						<input type="checkbox" ng-model="event.isPublic" name="eIsPublic" />
+					</td>
+				</tr>
+				<tr>
+					<td class="buttons" colspan="2">
+						<input class="btn btn-warning" type="reset" ng-click="$dismiss()" value="Cancel" />
+						<input class="btn btn-primary" type="submit" ng-click="$close(event)" ng-disabled="form.$disabled" value="Save" />
+					</td>
+				</tr>
+			</table>
+		</form>
+	</div>
+	<div class="modal-footer">
+	</div>
+</script>
+<div class="event-list">
+	<span ng-repeat="event in events | orderByEvent">
+		<div ng-if="event.isNewDay" class="header">{{prettyDate(event.start)}}</div>
+		<div class="list-entry" ng-class-even="'even'" ng-class-odd="'odd'">
+			<div class="favorite" ng-show="(user.username && user.username != event.username)">
+				<input type="checkbox" id="{{event._id}}-favorite" ng-checked="event.isFavorite" ng-model="fav" ng-change="onFavoriteChanged(event._id, fav)"><label for="{{event._id}}-favorite">&nbsp;</label>
+			</div>
+			<div class="trash" ng-show="(user.username && user.username == event.username)">
+				<input type="button" id="{{event._id}}-trash" ng-click="trash(event)"><label for="{{event._id}}-trash">&nbsp;</label>
+			</div>
+			<div class="public" ng-show="(user.username && user.username == event.username)">
+				<input type="checkbox" id="{{event._id}}-public" ng-checked="event.isPublic" ng-model="pub" ng-change="onPublicChanged(event, pub)"><label for="{{event._id}}-public">&nbsp;</label>
+			</div>
+			<div class="edit" ng-show="(user.username && user.username == event.username)">
+				<input type="button" id="{{event._id}}-edit" ng-click="edit(event)"><label for="{{event._id}}-edit">&nbsp;</label>
+			</div>
+			<div class="summary">{{event.summary}}</div>
+			<div class="time">Time: {{justTime(event.start)}} - {{justTime(event.end)}}</div>
+			<div class="createdBy" ng-show="event.username != 'official'">Created By: {{event.username}}</div>
+			<div class="location" ng-show="event.location">Location: {{event.location}}</div>
+			<div class="description">{{event.description}}</div>
+		</div>
+	</span>
+</div>

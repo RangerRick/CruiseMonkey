@@ -1,0 +1,55 @@
+{
+  "name": "CruiseMonkey",
+  "version": "3.9.1",
+  "keywords": [
+    "angularjs",
+    "angular"
+  ],
+  "engines": {
+    "node": ">=0.8.0"
+  },
+  "scripts": {
+    "test": "grunt test"
+  },
+  "dependencies": {
+  },
+  "devDependencies": {
+    "connect": "latest",
+    "grunt": "latest",
+    "grunt-contrib-copy": "latest",
+    "grunt-contrib-compass": "latest",
+    "grunt-contrib-concat": "latest",
+    "grunt-contrib-coffee": "latest",
+    "grunt-contrib-uglify": "latest",
+    "grunt-contrib-compass": "latest",
+    "grunt-contrib-jshint": "latest",
+    "grunt-contrib-cssmin": "latest",
+    "grunt-contrib-connect": "latest",
+    "grunt-contrib-clean": "latest",
+    "grunt-contrib-htmlmin": "latest",
+    "grunt-contrib-imagemin": "latest",
+    "grunt-contrib-watch": "latest",
+    "grunt-autoprefixer": "latest",
+    "grunt-manifest": "latest",
+    "grunt-usemin": "latest",
+    "grunt-svgmin": "latest",
+    "grunt-rev": "latest",
+    "grunt-concurrent": "latest",
+    "load-grunt-tasks": "latest",
+    "grunt-google-cdn": "latest",
+    "grunt-ngmin": "latest",
+    "time-grunt": "latest",
+    "karma-ng-scenario": "latest",
+    "grunt-karma": "latest",
+    "karma-script-launcher": "latest",
+    "karma-firefox-launcher": "latest",
+    "karma-chrome-launcher": "latest",
+    "karma-html2js-preprocessor": "latest",
+    "karma-jasmine": "latest",
+    "karma-requirejs": "latest",
+    "karma-coffee-preprocessor": "latest",
+    "karma-phantomjs-launcher": "latest",
+    "karma": "latest",
+    "karma-ng-html2js-preprocessor": "latest"
+  }
+}

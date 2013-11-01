@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<!-- paulirish.com/2008/conditional-stylesheets-vs-css-hacks-answer-neither/ -->
+<!--[if lt IE 7]> <html class="no-js lt-ie9 lt-ie8 lt-ie7" lang="en" manifest="cruisemonkey.manifest"> <![endif]-->
+<!--[if IE 7]>    <html class="no-js lt-ie9 lt-ie8" lang="en" manifest="cruisemonkey.manifest"> <![endif]-->
+<!--[if IE 8]>    <html class="no-js lt-ie9" lang="en" manifest="cruisemonkey.manifest"> <![endif]-->
+<!--[if gt IE 8]><!-->
+<!-- manifest="cruisemonkey.manifest" -->
+<html xmlns:ng="http://angularjs.org" lang="en" manifest="cruisemonkey.manifest">
+<!--<![endif]-->
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, user-scalable=0, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0" />
+<meta name="format-detection" content="telephone=no" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<link rel="apple-touch-icon" href="icon.png" />
+<link rel="apple-touch-icon" sizes="29x29" href="Icon-Small.png" />
+<link rel="apple-touch-icon" sizes="57x57" href="Icon-57.png" />
+<link rel="apple-touch-icon" sizes="50x50" href="Icon-Small-50.png" />
+<link rel="apple-touch-icon" sizes="58x58" href="Icon-Small@2x.png" />
+<link rel="apple-touch-icon" sizes="72x72" href="Icon-72.png" />
+<link rel="apple-touch-icon" sizes="100x100" href="Icon-Small-50@2x.png" />
+<link rel="apple-touch-icon" sizes="114x114" href="Icon@2x.png" />
+<link rel="apple-touch-icon" sizes="144x144" href="Icon-72@2x.png" />
+<link rel="apple-touch-startup-image" href="cruise-monkey-1536x2048.png" />
+<style>
+	 [ng\:cloak], [ng-cloak], .ng-cloak {
+		display: none !important;
+	}
+	.loading.hidden {
+		display: none;
+	}
+	.loading.ng-cloak {
+		display: inline-block !important;
+		z-index: 10000;
+		width: 100%;
+		height: 100%;
+		min-width: 100%;
+		min-height: 100%;
+	}
+	.loading .container {
+		position: relative;
+		width: 100%;
+		height: 100%;
+	}
+	.loading .centered {
+		width: 300px;
+		height: 300px;
+		overflow: auto;
+		margin: auto;
+		position: absolute;
+		top: 0;
+		bottom: 0;
+		left: 0;
+		right: 0;
+		text-align: center;
+	}
+	.loading .spinner {
+		display: inline-block;
+		width: 16px;
+		height: 16px;
+		background-image: url('images/spinner.gif');
+	}
+</style>
+
+<!-- build:css(.tmp) styles/3rdparty.css -->
+<link rel="stylesheet" href="styles/normalize.css" />
+<link rel="stylesheet" href="styles/angular-mobile-frame.css" />
+<!-- endbuild -->
+
+<!-- build:css(.tmp) styles/cm.css -->
+<link rel="stylesheet" href="styles/cruisemonkey.css" />
+<!-- endbuild -->
+
+<!-- IE Fix for HTML5 Tags -->
+<!--[if lt IE 9]>
+		<script src="bower_components/html5shiv/dist/html5shiv.js"></script>
+	<![endif]-->
+
+<script>
+var bootstrapped = false;
+var fireDocumentReady = function() {
+	console.log('Firing deviceready manually.');
+	var e = document.createEvent('Events');
+	e.initEvent('deviceready', true, true);
+	document.dispatchEvent(e);
+};
+
+if (window.applicationCache && window.applicationCache.addEventListener) {
+	window.addEventListener('load', function(e) {
+		var loading = document.getElementById('loading');
+
+		loading.innerHTML = 'Checking for updates...';
+
+		var notifyUpdate = function(text) {
+			loading.innerHTML = text;
+			console.log(text);
+		};
+
+		var handleLoadingEvent = function(e) {
+			if (window.applicationCache.status == window.applicationCache.CHECKING) {
+				// we're starting checking
+				notifyUpdate('Checking for updates...');
+			} else if (window.applicationCache.status == window.applicationCache.DOWNLOADING) {
+				// an update has started downloading
+				notifyUpdate('CruiseMonkey has an update.<br/>Please wait... Downloading.');
+			} else if (window.applicationCache.status == window.applicationCache.UPDATEREADY) {
+				// Browser downloaded a new app cache.
+				// Swap it in and reload the page to get the new hotness.
+				notifyUpdate('A new version of CruiseMonkey is ready.  Reloading.');
+				setTimeout(function() {
+					window.applicationCache.swapCache();
+					window.location.reload();
+				}, 500);
+			} else if (window.applicationCache.status == window.applicationCache.OBSOLETE) {
+				notifyUpdate('Something is wrong with the CruiseMonkey update.  Skipping.');
+			} else {
+				notifyUpdate('CruiseMonkey Is Starting.');
+				if (window.location.href.indexOf('raccoonfink.com') > -1) {
+					// we're on my server, fire immediately!
+					fireDocumentReady();
+				} else {
+					timeoutID = window.setTimeout(function() {
+						window.clearTimeout(timeoutID);
+						fireDocumentReady();
+					}, 1000);
+				}
+			}
+		};
+
+		window.applicationCache.addEventListener('checking', handleLoadingEvent, false);
+		window.applicationCache.addEventListener('downloading', handleLoadingEvent, false);
+		window.applicationCache.addEventListener('updateready', handleLoadingEvent, false);
+		window.applicationCache.addEventListener('noupdate', handleLoadingEvent, false);
+		window.applicationCache.addEventListener('obsolete', handleLoadingEvent, false);
+	}, false);
+}
+
+var timeoutID;
+
+document.addEventListener("deviceready", function() {
+	if (timeoutID) {
+		window.clearTimeout(timeoutID);
+	}
+
+	console.log('CruiseMonkey loaded.');
+
+	if (!bootstrapped) {
+		bootstrapped = true;
+
+		if (window.device) {
+			console.log('Found PhoneGap Device Information.');
+			console.log('Model:    ' + window.device.model);
+			console.log('Cordova:  ' + window.device.cordova);
+			console.log('Platform: ' + window.device.platform);
+			console.log('UUID:     ' + window.device.uuid);
+			console.log('Version:  ' + window.device.version);
+		}
+
+		angular.bootstrap(document, ['cruisemonkey']);
+		FastClick.attach(document.body);
+	}
+}, false);
+
+window.setTimeout(function() {
+	if (window.device) {
+		console.log('This is a phonegap device, not bothering to update the application cache.');
+	} else {
+		// check for updates every 5 minutes
+		window.setInterval(function() {
+			window.applicationCache.update();
+		}, 300000);
+	}
+}, 30000);
+  </script>
+  <title ng-bind="'CruiseMonkey - ' + $root.title">CruiseMonkey</title>
+</head>
+<body class="antialiased off-canvas hide-extras">
+	<div class="loading container" ng-class="{hidden: hideSpinner}">
+		<div class="centered">
+			<div class="spinner"></div><br /><div id="loading">Loading...</div>
+		</div>
+	</div>
+
+	<mobile-frame ng-cloak>
+		<mobile-header ng-controller="CMHeaderCtrl">
+			<span class="title"><strong>{{title}}</strong></span>
+			<div class="actions">
+				<div ng-repeat="action in actions" class="action">
+					<div class="icon icon-{{action.iconClass}}" ng-click="action.launch()"></div>
+				</div>
+			</div>
+		</mobile-header>
+		<mobile-nav ng-controller="CMNavigationCtrl" ng-click="toggleDrawer()">
+			<ul class="nav" id="nav">
+				<li class="sidebar-header">CruiseMonkey</li>
+				<li><a href="#/events/official/"  >Official Events</a></li>
+				<li><a href="#/events/unofficial/">Unofficial Events</a></li>
+				<li ng-if="user.loggedIn"><a href="#/events/my/">My Events</a></li>
+				<li ng-if="!user.loggedIn" class="disabled"><a href="#">My Events</a></li>
+				<li><a href="#/deck-plans/"       >Deck Plans</a></li>
+				<li><a href="#/about/"            >About</a></li>
+
+				<li ng-if="user.loggedIn" ><a href="#/logout/">Log Out</a></li>
+				<li ng-if="!user.loggedIn"><a href="#/login/">Log In</a></li>
+
+				<li class="bottom"><a href="#/advanced/">Advanced</a></li>
+			</ul>
+		</mobile-nav>
+		<mobile-content ng-view>
+		</mobile-content>
+	</mobile-frame>
+
+  <!-- build:js scripts/3rdparty.js -->
+	<script src="scripts/3rdparty/modernizr-latest.js"></script>
+	<script src="bower_components/jquery/jquery.js"></script>
+	<script src="scripts/3rdparty/pouchdb-nightly.js"></script>
+	<script src="bower_components/hammerjs/dist/hammer.js"></script>
+	<script src="bower_components/momentjs/moment.js"></script>
+	<script src="bower_components/log4javascript/log4javascript_uncompressed.js"></script>
+	<script src="bower_components/angular/angular.js"></script>
+	<script src="bower_components/angular-cookies/angular-cookies.js"></script>
+	<script src="bower_components/angular-loader/angular-loader.js"></script>
+	<script src="bower_components/angular-route/angular-route.js"></script>
+	<script src="bower_components/angular-resource/angular-resource.js"></script>
+	<script src="scripts/angular-3rdparty/angular-hammer.js"></script>
+
+	<script src="bower_components/fastclick/lib/fastclick.js"></script>
+	<script src="bower_components/angular-phonegap-ready/ready.js"></script>
+	<script src="bower_components/angularLocalStorage/src/angularLocalStorage.js"></script>
+	<script src="scripts/angular-3rdparty/angular-mobile-frame.js"></script>
+	<script src="scripts/angular-3rdparty/angular-interval.js"></script>
+	<script src="scripts/angular-3rdparty/ui-bootstrap-0.6.0.js"></script>
+	<!-- endbuild -->
+
+  <!-- build:js scripts/cm.js -->
+	<script src="scripts/cruisemonkey/string.js"></script>
+	<script src="scripts/cruisemonkey/Config.js"></script>
+	<script src="scripts/cruisemonkey/Controller.About.js"></script>
+	<script src="scripts/cruisemonkey/Controller.Advanced.js"></script>
+	<script src="scripts/cruisemonkey/Controller.DeckList.js"></script>
+	<script src="scripts/cruisemonkey/Controller.Events.js"></script>
+	<script src="scripts/cruisemonkey/Controller.Header.js"></script>
+	<script src="scripts/cruisemonkey/Controller.Login.js"></script>
+	<script src="scripts/cruisemonkey/Controller.Logout.js"></script>
+	<script src="scripts/cruisemonkey/Controller.Navigation.js"></script>
+	<script src="scripts/cruisemonkey/Database.js"></script>
+	<script src="scripts/cruisemonkey/Events.js"></script>
+	<script src="scripts/cruisemonkey/Logging.js"></script>
+	<script src="scripts/cruisemonkey/User.js"></script>
+	<script src="scripts/cruisemonkey/main.js"></script>
+	<!-- endbuild -->
+
+	<script src="phonegap.js"></script>
+</body>
+</html>
