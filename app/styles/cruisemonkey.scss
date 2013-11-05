@@ -72,6 +72,8 @@ $alternateBG: $cmBabyBlue;
 
 $navWidth: 250px;
 
+$gutterMonkey: url(../images/cruise-monkey-transparent-bg.png);
+
 body {
   font-family: $defaultFont;
 	color: #444;
@@ -178,8 +180,11 @@ a:hover {
 		margin: 0;
 		padding: 0;
 		list-style-type: none;
+		background: transparent center bottom no-repeat $gutterMonkey;
+		filter:alpha(opacity=20);
 		background-color: transparent;
 		color: $gutterColor;
+		/* background-image: $gutterMonkey; */
 
 		-webkit-touch-callout: none;
 		-webkit-user-select: none;

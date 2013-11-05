@@ -18,8 +18,8 @@
 			var attrA, attrB;
 
 			array.sort(function(a,b) {
-				attrA = moment(a.start);
-				attrB = moment(b.start);
+				attrA = a.start;
+				attrB = b.start;
 
 				if (attrA.isBefore(attrB)) {
 					return -1;
@@ -34,8 +34,8 @@
 				if (attrA > attrB) { return 1; }
 				if (attrA < attrB) { return -1; }
 
-				attrA = moment(a.end);
-				attrB = moment(b.end);
+				attrA = a.end;
+				attrB = b.end;
 
 				if (attrA.isBefore(attrB)) { return -1; }
 				if (attrA.isAfter(attrB)) { return 1; }
@@ -46,7 +46,7 @@
 			var lastStart, start;
 			angular.forEach(array, function(value, index) {
 				value.isNewDay = false;
-				start = moment(value.start);
+				start = value.start;
 
 				if (index === 0) {
 					value.isNewDay = true;
@@ -80,16 +80,16 @@
 			$scope.event = angular.copy($rootScope.editEvent);
 			delete $rootScope.editEvent;
 
-			$scope.event.start = moment($scope.event.start).format(format);
-			$scope.event.end = moment($scope.event.end).format(format);
+			$scope.event.start = $scope.event.start.format(format);
+			$scope.event.end = $scope.event.end.format(format);
 
 			log.info('Found existing event to edit.');
 			console.log($scope.event);
 		} else {
-			var start = new Date();
+			var start = moment();
 			$scope.event = {
-				'start':    moment(start).format(format),
-				'end':      moment(new Date(start.getTime() + 60 * 60 * 1000)).format(format),
+				'start':    start.format(format),
+				'end':      start.add('hours', 1).format(format),
 				'type':     'event',
 				'username': UserService.getUsername(),
 				'isPublic': true
@@ -104,18 +104,29 @@
 		$rootScope.eventType = $routeParams.eventType;
 		$rootScope.title = $routeParams.eventType.capitalize() + ' Events';
 
-		EventService.init();
+		var refreshEvents = function() {
+			log.info('CMEventCtrl.refreshEvents()');
+			if ($routeParams.eventType === 'official') {
+				$rootScope.events = EventService.getOfficialEvents();
+			} else if ($routeParams.eventType === 'unofficial') {
+				$rootScope.events = EventService.getUnofficialEvents();
+			} else if ($routeParams.eventType === 'my') {
+				$rootScope.events = EventService.getMyEvents();
+			} else {
+				log.warn('CMEventCtrl: unknown event type: ' + $routeParams.eventType);
+			}
+		};
 
 		$scope.prettyDate = function(date) {
-			return moment(date).format('dddd, MMMM Do');
+			return date? date.format('dddd, MMMM Do') : undefined;
 		};
 
 		$scope.fuzzy = function(date) {
-			return moment(date).fromNow();
+			return date? date.fromNow() : undefined;
 		};
 
 		$scope.justTime = function(date) {
-			return moment(date).format('hh:mma');
+			return date? date.format('hh:mma') : undefined;
 		};
 
 		$scope.trash = function(ev) {
@@ -133,8 +144,6 @@
 			$scope.safeApply(function() {
 				console.log('edit: ', ev);
 
-				ev.start = moment(ev.start).format("YYYY-MM-DD HH:mm");
-				ev.end   = moment(ev.end).format("YYYY-MM-DD HH:mm");
 				$rootScope.editEvent = ev;
 
 				var modalInstance = $modal.open({
@@ -146,6 +155,8 @@
 					console.log(newEvent);
 					$q.all([EventService.updateEvent(newEvent), $scope.events]).then(function(results) {
 						var events = results[1];
+						newEvent.start = moment(newEvent.start);
+						newEvent.end   = moment(newEvent.end);
 						events[newEvent._id] = newEvent;
 						log.info('Finished updating event.');
 					});
@@ -156,9 +167,15 @@
 		};
 
 		$scope.onFavoriteChanged = function(eventId, checked) {
+			log.info('CMEventCtrl.onFavoriteChanged(' + eventId + ', ' + checked + ')');
 			if (checked) {
 				EventService.addFavorite(eventId);
 			} else {
+				for (var i = 0; i < $scope.events; i++) {
+					if ($scope.events[i]._id = eventId) {
+						$scope.events.splice(i, 1);
+					}
+				}
 				EventService.removeFavorite(eventId);
 			}
 		};
@@ -171,6 +188,16 @@
 				EventService.updateEvent(events[event._id]);
 			});
 		};
+
+		$rootScope.$on('cm.eventUpdated', function(ev, doc) {
+			refreshEvents();
+		});
+		$rootScope.$on('cm.eventDeleted', function(ev, doc) {
+			refreshEvents();
+		});
+		$timeout(function() {
+			refreshEvents();
+		}, 0);
 
 		$rootScope.actions = [];
 		if (UserService.getUsername() && UserService.getUsername() !== '') {
@@ -189,6 +216,8 @@
 						$q.all([EventService.addEvent(result), $scope.events]).then(function(results) {
 							var added = results[0];
 							var events = results[1];
+							added.start = moment(added.start);
+							added.end   = moment(added.end);
 							events[added._id] = added;
 						});
 					}, function() {

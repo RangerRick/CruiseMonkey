@@ -94,7 +94,7 @@
 			.setFooterHeight(0)
 			.setNavWidth(250);
 	}])
-	.run(['$rootScope', '$location', 'UserService', 'phonegapReady', function($rootScope, $location, UserService, phonegapReady) {
+	.run(['$rootScope', '$location', 'UserService', 'EventService', 'phonegapReady', function($rootScope, $location, UserService, EventService, phonegapReady) {
 		$rootScope.safeApply = function(fn) {
 			var phase = this.$root.$$phase;
 			if(phase === '$apply' || phase === '$digest') {
@@ -180,6 +180,8 @@
 			updateMenu();
 		});
 		
+		/* EventService.init(); */
+
 		$rootScope.hideSpinner = true;
 	}])
 	;

@@ -3,7 +3,6 @@
 
 	/*global Pouch: true*/
 	/*global Connection: true*/
-
 	angular.module('cruisemonkey.Database', ['cruisemonkey.Logging', 'cruisemonkey.Config', 'ngInterval', 'angularLocalStorage'])
 	.factory('Database', ['$location', '$interval', '$timeout', '$rootScope', '$window', 'LoggingService', 'storage', 'config.database.host', 'config.database.name', 'config.database.replicate', function($location, $interval, $timeout, $rootScope, $window, log, storage, databaseHost, databaseName, replicate) {
 		log.info('Initializing CruiseMonkey database: ' + databaseName);
@@ -12,12 +11,12 @@
 			'defaultValue': 0,
 			'storeName': 'cm.db.sync'
 		});
-		console.log('last sequence: ' + $rootScope._seq);
+		log.info('last sequence: ' + $rootScope._seq);
 
 		if (!databaseHost) {
 			databaseHost = $location.host();
 		}
-		var host = 'http://' + databaseHost + ':5984/cruisemonkey';
+		var host = 'http://' + databaseHost + ':5984/' + databaseName;
 
 		var db = null,
 			timeout = null,
@@ -29,6 +28,9 @@
 			watchingChanges = false;
 
 			db.compact();
+
+			log.info('Database.initializeDatabase(): Database initialization complete.');
+			$rootScope.$broadcast('cm.databaseInitialized');
 		};
 
 		var databaseReady = function() {
@@ -61,15 +63,20 @@
 				continuous: true,
 				include_docs: true
 			});
+
+			log.info('Database.databaseReady(): Database ready for change updates.');
+			$rootScope.$broadcast('cm.databaseReady');
 		};
 
 		var doReplicate = function() {
 			log.info('Attempting to replicate with ' + host);
-			db.replicate.to(host, {
+			$rootScope.$broadcast('cm.replicationStarting');
+			db.replicate.from(host, {
 				'complete': function() {
-					db.replicate.from(host, {
+					db.replicate.to(host, {
 						'complete': function() {
-							databaseReady();
+							log.debug('Replication complete.');
+							$rootScope.$broadcast('cm.replicationComplete');
 						}
 					});
 				}
@@ -93,7 +100,6 @@
 				}
 			} else {
 				log.warn('startReplication() called, but replication is not enabled!');
-				databaseReady();
 			}
 			return false;
 		};
@@ -139,21 +145,21 @@
 			$timeout(function() {
 				if (navigator && navigator.connection) {
 					if (navigator.connection.addEventListener) {
-						log.info("Browser has native navigator.connection support.");
+						log.info("Database.setUp(): Browser has native navigator.connection support.");
 						navigator.connection.addEventListener('change', handleConnectionTypeChange, false);
 						handleConnectionTypeChange();
 					} else {
-						log.info("Browser does not have native navigator.connection support.  Trying with phonegap.");
+						log.info("Database.setUp(): Browser does not have native navigator.connection support.  Trying with phonegap.");
 						document.addEventListener('online', handleConnectionTypeChange, false);
 						document.addEventListener('offline', handleConnectionTypeChange, false);
 						handleConnectionTypeChange();
 					}
 				} else {
-					log.warn("Unsure how to handle connection management; starting replication and hoping for the best.");
+					log.warn("Database.setUp(): Unsure how to handle connection management; starting replication and hoping for the best.");
 					startReplication();
 				}
-				$rootScope.$broadcast('cm.databaseReady');
-			}, 10);
+				databaseReady();
+			}, 0);
 		};
 
 		var tearDown = function() {
@@ -170,7 +176,8 @@
 			$rootScope.safeApply(function() {
 				tearDown();
 				watchingChanges = false;
-				
+				$rootScope._seq = 0;
+
 				Pouch.destroy(databaseName, function(err) {
 					if (err) {
 						$window.alert('Failed to destroy existing database!');
@@ -185,8 +192,6 @@
 		/* start everything up */
 		initializeDatabase();
 		setUp();
-
-		log.info('Finished initializing CruiseMonkey database.');
 
 		return {
 			'reset': resetDatabase,

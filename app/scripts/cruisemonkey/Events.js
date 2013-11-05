@@ -3,9 +3,9 @@
 
 	/*global emit: true*/
 	/*global moment: true*/
-	angular.module('cruisemonkey.Events', ['cruisemonkey.Database', 'cruisemonkey.User', 'cruisemonkey.Logging'])
-	.factory('EventService', ['$q', '$rootScope', '$timeout', 'Database', 'UserService', 'LoggingService', function($q, $rootScope, $timeout, db, UserService, log) {
-		log.info('Initializing EventService.');
+	angular.module('cruisemonkey.Events', ['cruisemonkey.Config', 'cruisemonkey.Database', 'cruisemonkey.User', 'cruisemonkey.Logging'])
+	.factory('EventService', ['$q', '$rootScope', '$timeout', '$http', 'Database', 'UserService', 'LoggingService', 'config.database.host', 'config.database.name', function($q, $rootScope, $timeout, $http, db, UserService, log, databaseHost, databaseName) {
+		log.info('EventService: Initializing EventService.');
 
 		var stringifyDate = function(date) {
 			if (date === null || date === undefined) {
@@ -14,171 +14,104 @@
 			return moment(date).format("YYYY-MM-DD HH:mm");
 		};
 
+		var initialized = $q.defer();
+		var _events = {};
 		var _favorites = {};
+		var _favoritesByEventId = {};
 		var _processedEvents = {};
 
 		var listeners = [],
 			databaseReady = false;
 
-		var normalizeEvents = function(events) {
-			var i, ret = {};
-			for (i = 0; i < events.length; i++) {
-				var e = events[i];
-				if (e) {
-					if (!e.hasOwnProperty('isFavorite')) {
-						e.isFavorite = false;
-					}
-					ret[e._id] = e;
-				} else {
-					console.log('events = ', events);
-					console.log('event ' + i + ' was undefined!');
-				}
+		var sanitizeEvent = function(ev) {
+			var sanitized = angular.copy(ev);
+			sanitized.type = 'event';
+			delete sanitized.isFavorite;
+			delete sanitized._favoriteId;
+			delete sanitized.isNewDay;
+			if (sanitized.start) {
+				sanitized.start = stringifyDate(sanitized.start);
 			}
-			return ret;
+			if (sanitized.end) {
+				sanitized.end = stringifyDate(sanitized.end);
+			}
+			if (!sanitized.isFavorite) {
+				sanitized.isFavorite = false;
+			}
+			return sanitized;
 		};
 
-		var updateEventCache = function() {
-			log.info('Events.updateEventCache(): eventType = ' + $rootScope.eventType);
-
-			if (!_processedEvents[$rootScope.eventType]) {
-				log.info('no processed events for type ' + $rootScope.eventType);
-				return;
+		var unsanitizeEvent = function(ev) {
+			if (ev.start) {
+				ev.start = moment(ev.start);
 			}
-			if (!$rootScope.events) {
-				$rootScope.events = {};
+			if (ev.end) {
+				ev.end = moment(ev.end);
 			}
-
-			var events = _processedEvents[$rootScope.eventType];
-
-			angular.forEach(events, function(value, index) {
-				$rootScope.events[index] = value;
-			});
-			angular.forEach($rootScope.events, function(value, index) {
-				if (!events[index]) {
-					delete $rootScope.events[index];
-				}
-			});
-			$rootScope.$broadcast('cm.eventCacheUpdated');
+			return ev;
 		};
 
-		var updateOfficialEventCache = function() {
-			var deferred = $q.defer();
-			$q.when(getOfficialEvents()).then(function(events) {
-				_processedEvents.official = normalizeEvents(events);
-				deferred.resolve(_processedEvents.official);
-				updateEventCache();
-			}, function(failure) {
-				deferred.reject(failure);
-			});
-			return deferred.promise;
+		var handleEventUpdated = function(doc) {
+			doc = unsanitizeEvent(doc);
+			log.debug('EventService.handleEventUpdated(): Event updated: ' + doc._id);
+
+			var username = UserService.getUsername();
+			if (username) {
+				delete doc._favoriteId;
+				doc.isFavorite = false;
+				if (_favoritesByEventId[doc._id]) {
+					doc.isFavorite = true;
+				}
+			}
+			_events[doc._id] = doc;
+			$rootScope.$broadcast('cm.eventUpdated', doc);
 		};
 
-		var updateUnofficialEventCache = function() {
-			var deferred = $q.defer();
-			$q.when(getUnofficialEvents()).then(function(events) {
-				_processedEvents.unofficial = normalizeEvents(events);
-				deferred.resolve(_processedEvents.unofficial);
-				updateEventCache();
-			}, function(failure) {
-				deferred.reject(failure);
-			});
-			return deferred.promise;
+		var handleFavoriteUpdated = function(fav) {
+			log.debug('EventService.handleFavoriteUpdated(): Favorite updated: ' + fav._id);
+			_favorites[fav._id] = fav;
+			_favoritesByEventId[fav.eventId] = fav;
+			if (_events[fav.eventId]) {
+				_events[fav.eventId].isFavorite = true;
+			}
+			$rootScope.$broadcast('cm.eventUpdated', _events[fav.eventId]);
 		};
 
-		var updateMyEventCache = function() {
-			var deferred = $q.defer();
-			$q.when(getMyEvents()).then(function(events) {
-				_processedEvents.my = normalizeEvents(events);
-				deferred.resolve(_processedEvents.my);
-				updateEventCache();
-			}, function(failure) {
-				deferred.reject(failure);
-			});
-			return deferred.promise;
+		var handleEventDeleted = function(eventId) {
+			log.debug('EventService.handleEventDeleted(): Event ' + eventId + ' deleted.');
+			var existing = _events[eventId];
+			var fav = _favoritesByEventId[eventId];
+
+			if (fav) {
+				delete _favorites[fav._id];
+				delete _favoritesByEventId[eventId];
+			}
+
+			delete _events[eventId];
+			$rootScope.$broadcast('cm.eventDeleted', existing);
 		};
 
-		var updateAllCaches = function() {
-			var deferred = $q.defer();
-			$q.all([updateOfficialEventCache(), updateUnofficialEventCache(), updateMyEventCache()]).then(function(finished) {
-				log.info('All caches updated.');
-				deferred.resolve();
-			}, function(failed) {
-				deferred.reject(failed);
-			});
-			return deferred.promise;
-		};
+		var handleFavoriteDeleted = function(favoriteId) {
+			log.debug('EventService.handleFavoriteDeleted('+ favoriteId + ')');
 
-		var updateDocument = function(doc) {
-			log.info('Events.updateDocument(' + doc._id + ')');
-			var id = doc._id;
+			var fav = _favorites[favoriteId];
 
-			if (doc.username === 'official') {
-				doc.isPublic = true;
-				if (!doc.isFavorite) {
-					doc.isFavorite = false;
+			if (fav) {
+				var existingEvent = _events[fav.eventId];
+				if (existingEvent) {
+					existingEvent.isFavorite = false;
+					delete _favoritesByEventId[fav.eventId];
+					$rootScope.$broadcast('cm.eventUpdated', existingEvent);
 				}
-
-				if (_processedEvents.official) {
-					var existingOfficial = _processedEvents.official[id];
-					if (existingOfficial) {
-						doc.isFavorite = existingOfficial.isFavorite;
-					}
-				}
-
-				log.debug('Events.updateDocument(): putting ' + id + ' in official events.');
-				_processedEvents.official[id] = doc;
+				delete _favorites[favoriteId];
+			} else {
+				log.warn('EventService.handleFavoriteDeleted(): no favorite with id ' + favoriteId + ' found.');
 			}
-
-			if (doc.isPublic && doc.username !== 'official') {
-				if (!doc.isFavorite) {
-					doc.isFavorite = false;
-				}
-
-				if (_processedEvents.unofficial) {
-					var existingUnofficial = _processedEvents.unofficial[id];
-					if (existingUnofficial) {
-						doc.isFavorite = existingUnofficial.isFavorite;
-					}
-				}
-
-				log.debug('Events.updateDocument(): putting ' + id + ' in unofficial events.');
-				_processedEvents.unofficial[id] = doc;
-			}
-
-			var myExisting;
-			if (_processedEvents.my) {
-				myExisting = _processedEvents.my[id];
-			}
-			if (doc.username === UserService.getUsername() || (myExisting && myExisting.isFavorite)) {
-				if (myExisting) {
-					doc.isFavorite = myExisting.isFavorite;
-				}
-
-				log.debug('Events.updateDocument(): putting ' + id + ' in my events.');
-				_processedEvents.my[id] = doc;
-			}
-
-			updateEventCache();
-		};
-
-		var deleteDocument = function(doc) {
-			log.info('Events.deleteDocument(' + doc.id + ')');
-			var id = doc.id;
-			if (_favorites[id]) {
-				log.info(id + ' is a favorite.  Deleting the associated event (' + _favorites[id] + ')');
-				id = _favorites[id];
-				delete _favorites[id];
-			}
-			angular.forEach(_processedEvents, function(events, type) {
-				if (events[id]) {
-					log.debug('event[' + id + '] was found in type ' + type + ', deleting.');
-					delete events[id];
-				}
-			});
 		};
 
 		var doQuery = function(map, options) {
 			var deferred = $q.defer();
+
 			db.database.query({map: map}, options, function(err, res) {
 				$rootScope.$apply(function() {
 					if (err) {
@@ -188,12 +121,17 @@
 						/*jshint camelcase: false */
 						var results = [], i;
 						for (i = 0; i < res.total_rows; i++) {
-							results.push(res.rows[i].value);
+							var ev = res.rows[i].value;
+							delete ev._favoriteId;
+							delete ev.isFavorite;
+							delete ev.isNewDay;
+							results.push(unsanitizeEvent(ev));
 						}
 						deferred.resolve(results);
 					}
 				});
 			});
+
 			return deferred.promise;
 		};
 
@@ -208,32 +146,32 @@
 		};
 
 		var addEvent = function(ev) {
-			var eventToAdd = angular.copy(ev);
-
-			eventToAdd.type = 'event';
-			eventToAdd.start = stringifyDate(eventToAdd.start);
-			eventToAdd.end = stringifyDate(eventToAdd.end);
+			var eventToAdd = sanitizeEvent(ev);
 
 			var deferred = $q.defer();
 
-			if (!eventToAdd.username || eventToAdd.username === '') {
-				log.info('addEvent(): no username in the event!');
-				deferred.reject('no username specified');
-			} else {
-				log.info('addEvent(): posting event "' + eventToAdd.summary + '" for user "' + eventToAdd.username + '"');
-				db.database.post(eventToAdd, function(err, response) {
-					$rootScope.$apply(function() {
-						if (err) {
-							log.error(err);
-							deferred.reject(err);
-						} else {
-							eventToAdd._id = response.id;
-							eventToAdd._rev = response.rev;
-							deferred.resolve(eventToAdd);
-						}
+			$q.when(initialized.promise).then(function() {
+				if (!eventToAdd.username || eventToAdd.username === '') {
+					log.info('EventService.addEvent(): no username in the event!');
+					deferred.reject('no username specified');
+				} else {
+					log.info('EventService.addEvent(): posting event "' + eventToAdd.summary + '" for user "' + eventToAdd.username + '"');
+					db.database.post(eventToAdd, function(err, response) {
+						$rootScope.$apply(function() {
+							if (err) {
+								log.error(err);
+								deferred.reject(err);
+							} else {
+								eventToAdd._id = response.id;
+								eventToAdd._rev = response.rev;
+								eventToAdd = unsanitizeEvent(eventToAdd);
+								handleEventUpdated(eventToAdd);
+								deferred.resolve(eventToAdd);
+							}
+						});
 					});
-				});
-			}
+				}
+			});
 
 			return deferred.promise;
 		};
@@ -242,235 +180,219 @@
 			var deferred = $q.defer();
 
 			if (!ev._rev || !ev._id) {
-				log.warn('Attempting to update event ' + ev.summary + ', but it is missing _rev or _id!');
+				log.warn('EventService.updateEvent(): Attempting to update event ' + ev.summary + ', but it is missing _rev or _id!');
 				deferred.reject('bad event');
 				return deferred.promise;
 			}
 
-			/* make a copy and strip out the user-specific isFavorite property */
-			var eventToSave = angular.copy(ev);
-			delete eventToSave.isFavorite;
-			eventToSave.start = stringifyDate(eventToSave.start);
-			eventToSave.end = stringifyDate(eventToSave.end);
+			var eventToSave = sanitizeEvent(ev);
 
-			db.database.put(eventToSave, function(err, response) {
-				$rootScope.$apply(function() {
-					if (err) {
-						log.error(err);
-						deferred.reject(err);
-					} else {
-						eventToSave._rev = response.rev;
-						deferred.resolve(response);
-					}
+			$q.when(initialized.promise).then(function() {
+				db.database.put(eventToSave, function(err, response) {
+					$rootScope.$apply(function() {
+						if (err) {
+							log.error(err);
+							deferred.reject(err);
+						} else {
+							eventToSave._rev = response.rev;
+							eventToSave = unsanitizeEvent(eventToSave);
+							handleEventUpdated(eventToSave);
+							deferred.resolve(eventToSave);
+						}
+					});
 				});
 			});
-		};
 
-		var removeEvent = function(ev) {
-			log.info('removeEvent(' + ev._id + ')');
-			var deferred = $q.defer();
-			db.database.remove(ev, function(err, response) {
-				$rootScope.$apply(function() {
-					if (err) {
-						log.error(err);
-						deferred.reject(err);
-					} else {
-						deferred.resolve(response);
-					}
-				});
-			});
 			return deferred.promise;
 		};
 
+		var removeEvent = function(ev) {
+			log.info('EventService.removeEvent(' + ev._id + ')');
+			var deferred = $q.defer();
+
+			$q.when(initialized.promise).then(function() {
+				db.database.remove(ev, function(err, response) {
+					$rootScope.$apply(function() {
+						if (err) {
+							log.error(err);
+							deferred.reject(err);
+						} else {
+							handleEventDeleted(ev._id);
+							deferred.resolve(response);
+						}
+					});
+				});
+			});
+
+			return deferred.promise;
+		};
+
+		var getEvent = function(id) {
+			var deferred = $q.defer();
+
+			$q.when(initialized.promise).then(function() {
+				deferred.resolve(_events[id]);
+			});
+		};
+
 		var getAllEvents = function() {
-			log.info('getAllEvents()');
+			log.info('EventService.getAllEvents()');
 			return doQuery(function(doc) {
 				if (doc.type === 'event') {
-					emit(doc.username, doc);
-				}
-			}, {reduce: false});
-		};
-
-		var getOfficialEvents = function() {
-			log.info('getOfficialEvents()');
-			return doQuery(function(doc) {
-				if (doc.type === 'event') {
-					emit(doc.username, doc);
-				}
-			}, {reduce: true, key: 'official'});
-		};
-
-		var getUnofficialEvents = function() {
-			log.info('getUnofficialEvents()');
-			return doQuery(function(doc) {
-				if (doc.type === 'event' && doc.isPublic && doc.username !== 'official') {
 					emit(doc.username, doc);
 				}
 			}, {reduce: true});
 		};
 
-		var getUserEvents = function() {
-			log.info('getUserEvents()');
-
-			var username = UserService.getUsername();
-			if (!username) {
-				log.warn('getUserEvent(): user not logged in');
-				return promisedResult([]);
-			}
-
+		var getAllFavorites = function() {
+			log.info('EventService.getAllFunctions()');
 			return doQuery(function(doc) {
-				if (doc.type === 'event') {
+				if (doc.type === 'favorite') {
 					emit(doc.username, doc);
 				}
-			}, {reduce: false, key: username});
+			}, {reduce:true});
 		};
 
-		var getMyEvents = function() {
-			log.info('getMyEvents()');
+		var getOfficialEvents = function() {
+			log.info('EventService.getOfficialEvents()');
+			var deferred = $q.defer();
+
+			$q.when(initialized.promise).then(function() {
+				var ret = [];
+				angular.forEach(_events, function(ev, id) {
+					if (ev.username === 'official') {
+						ret.push(ev);
+					}
+				});
+				deferred.resolve(ret);
+			});
+
+			return deferred.promise;
+		};
+
+		var getUnofficialEvents = function() {
+			log.info('EventService.getUnofficialEvents()');
+			var deferred = $q.defer();
+
+			$q.when(initialized.promise).then(function() {
+				var ret = [];
+				angular.forEach(_events, function(ev, id) {
+					if (ev.isPublic && ev.username !== 'official') {
+						ret.push(ev);
+					}
+				});
+				deferred.resolve(ret);
+			});
+
+			return deferred.promise;
+		};
+
+		var getUserEvents = function() {
+			log.info('EventService.getUserEvents()');
 
 			var username = UserService.getUsername();
 			if (!username) {
-				log.warn('getMyEvents(): user not logged in');
+				log.warn('EventService.getUserEvent(): user not logged in');
 				return promisedResult([]);
 			}
 
 			var deferred = $q.defer();
 
-			/*jshint camelcase: false */
-			db.database.query(
-			{
-				map: function(doc) {
-					if (doc.type === 'event') {
-						emit(doc.username, {'_id': doc._id, 'type': doc.type});
-					} else if (doc.type === 'favorite') {
-						emit(doc.username, {'_id': doc.eventId, 'type': doc.type});
-					}
-				}
-			},
-			{
-				reduce: true,
-				include_docs: true,
-				key: username
-			},
-			function(err, res) {
-				$rootScope.$apply(function() {
-					if (err) {
-						log.error(err);
-						deferred.reject(err);
-					} else {
-						var results = [], i, entry;
-						for (i = 0; i < res.total_rows; i++) {
-							entry = res.rows[i];
-							if (entry.doc) {
-								if (entry.value.type === 'favorite') {
-									entry.doc.isFavorite = true;
-								}
-								results.push(entry.doc);
-							}
-						}
-						deferred.resolve(results);
+			$q.when(initialized.promise).then(function() {
+				var ret = [];
+				angular.forEach(_events, function(ev, id) {
+					if (ev.username === username) {
+						ret.push(ev);
 					}
 				});
+				deferred.resolve(ret);
 			});
+
+			return deferred.promise;
+		};
+
+		var getMyEvents = function() {
+			log.info('EventService.getMyEvents()');
+
+			var username = UserService.getUsername();
+			if (!username) {
+				log.warn('EventService.getMyEvents(): user not logged in');
+				return promisedResult([]);
+			}
+
+			var deferred = $q.defer();
+
+			$q.when(initialized.promise).then(function() {
+				var ret = [];
+				angular.forEach(_events, function(ev, id) {
+					if (ev.username === username || (_favoritesByEventId[id] && _favoritesByEventId[id].username === username)) {
+						ret.push(ev);
+					}
+				});
+				deferred.resolve(ret);
+			});
+
 			return deferred.promise;
 		};
 
 		var getMyFavorites = function() {
 			var username = UserService.getUsername();
 			if (!username) {
-				log.warn('getMyFavorites(): user not logged in');
+				log.warn('EventService.getMyFavorites(): user not logged in');
 				return promisedResult([]);
 			}
 
 			var deferred = $q.defer();
 
-			/*jshint camelcase: false */
-			db.database.query(
-			{
-				map: function(doc) {
-					if (doc.type === 'favorite') {
-						emit(doc.username, doc.eventId);
-					}
-				}
-			},
-			{
-				reduce: true,
-				include_docs: false,
-				key: username
-			},
-			function(err, res) {
-				$rootScope.$apply(function() {
-					if (err) {
-						log.error(err);
-						deferred.reject(err);
-					} else {
-						var results = [], i;
-						for (i = 0; i < res.total_rows; i++) {
-							results.push(res.rows[i].value);
-						}
-						deferred.resolve(results);
+			$q.when(initialized.promise).then(function() {
+				var ret = [];
+				angular.forEach(_favorites, function(eventId, fav) {
+					if (fav.username === username) {
+						ret.push(eventId);
 					}
 				});
+				deferred.resolve(ret);
 			});
+
 			return deferred.promise;
 		};
 
 		var isFavorite = function(eventId) {
-			var username = UserService.getUsername();
-			if (!username || !eventId) {
-				log.warn('isFavorite(): user not logged in, or no eventId passed');
-				return promisedResult(false);
-			}
-
 			var deferred = $q.defer();
 
-			/*jshint camelcase: false */
-			db.database.query(
-			{
-				map: function(doc) {
-					if (doc.type === 'favorite') {
-						emit({ 'username': doc.username, 'eventId': doc.eventId });
-					}
-				}
-			},
-			{
-				reduce: true,
-				include_docs: false,
-				key: { 'username': username, 'eventId': eventId }
-			},
-			function(err, res) {
-				$rootScope.$apply(function() {
-					if (err) {
-						log.error(err);
-						deferred.reject(err);
-					} else {
-						deferred.resolve(res.total_rows > 0);
-					}
-				});
+			$q.when(initialized.promise).then(function() {
+				deferred.resolve(_favoritesByEventId.hasOwnProperty(eventId));
 			});
+
 			return deferred.promise;
 		};
 
 		var addFavorite = function(eventId) {
+			log.info('EventService.addFavorite(' + eventId + ')');
 			var username = UserService.getUsername();
 			if (!username || !eventId) {
-				log.warn('addFavorite(): user not logged in, or no eventId passed');
+				log.warn('EventService.addFavorite(): user not logged in, or no eventId passed');
 				return promisedResult(undefined);
 			}
 
 			var deferred = $q.defer();
 
-			db.database.post({
+			var fav = {
 				'type': 'favorite',
 				'username': username,
 				'eventId': eventId
-			}, function(err, res) {
+			};
+
+			db.database.post(fav, function(err, res) {
 				$rootScope.$apply(function() {
 					if (err) {
 						log.error(err);
 						deferred.reject(err);
 					} else {
-						deferred.resolve(res.id);
+						fav._id = res.id;
+						fav._rev = res.rev;
+						handleFavoriteUpdated(fav);
+						deferred.resolve(fav);
 					}
 				});
 			});
@@ -478,14 +400,16 @@
 		};
 
 		var removeFavorite = function(eventId) {
+			log.info('EventService.removeFavorite(' + eventId + ')');
 			var username = UserService.getUsername();
 			if (!username || !eventId) {
-				log.warn('removeFavorite(): user not logged in, or no eventId passed');
+				log.warn('EventService.removeFavorite(): user not logged in, or no eventId passed');
 				return promisedResult(undefined);
 			}
 
 			var deferred = $q.defer();
 
+			/* first, we get the list of favorites pointing to the given event ID */
 			/*jshint camelcase: false */
 			db.database.query(
 			{
@@ -508,19 +432,37 @@
 					} else {
 						/*jshint camelcase: false */
 						if (res.total_rows > 0) {
-							var doc = res.rows[0].doc;
-							db.database.remove(doc, function(err, res) {
-								$rootScope.$apply(function() {
-									if (err) {
-										log.error(err);
-										deferred.reject(err);
-									} else {
-										deferred.resolve(res);
-									}
+							var promises = [];
+
+							/* for any existing favorites associated with the event,
+							store a promise to delete that event */
+							angular.forEach(res.rows, function(row, index) {
+								var def = $q.defer();
+								promises.push(def.promise);
+
+								var favoriteId = row.value;
+								var doc = row.doc;
+								db.database.remove(doc, function(err, res) {
+									$rootScope.$apply(function() {
+										if (err) {
+											log.error(err);
+											def.reject(err);
+										} else {
+											handleFavoriteDeleted(favoriteId);
+											def.resolve(res);
+										}
+									});
 								});
 							});
+
+							/* when all of the deletes have finished, then resolve & return */
+							$q.all(promises).then(function() {
+								deferred.resolve(res.total_rows);
+							}, function(err) {
+								deferred.reject(err);
+							});
 						} else {
-							deferred.resolve(null);
+							deferred.resolve(res.total_rows);
 						}
 					}
 				});
@@ -528,45 +470,110 @@
 			return deferred.promise;
 		};
 
-		var handleEvents = function(ev, doc) {
-			log.trace('got event: ', ev);
-			log.trace('document: ', doc);
-
-			if (ev.name === 'cm.databaseReady') {
-				// we've finished loading the database, prime the event cache
-				updateAllCaches();
-			} else if (ev.name === 'cm.documentUpdated') {
-				updateDocument(doc);
-			} else if (ev.name === 'cm.documentDeleted') {
-				deleteDocument(doc);
-			} else if (ev.name === 'cm.loggedIn' || ev.name === 'cm.loggedOut') {
-				log.info('User login changed.  Resetting cache.');
-				_processedEvents = {};
-				updateAllCaches();
-			} else {
-				log.warn("Unhandled event type: " + ev.name);
+		var getRemoteDocs = function() {
+			if (!databaseHost) {
+				databaseHost = $location.host();
 			}
+			var host = 'http://' + databaseHost + ':5984/' + databaseName;
+			var deferred = $q.defer();
+
+			$http.get(host + '/_all_docs?include_docs=true', { 'headers': { 'Accept': 'application/json' } })
+				.success(function(data, status, headers, config) {
+					deferred.resolve(data);
+				})
+				.error(function(data, status, headers, config) {
+					console.log('error = ', status);
+					deferred.reject(status);
+				});
+			return deferred.promise;
 		};
 
-		log.info('Initializing caches.');
-		updateAllCaches().then(function() {
-			/* invalidate the cache whenever things affect the model */
-			angular.forEach(['cm.databaseReady', 'cm.documentDeleted', 'cm.documentUpdated', 'cm.loggedIn', 'cm.loggedOut'], function(value) {
-				listeners.push($rootScope.$on(value, handleEvents));
+		var initEventCache = function() {
+			$q.all([getAllEvents(), getAllFavorites(), getRemoteDocs()]).then(function(results) {
+				log.info('EventService.initEventCache(): Retrieved events & favorites from the database; pushing to cache.');
+				var events    = results[0];
+				var favorites = results[1];
+				var remote    = results[2];
+
+				var newEvents = {}, newFavorites = {};
+				angular.forEach(events, function(ev, index) {
+					delete ev.isFavorite;
+					delete ev._favoriteId;
+					delete ev.isNewDay;
+					if (_events[ev._id]) {
+						ev.isFavorite = _events[ev._id].isFavorite;
+					}
+					newEvents[ev._id] = unsanitizeEvent(ev);
+				});
+				angular.forEach(favorites, function(fav, index) {
+					newFavorites[fav.eventId] = fav;
+				});
+
+				if (remote && remote.total_rows) {
+					console.log('remote', remote);
+					for (var i = 0; i < remote.total_rows; i++) {
+						var doc = remote.rows[i].doc;
+						if (doc.type === 'event') {
+							var ev = doc;
+							delete ev.isFavorite;
+							delete ev._favoriteId;
+							delete ev.isNewDay;
+							if (_events[ev._id]) {
+								ev.isFavorite = _events[ev._id].isFavorite;
+							}
+							newEvents[ev._id] = unsanitizeEvent(ev);
+						} else if (doc.type === 'favorite') {
+							var fav = doc;
+							newFavorites[fav.eventId] = fav;
+						}
+					}
+				}
+
+				_events = newEvents;
+				_favorites = newFavorites;
+				initialized.resolve(true);
 			});
-		});
+
+			$rootScope.$on('cm.documentUpdated', function(ev, doc) {
+				if (doc.type === 'event') {
+					handleEventUpdated(doc);
+				} else if (doc.type === 'favorite') {
+					handleFavoriteUpdated(doc);
+				} else {
+					console.log('unhandled document update: ', doc);
+				}
+			});
+			$rootScope.$on('cm.documentDeleted', function(ev, change) {
+				if (_events[change.id]) {
+					handleEventDeleted(change.id);
+				} else if (_favorites[change.id]) {
+					handleFavoriteDeleted(change.id);
+				} else {
+					console.log('unhandled document deletion:', change);
+					console.log('events=', _events);
+					console.log('favorites=', _favorites);
+				}
+			});
+		};
 
 		$rootScope.$on('$destroy', function() {
 			angular.forEach(listeners, function(listener) {
 				listener();
 			});
 		});
+		$rootScope.$on('cm.databaseReady', function() {
+			log.info('EventService: Initializing caches.');
+			initEventCache();
+		});
+		$q.when(initialized.promise).then(function() {
+			log.info('EventService: Event cache initialized.');
+		});
 
 		return {
-			'init': updateEventCache,
 			'addEvent': addEvent,
 			'updateEvent': updateEvent,
 			'removeEvent': removeEvent,
+			'getEvent': getEvent,
 			'getAllEvents': getAllEvents,
 			'getOfficialEvents': getOfficialEvents,
 			'getUnofficialEvents': getUnofficialEvents,

@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<widget xmlns		= "http://www.w3.org/ns/widgets"
+	xmlns:gap	= "http://phonegap.com/ns/1.0"
+	id		= "com.raccoonfink.cruisemonkey"
+	version 	= "3.9.0">
+
+	<name>CruiseMonkey</name>
+
+	<description>Keep Track of Your Cruise</description>
+
+	<author href="https://github.com/RangerRick/CruiseMonkey.git"
+		email="ranger@befunk.com">
+		Benjamin Reed
+	</author>
+
+	<gap:platform name="ios" minVersion="4.2" />
+	<gap:platform name="android" minVersion="2.3" />
+	<!-- <gap:platform name="winphone" /> -->
+
+	<icon src="Icon.png" />
+	<icon src="Icon-Small.png"       width="29"  height="29"  gap:platform="ios" />
+	<icon src="Icon-Small-50.png"    width="50"  height="50"  gap:platform="ios" />
+	<icon src="Icon-57.png"          width="57"  height="57"  gap:platform="ios" />
+	<icon src="Icon-Small@2x.png"    width="58"  height="58"  gap:platform="ios" />
+	<icon src="Icon.png"             width="72"  height="72"  gap:platform="ios" />
+	<icon src="Icon-Small-50@2x.png" width="100" height="100" gap:platform="ios" />
+	<icon src="Icon@2x.png"          width="114" height="114" gap:platform="ios" />
+	<icon src="Icon-72@2x.png"       width="144" height="144" gap:platform="ios" />
+	<icon src="Icon-320.png"         width="320" height="320" gap:platform="ios" />
+
+	<icon src="Icon-36.png"  width="36"  height="36"  gap:platform="android" />
+	<icon src="Icon-48.png"  width="48"  height="48"  gap:platform="android" />
+	<icon src="Icon-72.png"  width="72"  height="72"  gap:platform="android" />
+	<icon src="Icon-96.png"  width="96"  height="96"  gap:platform="android" />
+
+	<gap:splash src="cruise-monkey-768x1024.png"  width="768"  height="1024" gap:platform="ios" />
+	<gap:splash src="cruise-monkey-1024x768.png"  width="1024" height="768"  gap:platform="ios" />
+	<gap:splash src="cruise-monkey-1536x2048.png" width="1536" height="2048" gap:platform="ios" />
+	<gap:splash src="cruise-monkey-2048x1536.png" width="2048" height="1536" gap:platform="ios" />
+	<gap:splash src="cruise-monkey-320x480.png"   width="320"  height="480"  gap:platform="ios" />
+	<gap:splash src="cruise-monkey-480x320.png"   width="480"  height="320"  gap:platform="ios" />
+	<gap:splash src="cruise-monkey-640x960.png"   width="640"  height="960"  gap:platform="ios" />
+	<gap:splash src="cruise-monkey-960x640.png"   width="960"  height="640"  gap:platform="ios" />
+	<gap:splash src="cruise-monkey-640x1136.png"  width="640"  height="1136" gap:platform="ios" />
+
+	<gap:splash src="cruise-monkey-200x320.png"   width="200"  height="320"  gap:platform="android" gap:density="ldpi"  />
+	<gap:splash src="cruise-monkey-320x200.png"   width="320"  height="200"  gap:platform="android" gap:density="ldpi"  />
+	<gap:splash src="cruise-monkey-320x480.png"   width="320"  height="480"  gap:platform="android" gap:density="mdpi"  />
+	<gap:splash src="cruise-monkey-480x320.png"   width="480"  height="320"  gap:platform="android" gap:density="mdpi"  />
+	<gap:splash src="cruise-monkey-480x800.png"   width="480"  height="800"  gap:platform="android" gap:density="hdpi"  />
+	<gap:splash src="cruise-monkey-800x480.png"   width="800"  height="480"  gap:platform="android" gap:density="hdpi"  />
+	<gap:splash src="cruise-monkey-720x1280.png"  width="720"  height="1280" gap:platform="android" gap:density="xhdpi" />
+	<gap:splash src="cruise-monkey-1280x720.png"  width="1280" height="720"  gap:platform="android" gap:density="xhdpi" />
+
+	<gap:plugin name="org.apache.cordova.camera" />
+	<gap:plugin name="org.apache.cordova.console" />
+	<gap:plugin name="org.apache.cordova.device" />
+	<gap:plugin name="org.apache.cordova.device-orientation" />
+	<gap:plugin name="org.apache.cordova.geolocation" />
+	<gap:plugin name="org.apache.cordova.media" />
+	<gap:plugin name="org.apache.cordova.media-capture" />
+	<gap:plugin name="org.apache.cordova.network-information" />
+	<gap:plugin name="org.apache.cordova.dialogs" />
+	<gap:plugin name="org.apache.cordova.splashscreen" />
+	<gap:plugin name="org.apache.cordova.vibration" />
+	<gap:plugin name="com.phonegap.plugin.statusbar" />
+
+	<!-- general preferences -->
+	<preference name="phonegap-version" value="3.1.0" />
+	<preference name="orientation" value="default" />
+	<!-- <preference name="fullscreen" value="true" /> use default=false -->
+
+	<!-- iOS preferences -->
+	<!-- <preference name="target-device" value="universal" /> use default=universal -->
+	<!-- <preference name="prerendered-icon" value="true" /> use default=true -->
+	<preference name="ios-statusbarstyle" value="black-opaque" />
+	<preference name="detect-data-types" value="false" />
+	<!-- <preference name="exit-on-suspend" value="false" /> use default=false -->
+	<preference name="webviewbounce" value="false" />
+
+	<!-- Android preferences -->
+	<preference name="android-minSdkVersion" value="9" /> <!-- Android 2.3, see http://developer.android.com/guide/topics/manifest/uses-sdk-element.html#ApiLevels for details -->
+	<!-- <preference name="android-maxSdkVersion" value="15" /> use default=unset -->
+	<!-- <preference name="android-targetSdkVersion" value="12" /> use default=unset -->
+	<preference name="android-installLocation" value="auto" />
+	<!-- <preference name="android-windowSoftInputMode" value="stateVisible|adjustResize" /> use default -->
+	<preference name="splash-screen-duration" value="20000" />
+	<preference name="DisallowOverscroll" value="true" />
+
+	<access origin="*" />
+</widget>
