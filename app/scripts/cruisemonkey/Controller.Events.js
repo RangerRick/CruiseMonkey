@@ -172,7 +172,7 @@
 				EventService.addFavorite(eventId);
 			} else {
 				for (var i = 0; i < $scope.events; i++) {
-					if ($scope.events[i]._id = eventId) {
+					if ($scope.events[i]._id === eventId) {
 						$scope.events.splice(i, 1);
 					}
 				}

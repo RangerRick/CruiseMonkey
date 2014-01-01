@@ -9,6 +9,16 @@ describe('cruisemonkey.Events', function() {
 	var dbName      = 'cmtest';
 	var async       = new AsyncSpec(this);
 
+	var getEvents = function(results) {
+		var ret = {};
+		angular.forEach(results, function(item) {
+			if (item !== undefined && item.getId !== undefined) {
+				ret[item.getId()] = item;
+			}
+		});
+		return ret;
+	};
+
 	async.beforeEach(function(done) {
 		console.log('destroying database ' + dbName);
 		Pouch.destroy(dbName, function(err) {
@@ -40,6 +50,7 @@ describe('cruisemonkey.Events', function() {
 
 	async.beforeEach(function(done) {
 		// initialize test data
+		userService.save({'loggedIn': true, 'username':'ranger', 'password':'whatever'});
 		db.database.bulkDocs({
 			docs: [{
 				'_id': '1',
@@ -103,6 +114,10 @@ describe('cruisemonkey.Events', function() {
 			expect(service.getAllEvents).not.toBeUndefined();
 			service.getAllEvents().then(function(result) {
 				expect(result.length).toEqual(4);
+				var items = getEvents(result);
+				expect(items).not.toBeNull();
+				expect(items['1']).not.toBeNull();
+				expect(items['1'].getSummary()).toBe('Murder');
 				done();
 			});
 		});
@@ -112,40 +127,45 @@ describe('cruisemonkey.Events', function() {
 		async.it('should return all official events', function(done) {
 			expect(db).not.toBeNull();
 			expect(service.getOfficialEvents).not.toBeUndefined();
-			var def = service.getOfficialEvents();
-			$timeout.flush();
-			$rootScope.$digest();
-			def.then(function(result) {
-				console.log('result', result);
+			service.getOfficialEvents().then(function(result) {
 				expect(result.length).toEqual(1);
-				expect(result[0].summary).toBe('Murder');
+				var items = getEvents(result);
+				expect(items['1']).not.toBeNull();
+				expect(items['1'].getSummary()).toBe('Murder');
 				done();
 			});
+			$timeout.flush();
 		});
 	});
 
-	xdescribe("#getUnofficialEvents", function() {
+	describe("#getUnofficialEvents", function() {
 		async.it('should return only the events marked isPublic which are not official', function(done) {
 			expect(db).not.toBeNull();
 			expect(service.getUnofficialEvents).not.toBeUndefined();
 			service.getUnofficialEvents().then(function(result) {
 				expect(result.length).toEqual(2);
+				var items = getEvents(result);
+				expect(items['2']).not.toBeNull();
+				expect(items['3']).not.toBeNull();
 				done();
 			});
+			$timeout.flush();
 		});
 	});
 
-	xdescribe("#getUserEvents", function() {
+	describe("#getUserEvents", function() {
 		async.it('should return only the events for user "ranger"', function(done) {
 			userService.save({'loggedIn': true, 'username':'ranger', 'password':'whatever'});
 			expect(db).not.toBeNull();
 			expect(service.getUserEvents).not.toBeUndefined();
 			$q.when(service.getUserEvents()).then(function(result) {
 				expect(result.length).toEqual(2);
-				expect(result[0]._id).toBe('2');
-				expect(result[1]._id).toBe('4');
+				var items = getEvents(result);
+				expect(items['2']).not.toBeNull();
+				expect(items['4']).not.toBeNull();
 				done();
 			});
+			$timeout.flush();
 		});
 		async.it('should not return any events if the user is not logged in', function(done) {
 			userService.save({'loggedIn': false, 'username':'ranger', 'password':'whatever'});
@@ -155,22 +175,25 @@ describe('cruisemonkey.Events', function() {
 				expect(result.length).toEqual(0);
 				done();
 			});
+			$timeout.flush();
 		});
 	});
 
-	xdescribe("#getMyEvents", function() {
+	describe("#getMyEvents", function() {
 		async.it('should return only the events that user "ranger" has created or favorited', function(done) {
 			userService.save({'loggedIn': true, 'username':'ranger', 'password':'whatever'});
 			expect(db).not.toBeNull();
 			expect(service.getMyEvents).not.toBeUndefined();
 			service.getMyEvents().then(function(result) {
 				expect(result.length).toEqual(3);
-				expect(result[0]._id).toBe('2');
-				expect(result[1]._id).toBe('4');
-				expect(result[2]._id).toBe('3');
-				expect(result[2].isFavorite).toBeTruthy();
+				var items = getEvents(result);
+				expect(items['2']).not.toBeNull();
+				expect(items['3']).not.toBeNull();
+				expect(items['4']).not.toBeNull();
+				expect(items['3'].isFavorite()).toBeTruthy();
 				done();
 			});
+			$timeout.flush();
 		});
 		async.it('should return nothing when the user is not logged in', function(done) {
 			userService.save({'loggedIn': false, 'username':'ranger', 'password':'whatever'});
@@ -182,17 +205,19 @@ describe('cruisemonkey.Events', function() {
 			});
 		});
 	});
-	
-	xdescribe('#getMyFavorites', function() {
+
+	describe('#getMyFavorites', function() {
 		async.it('should return a list of favorited ids', function(done) {
 			userService.save({'loggedIn': true, 'username':'ranger', 'password':'whatever'});
 			expect(db).not.toBeNull();
 			expect(service.getMyFavorites).not.toBeUndefined();
 			service.getMyFavorites().then(function(result) {
 				expect(result.length).toEqual(1);
-				expect(result[0]).toBe('3');
+				var items = getEvents(result);
+				expect(items['3']).not.toBeNull();
 				done();
 			});
+			$timeout.flush();
 		});
 		async.it('should return nothing when the user is not logged in', function(done) {
 			userService.save({'loggedIn': false, 'username':'ranger', 'password':'whatever'});
@@ -204,8 +229,8 @@ describe('cruisemonkey.Events', function() {
 			});
 		});
 	});
-	
-	xdescribe('#isFavorite', function() {
+
+	describe('#isFavorite', function() {
 		async.it('should return true if the given id is a favorite while ranger is logged in', function(done) {
 			userService.save({'loggedIn': true, 'username':'ranger', 'password':'whatever'});
 			expect(db).not.toBeNull();
@@ -214,6 +239,7 @@ describe('cruisemonkey.Events', function() {
 				expect(result).toBeTruthy();
 				done();
 			});
+			$timeout.flush();
 		});
 		async.it('should return false if the given id is a favorite while ranger is not logged in', function(done) {
 			userService.save({'loggedIn': false, 'username':'ranger', 'password':'whatever'});
@@ -232,10 +258,11 @@ describe('cruisemonkey.Events', function() {
 				expect(result).not.toBeTruthy();
 				done();
 			});
+			$timeout.flush();
 		});
 	});
 	
-	xdescribe('#addFavorite', function() {
+	describe('#addFavorite', function() {
 		async.it('should create a new favorite in the database if ther user is logged in', function(done) {
 			userService.save({'loggedIn': true, 'username':'ranger', 'password':'whatever'});
 			expect(db).not.toBeNull();
@@ -261,19 +288,15 @@ describe('cruisemonkey.Events', function() {
 			});
 		});
 	});
-	
-	xdescribe('#removeFavorite', function() {
+
+	describe('#removeFavorite', function() {
 		async.it('should not remove a favorite from the database if the user is not logged in', function(done) {
 			userService.save({'loggedIn': false, 'username':'ranger', 'password':'whatever'});
 			expect(db).not.toBeNull();
 			expect(service.removeFavorite).not.toBeUndefined();
 			service.removeFavorite('3').then(function(result) {
 				expect(result).toBeUndefined();
-				userService.save({'loggedIn': true, 'username':'ranger', 'password':'whatever'});
-				service.isFavorite('3').then(function(result) {
-					expect(result).toBeTruthy();
-					done();
-				});
+				done();
 			});
 		});
 		async.it('should remove a favorite from the database if the user is logged in', function(done) {
@@ -282,6 +305,7 @@ describe('cruisemonkey.Events', function() {
 			expect(service.removeFavorite).not.toBeUndefined();
 			service.removeFavorite('3').then(function(result) {
 				expect(result).not.toBeUndefined();
+				expect(result).toEqual(1);
 				service.isFavorite('3').then(function(result) {
 					expect(result).not.toBeTruthy();
 					done();
@@ -290,7 +314,7 @@ describe('cruisemonkey.Events', function() {
 		});
 	});
 	
-	xdescribe('#addEvent', function() {
+	describe('#addEvent', function() {
 		async.it('should add a new event', function(done) {
 			expect(db).not.toBeNull();
 			expect(service.addEvent).not.toBeUndefined();
@@ -300,29 +324,31 @@ describe('cruisemonkey.Events', function() {
 				'username': 'testUser'
 			}).then(function(result) {
 				expect(result).not.toBeUndefined();
-				expect(result.username).not.toBeUndefined();
-				expect(result.username).toBe('testUser');
-				expect(result._id).not.toBeUndefined();
-				expect(result._rev).not.toBeUndefined();
+				expect(result.getUsername()).not.toBeUndefined();
+				expect(result.getUsername()).toBe('testUser');
+				expect(result.getId()).not.toBeUndefined();
+				expect(result.getRevision()).not.toBeUndefined();
 				done();
 			});
 		});
 	});
 	
-	xdescribe('#removeEvent', function() {
+	describe('#removeEvent', function() {
 		async.it('should remove an existing event', function(done) {
 			expect(db).not.toBeNull();
 			expect(service.addEvent).not.toBeUndefined();
 			service.getAllEvents().then(function(result) {
 				expect(result.length).toEqual(4);
 
-				var existingId = result[0]._id;
-				var existingRev = parseInt(result[0]._rev.split('-')[0]);
+				var items = getEvents(result);
+
+				var existingId = '1';
+				var existingRev = parseInt(items['1'].getRevision().split('-')[0]);
 				expect(existingRev).toBeGreaterThan(0);
-				service.removeEvent(result[0]).then(function(result) {
+				service.removeEvent(items['1']).then(function(result) {
 					expect(result.ok).not.toBeUndefined();
 					expect(result.ok).toBeTruthy();
-					expect(result.id).toBe(existingId);
+					expect(result.id).toBe('1');
 					expect(result.rev).not.toBeUndefined();
 					
 					var newRev = parseInt(result.rev.split('-')[0]);
