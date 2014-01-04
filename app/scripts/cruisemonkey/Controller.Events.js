@@ -11,15 +11,15 @@
 			var array = [];
 			for(var objectKey in input) {
 				var obj = input[objectKey];
-				obj.isNewDay = false;
+				obj.setNewDay(false);
 				array.push(obj);
 			}
 
 			var attrA, attrB;
 
 			array.sort(function(a,b) {
-				attrA = a.start;
-				attrB = b.start;
+				attrA = a.getStart();
+				attrB = b.getStart();
 
 				if (attrA.isBefore(attrB)) {
 					return -1;
@@ -28,8 +28,8 @@
 					return 1;
 				}
 
-				attrA = a.summary.toLowerCase();
-				attrB = b.summary.toLowerCase();
+				attrA = a.getSummary().toLowerCase();
+				attrB = b.getSummary().toLowerCase();
 
 				if (attrA > attrB) { return 1; }
 				if (attrA < attrB) { return -1; }
@@ -45,14 +45,14 @@
 
 			var lastStart, start;
 			angular.forEach(array, function(value, index) {
-				value.isNewDay = false;
-				start = value.start;
+				value.setNewDay(false);
+				start = value.getStart();
 
 				if (index === 0) {
-					value.isNewDay = true;
+					value.setNewDay(true);
 				} else {
 					if (start.isAfter(lastStart, 'day')) {
-						value.isNewDay = true;
+						value.setNewDay(true);
 					}
 				}
 
@@ -61,7 +61,7 @@
 
 			for (var i = 0; i < array.length; i++) {
 				if (i === 0) {
-					array[i].isNewDay = true;
+					array[i].setNewDay(true);
 				}
 			}
 
@@ -71,29 +71,20 @@
 	.controller('CMEditEventCtrl', ['$q', '$scope', '$rootScope', '$modal', 'UserService', 'LoggingService', function($q, $scope, $rootScope, $modal, UserService, log) {
 		log.info('Initializing CMEditEventCtrl');
 
-		var format="YYYY-MM-DD HH:mm";
-		if (Modernizr.inputtypes["datetime-local"]) {
-			format="YYYY-MM-DDTHH:mm";
-		}
-
 		if ($rootScope.editEvent) {
-			$scope.event = angular.copy($rootScope.editEvent);
+			$scope.event = $rootScope.editEvent.toEditableBean();
 			delete $rootScope.editEvent;
-
-			$scope.event.start = $scope.event.start.format(format);
-			$scope.event.end = $scope.event.end.format(format);
 
 			log.info('Found existing event to edit.');
 			console.log($scope.event);
 		} else {
-			var start = moment();
-			$scope.event = {
-				'start':    start.format(format),
-				'end':      start.add('hours', 1).format(format),
-				'type':     'event',
-				'username': UserService.getUsername(),
-				'isPublic': true
-			};
+			var ev = new CMEvent();
+			ev.setStart(moment());
+			ev.setEnd(ev.getStart().add('hours', 1));
+			ev.setUsername(UserService.getUsername());
+			ev.setPublic(true);
+			$scope.event = ev.toEditableBean();
+
 			log.info('Created fresh event.');
 			console.log($scope.event);
 		}
@@ -134,8 +125,8 @@
 				$q.all([EventService.removeEvent(ev), $scope.events]).then(function(response) {
 					var removed = response[0];
 					var events  = response[1];
-					console.log('removed = ', removed);
-					delete events[removed.id];
+					console.log('removed = ', removed.toString());
+					delete events[removed.getId()];
 				});
 			});
 		};
@@ -180,12 +171,11 @@
 			}
 		};
 
-		$scope.onPublicChanged = function(event, pub) {
-			console.log('onPublicChanged: ', event, pub);
-			event.isPublic = pub;
+		$scope.onPublicChanged = function(ev, pub) {
+			console.log('onPublicChanged: ', ev, pub);
+			ev.setPublic(pub);
 			$q.when($scope.events).then(function(events) {
-				events[event._id].isPublic = pub;
-				EventService.updateEvent(events[event._id]);
+				EventService.updateEvent(ev);
 			});
 		};
 

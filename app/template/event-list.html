@@ -3,13 +3,14 @@
 	</div>
 	<div class="modal-body">
 		<form name="form" class="add-event-form" novalidate>
-			<input type="hidden" name="eId" value="{{event._id}}" />
+			<input type="hidden" name="eId" value="{{event.id}}" />
 			<input type="hidden" name="eType" value="{{event.type}}" />
 			<table>
 				<tr>
 					<th class="header" colspan="2">
 						<h3>Add an Event</h3>
 					</th>
+				</tr>
 				<tr>
 					<td class="label">Summary:</td>
 					<td class="input"><input type="text" ng-model="event.summary" name="eSummary" required /></td>
@@ -20,11 +21,11 @@
 				</tr>
 				<tr>
 					<td class="label">Event Start:</td>
-					<td class="input"><input type="datetime-local" ng-model="event.start" /></td>
+					<td class="input"><input type="datetime-local" ng-model="event.startDate" /></td>
 				</tr>
 				<tr>
 					<td class="label">Event End:</td>
-					<td class="input"><input type="datetime-local" ng-model="event.end" /></td>
+					<td class="input"><input type="datetime-local" ng-model="event.endDate" /></td>
 				</tr>
 				<tr>
 					<td class="label">Location:</td>
@@ -52,25 +53,25 @@
 </script>
 <div class="event-list">
 	<span ng-repeat="event in events | orderByEvent">
-		<div ng-if="event.isNewDay" class="header">{{prettyDate(event.start)}}</div>
+		<div ng-if="event.isNewDay()" class="header">{{prettyDate(event.getStart())}}</div>
 		<div class="list-entry" ng-class-even="'even'" ng-class-odd="'odd'">
-			<div class="favorite" ng-show="(user.username && user.username != event.username)">
-				<input type="checkbox" id="{{event._id}}-favorite" ng-checked="event.isFavorite" ng-model="fav" ng-change="onFavoriteChanged(event._id, fav)"><label for="{{event._id}}-favorite">&nbsp;</label>
+			<div class="favorite" ng-show="(user.username && user.username != event.getUsername())">
+				<input type="checkbox" id="{{event.getId()}}-favorite" ng-checked="event.isFavorite()" ng-model="fav" ng-change="onFavoriteChanged(event.getId(), fav)"><label for="{{event.getId()}}-favorite">&nbsp;</label>
 			</div>
-			<div class="trash" ng-show="(user.username && user.username == event.username)">
-				<input type="button" id="{{event._id}}-trash" ng-click="trash(event)"><label for="{{event._id}}-trash">&nbsp;</label>
+			<div class="trash" ng-show="(user.username && user.username == event.getUsername())">
+				<input type="button" id="{{event.getId()}}-trash" ng-click="trash(event)"><label for="{{event.getId()}}-trash">&nbsp;</label>
 			</div>
-			<div class="public" ng-show="(user.username && user.username == event.username)">
-				<input type="checkbox" id="{{event._id}}-public" ng-checked="event.isPublic" ng-model="pub" ng-change="onPublicChanged(event, pub)"><label for="{{event._id}}-public">&nbsp;</label>
+			<div class="public" ng-show="(user.username && user.username == event.getUsername())">
+				<input type="checkbox" id="{{event.getId()}}-public" ng-checked="event.isPublic()" ng-model="pub" ng-change="onPublicChanged(event, pub)"><label for="{{event.getId()}}-public">&nbsp;</label>
 			</div>
-			<div class="edit" ng-show="(user.username && user.username == event.username)">
-				<input type="button" id="{{event._id}}-edit" ng-click="edit(event)"><label for="{{event._id}}-edit">&nbsp;</label>
+			<div class="edit" ng-show="(user.username && user.username == event.getUsername())">
+				<input type="button" id="{{event.getId()}}-edit" ng-click="edit(event)"><label for="{{event.getId()}}-edit">&nbsp;</label>
 			</div>
-			<div class="summary">{{event.summary}}</div>
-			<div class="time">Time: {{justTime(event.start)}} - {{justTime(event.end)}}</div>
-			<div class="createdBy" ng-show="event.username != 'official'">Created By: {{event.username}}</div>
-			<div class="location" ng-show="event.location">Location: {{event.location}}</div>
-			<div class="description">{{event.description}}</div>
+			<div class="summary">{{event.getSummary()}}</div>
+			<div class="time">Time: {{justTime(event.getStart())}} - {{justTime(event.getEnd())}}</div>
+			<div class="createdBy" ng-show="event.getUsername() != 'official'">Created By: {{event.getUsername()}}</div>
+			<div class="location" ng-show="event.getLocation()">Location: {{event.getLocation()}}</div>
+			<div class="description">{{event.getDescription()}}</div>
 		</div>
 	</span>
 </div>

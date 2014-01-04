@@ -1,204 +1,259 @@
+function stringifyDate(date) {
+	if (date === null || date === undefined) {
+		return undefined;
+	}
+	return moment(date).format("YYYY-MM-DD HH:mm");
+}
+
+var dateStringFormat="YYYY-MM-DD HH:mm";
+if (Modernizr.inputtypes["datetime-local"]) {
+	dateStringFormat="YYYY-MM-DDTHH:mm";
+}
+
+/**
+  * Represents a CruiseMonkey event.  Stores "raw" javascript data for communcation
+  * with the backend, and then provides memoizing/caching functions for accessors.
+  */
+function CMEvent(rawdata) {
+	var self = this;
+
+	self.initialize = function(data) {
+		self._rawdata  = data || {};
+		self._favorite = undefined;
+		self._newDay   = false;
+		self._start    = undefined;
+		self._end      = undefined;
+
+		self._rawdata.type = 'event';
+
+		delete self._rawdata.isFavorite;
+		delete self._rawdata.isNewDay;
+	};
+
+	/**
+	  * Get the event's ID.
+	  *
+	  * @return {String} the event ID.
+	  */
+	self.getId = function() {
+		return self._rawdata._id;
+	};
+	self.setId = function(id) {
+		self._rawdata._id = id;
+	};
+
+	self.getRevision = function() {
+		return self._rawdata._rev;
+	};
+	self.setRevision = function(rev) {
+		self._rawdata._rev = rev;
+	};
+
+	self.getSummary = function() {
+		return self._rawdata.summary;
+	};
+	self.setSummary = function(summary) {
+		self._rawdata.summary = summary;
+	};
+	
+	self.getDescription = function() {
+		return self._rawdata.description;
+	};
+	self.setDescription = function(description) {
+		self._rawdata.description = description;
+	};
+
+	/**
+	  * Get the start date as a Moment.js object.
+	  *
+	  * @return {Moment} the start date.
+	  */
+	self.getStart = function() {
+		if (self._start === undefined) {
+			self._start = moment(self._rawdata.start);
+		}
+		return self._start;
+	};
+
+	/**
+	  * Set the start date.  Accepts a moment, a Date, or a pre-formatted string.
+	  *
+	  * @param {start} The date to set.
+	  */
+	self.setStart = function(start) {
+		if (typeof start === 'string' || start instanceof String) {
+			self._rawdata.start = start;
+			self._start = undefined;
+		} else {
+			self._rawdata.start = stringifyDate(start);
+		}
+	};
+
+	self.getStartString = function() {
+		return self._rawdata.start;
+	};
+
+	self.setStartString = function(start) {
+		self._rawdata.start = start;
+		self._start = undefined;
+	};
+
+	/**
+	  * Get the end date as a Moment.js object.
+	  *
+	  * @return {Moment} the end date.
+	  */
+	self.getEnd = function() {
+		if (self._end === undefined) {
+			self._end = moment(self._rawdata.end);
+		}
+		return self._end;
+	};
+
+	/**
+	  * Set the end date.  Accepts a moment, a Date, or a pre-formatted string.
+	  *
+	  * @param {end} The date to set.
+	  */
+	self.setEnd = function(end) {
+		if (typeof end === 'string' || end instanceof String) {
+			self._rawdata.end = end;
+			self._end = undefined;
+		}
+	};
+
+	self.getEndString = function() {
+		return self._rawdata.end;
+	};
+	
+	self.setEndString = function(end) {
+		self._rawdata.end = end;
+		self._end = undefined;
+	};
+
+	self.getUsername = function() {
+		if (self._rawdata.username && self._rawdata.username !== '') {
+			return self._rawdata.username;
+		}
+		return undefined;
+	};
+	self.setUsername = function(username) {
+		self._rawdata.username = username;
+	};
+
+	self.getLocation = function() {
+		return self._rawdata.location;
+	};
+	self.setLocation = function(loc) {
+		self._rawdata.location = loc;
+	};
+
+	self.isPublic = function() {
+		return self._rawdata.isPublic;
+	};
+	self.setPublic = function(pub) {
+		self._rawdata.isPublic = pub;
+	};
+
+	self.isNewDay = function() {
+		return self._newDay;
+	};
+	self.setNewDay = function(newDay) {
+		self._newDay = newDay;
+	};
+
+	self.isFavorite = function() {
+		return self._favorite !== undefined;
+	};
+	self.getFavorite = function() {
+		return self._favorite;
+	};
+	self.setFavorite = function(fav) {
+		self._favorite = fav;
+	};
+
+	self.toEditableBean = function() {
+		return {
+			id: self.getId(),
+			revision: self.getRevision(),
+			startDate: self.getStart().format(dateStringFormat),
+			endDate: self.getEnd().format(dateStringFormat),
+			summary: self.getSummary(),
+			description: self.getDescription(),
+			location: self.getLocation(),
+			isPublic: self.isPublic()
+		};
+	};
+
+	self.fromEditableBean = function(bean) {
+		self.setId(bean.id);
+		self.setRevision(bean.revision);
+		self.setStart(moment(bean.startDate));
+		self.setEnd(moment(bean.endDate));
+		self.setSummary(bean.summary);
+		self.setDescription(bean.description);
+		self.setLocation(bean.location);
+		self.setPublic(bean.isPublic);
+	};
+
+	self.toString = function() {
+		return 'CMEvent[id=' + self._rawdata._id + ',summary=' + self._rawdata.summary + ']';
+	};
+
+	self.getRawData = function() {
+		return self._rawdata;
+	};
+
+	self.initialize(rawdata);
+}
+
+function CMFavorite(rawdata) {
+	var self       = this;
+
+	self._rawdata  = rawdata || {};
+	self._rawdata.type = 'favorite';
+	self._event = undefined;
+
+	self.getId = function() {
+		return self._rawdata._id;
+	};
+	self.setId = function(id) {
+		self._rawdata._id = id;
+	};
+	self.getEventId = function() {
+		return self._rawdata.eventId;
+	};
+	self.setEventId = function(eventId) {
+		self._rawdata.eventId = eventId;
+	};
+	self.getUsername = function() {
+		return self._rawdata.username;
+	};
+	self.setUsername = function(username) {
+		self._rawdata.username = username;
+	};
+
+	self.getEvent = function() {
+		return self._event;
+	};
+	self.setEvent = function(ev) {
+		self._event = ev;
+	};
+
+	self.toString = function() {
+		return 'CMFavorite[id=' + self.getId() + ',username=' + self.getUsername() + ',eventId=' + self.getEventId() + ']';
+	};
+
+	self.getRawData = function() {
+		return self._rawdata;
+	};
+}
+
+
 /*global emit: true*/
 /*global moment: true*/
 (function() {
 	'use strict';
-
-	var stringifyDate = function(date) {
-		if (date === null || date === undefined) {
-			return undefined;
-		}
-		return moment(date).format("YYYY-MM-DD HH:mm");
-	};
-
-	/**
-	  * Represents a CruiseMonkey event.  Stores "raw" javascript data for communcation
-	  * with the backend, and then provides memoizing/caching functions for accessors.
-	  */
-	function CMEvent(rawdata) {
-		var self = this;
-
-		self.initialize = function(data) {
-			self._rawdata  = data || {};
-			self._favorite = undefined;
-			self._newDay   = false;
-			self._start    = undefined;
-			self._end      = undefined;
-
-			self._rawdata.type = 'event';
-
-			delete self._rawdata.isFavorite;
-			delete self._rawdata.isNewDay;
-		};
-
-		/**
-		  * Get the event's ID.
-		  *
-		  * @return {String} the event ID.
-		  */
-		self.getId = function() {
-			return self._rawdata._id;
-		};
-		self.setId = function(id) {
-			self._rawdata._id = id;
-		};
-
-		self.getRevision = function() {
-			return self._rawdata._rev;
-		};
-		self.setRevision = function(rev) {
-			self._rawdata._rev = rev;
-		};
-
-		self.getSummary = function() {
-			return self._rawdata.summary;
-		};
-		self.setSummary = function(summary) {
-			self._rawdata.summary = summary;
-		};
-		
-		self.getDescription = function() {
-			return self._rawdata.description;
-		};
-		self.setDescription = function(description) {
-			self._rawdata.description = description;
-		};
-
-		/**
-		  * Get the start date as a Moment.js object.
-		  *
-		  * @return {Moment} the start date.
-		  */
-		self.getStart = function() {
-			if (self._start === undefined) {
-				self._start = moment(self._rawdata.start);
-			}
-			return self._start;
-		};
-
-		/**
-		  * Set the start date.  Accepts a moment, a Date, or a pre-formatted string.
-		  *
-		  * @param {start} The date to set.
-		  */
-		self.setStart = function(start) {
-			if (typeof start === 'string' || start instanceof String) {
-				self._rawdata.start = start;
-				self._start = undefined;
-			} else {
-				self._rawdata.start = stringifyDate(start);
-			}
-		};
-
-		/**
-		  * Get the end date as a Moment.js object.
-		  *
-		  * @return {Moment} the end date.
-		  */
-		self.getEnd = function() {
-			if (self._end === undefined) {
-				self._end = moment(self._rawdata.end);
-			}
-			return self._end;
-		};
-
-		/**
-		  * Set the end date.  Accepts a moment, a Date, or a pre-formatted string.
-		  *
-		  * @param {end} The date to set.
-		  */
-		self.setEnd = function(end) {
-			if (typeof end === 'string' || end instanceof String) {
-				self._rawdata.end = end;
-				self._end = undefined;
-			}
-		};
-
-		self.getUsername = function() {
-			if (self._rawdata.username && self._rawdata.username !== '') {
-				return self._rawdata.username;
-			}
-			return undefined;
-		};
-		self.setUsername = function(username) {
-			self._rawdata.username = username;
-		};
-
-		self.isPublic = function() {
-			return self._rawdata.isPublic;
-		};
-		self.setPublic = function(pub) {
-			self._rawdata.isPublic = pub;
-		};
-
-		self.isNewDay = function() {
-			return self._newDay;
-		};
-		self.setNewDay = function(newDay) {
-			self._newDay = newDay;
-		};
-
-		self.isFavorite = function() {
-			return self._favorite !== undefined;
-		};
-		self.getFavorite = function() {
-			return self._favorite;
-		};
-		self.setFavorite = function(fav) {
-			self._favorite = fav;
-		};
-		
-		self.toString = function() {
-			return 'CMEvent[id=' + self._rawdata._id + ',summary=' + self._rawdata.summary + ']';
-		};
-
-		self.getRawData = function() {
-			return self._rawdata;
-		};
-
-		self.initialize(rawdata);
-	}
-
-	function CMFavorite(rawdata) {
-		var self       = this;
-
-		self._rawdata  = rawdata || {};
-		self._rawdata.type = 'favorite';
-		self._event = undefined;
-
-		self.getId = function() {
-			return self._rawdata._id;
-		};
-		self.setId = function(id) {
-			self._rawdata._id = id;
-		};
-		self.getEventId = function() {
-			return self._rawdata.eventId;
-		};
-		self.setEventId = function(eventId) {
-			self._rawdata.eventId = eventId;
-		};
-		self.getUsername = function() {
-			return self._rawdata.username;
-		};
-		self.setUsername = function(username) {
-			self._rawdata.username = username;
-		};
-
-		self.getEvent = function() {
-			return self._event;
-		};
-		self.setEvent = function(ev) {
-			self._event = ev;
-		};
-
-		self.toString = function() {
-			return 'CMFavorite[id=' + self.getId() + ',username=' + self.getUsername() + ',eventId=' + self.getEventId() + ']';
-		};
-
-		self.getRawData = function() {
-			return self._rawdata;
-		};
-	}
 
 	angular.module('cruisemonkey.Events', ['cruisemonkey.Config', 'cruisemonkey.Database', 'cruisemonkey.User', 'cruisemonkey.Logging'])
 	.factory('EventService', ['$q', '$rootScope', '$timeout', '$http', '$location', 'Database', 'UserService', 'LoggingService', 'config.database.host', 'config.database.name', 'config.database.replicate', function($q, $rootScope, $timeout, $http, $location, db, UserService, log, databaseHost, databaseName, replicate) {

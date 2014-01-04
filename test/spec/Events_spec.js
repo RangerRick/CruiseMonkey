@@ -359,4 +359,72 @@ describe('cruisemonkey.Events', function() {
 			});
 		});
 	});
+	
+	describe('CMEvent#toEditableBean', function() {
+		async.it('should create a bean that matches the event data', function(done) {
+			var ev = new CMEvent();
+			ev.setId('1');
+			ev.setRevision('12345');
+			ev.setSummary('foo');
+			ev.setDescription('bar');
+			ev.setStartString('2010-01-01 00:00');
+			ev.setEndString('2010-01-02 00:00');
+			ev.setUsername('ranger');
+			ev.setLocation('here');
+			ev.setPublic(false);
+			ev.setNewDay(false);
+
+			var bean = ev.toEditableBean();
+			expect(bean.id).toBe('1');
+			expect(bean.revision).toBe('12345');
+			expect(bean.summary).toBe('foo');
+			expect(bean.description).toBe('bar');
+			expect(bean.start).toBe('2010-01-01 00:00');
+			expect(bean.end).toBe('2010-01-02 00:00');
+			expect(bean.location).toBe('here');
+			expect(bean.isPublic).toBe(false);
+
+			done();
+		});
+	});
+
+	describe('CMEvent#fromEditableBean', function() {
+		async.it('should update the event to have matching bean data', function(done) {
+			var ev = new CMEvent();
+			ev.setId('2');
+			ev.setRevision('23456');
+			ev.setSummary('foo2');
+			ev.setDescription('bar2');
+			ev.setStartString('2010-02-01 00:00');
+			ev.setEndString('2010-02-02 00:00');
+			ev.setUsername('ranger');
+			ev.setLocation('there');
+			ev.setPublic(true);
+			ev.setNewDay(true);
+			
+			ev.fromEditableBean({
+				id: '1',
+				revision: '12345',
+				summary: 'foo',
+				description: 'bar',
+				start: '2010-01-01 00:00',
+				end: '2010-01-02 00:00',
+				location: 'here',
+				isPublic: false
+			});
+
+			expect(ev.getId()).toBe('1');
+			expect(ev.getRevision()).toBe('12345');
+			expect(ev.getSummary()).toBe('foo');
+			expect(ev.getDescription()).toBe('bar');
+			expect(ev.getStartString()).toBe('2010-01-01 00:00');
+			expect(ev.getEndString()).toBe('2010-01-02 00:00');
+			expect(ev.getUsername()).toBe('ranger');
+			expect(ev.getLocation()).toBe('here');
+			expect(ev.isPublic()).toBe(false);
+			expect(ev.isNewDay()).toBe(true);
+
+			done();
+		});
+	});
 });
