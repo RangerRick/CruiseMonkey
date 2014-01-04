@@ -98,11 +98,17 @@
 		var refreshEvents = function() {
 			log.info('CMEventCtrl.refreshEvents()');
 			if ($routeParams.eventType === 'official') {
-				$rootScope.events = EventService.getOfficialEvents();
+				$q.when(EventService.getOfficialEvents()).then(function(e) {
+					$rootScope.events = e;
+				});
 			} else if ($routeParams.eventType === 'unofficial') {
-				$rootScope.events = EventService.getUnofficialEvents();
+				$q.when(EventService.getUnofficialEvents()).then(function(e) {
+					$rootScope.events = e;
+				});
 			} else if ($routeParams.eventType === 'my') {
-				$rootScope.events = EventService.getMyEvents();
+				$q.when(EventService.getMyEvents()).then(function(e) {
+					$rootScope.events = e;
+				});
 			} else {
 				log.warn('CMEventCtrl: unknown event type: ' + $routeParams.eventType);
 			}

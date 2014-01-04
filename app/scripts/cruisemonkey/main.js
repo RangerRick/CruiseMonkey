@@ -3,6 +3,7 @@
 
 	angular.module('cruisemonkey',
 	[
+		'ionic',
 		'ngRoute',
 		'cruisemonkey.Config',
 		'cruisemonkey.controllers.About',
@@ -16,10 +17,12 @@
 		'cruisemonkey.Navigation',
 		'cruisemonkey.Events',
 		'cruisemonkey.User',
-		'ek.mobileFrame',
 		'btford.phonegap.ready'
 	])
-	.config(['$routeProvider', '$mobileFrameProvider', function($routeProvider, $mobileFrameProvider) {
+	.config(['$routeProvider', '$compileProvider', function($routeProvider, $compileProvider) {
+		// Needed for routing to work
+		$compileProvider.aHrefSanitizationWhitelist(/^\s*(https?|ftp|mailto|file|tel):/);
+
 		$routeProvider
 			.when('/login', {
 				templateUrl: 'template/login.html',
@@ -89,10 +92,6 @@
 			.otherwise({
 				redirectTo: '/events/official/'
 			});
-		$mobileFrameProvider
-			.setHeaderHeight(40)
-			.setFooterHeight(0)
-			.setNavWidth(250);
 	}])
 	.run(['$rootScope', '$location', 'UserService', 'EventService', 'phonegapReady', function($rootScope, $location, UserService, EventService, phonegapReady) {
 		$rootScope.safeApply = function(fn) {
@@ -115,9 +114,14 @@
 			}
 		});
 
+        $rootScope.openLeft = function() {
+          $rootScope.sideMenuController.toggleLeft();
+        };
+
 		$rootScope.$on('$routeChangeStart', function(event, currRoute, prevRoute) {
 			$rootScope.actions = [];
 			$rootScope.user = UserService.get();
+			$rootScope.sideMenuController.close();
 
 			if (UserService.loggedIn()) {
 				angular.noop();
@@ -179,7 +183,7 @@
 			console.log('User logged out, refreshing menu.');
 			updateMenu();
 		});
-		
+
 		/* EventService.init(); */
 
 		$rootScope.hideSpinner = true;

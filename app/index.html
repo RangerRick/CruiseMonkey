@@ -167,7 +167,7 @@ window.setTimeout(function() {
 
 <!-- build:css(.tmp) styles/3rdparty.css -->
 <link rel="stylesheet" href="styles/normalize.css" />
-<link rel="stylesheet" href="styles/angular-mobile-frame.css" />
+<link rel="stylesheet" href="styles/ionic.css" />
 <!-- endbuild -->
 
 <!-- build:css(.tmp) styles/cm.css -->
@@ -183,34 +183,38 @@ window.setTimeout(function() {
 		</div>
 	</div>
 
-	<mobile-frame ng-cloak>
-		<mobile-header ng-controller="CMHeaderCtrl">
-			<span class="title"><strong>{{title}}</strong></span>
-			<div class="actions">
-				<div ng-repeat="action in actions" class="action">
-					<div class="icon icon-{{action.iconClass}}" ng-click="action.launch()"></div>
-				</div>
-			</div>
-		</mobile-header>
-		<mobile-nav ng-controller="CMNavigationCtrl" ng-click="toggleDrawer()">
-			<ul class="nav" id="nav">
-				<li class="sidebar-header">CruiseMonkey</li>
-				<li><a href="#/events/official/"  >Official Events</a></li>
-				<li><a href="#/events/unofficial/">Unofficial Events</a></li>
-				<li ng-if="user.loggedIn"><a href="#/events/my/">My Events</a></li>
-				<li ng-if="!user.loggedIn" class="disabled"><a href="#">My Events</a></li>
-				<li><a href="#/deck-plans/"       >Deck Plans</a></li>
-				<li><a href="#/about/"            >About</a></li>
+  <side-menus>
+		<!-- animation="slide-left-right-ios7" -->
+    <pane side-menu-content nav-router>
+      <header class="bar bar-header bar-assertive">
+        <button class="button button-icon" ng-click="openLeft()"><i class="icon ion-navicon"></i></button>
+        <h1 class="title">{{title}}</h1>
+      </header>
+			<content has-header="true">
+				<ng-view></ng-view>
+			</content>
+    </pane>
+    <side-menu side="left">
+      <header class="bar bar-header bar-assertive">
+        <h1 class="title">CruiseMonkey</h1>
+      </header>
+      <content has-header="true">
+				<ul id="nav">
+					<li><a href="#/events/official/"  >Official Events</a></li>
+					<li><a href="#/events/unofficial/">Unofficial Events</a></li>
+					<li ng-if="user.loggedIn"><a href="#/events/my/">My Events</a></li>
+					<li ng-if="!user.loggedIn" class="disabled"><a href="#">My Events</a></li>
+					<li><a href="#/deck-plans/"       >Deck Plans</a></li>
+					<li><a href="#/about/"            >About</a></li>
 
-				<li ng-if="user.loggedIn" ><a href="#/logout/">Log Out</a></li>
-				<li ng-if="!user.loggedIn"><a href="#/login/">Log In</a></li>
+					<li ng-if="user.loggedIn" ><a href="#/logout/">Log Out</a></li>
+					<li ng-if="!user.loggedIn"><a href="#/login/">Log In</a></li>
 
-				<li class="bottom"><a href="#/advanced/">Advanced</a></li>
-			</ul>
-		</mobile-nav>
-		<mobile-content ng-view>
-		</mobile-content>
-	</mobile-frame>
+					<li class="bottom"><a href="#/advanced/">Advanced</a></li>
+				</ul>
+      </content>
+    </side-menu>
+  </side-menus>
 
   <!-- build:js scripts/3rdparty.js -->
 	<script src="scripts/3rdparty/modernizr-latest.js"></script>
@@ -219,17 +223,22 @@ window.setTimeout(function() {
 	<script src="bower_components/hammerjs/dist/hammer.js"></script>
 	<script src="bower_components/momentjs/moment.js"></script>
 	<script src="bower_components/log4javascript/log4javascript_uncompressed.js"></script>
+	<script src="scripts/angular-3rdparty/ionic.js"></script>
 	<script src="bower_components/angular/angular.js"></script>
 	<script src="bower_components/angular-cookies/angular-cookies.js"></script>
 	<script src="bower_components/angular-loader/angular-loader.js"></script>
 	<script src="bower_components/angular-route/angular-route.js"></script>
 	<script src="bower_components/angular-resource/angular-resource.js"></script>
+	<script src="bower_components/angular-animate/angular-animate.js"></script>
+	<script src="bower_components/angular-touch/angular-touch.js"></script>
+	<script src="bower_components/angular-sanitize/angular-sanitize.js"></script>
 	<script src="scripts/angular-3rdparty/angular-hammer.js"></script>
+	<script src="scripts/angular-3rdparty/ionic-angular.js"></script>
 
 	<script src="bower_components/fastclick/lib/fastclick.js"></script>
 	<script src="bower_components/angular-phonegap-ready/ready.js"></script>
 	<script src="bower_components/angularLocalStorage/src/angularLocalStorage.js"></script>
-	<script src="scripts/angular-3rdparty/angular-mobile-frame.js"></script>
+	<!-- <script src="scripts/angular-3rdparty/angular-mobile-frame.js"></script> -->
 	<script src="scripts/angular-3rdparty/angular-interval.js"></script>
 	<script src="scripts/angular-3rdparty/ui-bootstrap-0.6.0.js"></script>
 	<!-- endbuild -->
