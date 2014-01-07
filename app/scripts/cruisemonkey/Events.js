@@ -1,4 +1,10 @@
+/*global emit: true*/
+/*global moment: true*/
+/*global Modernizr: true*/
+
 function stringifyDate(date) {
+	'use strict';
+
 	if (date === null || date === undefined) {
 		return undefined;
 	}
@@ -15,6 +21,8 @@ if (Modernizr.inputtypes["datetime-local"]) {
   * with the backend, and then provides memoizing/caching functions for accessors.
   */
 function CMEvent(rawdata) {
+	'use strict';
+
 	var self = this;
 
 	self.initialize = function(data) {
@@ -83,10 +91,10 @@ function CMEvent(rawdata) {
 	self.setStart = function(start) {
 		if (typeof start === 'string' || start instanceof String) {
 			self._rawdata.start = start;
-			self._start = undefined;
 		} else {
 			self._rawdata.start = stringifyDate(start);
 		}
+		self._start = undefined;
 	};
 
 	self.getStartString = function() {
@@ -118,8 +126,10 @@ function CMEvent(rawdata) {
 	self.setEnd = function(end) {
 		if (typeof end === 'string' || end instanceof String) {
 			self._rawdata.end = end;
-			self._end = undefined;
+		} else {
+			self._rawdata.end = stringifyDate(end);
 		}
+		self._end = undefined;
 	};
 
 	self.getEndString = function() {
@@ -208,6 +218,8 @@ function CMEvent(rawdata) {
 }
 
 function CMFavorite(rawdata) {
+	'use strict';
+
 	var self       = this;
 
 	self._rawdata  = rawdata || {};
@@ -250,8 +262,6 @@ function CMFavorite(rawdata) {
 }
 
 
-/*global emit: true*/
-/*global moment: true*/
 (function() {
 	'use strict';
 

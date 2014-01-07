@@ -379,10 +379,17 @@ describe('cruisemonkey.Events', function() {
 			expect(bean.revision).toBe('12345');
 			expect(bean.summary).toBe('foo');
 			expect(bean.description).toBe('bar');
-			expect(bean.start).toBe('2010-01-01 00:00');
-			expect(bean.end).toBe('2010-01-02 00:00');
+			expect(bean.startDate).toBe('2010-01-01 00:00');
+			expect(bean.endDate).toBe('2010-01-02 00:00');
 			expect(bean.location).toBe('here');
 			expect(bean.isPublic).toBe(false);
+
+			ev.setStart(moment('2010-01-01 00:00'));
+			ev.setEnd(moment('2010-01-01 01:00'));
+
+			bean = ev.toEditableBean();
+			expect(bean.startDate).toBe('2010-01-01 00:00');
+			expect(bean.endDate).toBe('2010-01-01 01:00');
 
 			done();
 		});
@@ -407,8 +414,8 @@ describe('cruisemonkey.Events', function() {
 				revision: '12345',
 				summary: 'foo',
 				description: 'bar',
-				start: '2010-01-01 00:00',
-				end: '2010-01-02 00:00',
+				startDate: '2010-01-01 00:00',
+				endDate: '2010-01-02 00:00',
 				location: 'here',
 				isPublic: false
 			});

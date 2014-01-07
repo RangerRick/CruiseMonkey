@@ -1,60 +1,50 @@
 <script type="text/ng-template" id="edit-event.html">
-	<div class="modal-header">
-	</div>
-	<div class="modal-body">
-		<form name="form" class="add-event-form" novalidate>
-			<input type="hidden" name="eId" value="{{event.id}}" />
-			<input type="hidden" name="eType" value="{{event.type}}" />
-			<table>
-				<tr>
-					<th class="header" colspan="2">
-						<h3>Add an Event</h3>
-					</th>
-				</tr>
-				<tr>
-					<td class="label">Summary:</td>
-					<td class="input"><input type="text" ng-model="event.summary" name="eSummary" required /></td>
-				</tr>
-				<tr>
-					<td class="label">Description:</td>
-					<td class="input"><textarea ng-model="event.description" name="eDescription" /></td>
-				</tr>
-				<tr>
-					<td class="label">Event Start:</td>
-					<td class="input"><input type="datetime-local" ng-model="event.startDate" /></td>
-				</tr>
-				<tr>
-					<td class="label">Event End:</td>
-					<td class="input"><input type="datetime-local" ng-model="event.endDate" /></td>
-				</tr>
-				<tr>
-					<td class="label">Location:</td>
-					<td class="input">
-						<input type="text" ng-model="event.location" name="eLocation" />
-					</td>
-				</tr>
-				<tr>
-					<td class="label">Make Public?</td>
-					<td class="input">
-						<input type="checkbox" ng-model="event.isPublic" name="eIsPublic" />
-					</td>
-				</tr>
-				<tr>
-					<td class="buttons" colspan="2">
-						<input class="btn btn-warning" type="reset" ng-click="$dismiss()" value="Cancel" />
-						<input class="btn btn-primary" type="submit" ng-click="$close(event)" ng-disabled="form.$disabled" value="Save" />
-					</td>
-				</tr>
-			</table>
-		</form>
-	</div>
-	<div class="modal-footer">
+	<div class="modal">
+		<header class="bar bar-header bar-dark">
+			<h1 class="title">Add an Event</h1>
+			<button class="button button-clear button-positive" ng-click="cancelModal()">Cancel</button>
+		</header>
+
+		<content has-header="true" scroll="true" overflow-scroll="true" padded="false">
+			<form name="form" class="add-event-form">
+				<input type="hidden" name="eId" value="{{eventData.id}}" />
+				<input type="hidden" name="eType" value="{{eventData.type}}" />
+				<div class="list">
+					<label class="item item-input item-stacked-label">
+						<span class="input-label">Summary</span> <span ng-show="form.eSummary.$invalid" class="invalid">Required.</span>
+						<input type="text" ng-model="eventData.summary" name="eSummary" required />
+					</label>
+					<label class="item item-input item-stacked-label">
+						<span class="input-label">Description</span>
+						<textarea type="text" ng-model="eventData.description" name="eDescription"></textarea>
+					</label>
+					<label class="item item-input item-stacked-label">
+						<span class="input-label">Event Start</span> <span ng-show="form.eStartDate.$invalid" class="invalid">Required.</span>
+						<span><input type="datetime-local" ng-model="eventData.startDate" name="eStartDate" required /></span>
+					</label>
+					<label class="item item-input item-stacked-label">
+						<span class="input-label">Event End</span> <span ng-show="form.eEndDate.$invalid" class="invalid">Required.</span>
+						<input type="datetime-local" ng-model="eventData.endDate" name="eEndDate" required />
+					</label>
+					<label class="item item-input item-stacked-label">
+						<span class="input-label">Location</span>
+						<input type="text" ng-model="eventData.location" name="eLocation" />
+					</label>
+					<label class="item item-checkbox">
+						<label class="checkbox">
+							<input type="checkbox" ng-model="eventData.isPublic" name="eIsPublic" />
+						</label>
+						Make Public?
+					</label>
+					<button class="button button-full button-positive" ng-click="saveModal(eventData)" ng-disabled="form.$invalid">Save</button>
+			</form>
+		</content>
 	</div>
 </script>
-<div class="event-list">
+<div class="event-list list">
 	<span ng-repeat="event in events | orderByEvent">
-		<div ng-if="event.isNewDay()" class="header">{{prettyDate(event.getStart())}}</div>
-		<div class="list-entry" ng-class-even="'even'" ng-class-odd="'odd'">
+		<div ng-if="event.isNewDay()" class="item item-divider header">{{prettyDate(event.getStart())}}</div>
+		<div class="list-entry item item-text-wrap" ng-class-even="'even'" ng-class-odd="'odd'">
 			<div class="favorite" ng-show="(user.username && user.username != event.getUsername())">
 				<input type="checkbox" id="{{event.getId()}}-favorite" ng-checked="event.isFavorite()" ng-model="fav" ng-change="onFavoriteChanged(event.getId(), fav)"><label for="{{event.getId()}}-favorite">&nbsp;</label>
 			</div>

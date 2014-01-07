@@ -3,7 +3,8 @@
 
 	/*global moment: true*/
 	/*global Modernizr: true*/
-	angular.module('cruisemonkey.controllers.Events', ['ngRoute', 'cruisemonkey.User', 'cruisemonkey.Events', 'cruisemonkey.Logging', 'ui.bootstrap.modal'])
+	/*global CMEvent: true*/
+	angular.module('cruisemonkey.controllers.Events', ['ngRoute', 'cruisemonkey.User', 'cruisemonkey.Events', 'cruisemonkey.Logging', 'ui.bootstrap.modal', 'ionic'])
 	.filter('orderByEvent', function() {
 		return function(input) {
 			if (!angular.isObject(input)) { return input; }
@@ -89,7 +90,7 @@
 			console.log($scope.event);
 		}
 	}])
-	.controller('CMEventCtrl', ['$scope', '$rootScope', '$timeout', '$routeParams', '$location', '$q', '$modal', '$templateCache', 'UserService', 'EventService', 'LoggingService', function($scope, $rootScope, $timeout, $routeParams, $location, $q, $modal, $templateCache, UserService, EventService, log) {
+	.controller('CMEventCtrl', ['$scope', '$rootScope', '$timeout', '$routeParams', '$location', '$q', 'Modal', '$templateCache', 'UserService', 'EventService', 'LoggingService', function($scope, $rootScope, $timeout, $routeParams, $location, $q, Modal, $templateCache, UserService, EventService, log) {
 		log.info('Initializing CMEventCtrl');
 
 		$rootScope.eventType = $routeParams.eventType;
@@ -100,14 +101,17 @@
 			if ($routeParams.eventType === 'official') {
 				$q.when(EventService.getOfficialEvents()).then(function(e) {
 					$rootScope.events = e;
+					$scope.$broadcast('scroll.resize');
 				});
 			} else if ($routeParams.eventType === 'unofficial') {
 				$q.when(EventService.getUnofficialEvents()).then(function(e) {
 					$rootScope.events = e;
+					$scope.$broadcast('scroll.resize');
 				});
 			} else if ($routeParams.eventType === 'my') {
 				$q.when(EventService.getMyEvents()).then(function(e) {
 					$rootScope.events = e;
+					$scope.$broadcast('scroll.resize');
 				});
 			} else {
 				log.warn('CMEventCtrl: unknown event type: ' + $routeParams.eventType);
@@ -139,27 +143,10 @@
 
 		$scope.edit = function(ev) {
 			$scope.safeApply(function() {
-				console.log('edit: ', ev);
+				$scope.event = ev;
+				$scope.eventData = ev.toEditableBean();
 
-				$rootScope.editEvent = ev;
-
-				var modalInstance = $modal.open({
-					templateUrl:'edit-event.html',
-					controller:'CMEditEventCtrl'
-				});
-				modalInstance.result.then(function(newEvent) {
-					log.info("Save finished!");
-					console.log(newEvent);
-					$q.all([EventService.updateEvent(newEvent), $scope.events]).then(function(results) {
-						var events = results[1];
-						newEvent.start = moment(newEvent.start);
-						newEvent.end   = moment(newEvent.end);
-						events[newEvent._id] = newEvent;
-						log.info('Finished updating event.');
-					});
-				}, function() {
-					log.warn("Add canceled!");
-				});
+				$scope.modal.show();
 			});
 		};
 
@@ -195,32 +182,54 @@
 			refreshEvents();
 		}, 0);
 
+		Modal.fromTemplateUrl('edit-event.html', function(modal) {
+			$scope.modal = modal;
+		}, {
+			scope: $scope,
+			animation: 'slide-in-up'
+		});
+
+		$scope.cancelModal = function() {
+			log.info('closing modal (cancel)');
+			$scope.event = undefined;
+			$scope.eventData = undefined;
+			$scope.modal.hide();
+		};
+
+		$scope.saveModal = function(data) {
+			log.info('closing modal (save)');
+			
+			var ev = $scope.event;
+			ev.fromEditableBean(data);
+
+			console.log('saving=', ev.toEditableBean());
+
+			$q.when(EventService.addEvent(ev)).then(function(res) {
+				console.log('event added:', res);
+				$scope.modal.hide();
+			});
+		};
+
 		$rootScope.actions = [];
 		if (UserService.getUsername() && UserService.getUsername() !== '') {
-			$rootScope.actions.push({
-				'name': 'Add Event',
-				'iconClass': 'add',
-				'launch': function() {
-					log.info('launching modal');
-					var modalInstance = $modal.open({
-						templateUrl:'edit-event.html',
-						controller:'CMEditEventCtrl'
-					});
-					modalInstance.result.then(function(result) {
-						log.info("Save finished!");
-						console.log(result);
-						$q.all([EventService.addEvent(result), $scope.events]).then(function(results) {
-							var added = results[0];
-							var events = results[1];
-							added.start = moment(added.start);
-							added.end   = moment(added.end);
-							events[added._id] = added;
-						});
-					}, function() {
-						log.warn("Add canceled!");
-					});
+			$rootScope.rightButtons = [
+				{
+					type: 'button-positive',
+					content: '<i class="icon icon-add"></i>',
+					tap: function(e) {
+						var ev = new CMEvent();
+						ev.setStart(moment());
+						ev.setEnd(ev.getEnd().add('hours', 1));
+						ev.setUsername(UserService.getUsername());
+						ev.setPublic(true);
+
+						$scope.event = ev;
+						$scope.eventData = ev.toEditableBean();
+
+						$scope.modal.show();
+					}
 				}
-			});
+			];
 		}
 	}]);
 }());

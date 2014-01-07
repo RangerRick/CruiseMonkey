@@ -167,14 +167,13 @@ window.setTimeout(function() {
 
 <!-- build:css(.tmp) styles/3rdparty.css -->
 <link rel="stylesheet" href="styles/normalize.css" />
-<link rel="stylesheet" href="styles/ionic.css" />
 <!-- endbuild -->
 
 <!-- build:css(.tmp) styles/cm.css -->
 <link rel="stylesheet" href="styles/cruisemonkey.css" />
 <!-- endbuild -->
 
-  <title ng-bind="'CruiseMonkey - ' + $root.title">CruiseMonkey</title>
+	<title ng-bind="'CruiseMonkey - ' + $root.title">CruiseMonkey</title>
 </head>
 <body class="antialiased off-canvas hide-extras">
 	<div class="loading container" ng-class="{hidden: hideSpinner}">
@@ -183,40 +182,45 @@ window.setTimeout(function() {
 		</div>
 	</div>
 
-  <side-menus>
+	<side-menus>
 		<!-- animation="slide-left-right-ios7" -->
-    <pane side-menu-content nav-router>
-      <header class="bar bar-header bar-assertive">
-        <button class="button button-icon" ng-click="openLeft()"><i class="icon ion-navicon"></i></button>
-        <h1 class="title">{{title}}</h1>
-      </header>
-			<content has-header="true">
+		<pane side-menu-content nav-router>
+			<header class="bar bar-header bar-dark">
+				<button class="button button-icon" ng-click="openLeft()"><i class="icon ion-navicon"></i></button>
+				<h1 class="title">{{title}}</h1>
+				<div class="buttons">
+					<button ng-repeat="button in rightButtons" class="button button-clear no-animation" ng-class="button.type" ng-click="button.tap($event, $index)" ng-bind-html="button.content">
+					</button>
+				</div>
+			</header>
+			<content has-header="true" overflow-scroll="true" scroll="true">
+				<refresher></refresher>
 				<ng-view></ng-view>
 			</content>
-    </pane>
-    <side-menu side="left">
-      <header class="bar bar-header bar-assertive">
-        <h1 class="title">CruiseMonkey</h1>
-      </header>
-      <content has-header="true">
+		</pane>
+		<side-menu side="left"  ng-click="sideMenuController.close()">
+			<header class="bar bar-header bar-dark">
+				<h1 class="title bar-bold">CruiseMonkey</h1>
+			</header>
+			<content has-header="true" scroll="false" overflow-scroll="false" class="nav">
 				<ul id="nav">
-					<li><a href="#/events/official/"  >Official Events</a></li>
-					<li><a href="#/events/unofficial/">Unofficial Events</a></li>
-					<li ng-if="user.loggedIn"><a href="#/events/my/">My Events</a></li>
-					<li ng-if="!user.loggedIn" class="disabled"><a href="#">My Events</a></li>
-					<li><a href="#/deck-plans/"       >Deck Plans</a></li>
-					<li><a href="#/about/"            >About</a></li>
+					<li class="item"><a href="#/events/official/"  >Official Events</a></li>
+					<li class="item"><a href="#/events/unofficial/">Unofficial Events</a></li>
+					<li class="item" ng-if="user.loggedIn"><a href="#/events/my/">My Events</a></li>
+					<li ng-if="!user.loggedIn" class="item disabled"><a href="#">My Events</a></li>
+					<li class="item"><a href="#/deck-plans/"       >Deck Plans</a></li>
+					<li class="item"><a href="#/about/"            >About</a></li>
 
-					<li ng-if="user.loggedIn" ><a href="#/logout/">Log Out</a></li>
-					<li ng-if="!user.loggedIn"><a href="#/login/">Log In</a></li>
+					<li class="item" ng-if="user.loggedIn" ><a href="#/logout/">Log Out</a></li>
+					<li class="item" ng-if="!user.loggedIn"><a href="#/login/">Log In</a></li>
 
-					<li class="bottom"><a href="#/advanced/">Advanced</a></li>
+					<li class="item bottom"><a href="#/advanced/">Advanced</a></li>
 				</ul>
-      </content>
-    </side-menu>
-  </side-menus>
+			</content>
+		</side-menu>
+	</side-menus>
 
-  <!-- build:js scripts/3rdparty.js -->
+	<!-- build:js scripts/3rdparty.js -->
 	<script src="scripts/3rdparty/modernizr-latest.js"></script>
 	<!-- <script src="bower_components/jquery/jquery.js"></script> -->
 	<script src="scripts/3rdparty/pouchdb-nightly.js"></script>
@@ -243,7 +247,7 @@ window.setTimeout(function() {
 	<script src="scripts/angular-3rdparty/ui-bootstrap-0.6.0.js"></script>
 	<!-- endbuild -->
 
-  <!-- build:js scripts/cm.js -->
+	<!-- build:js scripts/cm.js -->
 	<script src="scripts/cruisemonkey/string.js"></script>
 	<script src="scripts/cruisemonkey/Config.js"></script>
 	<script src="scripts/cruisemonkey/Controller.About.js"></script>

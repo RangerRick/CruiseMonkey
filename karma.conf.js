@@ -12,7 +12,7 @@ module.exports = function(config) {
     // list of files / patterns to load in the browser
     files: [
       'app/bower_components/jasmine.async/lib/jasmine.async.min.js',
-      'app/scripts/3rdparty/custom.modernizr.js',
+      'app/scripts/3rdparty/modernizr-latest.js',
       'app/bower_components/log4javascript/log4javascript.js',
       'app/bower_components/hammerjs/dist/hammer.js',
       'app/bower_components/momentjs/moment.js',

@@ -40,7 +40,6 @@ $greySVG: "#{$imagePath}/entypo/grey/SVG";
 $cmBabyBlue: #ddf2ff;
 
 $defaultFont: Hero, sans-serif;
-/* $headerFont: Intro, Dekar, sans-serif; */
 $eventListFont: Casper, sans-serif;
 $sidebarHeaderFont: Nexa, Hero, sans-serif;
 $headerFont: $sidebarHeaderFont;
@@ -74,6 +73,14 @@ $navWidth: 250px;
 
 $gutterMonkey: url(../images/cruise-monkey-transparent-bg.png);
 
+@import "ionic/ionic";
+
+.bar-bold {
+	font-family: $sidebarHeaderFont;
+	font-weight: bold;
+	font-size: 26px;
+}
+
 body {
   font-family: $defaultFont;
 	color: #444;
@@ -84,6 +91,13 @@ a:visited,
 a:hover {
 	color: #000;
 	text-decoration: none;
+}
+
+.bar-header {
+	h1.title {
+		font-size: 24px;
+		font-weight: bolder;
+	}
 }
 
 /*
@@ -135,15 +149,39 @@ a:hover {
 				width: 32px;
 				height: 32px;
 			}
-			.icon-add          { background-image: url("#{$yellowSVG}/plus.svg")         }
-			.icon-arrow-right4 { background-image: url("#{$yellowSVG}/arrow-right4.svg") }
-			.icon-arrow-left4  { background-image: url("#{$yellowSVG}/arrow-left4.svg")  }
 		}
 	}
 }
 
-.mobile-footer {
+header.bar.bar-header {
+	.buttons {
+		/*
+		background-color: transparent;
+		border-color: transparent;
 
+		button {
+			background-color: transparent;
+			border-color: transparent;
+		}
+		*/
+
+		.icon {
+			background-position: center center;
+			background-repeat: no-repeat;
+			background-size: 26px 26px;
+			width: 32px;
+			height: 32px;
+		}
+	}
+}
+.icon-add          { background-image: url("#{$yellowSVG}/plus.svg")         }
+.icon-arrow-right4 { background-image: url("#{$yellowSVG}/arrow-right4.svg") }
+.icon-arrow-left4  { background-image: url("#{$yellowSVG}/arrow-left4.svg")  }
+
+
+.add-event-form span.invalid {
+	float: right;
+	color: red;
 }
 
 .mobile-frame {
@@ -373,6 +411,10 @@ a:hover {
 /*
  * Events
  */
+
+.list {
+	margin-bottom: 0px;
+}
 
 .event-list {
 	font-family: $eventListFont;

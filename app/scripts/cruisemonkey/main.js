@@ -37,42 +37,7 @@
 			})
 			.when('/events/:eventType', {
 				templateUrl: 'template/event-list.html',
-				controller: 'CMEventCtrl' /*,
-				resolve: {
-					events: ['$q', '$route', '$timeout', 'EventService', 'LoggingService', function($q, $route, $timeout, EventService, log) {
-						var func;
-						var eventType = $route.current.params.eventType;
-						if (eventType === 'official') {
-							func = EventService.getOfficialEvents;
-						} else if (eventType === 'unofficial') {
-							func = EventService.getUnofficialEvents;
-						} else if (eventType === 'my') {
-							func = EventService.getMyEvents;
-						} else {
-							log.warn('unknown event type: ' + eventType);
-						}
-
-						var response = $q.defer();
-						if (func) {
-							$q.when(func()).then(function(events) {
-								var i, ret = {};
-								for (i = 0; i < events.length; i++) {
-									var e = events[i];
-									if (!e.hasOwnProperty('isFavorite')) {
-										e.isFavorite = false;
-									}
-									ret[e._id] = e;
-								}
-								response.resolve(ret);
-							});
-						} else {
-							$timeout(function() {
-								response.reject('unknown event type');
-							}, 0);
-						}
-						return response.promise;
-					}]
-				} */
+				controller: 'CMEventCtrl'
 			})
 			.when('/deck-plans', {
 				redirectTo: '/deck-plans/2/'
@@ -114,9 +79,9 @@
 			}
 		});
 
-        $rootScope.openLeft = function() {
-          $rootScope.sideMenuController.toggleLeft();
-        };
+		$rootScope.openLeft = function() {
+			$rootScope.sideMenuController.toggleLeft();
+		};
 
 		$rootScope.$on('$routeChangeStart', function(event, currRoute, prevRoute) {
 			$rootScope.actions = [];
