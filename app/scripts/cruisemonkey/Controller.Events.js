@@ -210,9 +210,9 @@
 			});
 		};
 
-		$rootScope.rightButtons = [];
+		var newButtons = [];
 		if (UserService.getUsername() && UserService.getUsername() !== '') {
-			$rootScope.rightButtons = [
+			newButtons = [
 				{
 					type: 'button-positive',
 					content: '<i class="icon icon-add"></i>',
@@ -231,5 +231,6 @@
 				}
 			];
 		}
+		$rootScope.rightButtons = newButtons;
 	}]);
 }());

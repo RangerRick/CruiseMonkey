@@ -44,8 +44,19 @@
 			return true;
 		};
 
-		$rootScope.actions = [];
+		var newButtons = [];
+		$rootScope.rightButtons = [];
 		if ($scope.deck !== 2) {
+			newButtons.push({
+				'type': 'button-clear',
+				'content': '<i class="icon icon-arrow-left4"></i>',
+				tap: function(e) {
+					console.log('Previous Deck.');
+					previous();
+					return false;
+				}
+			});
+			/*
 			$rootScope.actions.push({
 				'name': 'Previous',
 				'iconClass': 'arrow-left4',
@@ -53,15 +64,35 @@
 					previous();
 				}
 			});
+			*/
 		}
 		if ($scope.deck === 15) {
+			newButtons.push({
+				'type': 'button-clear',
+				'content': '<i class="icon icon-blank"></i>',
+				tap: function(e) {
+					console.log('No action.');
+				}
+			});
+			/*
 			$rootScope.actions.push({
 				'name': 'Blank',
 				'iconClass': 'blank',
 				'launch': function() {
 				}
 			});
+			*/
 		} else {
+			newButtons.push({
+				'type': 'button-clear',
+				'content': '<i class="icon icon-arrow-right4"></i>',
+				tap: function(e) {
+					console.log('Next Deck.');
+					next();
+					return false;
+				}
+			});
+			/*
 			$rootScope.actions.push({
 				'name': 'Next',
 				'iconClass': 'arrow-right4',
@@ -69,7 +100,9 @@
 					next();
 				}
 			});
+			*/
 		}
+		$rootScope.rightButtons = newButtons;
 
 		document.addEventListener('keydown', listener, true);
 		$scope.$on('$destroy', function() {
