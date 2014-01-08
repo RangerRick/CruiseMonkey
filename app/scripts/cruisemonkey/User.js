@@ -17,8 +17,8 @@
 				return $rootScope._user.loggedIn;
 			},
 			'getUsername': function() {
-				if ($rootScope._user.loggedIn) {
-					return $rootScope._user.username;
+				if ($rootScope._user.loggedIn && $rootScope._user.username) {
+					return $rootScope._user.username.toLowerCase();
 				} else {
 					return undefined;
 				}
@@ -26,7 +26,18 @@
 			'get': function() {
 				return angular.copy($rootScope._user);
 			},
+			'matches': function(username) {
+				var existing = $rootScope._user;
+				if (existing) {
+					existing = existing.toLowerCase();
+				}
+				if (username) {
+					username = username.toLowerCase();
+				}
+				return existing === username;
+			},
 			'save': function(newUser) {
+				newUser.username = newUser.username.toLowerCase();
 				$rootScope._user = angular.copy(newUser);
 			},
 			'reset': function() {

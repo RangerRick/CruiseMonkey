@@ -210,7 +210,7 @@
 			});
 		};
 
-		$rootScope.actions = [];
+		$rootScope.rightButtons = [];
 		if (UserService.getUsername() && UserService.getUsername() !== '') {
 			$rootScope.rightButtons = [
 				{

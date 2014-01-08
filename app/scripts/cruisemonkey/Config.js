@@ -6,5 +6,6 @@
 	.value('config.database.host', 'cm.raccoonfink.com')
 	.value('config.database.name', 'cruisemonkey')
 	.value('config.database.replicate', true)
+	.value('config.twitarr.root', '')
 	.value('config.app.version', '3.90');
 }());

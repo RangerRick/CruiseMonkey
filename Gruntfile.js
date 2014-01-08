@@ -142,11 +142,11 @@ module.exports = function (grunt) {
         generatedImagesDir: '.tmp/images/generated',
         imagesDir: '<%= yeoman.app %>/images',
         javascriptsDir: '<%= yeoman.app %>/scripts',
-        fontsDir: '<%= yeoman.app %>/font',
+        fontsDir: '<%= yeoman.app %>/fonts',
         importPath: '<%= yeoman.app %>/bower_components',
         httpImagesPath: '/images',
         httpGeneratedImagesPath: '/images/generated',
-        httpFontsPath: '/font',
+        httpFontsPath: '/fonts',
         relativeAssets: true
       },
       dist: {},
@@ -169,7 +169,7 @@ module.exports = function (grunt) {
             '<%= yeoman.dist %>/styles/{,*/}*.css',
             '<%= yeoman.dist %>/images/*.{gif,png}',
             '<%= yeoman.dist %>/images/entypo/**/*.{png,svg}',
-            '<%= yeoman.dist %>/font/*'
+            '<%= yeoman.dist %>/fonts/*'
           ]
         }
       }
@@ -257,7 +257,7 @@ module.exports = function (grunt) {
             'bower_components/html5shiv/{,**/}*',
             'scripts/*3rdparty/*.js',
             'images/{,**/}*.{gif,webp,png,svg}',
-            'font/*'
+            'fonts/*'
           ]
         }, {
           expand: true,
@@ -358,7 +358,7 @@ module.exports = function (grunt) {
         dest: 'dist/cruisemonkey.manifest',
         src: [
           '*.{png,ico}',
-          'font/*',
+          'fonts/*',
           'images/{,**/}*.{gif,png,svg}',
           '*.html',
           '*.js',
