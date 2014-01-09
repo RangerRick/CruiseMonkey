@@ -40,12 +40,18 @@
 				controller: 'CMEventCtrl'
 			})
 			.when('/deck-plans', {
+				templateUrl: 'template/deck-plans.html',
+				controller: 'CMDeckListCtrl'
+			})
+			/*
+			.when('/deck-plans', {
 				redirectTo: '/deck-plans/2/'
 			})
 			.when('/deck-plans/:deck', {
 				templateUrl: 'template/deck-plans.html',
 				controller: 'CMDeckListCtrl'
 			})
+			*/
 			.when('/about', {
 				templateUrl: 'template/about.html',
 				controller: 'CMAboutCtrl'

@@ -2,10 +2,8 @@
 	'use strict';
 
 	angular.module('cruisemonkey.controllers.DeckList', ['ngRoute', 'cruisemonkey.Logging', 'hammer'])
-	.controller('CMDeckListCtrl', ['$scope', '$rootScope', '$routeParams', '$location', 'LoggingService', function($scope, $rootScope, $routeParams, $location, log) {
+	.controller('CMDeckListCtrl', ['$scope', '$rootScope', '$timeout', '$routeParams', '$location', 'LoggingService', function($scope, $rootScope, $timeout, $routeParams, $location, log) {
 		log.info('Initializing CMDeckListCtrl');
-		$scope.deck = parseInt($routeParams.deck, 10);
-		$rootScope.title = "Deck " + $scope.deck;
 
 		$scope.previous = function() {
 			previous();
@@ -15,23 +13,12 @@
 		};
 
 		var previous = function() {
-			$scope.safeApply(function() {
-				if ($scope.deck !== 2) {
-					var newdeck = ($scope.deck - 1);
-					log.info('previous() going down to deck ' + newdeck);
-					$location.path('/deck-plans/' + newdeck);
-				}
-			});
+			$scope.$broadcast('slideBox.prevSlide');
 		};
 		var next = function() {
-			$scope.safeApply(function() {
-				if ($scope.deck !== 15) {
-					var newdeck = ($scope.deck + 1);
-					log.info('next() going up to deck ' + newdeck);
-					$location.path('/deck-plans/' + newdeck);
-				}
-			});
+			$scope.$broadcast('slideBox.nextSlide');
 		};
+
 		var listener = function(ev) {
 			console.log("received event: ", ev);
 			if (ev.keyCode === 37) {
@@ -44,69 +31,59 @@
 			return true;
 		};
 
-		var newButtons = [];
-		$rootScope.rightButtons = [];
-		if ($scope.deck !== 2) {
-			newButtons.push({
-				'type': 'button-clear',
-				'content': '<i class="icon icon-arrow-left4"></i>',
-				tap: function(e) {
-					console.log('Previous Deck.');
-					previous();
-					return false;
-				}
-			});
-			/*
-			$rootScope.actions.push({
-				'name': 'Previous',
-				'iconClass': 'arrow-left4',
-				'launch': function() {
-					previous();
-				}
-			});
-			*/
-		}
-		if ($scope.deck === 15) {
-			newButtons.push({
-				'type': 'button-clear',
-				'content': '<i class="icon icon-blank"></i>',
-				tap: function(e) {
-					console.log('No action.');
-				}
-			});
-			/*
-			$rootScope.actions.push({
-				'name': 'Blank',
-				'iconClass': 'blank',
-				'launch': function() {
-				}
-			});
-			*/
-		} else {
-			newButtons.push({
-				'type': 'button-clear',
-				'content': '<i class="icon icon-arrow-right4"></i>',
-				tap: function(e) {
-					console.log('Next Deck.');
-					next();
-					return false;
-				}
-			});
-			/*
-			$rootScope.actions.push({
-				'name': 'Next',
-				'iconClass': 'arrow-right4',
-				'launch': function() {
-					next();
-				}
-			});
-			*/
-		}
-		$rootScope.rightButtons = newButtons;
+		var updateButtons = function() {
+			var newButtons = [];
+			$rootScope.rightButtons = [];
+			if ($scope.deck !== 2) {
+				newButtons.push({
+					'type': 'button-clear',
+					'content': '<i class="icon icon-arrow-left4"></i>',
+					tap: function(e) {
+						previous();
+						return false;
+					}
+				});
+			}
+			if ($scope.deck === 15) {
+				newButtons.push({
+					'type': 'button-clear',
+					'content': '<i class="icon icon-blank"></i>',
+					tap: function(e) {
+					}
+				});
+			} else {
+				newButtons.push({
+					'type': 'button-clear',
+					'content': '<i class="icon icon-arrow-right4"></i>',
+					tap: function(e) {
+						next();
+						return false;
+					}
+				});
+			}
+			$rootScope.rightButtons = newButtons;
+		};
+
+		$scope.deck = parseInt($routeParams.deck || 2, 10);
+		$rootScope.title = "Deck " + $scope.deck;
+
+		$scope.$on('slideBox.slideChanged', function(e, index) {
+			$scope.deck = index + 2;
+			$rootScope.title = "Deck " + $scope.deck;
+			log.info('current deck: ' + $scope.deck);
+			updateButtons();
+		});
+
+		updateButtons();
 
 		document.addEventListener('keydown', listener, true);
 		$scope.$on('$destroy', function() {
 			document.removeEventListener('keydown', listener, true);
+		});
+
+		$timeout(function() {
+			// $scope.slideBox.slide($scope.deck - 2);
+			$scope.$broadcast('slideBox.setSlide', $scope.deck - 2);
 		});
 	}]);
 }());

@@ -203,19 +203,18 @@ window.setTimeout(function() {
 				<h1 class="title bar-bold">CruiseMonkey</h1>
 			</header>
 			<content has-header="true" scroll="false" overflow-scroll="false" class="nav">
-				<ul id="nav">
-					<li class="item"><a href="#/events/official/"  >Official Events</a></li>
-					<li class="item"><a href="#/events/unofficial/">Unofficial Events</a></li>
-					<li class="item" ng-if="user.loggedIn"><a href="#/events/my/">My Events</a></li>
-					<li ng-if="!user.loggedIn" class="item disabled"><a href="#">My Events</a></li>
-					<li class="item"><a href="#/deck-plans/"       >Deck Plans</a></li>
-					<li class="item"><a href="#/about/"            >About</a></li>
+				<div id="nav">
+					<a class="item" href="#/events/official/"                        >Official Events</a>
+					<a class="item" href="#/events/unofficial/"                      >Unofficial Events</a>
+					<a class="item" href="#/events/my/"         ng-if="user.loggedIn">My Events</a>
+					<a class="item" href="#/deck-plans/"                             >Deck Plans</a></li>
+					<a class="item" href="#/about/"                                  >About</a></li>
 
-					<li class="item" ng-if="user.loggedIn" ><a href="#/logout/">Log Out</a></li>
-					<li class="item" ng-if="!user.loggedIn"><a href="#/login/">Log In</a></li>
+					<a class="item" ng-if="user.loggedIn"  href="#/logout/">Log Out</a>
+					<a class="item" ng-if="!user.loggedIn" href="#/login/">Log In</a>
 
-					<li class="item bottom"><a href="#/advanced/">Advanced</a></li>
-				</ul>
+					<a class="item bottom" href="#/advanced/">Advanced</a>
+				</div>
 			</content>
 		</side-menu>
 	</side-menus>
