@@ -43,15 +43,10 @@
 				templateUrl: 'template/deck-plans.html',
 				controller: 'CMDeckListCtrl'
 			})
-			/*
-			.when('/deck-plans', {
-				redirectTo: '/deck-plans/2/'
-			})
 			.when('/deck-plans/:deck', {
 				templateUrl: 'template/deck-plans.html',
 				controller: 'CMDeckListCtrl'
 			})
-			*/
 			.when('/about', {
 				templateUrl: 'template/about.html',
 				controller: 'CMAboutCtrl'
@@ -77,12 +72,6 @@
 		};
 
 		phonegapReady(function() {
-			/*global StatusBar: true*/
-			if (StatusBar) {
-				console.log('StatusBar exists, isVisible = ' + StatusBar.isVisible);
-				StatusBar.overlaysWebView(false);
-				StatusBar.backgroundColorByName('black');
-			}
 		});
 
 		$rootScope.openLeft = function() {

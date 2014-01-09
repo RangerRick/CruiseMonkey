@@ -64,26 +64,25 @@
 			$rootScope.rightButtons = newButtons;
 		};
 
-		$scope.deck = parseInt($routeParams.deck || 2, 10);
-		$rootScope.title = "Deck " + $scope.deck;
-
 		$scope.$on('slideBox.slideChanged', function(e, index) {
 			$scope.deck = index + 2;
-			$rootScope.title = "Deck " + $scope.deck;
-			log.info('current deck: ' + $scope.deck);
-			updateButtons();
+			$location.path('/deck-plans/' + $scope.deck);
 		});
 
-		updateButtons();
+		if ($routeParams.deck) {
+			$timeout(function() {
+				var newDeck = parseInt($routeParams.deck, 10);
+				$scope.$broadcast('slideBox.setSlide', newDeck - 2);
+				$scope.deck = newDeck;
+				$rootScope.title = "Deck " + $scope.deck;
+
+				updateButtons();
+			}, 10);
+		}
 
 		document.addEventListener('keydown', listener, true);
 		$scope.$on('$destroy', function() {
 			document.removeEventListener('keydown', listener, true);
-		});
-
-		$timeout(function() {
-			// $scope.slideBox.slide($scope.deck - 2);
-			$scope.$broadcast('slideBox.setSlide', $scope.deck - 2);
 		});
 	}]);
 }());

@@ -3,9 +3,9 @@
 
 	/*global Pouch: true*/
 	/*global Connection: true*/
-	angular.module('cruisemonkey.Database', ['cruisemonkey.Logging', 'cruisemonkey.Config', 'ngInterval', 'angularLocalStorage'])
-	.factory('Database', ['$location', '$interval', '$timeout', '$rootScope', '$window', 'LoggingService', 'storage', 'config.database.host', 'config.database.name', 'config.database.replicate', function($location, $interval, $timeout, $rootScope, $window, log, storage, databaseHost, databaseName, replicate) {
-		log.info('Initializing CruiseMonkey database: ' + databaseName);
+	angular.module('cruisemonkey.Database', ['cruisemonkey.Logging', 'cruisemonkey.Config', 'cruisemonkey.Settings', 'ngInterval', 'angularLocalStorage'])
+	.factory('Database', ['$location', '$interval', '$timeout', '$rootScope', '$window', 'LoggingService', 'storage', 'config.database.replicate', 'SettingsService', function($location, $interval, $timeout, $rootScope, $window, log, storage, replicate, SettingsService) {
+		log.info('Initializing CruiseMonkey database: ' + SettingsService.getDatabaseName());
 
 		storage.bind($rootScope, '_seq', {
 			'defaultValue': 0,
@@ -13,17 +13,20 @@
 		});
 		log.info('last sequence: ' + $rootScope._seq);
 
-		if (!databaseHost) {
-			databaseHost = $location.host();
-		}
-		var host = 'http://' + databaseHost + ':5984/' + databaseName;
+		var getHost = function() {
+			var host = SettingsService.getDatabaseHost();
+			if (!host) {
+				host = $location.host();
+			}
+			return 'http://' + SettingsService.getDatabaseHost() + ':5984/' + SettingsService.getDatabaseName();
+		};
 
 		var db = null,
 			timeout = null,
 			watchingChanges = false;
 
 		var initializeDatabase = function() {
-			db = new Pouch(databaseName);
+			db = new Pouch(SettingsService.getDatabaseName());
 			timeout = null;
 			watchingChanges = false;
 
@@ -69,11 +72,11 @@
 		};
 
 		var doReplicate = function() {
-			log.info('Attempting to replicate with ' + host);
+			log.info('Attempting to replicate with ' + getHost());
 			$rootScope.$broadcast('cm.replicationStarting');
-			db.replicate.from(host, {
+			db.replicate.from(getHost(), {
 				'complete': function() {
-					db.replicate.to(host, {
+					db.replicate.to(getHost(), {
 						'complete': function() {
 							log.debug('Replication complete.');
 							$rootScope.$broadcast('cm.replicationComplete');
@@ -89,7 +92,7 @@
 					log.warn('Replication has already been started!  Timeout ID = ' + timeout);
 					return false;
 				} else {
-					log.info('Enabling replication with ' + host);
+					log.info('Enabling replication with ' + getHost());
 
 					timeout = $interval(function() {
 						doReplicate();
@@ -107,7 +110,7 @@
 		var stopReplication = function() {
 			if (replicate) {
 				if (timeout !== null) {
-					log.info('Stopping replication with ' + host);
+					log.info('Stopping replication with ' + getHost());
 					$interval.cancel(timeout);
 					timeout = null;
 					return true;
@@ -178,7 +181,7 @@
 				watchingChanges = false;
 				$rootScope._seq = 0;
 
-				Pouch.destroy(databaseName, function(err) {
+				Pouch.destroy(SettingsService.getDatabaseName(), function(err) {
 					if (err) {
 						$window.alert('Failed to destroy existing database!');
 					} else {

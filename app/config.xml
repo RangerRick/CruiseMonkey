@@ -63,7 +63,6 @@
 	<gap:plugin name="org.apache.cordova.dialogs" />
 	<gap:plugin name="org.apache.cordova.splashscreen" />
 	<gap:plugin name="org.apache.cordova.vibration" />
-	<gap:plugin name="com.phonegap.plugin.statusbar" />
 
 	<!-- general preferences -->
 	<preference name="phonegap-version" value="3.1.0" />
