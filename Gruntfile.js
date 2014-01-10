@@ -255,6 +255,7 @@ module.exports = function (grunt) {
             '.htaccess',
             'config.xml',
             'phonegap.js',
+            '*.cer',
             'bower_components/html5shiv/{,**/}*',
             'scripts/*3rdparty/*.js',
             'images/{,**/}*.{gif,webp,png,svg}',
