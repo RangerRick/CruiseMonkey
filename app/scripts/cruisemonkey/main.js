@@ -3,6 +3,7 @@
 
 	angular.module('cruisemonkey',
 	[
+		'ui.router',
 		'ionic',
 		'ngRoute',
 		'cruisemonkey.Config',

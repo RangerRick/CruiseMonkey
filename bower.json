@@ -32,7 +32,8 @@
     "angularLocalStorage": "~0.1.7",
     "angular-animate": "~1.2.7",
     "angular-touch": "~1.2.7",
-    "angular-sanitize": "~1.2.7"
+    "angular-sanitize": "~1.2.7",
+    "angular-ui-router": "~0.2.7"
   },
   "devDependencies": {
     "jasmine.async": "~0.1.0",
