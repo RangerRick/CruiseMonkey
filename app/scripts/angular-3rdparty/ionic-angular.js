@@ -29,6 +29,7 @@ angular.module('ionic.service', [
 // UI specific services and delegates
 angular.module('ionic.ui.service', [
   'ionic.ui.service.scrollDelegate',
+  'ionic.ui.service.slideBoxDelegate',
 ]);
 
 angular.module('ionic.ui', [
@@ -53,7 +54,6 @@ angular.module('ionic', [
     
     // Angular deps
     'ngAnimate',
-    'ngRoute',
     'ngTouch',
     'ngSanitize',
     'ui.router'
@@ -116,6 +116,36 @@ angular.module('ionic.ui.service.scrollDelegate', [])
        */
       $scope.$parent.$on('scroll.scrollTop', function(e, animate) {
         $scope.$parent.scrollView && $scope.$parent.scrollView.scrollTo(0, 0, animate === false ? false : true);
+      });
+    }
+  };
+}]);
+
+})(ionic);
+;
+(function() {
+'use strict';
+
+angular.module('ionic.ui.service.slideBoxDelegate', [])
+
+.factory('SlideBoxDelegate', ['$rootScope', '$timeout', function($rootScope, $timeout) {
+  return {
+    /**
+     * Trigger a slidebox to update and resize itself
+     */
+    update: function(animate) {
+      $rootScope.$broadcast('slideBox.update');
+    },
+
+    register: function($scope, $element) {
+      $scope.$parent.$on('slideBox.update', function(e) {
+        if(e.defaultPrevented) {
+          return;
+        }
+        $timeout(function() {
+          $scope.$parent.slideBox.setup();
+        });
+        e.preventDefault();
       });
     }
   };
@@ -295,9 +325,10 @@ angular.module('ionic.service.modal', ['ionic.service.templateLoad', 'ngAnimate'
 
     // Remove and destroy the modal scope
     remove: function() {
-      var element = angular.element(this.el);
+      var self  = this,
+          element = angular.element(this.el);
       $animate.leave(angular.element(this.el), function() {
-        scope.$destroy();
+        self.scope.$destroy();
       });
     }
   });
@@ -410,6 +441,10 @@ angular.module('ionic.service.platform', [])
           this.ready(function() {
             document.removeEventListener('backbutton', fn);
           });
+        },
+
+        is: function(type) {
+          return ionic.Platform.is(type);
         },
 
         /**
@@ -584,7 +619,12 @@ angular.module('ionic.service.view', ['ui.router'])
     return null;
   };
   View.prototype.go = function(opts) {
-    if(this.url && this.url !== $location.url() && (!opts || opts.enableUrlChange !== false)) {
+
+    if(this.stateName) {
+      return $state.go(this.stateName, this.stateParams);
+    }
+
+    if(this.url && this.url !== $location.url()) {
 
       if($rootScope.$viewHistory.backView === this) {
         return $window.history.go(-1);
@@ -592,11 +632,8 @@ angular.module('ionic.service.view', ['ui.router'])
         return $window.history.go(1);
       }
 
-      return $location.url(this.url);
-    }
-
-    if(this.stateName) {
-      return $state.go(this.stateName, this.stateParams);
+      $location.url(this.url);
+      return;
     }
 
     return null;
@@ -660,6 +697,13 @@ angular.module('ionic.service.view', ['ui.router'])
           rsp.historyId = forwardView.historyId;
         }
 
+      } else if(currentView && currentView.historyId !== hist.historyId && 
+                hist.cursor > -1 && hist.stack.length > 0 && hist.cursor < hist.stack.length &&
+                hist.stack[hist.cursor].stateId === currentStateId) {
+        // they just changed to a different history and the history already has views in it
+        rsp.viewId = hist.stack[hist.cursor].viewId;
+        rsp.navAction = 'moveBack';
+
       } else {
 
         // set a new unique viewId
@@ -712,13 +756,23 @@ angular.module('ionic.service.view', ['ui.router'])
         hist.stack.push(viewHistory.histories[rsp.viewId]);
       }
 
-      viewHistory.currentView = this._getView(rsp.viewId);
-      viewHistory.backView = this._getBackView(viewHistory.currentView);
-      viewHistory.forwardView = this._getForwardView(viewHistory.currentView);
+      this.setNavViews(rsp.viewId);
 
       hist.cursor = viewHistory.currentView.index;
 
       return rsp;
+    },
+
+    setNavViews: function(viewId) {
+      var viewHistory = $rootScope.$viewHistory;
+
+      viewHistory.currentView = this._getView(viewId);
+      viewHistory.backView = this._getBackView(viewHistory.currentView);
+      viewHistory.forwardView = this._getForwardView(viewHistory.currentView);
+
+      $rootScope.$broadcast('$viewHistory.historyChange', {
+        showBack: (viewHistory.backView && viewHistory.backView.historyId === viewHistory.currentView.historyId)
+      });
     },
 
     registerHistory: function(scope) {
@@ -889,6 +943,31 @@ angular.module('ionic.service.view', ['ui.router'])
         // make sure the reverse class isn't already added
         element[0].classList.remove('reverse');
       }
+    },
+
+    clearHistory: function() {
+      var historyId, x, view,
+      histories = $rootScope.$viewHistory.histories,
+      currentView = $rootScope.$viewHistory.currentView;
+
+      for(historyId in histories) {
+
+        if(histories[historyId].stack) {
+          histories[historyId].stack = [];
+          histories[historyId].cursor = -1;
+        }
+
+        if(currentView.historyId === historyId) {
+          currentView.backViewId = null;
+          currentView.forwardViewId = null;
+          histories[historyId].stack.push(currentView);
+        } else if(histories[historyId].destroy) {
+          histories[historyId].destroy();
+        }
+
+      }
+
+      this.setNavViews(currentView.viewId);
     }
 
   };
@@ -1103,7 +1182,7 @@ angular.module('ionic.ui.content', ['ionic.ui.service'])
 
 // The content directive is a core scrollable content area
 // that is part of many View hierarchies
-.directive('content', ['$parse', '$timeout', 'ScrollDelegate', function($parse, $timeout, ScrollDelegate) {
+.directive('content', ['$parse', '$timeout', 'Platform', 'ScrollDelegate', function($parse, $timeout, Platform, ScrollDelegate) {
   return {
     restrict: 'E',
     replace: true,
@@ -1117,6 +1196,7 @@ angular.module('ionic.ui.content', ['ionic.ui.service'])
       refreshComplete: '=',
       onInfiniteScroll: '=',
       infiniteScrollDistance: '@',
+      hasBouncing: '@',
       scroll: '@',
       hasScrollX: '@',
       hasScrollY: '@',
@@ -1172,8 +1252,13 @@ angular.module('ionic.ui.content', ['ionic.ui.service'])
 
           // Otherwise, supercharge this baby!
           $timeout(function() {
+            var hasBouncing = $scope.$eval($scope.hasBouncing);
+            var enableBouncing = !Platform.is('Android') && hasBouncing !== false;
+            // No bouncing by default for Android users, lest they take up pitchforks
+            // to our bouncing goodness
             sv = new ionic.views.Scroll({
               el: $element[0],
+              bouncing: enableBouncing,
               scrollbarX: $scope.$eval($scope.scrollbarX) !== false,
               scrollbarY: $scope.$eval($scope.scrollbarY) !== false,
               scrollingX: $scope.$eval($scope.hasScrollX) === true,
@@ -1622,7 +1707,6 @@ angular.module('ionic.ui.scroll', [])
         sc.className = 'scroll';
         if(attr.padding == "true") {
           sc.classList.add('padding');
-          addedPadding = true;
         }
         if($scope.$eval($scope.paging) === true) {
           sc.classList.add('scroll-paging');
@@ -1893,7 +1977,7 @@ angular.module('ionic.ui.slideBox', [])
  * The internal controller for the slide box controller.
  */
 
-.directive('slideBox', ['$timeout', '$compile', function($timeout, $compile) {
+.directive('slideBox', ['$timeout', '$compile', 'SlideBoxDelegate', function($timeout, $compile, SlideBoxDelegate) {
   return {
     restrict: 'E',
     replace: true,
@@ -1903,7 +1987,8 @@ angular.module('ionic.ui.slideBox', [])
       slideInterval: '@',
       showPager: '@',
       disableScroll: '@',
-      onSlideChanged: '&'
+      onSlideChanged: '&',
+      activeSlide: '='
     },
     controller: ['$scope', '$element', function($scope, $element) {
       var _this = this;
@@ -1926,9 +2011,15 @@ angular.module('ionic.ui.slideBox', [])
           $scope.currentSlide = slideIndex;
           $scope.onSlideChanged({index:$scope.currentSlide});
           $scope.$parent.$broadcast('slideBox.slideChanged', slideIndex);
-
+          $scope.activeSlide = slideIndex;
           // Try to trigger a digest
           $timeout(function() {});
+        }
+      });
+
+      $scope.$watch('activeSlide', function(nv) {
+        if(angular.isDefined(nv)){
+          slider.slide(nv);
         }
       });
 
@@ -1945,6 +2036,8 @@ angular.module('ionic.ui.slideBox', [])
       });
 
       $scope.$parent.slideBox = slider;
+
+      SlideBoxDelegate.register($scope, $element);
 
       this.getNumSlides = function() {
         return slider.getNumSlides();
@@ -2417,7 +2510,7 @@ angular.module('ionic.ui.viewState', ['ionic.service.view', 'ionic.service.gestu
     },
     template: '<header class="bar bar-header nav-bar">'+//' ng-class="{invisible: !navController.navBar.isVisible}">' + 
         '<div class="buttons"> ' +
-          '<button view-back class="button" ng-show="enableBackButton && showBackButton" ng-class="backButtonClass" ng-bind-html="backButtonLabel"></button>' +
+          '<button view-back class="button" ng-if="enableBackButton" ng-class="backButtonClass" ng-bind-html="backButtonLabel"></button>' +
           '<button ng-click="button.tap($event)" ng-repeat="button in leftButtons" class="button no-animation {{button.type}}" ng-bind-html="button.content"></button>' + 
         '</div>' +
         '<h1 class="title" ng-bind="currentTitle"></h1>' + 
@@ -2433,21 +2526,6 @@ angular.module('ionic.ui.viewState', ['ionic.service.view', 'ionic.service.gestu
       if($attr.backButtonIcon) {
         $scope.backButtonClass += ' icon ' + $attr.backButtonIcon;
       }
-
-      // Listen for changes in the stack cursor position to indicate whether a back
-      // button should be shown (this can still be disabled by the $scope.enableBackButton
-      $rootScope.$watch('$viewHistory.backView', function(backView) {
-        if(backView) {
-          var currentView = ViewService.getCurrentView();
-          if(currentView) {
-            if(backView.historyId === currentView.historyId) {
-              $scope.showBackButton = true;
-              return;
-            }
-          }
-        }
-        $scope.showBackButton = false;
-      });
 
       // Store a reference to our nav controller
       $scope.navController = navCtrl;
@@ -2561,7 +2639,7 @@ angular.module('ionic.ui.viewState', ['ionic.service.view', 'ionic.service.gestu
 }])
 
 
-.directive('viewBack', ['ViewService', function(ViewService) {
+.directive('viewBack', ['ViewService', '$rootScope', function(ViewService, $rootScope) {
   var goBack = function(e) {
     var backView = ViewService.getBackView();
     backView && backView.go();
@@ -2571,9 +2649,23 @@ angular.module('ionic.ui.viewState', ['ionic.service.view', 'ionic.service.gestu
 
   return {
     restrict: 'AC',
-    link: function($scope, $element) {
-      $element.bind('click', goBack);
+    compile: function(tElement) {
+      tElement.addClass('hide');
+
+      return function link($scope, $element) {
+        $element.bind('click', goBack);
+
+        $rootScope.$on('$viewHistory.historyChange', function(e, data) {
+          if(data.showBack) {
+            $element[0].classList.remove('hide');
+          } else {
+            $element[0].classList.add('hide');
+          }
+        });
+
+      };
     }
+
   };
 }])
 
@@ -2626,7 +2718,7 @@ angular.module('ionic.ui.viewState', ['ionic.service.view', 'ionic.service.gestu
 
       function update(doAnimation) {
         var locals = $state.$current && $state.$current.locals[name],
-            template = (locals && locals.$template ? locals.$template.trim() : null);
+            template = (locals && locals.$template ? locals.$template : null);
 
         if (locals === viewLocals) return; // nothing to do here, go about your business
 
@@ -2639,7 +2731,7 @@ angular.module('ionic.ui.viewState', ['ionic.service.view', 'ionic.service.gestu
         };
 
         if (template) {
-          currentElement = angular.element(template);
+          currentElement = angular.element(template.trim());
 
           var registerData = {};
           if(currentElement[0].tagName !== 'TABS') {
