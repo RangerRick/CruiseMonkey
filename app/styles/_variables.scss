@@ -10,15 +10,16 @@ $balanced:              #66cc33 !default;
 $energized:             #f0b840 !default;
 $assertive:             #ef4e3a !default;
 $royal:                 #8a6de9 !default;
-$dark:                  #444 !default;
+//$dark:                  #444 !default;
+$dark:                  black !default;
 
 
 
 // Base
 // -------------------------------
 
-$font-family-sans-serif:         "Helvetica Neue", Helvetica, Arial, sans-serif !default;
-$font-family-light-sans-serif:   "Helvetica Neue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, sans-serif !default;
+$font-family-sans-serif:         Hero, "Helvetica Neue", Helvetica, Arial, sans-serif !default;
+$font-family-light-sans-serif:   Hero, "Helvetica Neue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, sans-serif !default;
 $font-family-serif:              Georgia, "Times New Roman", Times, serif !default;
 $font-family-monospace:          Monaco, Menlo, Consolas, "Courier New", monospace !default;
 
@@ -290,8 +291,8 @@ $item-thumbnail-width:             80px !default;
 $item-thumbnail-height:            80px !default;
 $item-thumbnail-margin:            10px !default;
 
-$item-divider-bg:                  #f5f5f5;
-$item-divider-color:               #222;
+$item-divider-bg:                  $dark;
+$item-divider-color:               $light;
 $item-divider-padding:             5px 15px;
 
 $item-light-bg:                    $button-light-bg;
@@ -470,7 +471,7 @@ $range-default-track-bg:       #ccc !default;
 $menu-bg:                   #eee;
 $menu-inset-border-color:   #bbb;
 $menu-width:                275px;
-$menu-animation-speed:      200ms;
+$menu-animation-speed:      100ms;
 
 $menu-side-shadow: -1px 0px 2px rgba(0, 0, 0, 0.2), 1px 0px 2px rgba(0,0,0,0.2);
 
