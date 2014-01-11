@@ -212,10 +212,18 @@
 
 button.button-block,
 button.button-full,
-.button-full > button.button  {
+.button-full > button.button,
+input.button.button-block  {
   width: 100%;
 }
 
 a.button {
   text-decoration: none;
+}
+
+.button.disabled,
+.button[disabled] {
+  opacity: .4;
+  cursor: default !important;
+  pointer-events: none;
 }
