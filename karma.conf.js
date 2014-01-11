@@ -25,8 +25,6 @@ module.exports = function(config) {
       'app/bower_components/angular-ui-router/release/angular-ui-router.js',
       'app/bower_components/angular-phonegap-ready/ready.js',
       'app/bower_components/angularLocalStorage/src/angularLocalStorage.js',
-      'app/scripts/angular-3rdparty/angular-interval.js',
-      'app/scripts/angular-3rdparty/ui-bootstrap-0.6.0.js',
       'app/scripts/cruisemonkey/*.js',
       'test/mock/**/*.js',
       'test/spec/**/*.js'

@@ -3,7 +3,7 @@
 
 	/*global Pouch: true*/
 	/*global Connection: true*/
-	angular.module('cruisemonkey.Database', ['cruisemonkey.Logging', 'cruisemonkey.Config', 'cruisemonkey.Settings', 'ngInterval', 'angularLocalStorage'])
+	angular.module('cruisemonkey.Database', ['cruisemonkey.Logging', 'cruisemonkey.Config', 'cruisemonkey.Settings', 'angularLocalStorage'])
 	.factory('Database', ['$location', '$interval', '$timeout', '$rootScope', '$window', 'LoggingService', 'storage', 'config.database.replicate', 'SettingsService', function($location, $interval, $timeout, $rootScope, $window, log, storage, replicate, SettingsService) {
 		log.info('Initializing CruiseMonkey database: ' + SettingsService.getDatabaseName());
 

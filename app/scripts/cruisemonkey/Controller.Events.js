@@ -90,31 +90,38 @@
 			console.log($scope.event);
 		}
 	}])
-	.controller('CMEventCtrl', ['$scope', '$rootScope', '$timeout', '$routeParams', '$location', '$q', 'Modal', '$templateCache', 'UserService', 'EventService', 'LoggingService', function($scope, $rootScope, $timeout, $routeParams, $location, $q, Modal, $templateCache, UserService, EventService, log) {
+	.controller('CMEventCtrl', ['$scope', '$rootScope', '$timeout', '$stateParams', '$location', '$q', 'Modal', '$templateCache', 'UserService', 'EventService', 'LoggingService', function($scope, $rootScope, $timeout, $stateParams, $location, $q, Modal, $templateCache, UserService, EventService, log) {
 		log.info('Initializing CMEventCtrl');
 
-		$rootScope.eventType = $routeParams.eventType;
-		$rootScope.title = $routeParams.eventType.capitalize() + ' Events';
+		$rootScope.eventType = $stateParams.eventType;
+
+		console.log('eventType=',$rootScope.eventType);
+		if (!$rootScope.eventType) {
+			$location.path('/events/official');
+			return;
+		}
+
+		$rootScope.title = $rootScope.eventType.capitalize() + ' Events';
 
 		var refreshEvents = function() {
 			log.info('CMEventCtrl.refreshEvents()');
-			if ($routeParams.eventType === 'official') {
+			if ($rootScope.eventType === 'official') {
 				$q.when(EventService.getOfficialEvents()).then(function(e) {
 					$rootScope.events = e;
 					$scope.$broadcast('scroll.resize');
 				});
-			} else if ($routeParams.eventType === 'unofficial') {
+			} else if ($rootScope.eventType === 'unofficial') {
 				$q.when(EventService.getUnofficialEvents()).then(function(e) {
 					$rootScope.events = e;
 					$scope.$broadcast('scroll.resize');
 				});
-			} else if ($routeParams.eventType === 'my') {
+			} else if ($rootScope.eventType === 'my') {
 				$q.when(EventService.getMyEvents()).then(function(e) {
 					$rootScope.events = e;
 					$scope.$broadcast('scroll.resize');
 				});
 			} else {
-				log.warn('CMEventCtrl: unknown event type: ' + $routeParams.eventType);
+				log.warn('CMEventCtrl: unknown event type: ' + $rootScope.eventType);
 			}
 		};
 

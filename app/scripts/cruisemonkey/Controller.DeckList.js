@@ -2,7 +2,7 @@
 	'use strict';
 
 	angular.module('cruisemonkey.controllers.DeckList', ['ngRoute', 'cruisemonkey.Logging'])
-	.controller('CMDeckListCtrl', ['$scope', '$rootScope', '$timeout', '$routeParams', '$location', 'LoggingService', function($scope, $rootScope, $timeout, $routeParams, $location, log) {
+	.controller('CMDeckListCtrl', ['$scope', '$rootScope', '$timeout', '$state', '$stateParams', '$location', 'LoggingService', function($scope, $rootScope, $timeout, $state, $stateParams, $location, log) {
 		log.info('Initializing CMDeckListCtrl');
 
 		$scope.previous = function() {
@@ -31,7 +31,8 @@
 			return true;
 		};
 
-		var updateButtons = function() {
+		var updateUI = function() {
+			$rootScope.title = "Deck " + $scope.deck;
 			var newButtons = [];
 			$rootScope.rightButtons = [];
 			if ($scope.deck !== 2) {
@@ -66,18 +67,27 @@
 
 		$scope.$on('slideBox.slideChanged', function(e, index) {
 			$scope.deck = index + 2;
-			$location.path('/deck-plans/' + $scope.deck);
+			updateUI();
+			$state.transitionTo('deck-plans', {
+				deck: $scope.deck
+			}, {
+				location: true,
+				inherit: true,
+				notify: false,
+				reload: false
+			});
 		});
 
-		if ($routeParams.deck) {
+		if ($stateParams.deck) {
 			$timeout(function() {
-				var newDeck = parseInt($routeParams.deck, 10);
+				var newDeck = parseInt($stateParams.deck, 10);
 				$scope.$broadcast('slideBox.setSlide', newDeck - 2);
 				$scope.deck = newDeck;
-				$rootScope.title = "Deck " + $scope.deck;
-
-				updateButtons();
+				updateUI();
 			}, 10);
+		} else {
+			$scope.deck = 2;
+			updateUI();
 		}
 
 		document.addEventListener('keydown', listener, true);
