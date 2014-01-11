@@ -3,11 +3,11 @@
 		<div class="list">
 			<label class="item item-input item-stacked-label">
 				<span class="input-label">Username</span>
-				<input type="text" autocapitalize="off" ng-model="user.username" name="uUsername" autofocus required />
+				<input type="text" autocomplete="off" autocapitalize="off" spellcheck="off" ng-model="user.username" name="uUsername" autofocus required />
 			</label>
 			<label class="item item-input item-stacked-label">
 				<span class="input-label">Password</span>
-				<input type="password" autocapitalize="off" ng-model="user.password" name="uPassword" required />
+				<input type="password" autocomplete="off" autocapitalize="off" spellcheck="off" ng-model="user.password" name="uPassword" required />
 			</label>
 			<button class="button button-full button-positive" ng-click="update(user)" ng-disabled="form.$invalid || isUnchanged(user)">Log In</button>
 		</div>

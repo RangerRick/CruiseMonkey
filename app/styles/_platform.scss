@@ -6,23 +6,19 @@
 
 .platform-ios7 {
   .bar-header {
-    height: 64px;
-
-    > * {
-      margin-top: 20px;
-    }
+    height: 44px;
   }
 
   .has-header {
-    top: 64px;
+    top: 44px;
   }
 
   .bar-subheader {
-    top: 64px;
+    top: 44px;
   }
 
   .has-subheader {
-    top: 108px;
+    top: 88px;
   }
 }
 
