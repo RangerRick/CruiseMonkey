@@ -5,7 +5,6 @@
 	[
 		'ui.router',
 		'ionic',
-		'ngRoute',
 		'cruisemonkey.Config',
 		'cruisemonkey.controllers.About',
 		'cruisemonkey.controllers.Advanced',
@@ -18,7 +17,8 @@
 		'cruisemonkey.Navigation',
 		'cruisemonkey.Events',
 		'cruisemonkey.User',
-		'btford.phonegap.ready'
+		'btford.phonegap.ready',
+		'angularLocalStorage'
 	])
 	.config(['$stateProvider', '$urlRouterProvider', function($stateProvider, $urlRouterProvider) {
 		$urlRouterProvider.otherwise('/events/official');
@@ -55,7 +55,7 @@
 				controller: 'CMAdvancedCtrl'
 			});
 	}])
-	.run(['$rootScope', '$location', '$urlRouter', 'UserService', 'EventService', 'phonegapReady', function($rootScope, $location, $urlRouter, UserService, EventService, phonegapReady) {
+	.run(['$rootScope', '$location', '$urlRouter', 'UserService', 'EventService', 'storage', 'phonegapReady', function($rootScope, $location, $urlRouter, UserService, EventService, storage, phonegapReady) {
 		$rootScope.safeApply = function(fn) {
 			var phase = this.$root.$$phase;
 			if(phase === '$apply' || phase === '$digest') {
@@ -88,27 +88,40 @@
 			if (UserService.loggedIn()) {
 				$urlRouter.sync();
 				angular.noop();
+				storage.set('cm.lasturl', newUrl);
 				return;
 			}
 
 			if (newUrl.endsWith('/events') || newUrl.endsWith('/events/')) {
 				$location.path('/events/official');
 				angular.noop();
+				storage.set('cm.lasturl', newUrl);
 				return;
 			}
 
 			if (newUrl.endsWith('/events/my')) {
 				$location.path('/login');
 				angular.noop();
+				storage.set('cm.lasturl', newUrl);
 				return;
 			}
 
 			$urlRouter.sync();
+			storage.set('cm.lasturl', newUrl);
 			angular.noop();
 
 			return;
 		});
 		
+		var savedUrl = storage.get('cm.lasturl');
+		if (savedUrl) {
+			var index = savedUrl.indexOf('#');
+			if (index > -1) {
+				savedUrl = savedUrl.substring(savedUrl.indexOf('#') + 1);
+				$location.path(savedUrl);
+			}
+		}
+
 		$rootScope.$on('cm.loggedIn', function(event) {
 			console.log('User logged in, refreshing menu.');
 		});
