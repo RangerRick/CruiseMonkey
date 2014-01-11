@@ -13,8 +13,8 @@
 		Benjamin Reed
 	</author>
 
-	<gap:platform name="ios" minVersion="4.2" />
-	<gap:platform name="android" minVersion="2.3" />
+	<gap:platform name="ios" minVersion="6.0" />
+	<gap:platform name="android" minVersion="4.0" />
 	<!-- <gap:platform name="winphone" /> -->
 
 	<icon src="Icon.png" />

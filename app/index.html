@@ -208,28 +208,27 @@ window.setTimeout(function() {
 					</button>
 				</div>
 			</header>
-			<content has-header="true" overflow-scroll="true" scroll="true">
-				<refresher></refresher>
+			<content has-header="true" overflow-scroll="false" scroll="false">
 				<div ui-view></div>
 			</content>
 		</pane>
-		<side-menu side="left" drag-content="false" ng-click="sideMenuController.close()">
+		<side-menu side="left" ng-click="sideMenuController.close()">
 			<header class="bar bar-header bar-dark">
 				<h1 class="title bar-bold">CruiseMonkey</h1>
 			</header>
-			<content has-header="true" scroll="false" overflow-scroll="false" class="nav">
-				<div id="nav">
-					<a class="item" ui-sref-active="active" ui-sref="events({eventType:'official'})"                        >Official Events</a>
-					<a class="item" ui-sref-active="active" ui-sref="events({eventType:'unofficial'})"                      >Unofficial Events</a>
-					<a class="item" ui-sref-active="active" ui-sref="events({eventType:'my'})"         ng-if="user.loggedIn">My Events</a>
-					<a class="item" ui-sref-active="active" ui-sref="deck-plans"                                            >Deck Plans</a></li>
-					<a class="item" ui-sref-active="active" ui-sref="about"                                                 >About</a></li>
+			<content has-header="true" scroll="true" overflow-scroll="true" class="nav">
+				<ul id="nav">
+					<li class="item item-complex"><a ui-sref-active="active" ui-sref="events({eventType:'official'})">Official Events</a></li>
+					<li class="item item-complex"><a ui-sref-active="active" ui-sref="events({eventType:'unofficial'})">Unofficial Events</a></li>
+					<li class="item item-complex" ng-if="user.loggedIn"><a ui-sref-active="active" ui-sref="events({eventType:'my'})">My Events</a></li>
+					<li class="item item-complex"><a ui-sref-active="active" ui-sref="deck-plans">Deck Plans</a></li>
+					<li class="item item-complex"><a ui-sref-active="active" ui-sref="about">About</a></li>
 
-					<a class="item" ng-if="user.loggedIn"  ui-sref="logout">Log Out</a>
-					<a class="item" ng-if="!user.loggedIn" ui-sref="login">Log In</a>
+					<li class="item item-complex" ng-if="user.loggedIn"><a ui-sref="logout">Log Out</a></li>
+					<li class="item item-complex" ng-if="!user.loggedIn"><a ui-sref="login">Log In</a></li>
 
-					<a class="item bottom" ui-sref-active="active" ui-sref="advanced">Advanced</a>
-				</div>
+					<li class="item item-complex bottom"><a ui-sref-active="active" ui-sref="advanced">Advanced</a></li>
+				</ul>
 			</content>
 		</side-menu>
 	</side-menus>

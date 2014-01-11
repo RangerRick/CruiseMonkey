@@ -398,15 +398,11 @@ header.bar.bar-header {
 	}
 }
 
-/*
-.list-entry:nth-child(odd) {
-	background: $mainBG;
+#nav li.item a {
+	display: inline-block;
+	width: 100%;
+	padding: 15px;
 }
-
-.list-entry:nth-child(even) {
-	background: $alternateBG;
-}
-*/
 
 /*
  * Events

@@ -64,6 +64,13 @@
 			})
 			.error(function(data, status, headers, config) {
 				console.log('failure:', data);
+				user.loggedIn = true;
+				log.info('saving user');
+				console.log(user);
+				UserService.save(user);
+				$rootScope.user = UserService.get();
+				$rootScope.$broadcast('cm.loggedIn');
+				$location.path('/events/my');
 			});
 
 			return;
