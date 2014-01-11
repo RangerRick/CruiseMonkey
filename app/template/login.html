@@ -1,6 +1,10 @@
 <content has-header="false" scroll="true" overflow-scroll="true" padded="false">
 	<form name="loginForm" class="login-form">
 		<div class="list">
+			<div class="item item-text-wrap">
+				Log in using your Twit-Arr account.  If you haven't yet created a Twit-Arr account,
+				<a ng-click="goToTwitarr()" style="text-decoration:underline;cursor:pointer">go to the Twit-Arr server</a> and create an account.
+			</div>
 			<label class="item item-input item-stacked-label">
 				<span class="input-label">Username</span>
 				<input type="text" autocomplete="off" autocapitalize="off" spellcheck="off" ng-model="user.username" name="uUsername" autofocus required />

@@ -8,6 +8,11 @@
 
 		$rootScope.user = UserService.get();
 
+		$scope.goToTwitarr = function() {
+			var twitarrRoot = SettingsService.getTwitarrRoot();
+			window.open(twitarrRoot, '_system');
+		};
+
 		$scope.isUnchanged = function(newUser) {
 			var savedUser = UserService.get();
 			if (savedUser === null || savedUser === undefined) {
@@ -41,7 +46,7 @@
 
 			$http({
 				method: 'GET',
-				url: twitarrRoot + '/api/v1/user/auth',
+				url: $scope.twitarrRoot + '/api/v1/user/auth',
 				params: {
 					username: user.username,
 					password: user.password
