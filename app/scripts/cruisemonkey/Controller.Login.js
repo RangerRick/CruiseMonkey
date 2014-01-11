@@ -63,14 +63,17 @@
 				$location.path('/events/my');
 			})
 			.error(function(data, status, headers, config) {
-				console.log('failure:', data);
-				user.loggedIn = true;
-				log.info('saving user');
-				console.log(user);
-				UserService.save(user);
-				$rootScope.user = UserService.get();
-				$rootScope.$broadcast('cm.loggedIn');
-				$location.path('/events/my');
+				console.log('failure!');
+				console.log('data:', data);
+				console.log('status:',status);
+				console.log('headers:',headers);
+				console.log('config:',config);
+
+				if ($rootScope.isPhonegap) {
+					navigator.notification.alert('Failed to log in to twit-arr!', function(){});
+				} else {
+					window.alert('Failed to log in to twit-arr!');
+				}
 			});
 
 			return;

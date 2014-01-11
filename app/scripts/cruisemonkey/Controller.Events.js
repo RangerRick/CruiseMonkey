@@ -4,7 +4,7 @@
 	/*global moment: true*/
 	/*global Modernizr: true*/
 	/*global CMEvent: true*/
-	angular.module('cruisemonkey.controllers.Events', ['ngRoute', 'cruisemonkey.User', 'cruisemonkey.Events', 'cruisemonkey.Logging', 'ionic'])
+	angular.module('cruisemonkey.controllers.Events', ['cruisemonkey.User', 'cruisemonkey.Events', 'cruisemonkey.Logging', 'ionic', 'angularLocalStorage'])
 	.filter('orderByEvent', function() {
 		return function(input, searchString) {
 			if (!angular.isObject(input)) { return input; }
@@ -92,7 +92,7 @@
 			console.log($scope.event);
 		}
 	}])
-	.controller('CMEventCtrl', ['$scope', '$rootScope', '$timeout', '$stateParams', '$location', '$q', 'Modal', '$templateCache', 'UserService', 'EventService', 'LoggingService', function($scope, $rootScope, $timeout, $stateParams, $location, $q, Modal, $templateCache, UserService, EventService, log) {
+	.controller('CMEventCtrl', ['storage', '$scope', '$rootScope', '$timeout', '$stateParams', '$location', '$q', 'Modal', '$templateCache', 'UserService', 'EventService', 'LoggingService', function(storage, $scope, $rootScope, $timeout, $stateParams, $location, $q, Modal, $templateCache, UserService, EventService, log) {
 		log.info('Initializing CMEventCtrl');
 
 		$rootScope.eventType = $stateParams.eventType;
@@ -102,6 +102,18 @@
 			$location.path('/events/official');
 			return;
 		}
+
+		storage.bind($scope, 'searchString', {
+			'storeName': 'cm.event.' + $rootScope.eventType
+		});
+		log.info('$scope.searchString: ' + $scope.searchString);
+
+		/*
+		storage.bind($scope, '_lastEvent', {
+			'storeName': 'cm.event.' + $rootScope.eventType
+		});
+		log.info('$scope._lastEvent: ' + $scope._lastEvent);
+		*/
 
 		$rootScope.title = $rootScope.eventType.capitalize() + ' Events';
 

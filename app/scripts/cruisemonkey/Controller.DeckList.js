@@ -1,9 +1,35 @@
 (function() {
 	'use strict';
 
-	angular.module('cruisemonkey.controllers.DeckList', ['ngRoute', 'cruisemonkey.Logging'])
-	.controller('CMDeckListCtrl', ['$scope', '$rootScope', '$timeout', '$state', '$stateParams', '$location', 'LoggingService', function($scope, $rootScope, $timeout, $state, $stateParams, $location, log) {
+	angular.module('cruisemonkey.controllers.DeckList', ['angularLocalStorage', 'cruisemonkey.Logging'])
+	.controller('CMDeckListCtrl', ['storage', '$scope', '$rootScope', '$timeout', '$state', '$stateParams', '$location', 'LoggingService', function(storage, $scope, $rootScope, $timeout, $state, $stateParams, $location, log) {
 		log.info('Initializing CMDeckListCtrl');
+
+		storage.bind($scope, '_deck', {
+			'defaultValue': '2',
+			'storeName': 'cm.deck'
+		});
+		log.info('$scope._deck: ' + $scope._deck);
+
+		$scope.deck = 2;
+		if ($stateParams.deck) {
+			log.info('$stateParams.deck: ' + $stateParams.deck);
+			var passedDeck = parseInt($stateParams.deck, 10);
+			if (passedDeck && passedDeck > 0) {
+				$scope.deck = passedDeck;
+			}
+		} else if ($scope._deck) {
+			log.info('$scope._deck: ' + $scope._deck);
+			var storedDeck = parseInt($scope._deck, 10);
+			if (storedDeck && storedDeck > 0) {
+				$scope.deck = storedDeck;
+			}
+		}
+
+		$scope.$watch('deckIndex', function(newValue, oldValue) {
+			log.info('deckIndex changed. oldValue: ' + oldValue + ', newValue: ' + newValue);
+			$scope._deck = (newValue + 2).toString();
+		});
 
 		$scope.previous = function() {
 			previous();
@@ -78,17 +104,13 @@
 			});
 		});
 
-		if ($stateParams.deck) {
-			$timeout(function() {
-				var newDeck = parseInt($stateParams.deck, 10);
-				$scope.$broadcast('slideBox.setSlide', newDeck - 2);
-				$scope.deck = newDeck;
+		$timeout(function() {
+			if ($scope.deck !== 2) {
+				$scope.$broadcast('slideBox.setSlide', $scope.deck - 2);
+			} else {
 				updateUI();
-			}, 10);
-		} else {
-			$scope.deck = 2;
-			updateUI();
-		}
+			}
+		}, 10);
 
 		document.addEventListener('keydown', listener, true);
 		$scope.$on('$destroy', function() {

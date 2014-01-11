@@ -67,6 +67,12 @@
 			}
 		};
 
+		$rootScope.isPhonegap = false;
+		phonegapReady(function() {
+			$rootScope.isPhonegap = true;
+			console.log('phonegap!');
+		});
+
 		$rootScope.openLeft = function() {
 			$rootScope.sideMenuController.toggleLeft();
 		};
