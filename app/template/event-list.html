@@ -42,8 +42,15 @@
 	</div>
 </script>
 <content has-header="false" overflow-scroll="true" scroll="true">
+	<div class="bar item-input-inset">
+		<label class="item-input-wrapper">
+			<i class="icon ion-ios7-search placeholder-icon"></i>
+			<input type="search" placeholder="Search" ng-model="searchString" />
+		</label>
+		<button class="button button-clear" ng-click="clearSearchString()">Cancel</button>
+	</div>
 	<div class="event-list list">
-		<span ng-repeat="event in events | orderByEvent">
+		<span ng-repeat="event in events | orderByEvent:searchString">
 			<div ng-if="event.isNewDay()" class="item item-divider header">{{prettyDate(event.getStart())}}</div>
 
 			<div class="list-entry item item-text-wrap" ng-class-even="'even'" ng-class-odd="'odd'">

@@ -9,6 +9,10 @@
 
 		$scope.settings = SettingsService.getSettings();
 
+		$scope.openCertificate = function() {
+			window.open('http://ranger.befunk.com/misc/twitarr.rylath.net.cer', '_system');
+		};
+
 		$scope.isUnchanged = function() {
 			var existing = SettingsService.getSettings();
 			var updated  = $scope.settings;

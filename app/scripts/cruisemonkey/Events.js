@@ -214,6 +214,22 @@ function CMEvent(rawdata) {
 		return self._rawdata;
 	};
 
+	self.matches = function(searchString) {
+		if (searchString === undefined || searchString === '') {
+			return true;
+		}
+
+		if (self.getSummary() !== undefined && self.getSummary().contains(searchString)) {
+			return true;
+		} else if (self.getDescription() !== undefined && self.getDescription().contains(searchString)) {
+			return true;
+		} else if (self.getLocation() !== undefined && self.getLocation().contains(searchString)) {
+			return true;
+		}
+
+		return false;
+	};
+
 	self.initialize(rawdata);
 }
 

@@ -6,14 +6,16 @@
 	/*global CMEvent: true*/
 	angular.module('cruisemonkey.controllers.Events', ['ngRoute', 'cruisemonkey.User', 'cruisemonkey.Events', 'cruisemonkey.Logging', 'ionic'])
 	.filter('orderByEvent', function() {
-		return function(input) {
+		return function(input, searchString) {
 			if (!angular.isObject(input)) { return input; }
 
 			var array = [];
 			for(var objectKey in input) {
 				var obj = input[objectKey];
 				obj.setNewDay(false);
-				array.push(obj);
+				if (obj.matches(searchString)) {
+					array.push(obj);
+				}
 			}
 
 			var attrA, attrB;
@@ -123,6 +125,10 @@
 			} else {
 				log.warn('CMEventCtrl: unknown event type: ' + $rootScope.eventType);
 			}
+		};
+
+		$scope.clearSearchString = function() {
+			$scope.searchString = undefined;
 		};
 
 		$scope.prettyDate = function(date) {

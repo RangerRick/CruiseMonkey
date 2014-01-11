@@ -63,6 +63,7 @@
 	<gap:plugin name="org.apache.cordova.dialogs" />
 	<gap:plugin name="org.apache.cordova.splashscreen" />
 	<gap:plugin name="org.apache.cordova.vibration" />
+	<gap:plugin name="org.apache.cordova.inappbrowser" />
 
 	<!-- general preferences -->
 	<preference name="phonegap-version" value="3.1.0" />
@@ -78,9 +79,9 @@
 	<preference name="webviewbounce" value="false" />
 
 	<!-- Android preferences -->
-	<preference name="android-minSdkVersion" value="9" /> <!-- Android 2.3, see http://developer.android.com/guide/topics/manifest/uses-sdk-element.html#ApiLevels for details -->
+	<preference name="android-minSdkVersion" value="14" /> <!-- Android 4.0, see http://developer.android.com/guide/topics/manifest/uses-sdk-element.html#ApiLevels for details -->
 	<!-- <preference name="android-maxSdkVersion" value="15" /> use default=unset -->
-	<!-- <preference name="android-targetSdkVersion" value="12" /> use default=unset -->
+	<preference name="android-targetSdkVersion" value="16" />
 	<preference name="android-installLocation" value="auto" />
 	<!-- <preference name="android-windowSoftInputMode" value="stateVisible|adjustResize" /> use default -->
 	<preference name="splash-screen-duration" value="20000" />

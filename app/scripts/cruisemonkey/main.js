@@ -71,31 +71,6 @@
 			$rootScope.sideMenuController.toggleLeft();
 		};
 
-		var updateMenu = function() {
-			var path = $location.path();
-			angular.forEach(document.getElementById('nav').children, function(li, key) {
-				if (li.children[0]) {
-					var href = li.children[0].href;
-					if (href) {
-						if (href.charAt(href.length - 1) === '/') {
-							href = href.substr(0, href.length - 1);
-						}
-						var index = href.indexOf('#');
-						if (index !== -1) {
-							href = href.substring(href.indexOf('#') + 1);
-						}
-						if (href === '') {
-							angular.element(li).removeClass('selected');
-						} else if (path.startsWith(href)) {
-							angular.element(li).addClass('selected');
-						} else {
-							angular.element(li).removeClass('selected');
-						}
-					}
-				}
-			});
-		};
-
 		$rootScope.$on('$locationChangeSuccess', function(evt, newUrl, oldUrl) {
 			console.log('locationChangeSuccess:',evt,newUrl,oldUrl);
 
@@ -125,17 +100,14 @@
 			$urlRouter.sync();
 			angular.noop();
 
-			updateMenu();
 			return;
 		});
 		
 		$rootScope.$on('cm.loggedIn', function(event) {
 			console.log('User logged in, refreshing menu.');
-			updateMenu();
 		});
 		$rootScope.$on('cm.loggedOut', function(event) {
 			console.log('User logged out, refreshing menu.');
-			updateMenu();
 		});
 
 		$rootScope.hideSpinner = true;

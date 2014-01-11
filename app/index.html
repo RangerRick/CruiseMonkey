@@ -39,6 +39,11 @@ if (typeof String.prototype.endsWith !== 'function') {
 		return this.indexOf(suffix, this.length - suffix.length) !== -1;
 	};
 }
+if (typeof String.prototype.contains !== 'function') {
+	String.prototype.contains = function(comparator) {
+		return comparator === undefined? true : (this.toLowerCase().indexOf(comparator.toLowerCase()) > -1);
+	}
+}
 
 var bootstrapped = false;
 var fireDocumentReady = function() {
