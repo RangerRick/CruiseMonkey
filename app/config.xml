@@ -64,6 +64,7 @@
 	<gap:plugin name="org.apache.cordova.splashscreen" />
 	<gap:plugin name="org.apache.cordova.vibration" />
 	<gap:plugin name="org.apache.cordova.inappbrowser" />
+	<gap:plugin name="com.testflightapp.cordova-plugin" />
 
 	<!-- general preferences -->
 	<preference name="phonegap-version" value="3.1.0" />
