@@ -38,6 +38,13 @@
 			},
 			'save': function(newUser) {
 				newUser.username = newUser.username.toLowerCase();
+				if ($rootScope.testFlight) {
+					$rootScope.testFlight.addCustomEnvironmentInformation(function() {
+						// success
+					}, function() {
+						// failure
+					}, 'username', newUser.username);
+				}
 				$rootScope._user = angular.copy(newUser);
 			},
 			'reset': function() {

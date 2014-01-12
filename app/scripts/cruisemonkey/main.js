@@ -1,6 +1,8 @@
 (function () {
 	'use strict';
 
+	/*global TestFlight: true*/
+	
 	angular.module('cruisemonkey',
 	[
 		'ui.router',
@@ -71,6 +73,27 @@
 		phonegapReady(function() {
 			$rootScope.isPhonegap = true;
 			console.log('phonegap!');
+
+			(function(d, script) {
+				script = d.createElement('script');
+				script.type = 'text/javascript';
+				script.async = true;
+				script.onload = function(){
+					script.onload = null;
+
+					var tf = new TestFlight();
+					tf.takeOff(function() {
+						// success
+						console.log('TestFlight: success taking off!');
+					}, function() {
+						// failure
+						console.log('TestFlight: failed to take off!');
+					}, "f3ad30f5-f481-44ba-9887-1ca57a0a3749");
+					$rootScope.testFlight = tf;
+				};
+				script.src = 'app/scripts/3rdparty/testflight.js';
+				d.getElementsByTagName('head')[0].appendChild(script);
+			}(document));
 		});
 
 		$rootScope.openLeft = function() {
