@@ -1,6 +1,6 @@
 {
   "name": "CruiseMonkey",
-  "version": "3.9.1.20140112194124",
+  "version": "3.9.1.@date@",
   "keywords": [
     "angularjs",
     "angular"

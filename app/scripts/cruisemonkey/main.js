@@ -71,11 +71,12 @@
 
 		$rootScope.isPhonegap = false;
 		phonegapReady(function() {
-			$rootScope.isPhonegap = true;
-			console.log('phonegap!');
+			if (window.device) {
+				$rootScope.isPhonegap = true;
+				console.log('phonegap!');
 
-			(function(d, script) {
-				script = d.createElement('script');
+				/*
+				script = document.createElement('script');
 				script.type = 'text/javascript';
 				script.async = true;
 				script.onload = function(){
@@ -91,9 +92,10 @@
 					}, "f3ad30f5-f481-44ba-9887-1ca57a0a3749");
 					$rootScope.testFlight = tf;
 				};
-				script.src = 'app/scripts/3rdparty/testflight.js';
-				d.getElementsByTagName('head')[0].appendChild(script);
-			}(document));
+				script.src = 'scripts/3rdparty/testflight.js';
+				document.getElementsByTagName('head')[0].appendChild(script);
+				*/
+			}
 		});
 
 		$rootScope.openLeft = function() {

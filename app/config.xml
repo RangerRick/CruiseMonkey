@@ -1,11 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<widget xmlns		= "http://www.w3.org/ns/widgets"
-	xmlns:gap	= "http://phonegap.com/ns/1.0"
-	id		= "com.raccoonfink.cruisemonkey"
-	version 	= "3.9.0">
-
+<widget xmlns="http://www.w3.org/ns/widgets" xmlns:gap="http://phonegap.com/ns/1.0" id="com.raccoonfink.cruisemonkey" version="3.9.1.20140112194124">
 	<name>CruiseMonkey</name>
-
 	<description>Keep Track of Your Cruise</description>
 
 	<author href="https://github.com/RangerRick/CruiseMonkey.git"
@@ -64,7 +59,7 @@
 	<gap:plugin name="org.apache.cordova.splashscreen" />
 	<gap:plugin name="org.apache.cordova.vibration" />
 	<gap:plugin name="org.apache.cordova.inappbrowser" />
-	<gap:plugin name="com.testflightapp.cordova-plugin" />
+	<!-- <gap:plugin name="com.testflightapp.cordova-plugin" /> -->
 
 	<!-- general preferences -->
 	<preference name="phonegap-version" value="3.1.0" />

@@ -46,6 +46,14 @@ module.exports = function (grunt) {
         ]
       }
     },
+    version: {
+      dist: {
+        options: {
+          prefix: 'id="com.raccoonfink.cruisemonkey" version="'
+        },
+        src: [ 'app/config.xml' ]
+      }
+    },
     autoprefixer: {
       options: ['last 1 version'],
       dist: {
@@ -167,6 +175,7 @@ module.exports = function (grunt) {
         files: {
           src: [
             '<%= yeoman.dist %>/scripts/{,*/}*.js',
+            '!<%= yeoman.dist %>/scripts/3rdparty/testflight.js',
             '<%= yeoman.dist %>/styles/{,*/}*.css',
             '<%= yeoman.dist %>/images/*.{gif,png}',
             '<%= yeoman.dist %>/images/entypo/**/*.{png,svg}',
@@ -289,6 +298,7 @@ module.exports = function (grunt) {
         'copy:styles'
       ],
       dist: [
+        'version',
         'coffee',
         'compass:dist',
         'copy:styles',
