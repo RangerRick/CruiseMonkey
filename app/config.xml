@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<widget xmlns="http://www.w3.org/ns/widgets" xmlns:gap="http://phonegap.com/ns/1.0" id="com.raccoonfink.cruisemonkey" version="3.9.1.20140112220547">
+<widget xmlns="http://www.w3.org/ns/widgets" xmlns:gap="http://phonegap.com/ns/1.0" id="com.raccoonfink.cruisemonkey" version="3.9.1.20140113111748">
 	<name>CruiseMonkey</name>
 	<description>Keep Track of Your Cruise</description>
 
@@ -11,6 +11,10 @@
 	<gap:platform name="ios" minVersion="6.0" />
 	<gap:platform name="android" minVersion="4.0" />
 	<!-- <gap:platform name="winphone" /> -->
+
+	<gap:url-scheme name="com.raccoonfink.cruisemonkey" role="None">
+		<scheme>cruisemonkey</scheme>
+	</gap:url-scheme>
 
 	<icon src="Icon.png" />
 	<icon src="Icon-Small.png"       width="29"  height="29"  gap:platform="ios" />
@@ -29,23 +33,15 @@
 	<icon src="Icon-96.png"  width="96"  height="96"  gap:platform="android" />
 
 	<gap:splash src="cruise-monkey-768x1024.png"  width="768"  height="1024" gap:platform="ios" />
-	<gap:splash src="cruise-monkey-1024x768.png"  width="1024" height="768"  gap:platform="ios" />
 	<gap:splash src="cruise-monkey-1536x2048.png" width="1536" height="2048" gap:platform="ios" />
-	<gap:splash src="cruise-monkey-2048x1536.png" width="2048" height="1536" gap:platform="ios" />
 	<gap:splash src="cruise-monkey-320x480.png"   width="320"  height="480"  gap:platform="ios" />
-	<gap:splash src="cruise-monkey-480x320.png"   width="480"  height="320"  gap:platform="ios" />
 	<gap:splash src="cruise-monkey-640x960.png"   width="640"  height="960"  gap:platform="ios" />
-	<gap:splash src="cruise-monkey-960x640.png"   width="960"  height="640"  gap:platform="ios" />
 	<gap:splash src="cruise-monkey-640x1136.png"  width="640"  height="1136" gap:platform="ios" />
 
 	<gap:splash src="cruise-monkey-200x320.png"   width="200"  height="320"  gap:platform="android" gap:density="ldpi"  />
-	<gap:splash src="cruise-monkey-320x200.png"   width="320"  height="200"  gap:platform="android" gap:density="ldpi"  />
 	<gap:splash src="cruise-monkey-320x480.png"   width="320"  height="480"  gap:platform="android" gap:density="mdpi"  />
-	<gap:splash src="cruise-monkey-480x320.png"   width="480"  height="320"  gap:platform="android" gap:density="mdpi"  />
 	<gap:splash src="cruise-monkey-480x800.png"   width="480"  height="800"  gap:platform="android" gap:density="hdpi"  />
-	<gap:splash src="cruise-monkey-800x480.png"   width="800"  height="480"  gap:platform="android" gap:density="hdpi"  />
 	<gap:splash src="cruise-monkey-720x1280.png"  width="720"  height="1280" gap:platform="android" gap:density="xhdpi" />
-	<gap:splash src="cruise-monkey-1280x720.png"  width="1280" height="720"  gap:platform="android" gap:density="xhdpi" />
 
 	<gap:plugin name="org.apache.cordova.camera" />
 	<gap:plugin name="org.apache.cordova.console" />
@@ -59,11 +55,12 @@
 	<gap:plugin name="org.apache.cordova.splashscreen" />
 	<gap:plugin name="org.apache.cordova.vibration" />
 	<gap:plugin name="org.apache.cordova.inappbrowser" />
-	<gap:plugin name="com.testflightapp.cordova-plugin" />
+	<!-- <gap:plugin name="com.testflightapp.cordova-plugin" /> -->
 
 	<!-- general preferences -->
 	<preference name="phonegap-version" value="3.1.0" />
-	<preference name="orientation" value="default" />
+	<!-- <preference name="orientation" value="default" /> -->
+	<preference name="orientation" value="portrait" />
 	<!-- <preference name="fullscreen" value="true" /> use default=false -->
 
 	<!-- iOS preferences -->
