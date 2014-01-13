@@ -6,13 +6,13 @@ CruiseMonkey is an HTML5 app for use on [JoCo Cruise Crazy](http://jococruisecra
 Beta Testing
 ============
 
-Android
--------
+Android Beta
+------------
 
 Android has no limitations on who can install apps from outside the app store.  The latest release is always available from [the CruiseMonkey GitHub site](https://github.com/RangerRick/CruiseMonkey/releases/).
 
-iOS
----
+iOS Beta
+--------
 
 If you wish to beta test CruiseMonkey on iOS, you must sign up for a [TestFlight](http://testflightapp.com) account.
 
