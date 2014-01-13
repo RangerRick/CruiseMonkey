@@ -27,10 +27,19 @@ Apple only allows a certain number of approved devices to be built into test bin
 
 If you have beta tested previous CruiseMonkey releases, **please email me at [testflight@raccoonfink.com](mailto:testflight@raccoonfink.com)** to let me know which device(s) are still active and that you would like to test again this year.
 
-Reporting Bugs and Feature Requests
-===================================
+Bugs and Enhancement Requests
+=============================
 
-Bugs and feature requests can be reported at the [CruiseMonkey github page](https://github.com/RangerRick/CruiseMonkey/issues).  You will need to create a GitHub account to do so.
+Known Issues
+------------
+
+* Login is not working on Android yet.  CruiseMonkey will be stuck in read-only mode for now.
+* Sometimes it is possible to drag the app in a way that causes the "main" window to stay stuck out of alignment.
+
+Opening an Issue (Bug or Enhancement)
+-------------------------------------
+
+Bugs and enhancement requests can be reported at the [CruiseMonkey github page](https://github.com/RangerRick/CruiseMonkey/issues).  You will need to create a GitHub account to do so.
 
 Licensing
 =========
