@@ -41,7 +41,11 @@
 				$rootScope._settings['database.host'] = angular.copy(name);
 			},
 			'getTwitarrRoot': function() {
-				return angular.copy($rootScope._settings['twitarr.root']);
+				var twitarrRoot = $rootScope._settings['twitarr.root'];
+				if (!twitarrRoot.endsWith('/')) {
+					twitarrRoot += '/';
+				}
+				return angular.copy(twitarrRoot);
 			},
 			'setTwitarrRoot': function(root) {
 				$rootScope._settings['twitarr.root'] = angular.copy(root);

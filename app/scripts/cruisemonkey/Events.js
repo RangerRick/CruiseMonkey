@@ -295,7 +295,7 @@ function CMFavorite(rawdata) {
 			databaseReady = false;
 
 		var storeEvent = function(ev) {
-			log.debug('EventService.storeEvent(' + ev.getId() + ')');
+			// log.debug('EventService.storeEvent(' + ev.getId() + ')');
 			_events[ev.getId()] = ev;
 		};
 		var deleteEvent = function(eventId) {
@@ -316,7 +316,7 @@ function CMFavorite(rawdata) {
 		var getFavoriteByEventId = function(eventId) {
 			var username = UserService.getUsername();
 			if (!username) {
-				log.debug('EventService.getFavoriteByEventId(): Not logged in.');
+				// log.debug('EventService.getFavoriteByEventId(): Not logged in.');
 				return;
 			}
 
@@ -349,7 +349,7 @@ function CMFavorite(rawdata) {
 				ev = new CMEvent(doc);
 			}
 
-			log.debug('EventService.handleEventUpdated(): Event updated: ' + ev.toString());
+			// log.debug('EventService.handleEventUpdated(): Event updated: ' + ev.toString());
 
 			var fav = getFavoriteByEventId(ev.getId());
 			ev.setFavorite(fav);
@@ -453,7 +453,6 @@ function CMFavorite(rawdata) {
 							var ev = res.rows[i].value;
 							results.push(new ObjConstructor(ev));
 						}
-						log.debug('results =', results);
 						deferred.resolve(results);
 					}
 				});

@@ -2,7 +2,7 @@
 	'use strict';
 
 	/*global TestFlight: true*/
-	
+
 	angular.module('cruisemonkey',
 	[
 		'ui.router',
@@ -69,11 +69,10 @@
 			}
 		};
 
-		$rootScope.isPhonegap = false;
-		phonegapReady(function() {
+		var initPhonegap = function() {
 			if (window.device) {
 				$rootScope.isPhonegap = true;
-				console.log('phonegap!');
+				console.log('main: This is a phonegap device!');
 
 				/*
 				script = document.createElement('script');
@@ -95,8 +94,17 @@
 				script.src = 'scripts/3rdparty/testflight.js';
 				document.getElementsByTagName('head')[0].appendChild(script);
 				*/
+			} else {
+				console.log('main: This is not a phonegap device.');
 			}
-		});
+		};
+
+		$rootScope.isPhonegap = false;
+		if (window.device) {
+			initPhonegap();
+		} else {
+			phonegapReady(initPhonegap);
+		}
 
 		$rootScope.openLeft = function() {
 			$rootScope.sideMenuController.toggleLeft();
@@ -137,7 +145,7 @@
 
 			return;
 		});
-		
+
 		var savedUrl = storage.get('cm.lasturl');
 		if (savedUrl) {
 			var index = savedUrl.indexOf('#');

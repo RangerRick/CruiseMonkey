@@ -46,7 +46,7 @@
 
 			$http({
 				method: 'GET',
-				url: $scope.twitarrRoot + '/api/v1/user/auth',
+				url: twitarrRoot + 'api/v1/user/auth',
 				params: {
 					username: user.username,
 					password: user.password
