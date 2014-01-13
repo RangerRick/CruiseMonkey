@@ -25,7 +25,7 @@ Returning Beta Testers - Action Required!
 
 Apple only allows a certain number of approved devices to be built into test binaries.  This means that I have a limited number of test slots available.  Rather than adding to last year's beta list, I'm starting over this year, since it's possible that some of last year's testers have bought or gotten rid of devices or will not be attending JCCC4.
 
-If you have beta tested previous CruiseMonkey releases, **please email me at [testflight@raccoonfink.com](mailto:testflight@raccoonfink.com)** to let me know which device(s) are still active and that you would like to test again this year.
+If you have beta tested previous CruiseMonkey releases, **please email me at [testflight@raccoonfink.com](mailto:testflight@raccoonfink.com)** to let me know your TestFlight account email address and which device(s) are still active and that you would like to test again this year.
 
 Bugs and Enhancement Requests
 =============================
