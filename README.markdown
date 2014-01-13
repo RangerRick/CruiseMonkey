@@ -9,7 +9,7 @@ Beta Testing
 Android
 -------
 
-Android has no limitations on who can install apps from outside the app store.  The latest release is available from the CruiseMonkey GitHub site.
+Android has no limitations on who can install apps from outside the app store.  The latest release is always available from [the CruiseMonkey GitHub site](https://github.com/RangerRick/CruiseMonkey/releases/).
 
 iOS
 ---
