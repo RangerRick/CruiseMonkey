@@ -45,8 +45,8 @@
 			$scope.$broadcast('slideBox.nextSlide');
 		};
 
-		var listener = function(ev) {
-			console.log("received event: ", ev);
+		var keyListener = function(ev) {
+			//console.log("received event: ", ev);
 			if (ev.keyCode === 37) {
 				previous();
 				return false;
@@ -112,9 +112,9 @@
 			}
 		}, 10);
 
-		document.addEventListener('keydown', listener, true);
+		document.addEventListener('keydown', keyListener, true);
 		$scope.$on('$destroy', function() {
-			document.removeEventListener('keydown', listener, true);
+			document.removeEventListener('keydown', keyListener, true);
 		});
 	}]);
 }());

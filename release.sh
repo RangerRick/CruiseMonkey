@@ -11,14 +11,20 @@ mv app/scripts/cruisemonkey/Config.js.bak app/scripts/cruisemonkey/Config.js
 
 grunt build
 
+install -d -m 755 platforms/{ios,android/assets,web}/www
+
 rsync -avr --delete www/ platforms/ios/www/
 rsync -avr --delete www/ platforms/android/assets/www/
 rsync -avr --delete www/ platforms/web/www/
 
 rm -rf platforms/ios/www/*.png
 
-echo "" > platforms/web/www/cordova.js
-echo "" > platforms/web/www/cordova_plugins.js
-echo "" > platforms/web/www/scripts/3rdparty/testflight.js
+mv platforms/ios/www/_cordova.js platforms/ios/www/cordova.js
+mv platforms/ios/www/_cordova_plugins.js platforms/ios/www/cordova_plugins.js
+mv platforms/ios/www/scripts/3rdparty/_testflight.js platforms/ios/www/scripts/3rdparty/testflight.js
 
-cordova build
+mv platforms/android/assets/www/_cordova.js platforms/android/assets/www/cordova.js
+mv platforms/android/assets/www/_cordova_plugins.js platforms/android/assets/www/cordova_plugins.js
+mv platforms/android/assets/www/scripts/3rdparty/_testflight.js platforms/android/assets/www/scripts/3rdparty/testflight.js
+
+cordova build "$@"

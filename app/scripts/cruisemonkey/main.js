@@ -57,7 +57,9 @@
 				controller: 'CMAdvancedCtrl'
 			});
 	}])
-	.run(['$rootScope', '$window', '$location', '$urlRouter', 'UserService', 'EventService', 'storage', 'phonegapReady', function($rootScope, $window, $location, $urlRouter, UserService, EventService, storage, phonegapReady) {
+	.run(['$q', '$rootScope', '$window', '$location', '$timeout', '$urlRouter', 'UserService', 'EventService', 'storage', 'phonegapReady', function($q, $rootScope, $window, $location, $timeout, $urlRouter, UserService, EventService, storage, phonegapReady) {
+		console.log('CruiseMonkey run() called.');
+
 		$rootScope.safeApply = function(fn) {
 			var phase = this.$root.$$phase;
 			if(phase === '$apply' || phase === '$digest') {
@@ -68,6 +70,17 @@
 				this.$apply(fn);
 			}
 		};
+
+		var waiting = $q.defer();
+		$rootScope.$on('cm.eventCachePrimed', function() {
+			waiting.resolve(true);
+		});
+		waiting.promise.then(function() {
+			// wait a little longer for things to settle down
+			$timeout(function() {
+				$rootScope.hideSpinner = true;
+			}, 3000);
+		});
 
 		$window.handleOpenURL = function(url) {
 			var translated = url.replace('cruisemonkey://','/');
@@ -100,7 +113,7 @@
 		};
 
 		$rootScope.$on('$locationChangeSuccess', function(evt, newUrl, oldUrl) {
-			console.log('locationChangeSuccess:',evt,newUrl,oldUrl);
+			// console.log('locationChangeSuccess:',evt,newUrl,oldUrl);
 
 			$rootScope.user = UserService.get();
 			$rootScope.sideMenuController.close();
@@ -150,8 +163,6 @@
 		$rootScope.$on('cm.loggedOut', function(event) {
 			console.log('User logged out, refreshing menu.');
 		});
-
-		$rootScope.hideSpinner = true;
 	}])
 	;
 }());

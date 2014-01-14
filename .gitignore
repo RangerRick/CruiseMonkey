@@ -17,3 +17,8 @@ platforms/android/bin
 platforms/android/gen
 platforms/android/CordovaLib/bin
 platforms/android/CordovaLib/gen
+
+# generated www files
+platforms/ios/www
+platforms/android/assets/www
+platforms/web/www

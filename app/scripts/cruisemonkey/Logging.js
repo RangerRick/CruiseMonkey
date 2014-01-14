@@ -1,12 +1,14 @@
 (function() {
 	'use strict';
 
+	var defaultLevel = log4javascript.Level.INFO;
+
 	function StringAppender() {}
 
 	/*global log4javascript: true*/
 	StringAppender.prototype = new log4javascript.Appender();
 	StringAppender.prototype.layout = new log4javascript.NullLayout();
-	StringAppender.prototype.threshold = log4javascript.Level.DEBUG;
+	StringAppender.prototype.threshold = defaultLevel;
 	StringAppender.prototype._saLogHistory = "";
 	StringAppender.prototype._saIndentLevel = 0;
 
@@ -78,7 +80,7 @@
 
 	ConsoleAppender.prototype = new log4javascript.Appender();
 	ConsoleAppender.prototype.layout = new log4javascript.NullLayout();
-	ConsoleAppender.prototype.threshold = log4javascript.Level.DEBUG;
+	ConsoleAppender.prototype.threshold = defaultLevel;
 
 	ConsoleAppender.prototype.append = function(loggingEvent) {
 		var appender = this;
@@ -118,6 +120,8 @@
 		var logger = log4javascript.getLogger();
 		logger.removeAllAppenders();
 
+		var appender = new ConsoleAppender();
+
 		var ret = {
 			'getLogHistory': function() {
 				return "";
@@ -142,6 +146,24 @@
 			},
 			'fatal': function() {
 				logger.fatal(Array.prototype.slice.apply(arguments));
+			},
+			'setLevel': function(level) {
+				if (level === 'TRACE') {
+					appender.setThreshold(log4javascript.Level.TRACE);
+				} else if (level === 'DEBUG') {
+					appender.setThreshold(log4javascript.Level.DEBUG);
+				} else if (level === 'INFO') {
+					appender.setThreshold(log4javascript.Level.INFO);
+				} else if (level === 'WARN') {
+					appender.setThreshold(log4javascript.Level.WARN);
+				} else if (level === 'ERROR') {
+					appender.setThreshold(log4javascript.Level.ERROR);
+				} else if (level === 'FATAL') {
+					appender.setThreshold(log4javascript.Level.FATAL);
+				} else {
+					console.log('unable to determine log level for ' + level + ', setting to INFO');
+					appender.setThreshold(log4javascript.Level.INFO);
+				}
 			}
 		};
 
@@ -159,7 +181,6 @@
 			console.log('skipping StringAppender');
 		}
 
-		var appender = new ConsoleAppender();
 		appender.setLayout(layout);
 		logger.addAppender(appender);
 

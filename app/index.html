@@ -134,7 +134,11 @@ window.setTimeout(function() {
 	} else {
 		// check for updates every 5 minutes
 		window.setInterval(function() {
-			window.applicationCache.update();
+			if (window.applicationCache) {
+				window.applicationCache.update();
+			} else {
+				console.log('Application cache does not exist, skipping update.');
+			}
 		}, 300000);
 	}
 }, 30000);
@@ -149,23 +153,31 @@ window.setTimeout(function() {
 	 [ng\:cloak], [ng-cloak], .ng-cloak {
 		display: none !important;
 	}
-	.loading.hidden {
-		display: none;
+	.cmloading.hidden {
+		display: none !important;
 	}
-	.loading.ng-cloak {
-		display: inline-block !important;
+	.cmloading {
 		z-index: 10000;
+		background-color: white;
+		display: block !important;
+		position: fixed;
+		top: 0;
+		bottom: 0;
+		left: 0;
+		right: 0;
 		width: 100%;
 		height: 100%;
 		min-width: 100%;
 		min-height: 100%;
 	}
-	.loading .container {
+	.cmloading .container {
 		position: relative;
+		top: 0;
+		left: 0;
 		width: 100%;
 		height: 100%;
 	}
-	.loading .centered {
+	.cmloading .centered {
 		width: 300px;
 		height: 300px;
 		overflow: auto;
@@ -177,8 +189,8 @@ window.setTimeout(function() {
 		right: 0;
 		text-align: center;
 	}
-	.loading .spinner {
-		display: inline-block;
+	.cmloading .spinner {
+		display: inline-block !important;
 		width: 16px;
 		height: 16px;
 		background-image: url('images/spinner.gif');
@@ -196,12 +208,13 @@ window.setTimeout(function() {
 	<title ng-bind="'CruiseMonkey - ' + $root.title">CruiseMonkey</title>
 </head>
 <body class="antialiased off-canvas hide-extras">
-	<div class="loading container" ng-class="{hidden: hideSpinner}">
+	<div class="cmloading container" ng-class="{hidden: hideSpinner}" ng-cloak>
 		<div class="centered">
 			<div class="spinner"></div><br /><div id="loading">Loading...</div>
 		</div>
 	</div>
 
+	<div class="ng-cloak">
 	<side-menus>
 		<!-- animation="slide-left-right-ios7" -->
 		<pane side-menu-content nav-router>
@@ -237,6 +250,7 @@ window.setTimeout(function() {
 			</content>
 		</side-menu>
 	</side-menus>
+	</div>
 
 	<!-- build:js scripts/3rdparty.js -->
 	<script src="scripts/3rdparty/modernizr-latest.js"></script>

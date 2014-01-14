@@ -10,13 +10,12 @@
 			if (!angular.isObject(input)) { return input; }
 
 			var array = [];
-			for(var objectKey in input) {
-				var obj = input[objectKey];
+			angular.forEach(input, function(obj, index) {
 				obj.setNewDay(false);
 				if (obj.matches(searchString)) {
 					array.push(obj);
 				}
-			}
+			});
 
 			var attrA, attrB;
 
@@ -62,10 +61,8 @@
 				lastStart = start;
 			});
 
-			for (var i = 0; i < array.length; i++) {
-				if (i === 0) {
-					array[i].setNewDay(true);
-				}
+			if (array.length > 0) {
+				array[0].setNewDay(true);
 			}
 
 			return array;
@@ -78,8 +75,8 @@
 			$scope.event = $rootScope.editEvent.toEditableBean();
 			delete $rootScope.editEvent;
 
-			log.info('Found existing event to edit.');
-			console.log($scope.event);
+			log.debug('Found existing event to edit.');
+			// console.log($scope.event);
 		} else {
 			var ev = new CMEvent();
 			ev.setStart(moment());
@@ -88,8 +85,8 @@
 			ev.setPublic(true);
 			$scope.event = ev.toEditableBean();
 
-			log.info('Created fresh event.');
-			console.log($scope.event);
+			log.debug('Created fresh event.');
+			// console.log($scope.event);
 		}
 	}])
 	.controller('CMEventCtrl', ['storage', '$scope', '$rootScope', '$timeout', '$stateParams', '$location', '$q', 'Modal', '$templateCache', 'UserService', 'EventService', 'LoggingService', function(storage, $scope, $rootScope, $timeout, $stateParams, $location, $q, Modal, $templateCache, UserService, EventService, log) {
@@ -97,7 +94,7 @@
 
 		$rootScope.eventType = $stateParams.eventType;
 
-		console.log('eventType=',$rootScope.eventType);
+		//console.log('eventType=',$rootScope.eventType);
 		if (!$rootScope.eventType) {
 			$location.path('/events/official');
 			return;
@@ -106,7 +103,7 @@
 		storage.bind($scope, 'searchString', {
 			'storeName': 'cm.event.' + $rootScope.eventType
 		});
-		log.info('$scope.searchString: ' + $scope.searchString);
+		log.debug('$scope.searchString: ' + $scope.searchString);
 
 		/*
 		storage.bind($scope, '_lastEvent', {
@@ -118,7 +115,7 @@
 		$rootScope.title = $rootScope.eventType.capitalize() + ' Events';
 
 		var refreshEvents = function() {
-			log.info('CMEventCtrl.refreshEvents()');
+			log.debug('CMEventCtrl.refreshEvents()');
 			if ($rootScope.eventType === 'official') {
 				$q.when(EventService.getOfficialEvents()).then(function(e) {
 					$rootScope.events = e;
@@ -176,7 +173,7 @@
 		};
 
 		$scope.onFavoriteChanged = function(eventId, checked) {
-			log.info('CMEventCtrl.onFavoriteChanged(' + eventId + ', ' + checked + ')');
+			log.debug('CMEventCtrl.onFavoriteChanged(' + eventId + ', ' + checked + ')');
 			if (checked) {
 				EventService.addFavorite(eventId);
 			} else {
@@ -215,14 +212,14 @@
 		});
 
 		$scope.cancelModal = function() {
-			log.info('closing modal (cancel)');
+			log.debug('closing modal (cancel)');
 			$scope.event = undefined;
 			$scope.eventData = undefined;
 			$scope.modal.hide();
 		};
 
 		$scope.saveModal = function(data) {
-			log.info('closing modal (save)');
+			log.debug('closing modal (save)');
 			
 			var ev = $scope.event;
 			ev.fromEditableBean(data);
