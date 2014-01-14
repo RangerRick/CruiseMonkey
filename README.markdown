@@ -10,6 +10,13 @@ Requirements
 * Android: Any device supporting Android 4.0 or higher
 * Web: A browser capable of modern HTML5
 
+Twit-Arr Has Changed!
+=====================
+
+Please note that the Twit-Arr server is completely new this year, and user accounts from last year will no longer work with it.  Before you can log in to CruiseMonkey, you will have to make an account [on the new Twit-Arr server first!](https://twitarr.rylath.net/)
+
+If you have any issues with the twit-arr server, I can't really help you.  Please ask Kvort\_the\_Duck on the JoCo forums, or post to his [twit-arr thread here](http://www.jonathancoulton.com/forums/index.php?p=/discussion/1940/twitt-arrrr).
+
 Beta Testing
 ============
 
@@ -38,7 +45,8 @@ Known Issues
 Opening an Issue (Bug or Enhancement)
 -------------------------------------
 
-Bugs and enhancement requests can be reported at the [CruiseMonkey github page](https://github.com/RangerRick/CruiseMonkey/issues).  You will need to create a GitHub account to do so.
+* Twit-Arr: If you're having account issues, please speak with Kvort\_the\_Duck on the JoCo forums, or post to his [twit-arr thread here](http://www.jonathancoulton.com/forums/index.php?p=/discussion/1940/twitt-arrrr).  If you have found a bug or have an enhancement request for twit-arr, report it at the [Twit-Arr github page](https://github.com/walkeriniraq/twitarr/issues).  You will need to create a GitHub account to do so.
+* CruiseMonkey: Bugs and enhancement requests can be reported at the [CruiseMonkey github page](https://github.com/RangerRick/CruiseMonkey/issues).  You will need to create a GitHub account to do so.
 
 Contact
 =======
