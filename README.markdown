@@ -17,6 +17,11 @@ Please note that the Twit-Arr server is completely new this year, and user accou
 
 If you have any issues with the twit-arr server, I can't really help you.  Please ask Kvort\_the\_Duck on the JoCo forums, or post to his [twit-arr thread here](http://www.jonathancoulton.com/forums/index.php?p=/discussion/1940/twitt-arrrr).
 
+Logging In to Twit-Arr
+======================
+
+Because Twit-Arr is using a self-signed certificate, you must import it into your device.  To do so, launch CruiseMonkey, go to "Advanced" and then click the "Import" button.
+
 Beta Testing
 ============
 
