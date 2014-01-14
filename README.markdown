@@ -20,18 +20,22 @@ If you have any issues with the twit-arr server, I can't really help you.  Pleas
 Beta Testing
 ============
 
-Beta iOS and Android releases are available through [TestFlight](http://testflightapp.com).  To be notified of beta downloads, do the following:
+Beta iOS and Android releases are available through [TestFlight](http://testflightapp.com).
+
+To be notified of beta downloads, do the following:
 
 1. Sign up at [testflightapp.com](http://testflightapp.com).
 2. Register your device by browsing to [testflightapp.com](http://testflightapp.com) directly on your mobile device.  It will prompt for a login (if you haven't already) and then register a certificate profile with your device which allows pushing beta releases to your device.
 3. Go to the [CruiseMonkey beta recruitment page](http://tflig.ht/ytVfRp) and apply as a tester.
 
-Returning Beta Testers on iOS - Action Required!
+Returning Beta Testers on iOS - ACTION REQUIRED!
 ------------------------------------------------
 
 Apple only allows a certain number of approved devices to be built into test binaries.  This means that I have a limited number of test slots available.  Rather than adding to last year's beta list, I'm starting over this year, since it's possible that some of last year's testers have bought or gotten rid of devices or will not be attending JCCC4.
 
 If you have beta tested previous CruiseMonkey releases, **please email me at [testflight@raccoonfink.com](mailto:testflight@raccoonfink.com)** to let me know your TestFlight account email address and which device(s) are still active and that you would like to test again this year.
+
+**ALSO: Please PLEASE remove any old devices you might have put in TestFlight that you aren't using any more, and add your current devices.**
 
 Bugs and Enhancement Requests
 =============================
