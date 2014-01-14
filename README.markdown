@@ -40,6 +40,13 @@ Opening an Issue (Bug or Enhancement)
 
 Bugs and enhancement requests can be reported at the [CruiseMonkey github page](https://github.com/RangerRick/CruiseMonkey/issues).  You will need to create a GitHub account to do so.
 
+Contact
+=======
+
+* E-Mail: You can reach me (Benjamin Reed) at [testflight@raccoonfink.com](mailto:testflight@raccoonfink.com).
+* IRC: Join me in #cruisemonkey on FreeNode: irc.freenode.net
+* Forums: You can also discuss CruiseMonkey on the [JoCo Forums](http://www.jonathancoulton.com/forums/index.php?p=/discussion/2264/cruisemonkey-4)
+
 Licensing
 =========
 
