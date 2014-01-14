@@ -1,4 +1,5 @@
 *.swp
+.DS_Store
 .cordova
 .sass-cache
 .staging
@@ -13,3 +14,6 @@ xcuserdata
 .project
 .settings
 platforms/android/bin
+platforms/android/gen
+platforms/android/CordovaLib/bin
+platforms/android/CordovaLib/gen

@@ -11,54 +11,9 @@
     <key>CFBundleIconFile</key>
     <string>icon.png</string>
     <key>CFBundleIcons</key>
-    <dict>
-      <key>CFBundlePrimaryIcon</key>
-      <dict>
-        <key>CFBundleIconFiles</key>
-        <array>
-          <string>Icon-40</string>
-          <string>Icon-Small</string>
-          <string>Icon-60</string>
-          <string>Icon</string>
-          <string>Icon-57</string>
-          <string>icon-40</string>
-          <string>icon-small</string>
-          <string>icon-60</string>
-          <string>icon.png</string>
-          <string>icon@2x</string>
-          <string>icon-72</string>
-          <string>icon-72@2x</string>
-        </array>
-        <key>UIPrerenderedIcon</key>
-        <false/>
-      </dict>
-    </dict>
+    <dict/>
     <key>CFBundleIcons~ipad</key>
-    <dict>
-      <key>CFBundlePrimaryIcon</key>
-      <dict>
-        <key>CFBundleIconFiles</key>
-        <array>
-          <string>Icon-Small</string>
-          <string>Icon-40</string>
-          <string>Icon-Small-50</string>
-          <string>Icon-76</string>
-          <string>Icon-72</string>
-          <string>Icon</string>
-          <string>icon-small</string>
-          <string>icon-40</string>
-          <string>icon-50</string>
-          <string>icon-76</string>
-          <string>icon-60</string>
-          <string>icon</string>
-          <string>icon@2x</string>
-          <string>icon-72</string>
-          <string>icon-72@2x</string>
-        </array>
-        <key>UIPrerenderedIcon</key>
-        <false/>
-      </dict>
-    </dict>
+    <dict/>
     <key>CFBundleIdentifier</key>
     <string>com.raccoonfink.cruisemonkey</string>
     <key>CFBundleInfoDictionaryVersion</key>
@@ -71,37 +26,29 @@
     <string></string>
     <key>CFBundleSignature</key>
     <string>????</string>
+    <key>CFBundleURLTypes</key>
+    <array>
+      <dict>
+        <key>CFBundleTypeRole</key>
+        <string>None</string>
+        <key>CFBundleURLIconFile</key>
+        <string></string>
+        <key>CFBundleURLName</key>
+        <string>com.raccoonfink.cruisemonkey</string>
+        <key>CFBundleURLSchemes</key>
+        <array>
+          <string>cruisemonkey</string>
+        </array>
+      </dict>
+    </array>
     <key>CFBundleVersion</key>
-    <string>3.9.1+20140113220308</string>
+    <string>3.9.1+20140113224949</string>
     <key>LSRequiresIPhoneOS</key>
     <true/>
     <key>NSMainNibFile</key>
     <string></string>
     <key>NSMainNibFile~ipad</key>
     <string></string>
-    <key>UILaunchImages</key>
-    <array>
-      <dict>
-        <key>UILaunchImageMinimumOSVersion</key>
-        <string>7.0</string>
-        <key>UILaunchImageName</key>
-        <string>Default</string>
-        <key>UILaunchImageOrientation</key>
-        <string>Portrait</string>
-        <key>UILaunchImageSize</key>
-        <string>{320, 568}</string>
-      </dict>
-      <dict>
-        <key>UILaunchImageMinimumOSVersion</key>
-        <string>7.0</string>
-        <key>UILaunchImageName</key>
-        <string>Default</string>
-        <key>UILaunchImageOrientation</key>
-        <string>Portrait</string>
-        <key>UILaunchImageSize</key>
-        <string>{320, 480}</string>
-      </dict>
-    </array>
     <key>UISupportedInterfaceOrientations</key>
     <array>
       <string>UIInterfaceOrientationPortrait</string>

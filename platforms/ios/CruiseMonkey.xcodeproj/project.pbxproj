@@ -29,6 +29,7 @@
 		30A0434814DC770100060A13 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 30A0434314DC770100060A13 /* Localizable.strings */; };
 		30FC414916E50CA1004E6F35 /* icon-72@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 30FC414816E50CA1004E6F35 /* icon-72@2x.png */; };
 		3265357C85E54BA6B0946711 /* CDVVibration.m in Sources */ = {isa = PBXBuildFile; fileRef = 556F3D34E3C54C3C84237D44 /* CDVVibration.m */; };
+		4421E4BE1884E8830029A3F5 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4421E4BD1884E8830029A3F5 /* Images.xcassets */; };
 		4A49599B0A5245139BFC0D43 /* CDVJpegHeaderWriter.m in Sources */ = {isa = PBXBuildFile; fileRef = 44FF16620482407DAB79B660 /* CDVJpegHeaderWriter.m */; };
 		4D0B1A50652843C09D5F479B /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0511B9B01A234344BCDEA7D5 /* AudioToolbox.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 		5AEE5B35173C68D80009041E /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5AEE5B34173C68D80009041E /* CoreLocation.framework */; };
@@ -121,6 +122,9 @@
 		32CA4F630368D1EE00C91783 /* CruiseMonkey-Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "CruiseMonkey-Prefix.pch"; sourceTree = "<group>"; };
 		3314BFBA8DDC4D8CAD049B0F /* CDVTestFlight.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CDVTestFlight.m; path = "com.testflightapp.cordova-plugin/CDVTestFlight.m"; sourceTree = "<group>"; };
 		39F8FE4D84F44B2BBFB0D259 /* CDVLocation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CDVLocation.m; path = org.apache.cordova.geolocation/CDVLocation.m; sourceTree = "<group>"; };
+		4421E4BB1884E8410029A3F5 /* cruise-monkey-768x1024.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "cruise-monkey-768x1024.png"; path = "../../app/cruise-monkey-768x1024.png"; sourceTree = "<group>"; };
+		4421E4BC1884E8550029A3F5 /* cruise-monkey-1536x2048.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "cruise-monkey-1536x2048.png"; path = "../../app/cruise-monkey-1536x2048.png"; sourceTree = "<group>"; };
+		4421E4BD1884E8830029A3F5 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = CruiseMonkey/Images.xcassets; sourceTree = SOURCE_ROOT; };
 		445AEAEA1884B7C20068A0B7 /* Icon-57.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Icon-57.png"; path = "../../app/Icon-57.png"; sourceTree = "<group>"; };
 		445AEAEC1884B8120068A0B7 /* Icon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Icon@2x.png"; path = "../../app/Icon@2x.png"; sourceTree = "<group>"; };
 		445AEAED1884B8750068A0B7 /* Icon-60@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Icon-60@2x.png"; path = "../../app/Icon-60@2x.png"; sourceTree = "<group>"; };
@@ -279,6 +283,7 @@
 		29B97317FDCFA39411CA2CEA /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				4421E4BD1884E8830029A3F5 /* Images.xcassets */,
 				30A0434214DC770100060A13 /* de.lproj */,
 				30A0434514DC770100060A13 /* se.lproj */,
 				1F766FDB13BBADB100FB74C0 /* en.lproj */,
@@ -320,45 +325,45 @@
 		307C750510C5A3420062BCA9 /* Plugins */ = {
 			isa = PBXGroup;
 			children = (
-				26F77F6EF4E54FB0A745C846 /* CDVSplashScreen.m */,
-				592BACF06B484DFCB2EF85D0 /* CDVSplashScreen.h */,
-				8C322C3596114A68A91ABDD9 /* CDVCamera.m */,
-				44FF16620482407DAB79B660 /* CDVJpegHeaderWriter.m */,
 				5535BDF6665E4F8F8258D0CC /* CDVCamera.h */,
-				D1D883F9FF2F4707A501EF37 /* CDVJpegHeaderWriter.h */,
-				9597AAB4FE33429FA9BCF009 /* CDVExif.h */,
-				E23E8830132940A8893DD1D1 /* CDVLogger.m */,
-				692F619477A244E18C8CCA5D /* CDVLogger.h */,
-				DD20FE3083CE4AC094B4254B /* CDVDevice.m */,
-				02E8864B5C564E31844ADA7F /* CDVDevice.h */,
-				3046EC313D034B5ABE50652D /* CDVCompass.m */,
-				CF7B7E513C89495D9462C804 /* CDVCompass.h */,
-				39F8FE4D84F44B2BBFB0D259 /* CDVLocation.m */,
-				944F98A77B8941088BDD5581 /* CDVLocation.h */,
-				F1053CC949E84EBCBA347B72 /* CDVSound.m */,
-				4B8DA5FD36144D4B8B07AD6E /* CDVSound.h */,
-				7A62F43A05F94C6C816BBFA4 /* CDVFile.m */,
-				02D16B7A76D24599B074DB1A /* CDVFile.h */,
-				9916D2B2B2464FA1B8CE632F /* CDVCapture.m */,
+				8C322C3596114A68A91ABDD9 /* CDVCamera.m */,
 				CA99433FEB884E8FABC00CCB /* CDVCapture.h */,
-				F1EFE9AB09634A939C1E80A9 /* CDVConnection.m */,
-				0F68DF80919148DB803C4D91 /* CDVReachability.m */,
+				9916D2B2B2464FA1B8CE632F /* CDVCapture.m */,
+				CF7B7E513C89495D9462C804 /* CDVCompass.h */,
+				3046EC313D034B5ABE50652D /* CDVCompass.m */,
 				086E38535CD74D7E8CC147F5 /* CDVConnection.h */,
-				EF6E392FC0B443D88AEEEF5C /* CDVReachability.h */,
-				95B6A65596DB4F36958B32A3 /* CDVNotification.m */,
-				91A502A0C9DA4153A8F500F7 /* CDVNotification.h */,
-				556F3D34E3C54C3C84237D44 /* CDVVibration.m */,
-				0B0BDF20964741C69F9524E1 /* CDVVibration.h */,
-				5BF36BFD111A4830AB644A44 /* CDVInAppBrowser.m */,
+				F1EFE9AB09634A939C1E80A9 /* CDVConnection.m */,
+				02E8864B5C564E31844ADA7F /* CDVDevice.h */,
+				DD20FE3083CE4AC094B4254B /* CDVDevice.m */,
+				9597AAB4FE33429FA9BCF009 /* CDVExif.h */,
+				02D16B7A76D24599B074DB1A /* CDVFile.h */,
+				7A62F43A05F94C6C816BBFA4 /* CDVFile.m */,
 				4B9C4DAE06464971AE95EB7D /* CDVInAppBrowser.h */,
-				E3C258961AC5414B9FE046CD /* CDVStatusBar.m */,
+				5BF36BFD111A4830AB644A44 /* CDVInAppBrowser.m */,
+				D1D883F9FF2F4707A501EF37 /* CDVJpegHeaderWriter.h */,
+				44FF16620482407DAB79B660 /* CDVJpegHeaderWriter.m */,
+				944F98A77B8941088BDD5581 /* CDVLocation.h */,
+				39F8FE4D84F44B2BBFB0D259 /* CDVLocation.m */,
+				692F619477A244E18C8CCA5D /* CDVLogger.h */,
+				E23E8830132940A8893DD1D1 /* CDVLogger.m */,
+				91A502A0C9DA4153A8F500F7 /* CDVNotification.h */,
+				95B6A65596DB4F36958B32A3 /* CDVNotification.m */,
+				EF6E392FC0B443D88AEEEF5C /* CDVReachability.h */,
+				0F68DF80919148DB803C4D91 /* CDVReachability.m */,
+				4B8DA5FD36144D4B8B07AD6E /* CDVSound.h */,
+				F1053CC949E84EBCBA347B72 /* CDVSound.m */,
+				592BACF06B484DFCB2EF85D0 /* CDVSplashScreen.h */,
+				26F77F6EF4E54FB0A745C846 /* CDVSplashScreen.m */,
 				CAF63358E343456089958AA4 /* CDVStatusBar.h */,
+				E3C258961AC5414B9FE046CD /* CDVStatusBar.m */,
+				82480CA2E7E7444CA9067E76 /* CDVTestFlight.h */,
 				3314BFBA8DDC4D8CAD049B0F /* CDVTestFlight.m */,
+				0B0BDF20964741C69F9524E1 /* CDVVibration.h */,
+				556F3D34E3C54C3C84237D44 /* CDVVibration.m */,
 				D98E778C0A61415E84F51331 /* libTestFlight.a */,
-				C6C721D172064C8E99AE0052 /* TestFlight.h */,
 				1E2DD8FFED8D4B2C9E1C6E1B /* TestFlight+AsyncLogging.h */,
 				9F2DCA93634A463FBF26F848 /* TestFlight+ManualSessions.h */,
-				82480CA2E7E7444CA9067E76 /* CDVTestFlight.h */,
+				C6C721D172064C8E99AE0052 /* TestFlight.h */,
 			);
 			name = Plugins;
 			path = CruiseMonkey/Plugins;
@@ -439,9 +444,11 @@
 		445AEAFE1884BA780068A0B7 /* Launch */ = {
 			isa = PBXGroup;
 			children = (
+				4421E4BC1884E8550029A3F5 /* cruise-monkey-1536x2048.png */,
+				4421E4BB1884E8410029A3F5 /* cruise-monkey-768x1024.png */,
 				445AEB001884BAA00068A0B7 /* Default-568h@2x.png */,
-				445AEAFF1884BA8B0068A0B7 /* Default~iphone.png */,
 				445AEAFD1884BA690068A0B7 /* Default.png */,
+				445AEAFF1884BA8B0068A0B7 /* Default~iphone.png */,
 			);
 			name = Launch;
 			sourceTree = "<group>";
@@ -534,6 +541,7 @@
 				1F766FE113BBADB100FB74C0 /* Localizable.strings in Resources */,
 				302D95F214D2391D003F00A1 /* MainViewController.xib in Resources */,
 				7E7966E01810823500FA85AD /* icon-50.png in Resources */,
+				4421E4BE1884E8830029A3F5 /* Images.xcassets in Resources */,
 				7E7966E31810823500FA85AD /* icon-60@2x.png in Resources */,
 				30A0434814DC770100060A13 /* Localizable.strings in Resources */,
 				7E7966E61810823500FA85AD /* icon-small.png in Resources */,
@@ -653,6 +661,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CLANG_ENABLE_OBJC_ARC = YES;
 				CODE_SIGN_IDENTITY = "";
 				COPY_PHASE_STRIP = NO;
@@ -692,6 +702,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CLANG_ENABLE_OBJC_ARC = YES;
 				CODE_SIGN_IDENTITY = "";
 				COPY_PHASE_STRIP = YES;

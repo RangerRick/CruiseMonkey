@@ -25,10 +25,12 @@ Icon-Small@2x.png
 Icon.png
 Icon@2x.png
 cruise-monkey-1136x640.png
+cruise-monkey-1536x2008.png
 cruise-monkey-1536x2048.png
 cruise-monkey-200x320.png
 cruise-monkey-480x800.png
 cruise-monkey-720x1280.png
+cruise-monkey-768x1004.png
 cruise-monkey-768x1024.png
 cruise-monkey-head.ico
 favicon.ico
@@ -650,7 +652,6 @@ index.html
 cordova.js
 cordova_plugins.js
 module.min.js
-scripts/1bb67b91.cm.js
 scripts/3rdparty/02630317.custom.modernizr.js
 scripts/3rdparty/8daafb40.require.min.js
 scripts/3rdparty/90949fe3.jquery.js
@@ -669,6 +670,7 @@ scripts/angular-3rdparty/7561e6ec.ionic-angular.min.js
 scripts/angular-3rdparty/7fd92ced.ionic-angular.js
 scripts/angular-3rdparty/a4b85022.ionic.min.js
 scripts/angular-3rdparty/d16966ff.angular-hammer.js
+scripts/c7bfb37e.cm.js
 styles/527b6d16.3rdparty.css
 styles/554f41ab.cm.css
 styles/d96e12e1.main.css

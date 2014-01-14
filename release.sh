@@ -15,6 +15,8 @@ rsync -avr --delete www/ platforms/ios/www/
 rsync -avr --delete www/ platforms/android/assets/www/
 rsync -avr --delete www/ platforms/web/www/
 
+rm -rf platforms/ios/www/*.png
+
 echo "" > platforms/web/www/cordova.js
 echo "" > platforms/web/www/cordova_plugins.js
 echo "" > platforms/web/www/scripts/3rdparty/testflight.js

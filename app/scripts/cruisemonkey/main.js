@@ -57,7 +57,7 @@
 				controller: 'CMAdvancedCtrl'
 			});
 	}])
-	.run(['$rootScope', '$location', '$urlRouter', 'UserService', 'EventService', 'storage', 'phonegapReady', function($rootScope, $location, $urlRouter, UserService, EventService, storage, phonegapReady) {
+	.run(['$rootScope', '$window', '$location', '$urlRouter', 'UserService', 'EventService', 'storage', 'phonegapReady', function($rootScope, $window, $location, $urlRouter, UserService, EventService, storage, phonegapReady) {
 		$rootScope.safeApply = function(fn) {
 			var phase = this.$root.$$phase;
 			if(phase === '$apply' || phase === '$digest') {
@@ -67,6 +67,13 @@
 			} else {
 				this.$apply(fn);
 			}
+		};
+
+		$window.handleOpenURL = function(url) {
+			var translated = url.replace('cruisemonkey://','/');
+			$rootScope.safeApply(function() {
+				$location.path(translated);
+			});
 		};
 
 		var initCordova = function() {
