@@ -116,7 +116,7 @@ document.addEventListener("deviceready", function() {
 		bootstrapped = true;
 
 		if (window.device) {
-			console.log('Found PhoneGap Device Information.');
+			console.log('Found Cordova Device Information.');
 			console.log('Model:    ' + window.device.model);
 			console.log('Cordova:  ' + window.device.cordova);
 			console.log('Platform: ' + window.device.platform);
@@ -130,7 +130,7 @@ document.addEventListener("deviceready", function() {
 
 window.setTimeout(function() {
 	if (window.device) {
-		console.log('This is a phonegap device, not bothering to update the application cache.');
+		console.log('This is a cordova device, not bothering to update the application cache.');
 	} else {
 		// check for updates every 5 minutes
 		window.setInterval(function() {
@@ -276,6 +276,8 @@ window.setTimeout(function() {
 	<script src="scripts/cruisemonkey/main.js"></script>
 	<!-- endbuild -->
 
-	<script src="phonegap.js"></script>
+	<script src="cordova.js"></script>
+	<script src="cordova_plugins.js"></script>
+	<script src="scripts/3rdparty/testflight.js"></script>
 </body>
 </html>

@@ -15,7 +15,7 @@ module.exports = function (grunt) {
     yeoman: {
       // configurable paths
       app: require('./bower.json').appPath || 'app',
-      dist: 'dist'
+      dist: 'www'
     },
     watch: {
       coffee: {
@@ -263,7 +263,8 @@ module.exports = function (grunt) {
             '*.{ico,png,txt}',
             '.htaccess',
             'config.xml',
-            'phonegap.js',
+            'cordova.js',
+            'cordova_plugins.js',
             '*.cer',
             'bower_components/html5shiv/{,**/}*',
             'scripts/*3rdparty/*.js',
@@ -345,7 +346,7 @@ module.exports = function (grunt) {
     manifest: {
       dist: {
         options: {
-          basePath: 'dist',
+          basePath: 'www',
           preferOnline: true,
           timestamp: false,
           hash: true,
@@ -367,7 +368,7 @@ module.exports = function (grunt) {
             'bower_components/{,**/}*'
           ]
         },
-        dest: 'dist/cruisemonkey.manifest',
+        dest: 'www/cruisemonkey.manifest',
         src: [
           '*.{png,ico}',
           'fonts/*',

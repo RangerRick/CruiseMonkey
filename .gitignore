@@ -1,5 +1,15 @@
 *.swp
-node_modules
-.tmp
+.cordova
 .sass-cache
+.staging
+.tmp
 app/bower_components
+node_modules
+xcuserdata
+/www/
+
+# Android
+.classpath
+.project
+.settings
+platforms/android/bin

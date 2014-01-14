@@ -1,0 +1,46 @@
+<content has-header="false" scroll="true" overflow-scroll="true" padded="false">
+<div class="list">
+	<div class="card">
+		<div class="item item-divider">Network Configuration</div>
+		<form name="networkForm" class="network-form">
+			<div class="item item-text-wrap">
+				Configure various advanced network options, including which servers to use.
+			</div>
+			<label class="item item-input item-stacked-label">
+				<span class="input-label">Database Host</span>
+				<input type="text" name="databaseHost" ng-model="settings.databaseHost">
+			</label>
+			<label class="item item-input item-stacked-label">
+				<span class="input-label">Database Name</span>
+				<input type="text" name="databaseName" ng-model="settings.databaseName">
+			</label>
+			<label class="item item-input item-stacked-label">
+				<span class="input-label">Twit-Arr URL</span>
+				<input type="url" name="twitarrRoot" ng-model="settings.twitarrRoot">
+			</label>
+			<button class="button button-full button-assertive" ng-click="resetSettings()" ng-disabled="form.$invalid || isUnchanged()">Reset</button>
+			<button class="button button-full button-positive" ng-click="saveSettings()" ng-disabled="form.$invalid || isUnchanged()">Save</button>
+		</form>
+	</div>
+
+	<div class="card">
+		<div class="item item-divider">Import Twit-Arr Certificate</div>
+		<div class="item item-text-wrap">
+			The Twit-Arr server is running using a self-signed SSL certificate.  If you encounter
+			problems logging in using your Twit-Arr account, you may have to import the certificate
+			by clicking this button.
+		</div>
+		<a class="button button-full button-assertive" ng-click="openCertificate()">Import</a>
+	</div>
+
+	<div class="card">
+		<div class="item item-divider">Reset Your Database</div>
+		<div class="item item-text-wrap">
+			This will clear your local client cache and re-sync from the CruiseMonkey server.
+			If you are not online when you hit this, it <em>will</em> leave you with an empty CruiseMonkey!
+			CruiseMonkey will reload when you reset your database.
+		</div>
+		<button class="button button-full button-positive" ng-click="resetDatabase()">Reset Database</button>
+	</div>
+</div>
+</content>

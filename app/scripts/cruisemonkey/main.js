@@ -69,41 +69,23 @@
 			}
 		};
 
-		var initPhonegap = function() {
+		var initCordova = function() {
 			if (window.device) {
-				$rootScope.isPhonegap = true;
-				console.log('main: This is a phonegap device!');
+				$rootScope.isCordova = true;
+				console.log('main: This is a Cordova device!');
 
-				/*
-				script = document.createElement('script');
-				script.type = 'text/javascript';
-				script.async = true;
-				script.onload = function(){
-					script.onload = null;
-
-					var tf = new TestFlight();
-					tf.takeOff(function() {
-						// success
-						console.log('TestFlight: success taking off!');
-					}, function() {
-						// failure
-						console.log('TestFlight: failed to take off!');
-					}, "f3ad30f5-f481-44ba-9887-1ca57a0a3749");
-					$rootScope.testFlight = tf;
-				};
-				script.src = 'scripts/3rdparty/testflight.js';
-				document.getElementsByTagName('head')[0].appendChild(script);
-				*/
+				var tf = new TestFlight();
+				$rootScope.testFlight = tf;
 			} else {
-				console.log('main: This is not a phonegap device.');
+				console.log('main: This is not a Cordova device.');
 			}
 		};
 
-		$rootScope.isPhonegap = false;
+		$rootScope.isCordova = false;
 		if (window.device) {
-			initPhonegap();
+			initCordova();
 		} else {
-			phonegapReady(initPhonegap);
+			phonegapReady(initCordova);
 		}
 
 		$rootScope.openLeft = function() {

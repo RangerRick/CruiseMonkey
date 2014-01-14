@@ -152,7 +152,7 @@
 						navigator.connection.addEventListener('change', handleConnectionTypeChange, false);
 						handleConnectionTypeChange();
 					} else {
-						log.info("Database.setUp(): Browser does not have native navigator.connection support.  Trying with phonegap.");
+						log.info("Database.setUp(): Browser does not have native navigator.connection support.  Trying with Cordova.");
 						document.addEventListener('online', handleConnectionTypeChange, false);
 						document.addEventListener('offline', handleConnectionTypeChange, false);
 						handleConnectionTypeChange();

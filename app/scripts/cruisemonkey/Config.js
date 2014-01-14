@@ -7,7 +7,7 @@
 	.value('config.database.name', 'cruisemonkey')
 	.value('config.database.replicate', true)
 	.value('config.twitarr.root', 'https://twitarr.rylath.net/')
-	.value('config.app.version', '3.9.1.20140113171159');
+	.value('config.app.version', '3.9.1+20140113220308');
 	
 	angular.module('cruisemonkey.Settings', ['cruisemonkey.Config', 'angularLocalStorage'])
 	.factory('SettingsService', ['storage', '$rootScope', 'config.database.host', 'config.database.name', 'config.twitarr.root', function(storage, $rootScope, databaseHost, databaseName, twitarrRoot) {

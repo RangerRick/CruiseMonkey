@@ -6,19 +6,23 @@
 
 .platform-ios7 {
   .bar-header {
-    height: 44px;
+    height: 64px;
 
     &.item-input-inset .item-input-wrapper {
       margin-top: 19px !important;
     }
+
+    > * {
+      margin-top: 20px;
+    }
   }
 
   .has-header {
-    top: 44px;
+    top: 64px;
   }
 
   .bar-subheader {
-    top: 44px;
+    top: 64px;
   }
 
   .has-subheader {

@@ -74,7 +74,7 @@
 				console.log('headers:',headers);
 				console.log('config:',config);
 
-				if ($rootScope.isPhonegap) {
+				if ($rootScope.isCordova) {
 					navigator.notification.alert('Failed to log in to twit-arr!', function(){});
 				} else {
 					window.alert('Failed to log in to twit-arr!');
