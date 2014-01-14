@@ -19,8 +19,6 @@ Beta iOS and Android releases are available through [TestFlight](http://testflig
 2. Register your device by browsing to [testflightapp.com](http://testflightapp.com) directly on your mobile device.  It will prompt for a login (if you haven't already) and then register a certificate profile with your device which allows pushing beta releases to your device.
 3. Go to the [CruiseMonkey beta recruitment page](http://tflig.ht/ytVfRp) and apply as a tester.
 
-If you wish to beta test CruiseMonkey on iOS, you must sign up for a [TestFlight](http://testflightapp.com) account.
-
 Returning Beta Testers on iOS - Action Required!
 ------------------------------------------------
 
