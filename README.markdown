@@ -32,7 +32,7 @@ Bugs and Enhancement Requests
 Known Issues
 ------------
 
-* Login is not working on Android yet.  CruiseMonkey will be stuck in read-only mode for now.
+* Login may not working on Android yet.  If CruiseMonkey refuses to let you log in, please [email me](mailto:testflight@raccoonfink.com).
 * Sometimes it is possible to drag the app in a way that causes the "main" window to stay stuck out of alignment.
 
 Opening an Issue (Bug or Enhancement)
