@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='utf-8'?>
-<widget id="com.raccoonfink.cruisemonkey" version="3.9.1+20140115110520" xmlns="http://www.w3.org/ns/widgets" xmlns:gap="http://phonegap.com/ns/1.0">
+<widget id="com.raccoonfink.cruisemonkey" version="3.9.1+20140115140242" xmlns="http://www.w3.org/ns/widgets" xmlns:gap="http://phonegap.com/ns/1.0">
     <name>Hello Cordova</name>
     <description>
         A sample Apache Cordova application that responds to the deviceready event.
@@ -97,10 +97,6 @@
     <gap:splash gap:platform="ios" height="480" src="cruise-monkey-320x480.png" width="320" />
     <gap:splash gap:platform="ios" height="960" src="cruise-monkey-640x960.png" width="640" />
     <gap:splash gap:platform="ios" height="1136" src="cruise-monkey-640x1136.png" width="640" />
-    <gap:splash gap:density="ldpi" gap:platform="android" height="320" src="cruise-monkey-200x320.png" width="200" />
-    <gap:splash gap:density="mdpi" gap:platform="android" height="480" src="cruise-monkey-320x480.png" width="320" />
-    <gap:splash gap:density="hdpi" gap:platform="android" height="800" src="cruise-monkey-480x800.png" width="480" />
-    <gap:splash gap:density="xhdpi" gap:platform="android" height="1280" src="cruise-monkey-720x1280.png" width="720" />
     <gap:plugin name="org.apache.cordova.camera" />
     <gap:plugin name="org.apache.cordova.console" />
     <gap:plugin name="org.apache.cordova.device" />
@@ -123,5 +119,6 @@
     <preference name="android-installLocation" value="auto" />
     <preference name="splash-screen-duration" value="20000" />
     <preference name="DisallowOverscroll" value="true" />
+    <preference name="SplashScreen" value="splash" />
     <access origin="*" />
 </widget>
