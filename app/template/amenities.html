@@ -1,0 +1,18 @@
+<header class="bar item-input-inset">
+	<label class="item-input-wrapper">
+		<i class="icon ion-ios7-search placeholder-icon"></i>
+		<input type="search" placeholder="Search" ng-model="searchString" />
+	</label>
+</header>
+<content has-header="true" overflow-scroll="true" scroll="true">
+	<div class="event-list list">
+		<span ng-repeat="amenity in amenities | amenityFilter:searchString">
+			<div ng-if="headerAmenities[amenity.getUniqueId()]" class="item item-divider header">Deck {{amenity.getDeck().getFloor()}}</div>
+			<a class="item item-icon-right item-text-wrap" ng-click="openAmenity(amenity)">
+				<div class="summary">{{amenity.getSummary()}}</div>
+				<div class="description" ng-show="amenity.getDescription()">{{amenity.getDescription()}}</div>
+				<i ng-if="amenity.getIcon()" class="icon {{amenity.getIcon()}}"></i>
+			</a>
+		</span>
+	</div>
+</content>

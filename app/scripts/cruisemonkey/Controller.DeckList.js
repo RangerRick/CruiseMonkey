@@ -2,7 +2,7 @@
 	'use strict';
 
 	angular.module('cruisemonkey.controllers.DeckList', ['angularLocalStorage', 'cruisemonkey.Logging'])
-	.controller('CMDeckListCtrl', ['storage', '$scope', '$rootScope', '$timeout', '$state', '$stateParams', '$location', 'LoggingService', function(storage, $scope, $rootScope, $timeout, $state, $stateParams, $location, log) {
+	.controller('CMDeckListCtrl', ['storage', '$scope', '$rootScope', '$timeout', '$state', '$stateParams', '$location', '$document', 'LoggingService', function(storage, $scope, $rootScope, $timeout, $state, $stateParams, $location, $document, log) {
 		log.info('Initializing CMDeckListCtrl');
 
 		storage.bind($scope, '_deck', {
@@ -14,7 +14,23 @@
 		$scope.deck = 2;
 		if ($stateParams.deck) {
 			log.info('$stateParams.deck: ' + $stateParams.deck);
-			var passedDeck = parseInt($stateParams.deck, 10);
+			var passedDeck = 0;
+			if ($stateParams.deck.contains('-')) {
+				var parts = $stateParams.deck.split('-');
+				passedDeck = parseInt(parts.shift(), 10);
+				/*
+				var id = parts.join('-');
+				log.info('id=' + id);
+				var element = document.getElementById(id);
+				console.log('element=',element);
+				$timeout(function() {
+					log.info('scrolling to ' + element.offsetTop);
+					window.scrollTo(element.offsetTop);
+				}, 3000);
+				*/
+			} else {
+				passedDeck = parseInt($stateParams.deck, 10);
+			}
 			if (passedDeck && passedDeck > 0) {
 				$scope.deck = passedDeck;
 			}
@@ -24,6 +40,10 @@
 			if (storedDeck && storedDeck > 0) {
 				$scope.deck = storedDeck;
 			}
+		}
+
+		if ($stateParams.id) {
+			log.info('id = ' + $StateParams.id);
 		}
 
 		$scope.$watch('deckIndex', function(newValue, oldValue) {
@@ -94,6 +114,7 @@
 		$scope.$on('slideBox.slideChanged', function(e, index) {
 			$scope.deck = index + 2;
 			updateUI();
+			/*
 			$state.transitionTo('deck-plans', {
 				deck: $scope.deck
 			}, {
@@ -102,6 +123,7 @@
 				notify: false,
 				reload: false
 			});
+			*/
 		});
 
 		$timeout(function() {

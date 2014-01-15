@@ -10,6 +10,7 @@
 		'cruisemonkey.Config',
 		'cruisemonkey.controllers.About',
 		'cruisemonkey.controllers.Advanced',
+		'cruisemonkey.controllers.Amenities',
 		'cruisemonkey.controllers.DeckList',
 		'cruisemonkey.controllers.Events',
 		'cruisemonkey.controllers.Header',
@@ -35,6 +36,11 @@
 				url: '/logout',
 				templateUrl: 'template/logout.html',
 				controller: 'CMLogoutCtrl'
+			})
+			.state('amenities', {
+				url: '/amenities',
+				templateUrl: 'template/amenities.html',
+				controller: 'CMAmenitiesCtrl'
 			})
 			.state('events', {
 				url: '/events/:eventType',
