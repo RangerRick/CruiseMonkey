@@ -18,6 +18,10 @@ platforms/android/bin
 platforms/android/gen
 platforms/android/CordovaLib/bin
 platforms/android/CordovaLib/gen
+platforms/android/res/xml/config.xml
+
+# iOS
+platforms/ios/CruiseMonkey/config.xml
 
 # generated www files
 platforms/ios/www

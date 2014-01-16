@@ -5,6 +5,7 @@
 	};
 	objectVersion = 46;
 	objects = {
+
 /* Begin PBXBuildFile section */
 		0544D5A592BB45A29DD60872 /* libTestFlight.a in Frameworks */ = {isa = PBXBuildFile; fileRef = AE4167AB1B944CB6A9C7B821 /* libTestFlight.a */; };
 		1C112E5B74144311B207B1C8 /* CDVTestFlight.m in Sources */ = {isa = PBXBuildFile; fileRef = 3314BFBA8DDC4D8CAD049B0F /* CDVTestFlight.m */; };
@@ -678,6 +679,7 @@
 					"$(inherited)",
 					"\"$(SRCROOT)/CruiseMonkey/Plugins/com.testflightapp.cordova-plugin\"",
 				);
+				OTHER_CFLAGS = "";
 				OTHER_LDFLAGS = (
 					"-weak_framework",
 					CoreFoundation,
@@ -693,7 +695,7 @@
 					"-ObjC",
 				);
 				PRODUCT_NAME = CruiseMonkey;
-				PROVISIONING_PROFILE = "B8199524-836C-42ED-A1FC-DFEF77BF9130";
+				PROVISIONING_PROFILE = "7CFEB49F-3367-491A-A2A1-D24578562D3E";
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
@@ -707,6 +709,7 @@
 				CLANG_ENABLE_OBJC_ARC = YES;
 				CODE_SIGN_IDENTITY = "";
 				COPY_PHASE_STRIP = YES;
+				GCC_OPTIMIZATION_LEVEL = fast;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "CruiseMonkey/CruiseMonkey-Prefix.pch";
 				GCC_THUMB_SUPPORT = NO;
@@ -717,6 +720,7 @@
 					"$(inherited)",
 					"\"$(SRCROOT)/CruiseMonkey/Plugins/com.testflightapp.cordova-plugin\"",
 				);
+				OTHER_CFLAGS = "";
 				OTHER_LDFLAGS = (
 					"-weak_framework",
 					CoreFoundation,
@@ -732,7 +736,7 @@
 					"-ObjC",
 				);
 				PRODUCT_NAME = CruiseMonkey;
-				PROVISIONING_PROFILE = "B8199524-836C-42ED-A1FC-DFEF77BF9130";
+				PROVISIONING_PROFILE = "7CFEB49F-3367-491A-A2A1-D24578562D3E";
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;
