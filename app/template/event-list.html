@@ -36,7 +36,7 @@
 						</label>
 						Make Public?
 					</label>
-					<button class="button button-full button-positive" ng-click="saveModal(eventData)" ng-disabled="form.$invalid">Save</button>
+					<button class="button button-full button-positive" ng-click="saveModal(eventData)" ng-disabled="form.$invalid || !eventData.isValid()">Save</button>
 			</form>
 		</content>
 	</div>

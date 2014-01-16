@@ -183,7 +183,7 @@ function CMEvent(rawdata) {
 	};
 
 	self.toEditableBean = function() {
-		return {
+		var bean = {
 			id: self.getId(),
 			revision: self.getRevision(),
 			startDate: self.getStart().format(dateStringFormat),
@@ -193,6 +193,20 @@ function CMEvent(rawdata) {
 			location: self.getLocation(),
 			isPublic: self.isPublic()
 		};
+
+		bean.isValid = function() {
+			if (bean.summary === undefined || bean.summary === '') { return false; }
+			if (bean.startDate === undefined || bean.startDate === '') { return false; }
+			if (bean.endDate === undefined || bean.endDate === '') { return false; }
+
+			if (moment(bean.endDate).isBefore(moment(bean.startDate))) {
+				return false;
+			}
+
+			return true;
+		};
+
+		return bean;
 	};
 
 	self.fromEditableBean = function(bean) {
