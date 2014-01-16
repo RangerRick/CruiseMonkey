@@ -4,7 +4,7 @@
 	/*global PouchDB: true*/
 	/*global Connection: true*/
 	angular.module('cruisemonkey.Database', ['cruisemonkey.Logging', 'cruisemonkey.Config', 'cruisemonkey.Settings', 'angularLocalStorage'])
-	.factory('Database', ['$location', '$interval', '$timeout', '$rootScope', '$window', 'LoggingService', 'storage', 'config.database.replicate', 'SettingsService', function($location, $interval, $timeout, $rootScope, $window, log, storage, replicate, SettingsService) {
+	.factory('Database', ['$q', '$location', '$interval', '$timeout', '$rootScope', '$window', 'LoggingService', 'storage', 'config.database.replicate', 'SettingsService', function($q, $location, $interval, $timeout, $rootScope, $window, log, storage, replicate, SettingsService) {
 		log.info('Initializing CruiseMonkey database: ' + SettingsService.getDatabaseName());
 
 		storage.bind($rootScope, '_seq', {
@@ -23,7 +23,8 @@
 
 		var db = null,
 			timeout = null,
-			watchingChanges = false;
+			watchingChanges = false,
+			replicating = null;
 
 		var initializeDatabase = function() {
 			db = new PouchDB(SettingsService.getDatabaseName());
@@ -72,18 +73,27 @@
 		};
 
 		var doReplicate = function() {
-			log.info('Attempting to replicate with ' + getHost());
-			$rootScope.$broadcast('cm.replicationStarting');
-			db.replicate.from(getHost(), {
-				'complete': function() {
-					db.replicate.to(getHost(), {
-						'complete': function() {
-							log.debug('Replication complete.');
-							$rootScope.$broadcast('cm.replicationComplete');
-						}
-					});
+			if (replicate) {
+				if (replicating) {
+					return;
 				}
-			});
+
+				replicating = $q.defer();
+				log.info('Attempting to replicate with ' + getHost());
+				$rootScope.$broadcast('cm.replicationStarting');
+				db.replicate.from(getHost(), {
+					'complete': function() {
+						db.replicate.to(getHost(), {
+							'complete': function() {
+								log.info('Replication complete.');
+								$rootScope.$broadcast('cm.replicationComplete');
+								replicating.resolve(false);
+								replicating = null;
+							}
+						});
+					}
+				});
+			}
 		};
 
 		var startReplication = function() {
@@ -92,11 +102,12 @@
 					log.warn('Replication has already been started!  Timeout ID = ' + timeout);
 					return false;
 				} else {
-					log.info('Enabling replication with ' + getHost());
+					var refresh = SettingsService.getDatabaseRefresh();
+					log.info('Enabling replication with ' + getHost() + ' (refresh = ' + refresh + ')');
 
 					timeout = $interval(function() {
 						doReplicate();
-					}, 10000);
+					}, refresh);
 					doReplicate();
 
 					return true;
@@ -196,9 +207,16 @@
 		initializeDatabase();
 		setUp();
 
+		$rootScope.$on('cm.settingsChanged', function() {
+			log.info('Database: Settings changed.  Restarting replication.');
+			stopReplication();
+			startReplication();
+		});
+
 		return {
 			'reset': resetDatabase,
 			'database': db,
+			'replicateNow': doReplicate,
 			'startReplication': startReplication,
 			'stopReplication': stopReplication
 		};

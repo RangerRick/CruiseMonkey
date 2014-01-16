@@ -18,9 +18,10 @@
 			var updated  = $scope.settings;
 
 			return (
-				existing.databaseHost === updated.databaseHost &&
-				existing.databaseName === updated.databaseName &&
-				existing.twitarrRoot  === updated.twitarrRoot
+				existing.databaseHost    === updated.databaseHost &&
+				existing.databaseName    === updated.databaseName &&
+				existing.databaseRefresh === updated.databaseRefresh &&
+				existing.twitarrRoot     === updated.twitarrRoot
 			);
 		};
 
@@ -34,7 +35,9 @@
 			console.log('saving=', $scope.settings);
 			SettingsService.setDatabaseHost($scope.settings.databaseHost);
 			SettingsService.setDatabaseName($scope.settings.databaseName);
+			SettingsService.setDatabaseRefresh($scope.settings.databaseRefresh);
 			SettingsService.setTwitarrRoot($scope.settings.twitarrRoot);
+			$rootScope.$broadcast('cm.settingsChanged');
 		};
 
 		$scope.resetDatabase = function() {

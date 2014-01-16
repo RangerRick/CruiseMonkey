@@ -15,6 +15,10 @@
 				<input type="text" name="databaseName" ng-model="settings.databaseName" />
 			</label>
 			<label class="item item-input item-stacked-label">
+				<span class="input-label">Replication Refresh Time (milliseconds)</span> <span class="error" ng-show="myForm.input.$error">Must be at least 10000!</span>
+				<input type="number" name="databaseRefresh" ng-model="settings.databaseRefresh" min="10000" required />
+			</label>
+			<label class="item item-input item-stacked-label">
 				<span class="input-label">Twit-Arr URL</span>
 				<input type="url" name="twitarrRoot" ng-model="settings.twitarrRoot" />
 			</label>

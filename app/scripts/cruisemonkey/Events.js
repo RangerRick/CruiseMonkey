@@ -376,6 +376,7 @@ function CMFavorite(rawdata) {
 
 			if (typeof skipBroadcast === 'undefined' || !skipBroadcast) {
 				$rootScope.$broadcast('cm.eventUpdated', ev);
+				db.replicateNow();
 			}
 		};
 
@@ -387,7 +388,7 @@ function CMFavorite(rawdata) {
 				fav = new CMFavorite(doc);
 			}
 
-			log.info('EventService.handleFavoriteUpdated(): Updating favorite: ' + fav.toString());
+			log.debug('EventService.handleFavoriteUpdated(): Updating favorite: ' + fav.toString());
 
 			var username = UserService.getUsername();
 			if (!username) {
@@ -415,6 +416,7 @@ function CMFavorite(rawdata) {
 					$rootScope.$broadcast('cm.eventUpdated', ev);
 				}
 				$rootScope.$broadcast('cm.favoriteUpdated', fav);
+				db.replicateNow();
 			}
 		};
 
@@ -430,6 +432,7 @@ function CMFavorite(rawdata) {
 
 			if (typeof skipBroadcast === 'undefined' || !skipBroadcast) {
 				$rootScope.$broadcast('cm.eventDeleted', existing);
+				db.replicateNow();
 			}
 		};
 
@@ -449,6 +452,10 @@ function CMFavorite(rawdata) {
 				deleteFavorite(favoriteId);
 			} else {
 				log.warn('EventService.handleFavoriteDeleted(): no favorite with id ' + favoriteId + ' found.');
+			}
+			
+			if (typeof skipBroadcast === 'undefined' || !skipBroadcast) {
+				db.replicateNow();
 			}
 		};
 
