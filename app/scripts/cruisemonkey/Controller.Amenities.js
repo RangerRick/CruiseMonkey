@@ -11,7 +11,7 @@
 				}
 			});
 			return array;
-		}
+		};
 	})
 	.controller('CMAmenitiesCtrl', ['storage', '$rootScope', '$scope', '$location', 'DeckService', 'LoggingService', function(storage, $rootScope, $scope, $location, DeckService, log) {
 		log.info('Initializing CMAmenitiesCtrl');
@@ -23,7 +23,7 @@
 		$scope.headerAmenities = {};
 		var lastDeck = 0;
 		angular.forEach($scope.amenities, function(amenity, index) {
-			if (amenity.getDeck() != lastDeck) {
+			if (amenity.getDeck() !== lastDeck) {
 				$scope.headerAmenities[amenity.getUniqueId()] = true;
 			}
 			lastDeck = amenity.getDeck();

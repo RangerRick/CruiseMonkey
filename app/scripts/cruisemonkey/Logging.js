@@ -1,11 +1,11 @@
 (function() {
 	'use strict';
+	/*global log4javascript: true*/
 
 	var defaultLevel = log4javascript.Level.INFO;
 
 	function StringAppender() {}
 
-	/*global log4javascript: true*/
 	StringAppender.prototype = new log4javascript.Appender();
 	StringAppender.prototype.layout = new log4javascript.NullLayout();
 	StringAppender.prototype.threshold = defaultLevel;

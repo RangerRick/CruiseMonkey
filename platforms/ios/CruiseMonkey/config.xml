@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='utf-8'?>
-<widget id="com.raccoonfink.cruisemonkey" version="3.9.1+20140115140242" xmlns="http://www.w3.org/ns/widgets" xmlns:gap="http://phonegap.com/ns/1.0">
+<widget id="com.raccoonfink.cruisemonkey" version="3.9.1+20140115200841" xmlns="http://www.w3.org/ns/widgets" xmlns:gap="http://phonegap.com/ns/1.0">
     <name>Hello Cordova</name>
     <description>
         A sample Apache Cordova application that responds to the deviceready event.

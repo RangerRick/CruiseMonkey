@@ -41,6 +41,14 @@
 			}
 		];
 
+		$scope.saveUser = function(user) {
+			user.loggedIn = true;
+			log.info('saving user');
+			console.log(user);
+			UserService.save(user);
+			$rootScope.user = UserService.get();
+		};
+
 		$scope.update = function(user) {
 			var twitarrRoot = SettingsService.getTwitarrRoot();
 
@@ -59,11 +67,7 @@
 			})
 			.success(function(data, status, headers, config) {
 				console.log('success:',data);
-				user.loggedIn = true;
-				log.info('saving user');
-				console.log(user);
-				UserService.save(user);
-				$rootScope.user = UserService.get();
+				$scope.saveUser(user);
 				$rootScope.$broadcast('cm.loggedIn');
 				$location.path('/events/my');
 			})
@@ -73,6 +77,10 @@
 				console.log('status:',status);
 				console.log('headers:',headers);
 				console.log('config:',config);
+
+				$scope.saveUser(user);
+				$rootScope.$broadcast('cm.loggedIn');
+				$location.path('/events/my');
 
 				if ($rootScope.isCordova) {
 					navigator.notification.alert('Failed to log in to twit-arr!', function(){});

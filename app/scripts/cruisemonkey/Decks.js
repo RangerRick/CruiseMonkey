@@ -1,4 +1,5 @@
 function CMDeck(floor, amenities) {
+	'use strict';
 	var self = this;
 
 	var _floor = floor;
@@ -16,7 +17,7 @@ function CMDeck(floor, amenities) {
 		var ret = 'CMDeck[floor=' + _floor + ',amenities=[';
 		angular.forEach(_amenities, function(amenity, index) {
 			ret += amenity.toString();
-			if (index+1 != _amenities.length) {
+			if (index+1 !== _amenities.length) {
 				ret += ',';
 			}
 		});
@@ -32,6 +33,7 @@ function CMDeck(floor, amenities) {
 }
 
 function CMAmenity(id, summary, icon, category, description) {
+	'use strict';
 	var self = this;
 
 	var _id = id;
@@ -93,7 +95,7 @@ function CMAmenity(id, summary, icon, category, description) {
 
 	self.toString = function() {
 		return 'CMAmenity[deck=' + _deck.getFloor() + ',id=' + _id + ',summary=' + _summary + ']';
-	}
+	};
 }
 
 (function() {

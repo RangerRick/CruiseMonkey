@@ -373,7 +373,7 @@ function CMFavorite(rawdata) {
 				fav = new CMFavorite(doc);
 			}
 
-			log.debug('EventService.handleFavoriteUpdated(): Updating favorite: ' + fav.toString());
+			log.info('EventService.handleFavoriteUpdated(): Updating favorite: ' + fav.toString());
 
 			var username = UserService.getUsername();
 			if (!username) {
@@ -420,7 +420,7 @@ function CMFavorite(rawdata) {
 		};
 
 		var handleFavoriteDeleted = function(favoriteId, skipBroadcast) {
-			log.debug('EventService.handleFavoriteDeleted('+ favoriteId + ')');
+			log.info('EventService.handleFavoriteDeleted('+ favoriteId + ')');
 
 			var fav = getFavoriteById(favoriteId);
 

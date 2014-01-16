@@ -43,7 +43,7 @@
 		}
 
 		if ($stateParams.id) {
-			log.info('id = ' + $StateParams.id);
+			log.info('id = ' + $stateParams.id);
 		}
 
 		$scope.$watch('deckIndex', function(newValue, oldValue) {

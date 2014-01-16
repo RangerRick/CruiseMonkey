@@ -41,7 +41,7 @@
 				if ($rootScope.testFlight) {
 					$rootScope.testFlight.addCustomEnvironmentInformation(function() {
 						// success
-						log.info('username submitted to testflight');
+						console.log('username submitted to testflight');
 					}, function() {
 						// failure
 					}, 'username', newUser.username);
