@@ -1,7 +1,7 @@
 (function() {
 	'use strict';
 
-	/*global Pouch: true*/
+	/*global PouchDB: true*/
 	/*global Connection: true*/
 	angular.module('cruisemonkey.Database', ['cruisemonkey.Logging', 'cruisemonkey.Config', 'cruisemonkey.Settings', 'angularLocalStorage'])
 	.factory('Database', ['$location', '$interval', '$timeout', '$rootScope', '$window', 'LoggingService', 'storage', 'config.database.replicate', 'SettingsService', function($location, $interval, $timeout, $rootScope, $window, log, storage, replicate, SettingsService) {
@@ -26,7 +26,7 @@
 			watchingChanges = false;
 
 		var initializeDatabase = function() {
-			db = new Pouch(SettingsService.getDatabaseName());
+			db = new PouchDB(SettingsService.getDatabaseName());
 			timeout = null;
 			watchingChanges = false;
 
@@ -181,7 +181,7 @@
 				watchingChanges = false;
 				$rootScope._seq = 0;
 
-				Pouch.destroy(SettingsService.getDatabaseName(), function(err) {
+				PouchDB.destroy(SettingsService.getDatabaseName(), function(err) {
 					if (err) {
 						$window.alert('Failed to destroy existing database!');
 					} else {
