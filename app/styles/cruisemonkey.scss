@@ -37,6 +37,8 @@ $greySVG: "#{$imagePath}/entypo/grey/SVG";
 	font-weight: 600;
 }
 
+/* $controlYellow: #ffc600; */
+$controlYellow: #f2be00;
 $cmBabyBlue: #ddf2ff;
 
 $defaultFont: Hero, sans-serif;
@@ -74,6 +76,27 @@ $navWidth: 250px;
 $gutterMonkey: url(../images/cruise-monkey-transparent-bg.png);
 
 @import "ionic";
+
+.icon {
+	&.icon-cm {
+		/* color: black; */
+		color: $controlYellow;
+		&.active {
+			opacity: 1;
+			color: $controlYellow;
+		}
+	}
+}
+
+.button {
+	&.button-cm {
+		color: $controlYellow;
+		&.active {
+			opacity: 1;
+			color: $controlYellow;
+		}
+	}
+}
 
 .bar-bold {
 	font-family: $sidebarHeaderFont;

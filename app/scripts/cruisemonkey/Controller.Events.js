@@ -172,23 +172,24 @@
 			});
 		};
 
-		$scope.onFavoriteChanged = function(eventId, checked) {
-			log.debug('CMEventCtrl.onFavoriteChanged(' + eventId + ', ' + checked + ')');
-			if (checked) {
-				EventService.addFavorite(eventId);
-			} else {
+		$scope.onFavoriteChanged = function(event) {
+			var eventId = event.getId();
+			log.debug('CMEventCtrl.onFavoriteChanged(' + eventId + ')');
+			if (event.isFavorite()) {
 				for (var i = 0; i < $scope.events; i++) {
 					if ($scope.events[i]._id === eventId) {
 						$scope.events.splice(i, 1);
 					}
 				}
 				EventService.removeFavorite(eventId);
+			} else {
+				EventService.addFavorite(eventId);
 			}
 		};
 
-		$scope.onPublicChanged = function(ev, pub) {
-			console.log('onPublicChanged: ', ev, pub);
-			ev.setPublic(pub);
+		$scope.onPublicChanged = function(ev) {
+			console.log('onPublicChanged(' + ev.getId() + ')');
+			ev.setPublic(!ev.isPublic());
 			$q.when($scope.events).then(function(events) {
 				EventService.updateEvent(ev);
 			});
@@ -237,7 +238,7 @@
 			newButtons = [
 				{
 					type: 'button-positive',
-					content: '<i class="icon icon-add"></i>',
+					content: '<i class="icon icon-cm active ion-ios7-plus"></i>',
 					tap: function(e) {
 						var ev = new CMEvent();
 						ev.setStart(moment());

@@ -1,7 +1,7 @@
 <script type="text/ng-template" id="edit-event.html">
 	<div class="modal">
 		<header class="bar bar-header bar-dark">
-			<h1 class="title">Add an Event</h1>
+			<h1 class="title">{{eventData.id? 'Edit':'Add an'}} Event</h1>
 			<button class="button button-clear button-positive" ng-click="cancelModal()">Cancel</button>
 		</header>
 
@@ -55,16 +55,16 @@
 
 			<div class="list-entry item item-text-wrap" ng-class-even="'even'" ng-class-odd="'odd'">
 				<span class="item-note favorite" ng-show="(user.username && user.username != event.getUsername())">
-					<input type="checkbox" id="{{event.getId()}}-favorite" ng-checked="event.isFavorite()" ng-model="fav" ng-change="onFavoriteChanged(event.getId(), fav)" /><label for="{{event.getId()}}-favorite">&nbsp;</label>
+					<button id="{{event.getId()}}-favorite" ng-click="onFavoriteChanged(event)" class="button button-cm button-icon icon" ng-class="event.isFavorite()? 'active ion-ios7-heart':'ion-ios7-heart-outline'"></button>
 				</span>
 				<span class="item-note trash" ng-show="(user.username && user.username == event.getUsername())">
-					<input type="button" id="{{event.getId()}}-trash" ng-click="trash(event)"><label for="{{event.getId()}}-trash">&nbsp;</label>
+					<button id="{{event.getId()}}-trash" ng-click="trash(event)" class="button button-cm button-icon icon active ion-ios7-trash"></button>
 				</span>
 				<span class="item-note public" ng-show="(user.username && user.username == event.getUsername())">
-					<input type="checkbox" id="{{event.getId()}}-public" ng-checked="event.isPublic()" ng-model="pub" ng-change="onPublicChanged(event, pub)"><label for="{{event.getId()}}-public">&nbsp;</label>
+					<button id="{{event.getId()}}-public" ng-click="onPublicChanged(event)" class="button button-cm button-icon icon active" ng-class="event.isPublic()? 'ion-ios7-eye':'ion-ios7-eye-outline'"></button>
 				</span>
 				<span class="item-note edit" ng-show="(user.username && user.username == event.getUsername())">
-					<input type="button" id="{{event.getId()}}-edit" ng-click="edit(event)"><label for="{{event.getId()}}-edit">&nbsp;</label>
+					<button id="{{event.getId()}}-edit" ng-click="edit(event)" class="button button-cm button-icon icon active ion-gear-a"></button>
 				</span>
 				<div class="summary">{{event.getSummary()}}</div>
 				<div class="time">Time: {{justTime(event.getStart())}} - {{justTime(event.getEnd())}}</div>
