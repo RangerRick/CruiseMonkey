@@ -78,9 +78,11 @@
 				console.log('headers:',headers);
 				console.log('config:',config);
 
-				$scope.saveUser(user);
-				$rootScope.$broadcast('cm.loggedIn');
-				$location.path('/events/my');
+				if (!$rootScope.isCordova) {
+					$scope.saveUser(user);
+					$rootScope.$broadcast('cm.loggedIn');
+					$location.path('/events/my');
+				}
 
 				if ($rootScope.isCordova) {
 					navigator.notification.alert('Failed to log in to twit-arr!', function(){});
