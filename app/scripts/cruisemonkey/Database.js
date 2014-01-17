@@ -65,6 +65,7 @@
 					}
 				},
 				continuous: true,
+				conflicts: true,
 				include_docs: true
 			});
 

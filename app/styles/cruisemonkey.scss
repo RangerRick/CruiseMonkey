@@ -98,6 +98,14 @@ $gutterMonkey: url(../images/cruise-monkey-transparent-bg.png);
 	}
 }
 
+.help {
+	.item {
+		ul {
+			list-style: disc;
+			padding-left: 10px;
+		}
+	}
+}
 .bar-bold {
 	font-family: $sidebarHeaderFont;
 	font-weight: bold;

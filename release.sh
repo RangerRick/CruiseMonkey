@@ -1,4 +1,18 @@
-#!/bin/sh -ev
+#!/bin/bash -e
+
+SKIP_BUILD=false
+while getopts "s" opt; do
+	case $opt in
+		s)
+			echo "skip build" >&2
+			SKIP_BUILD=true
+			;;
+		\?)
+			echo "Invalid argument: -$OPTARG" >&2
+			exit 1
+			;;
+	esac
+done
 
 DATESTAMP=`date '+%Y%m%d%H%M%S'`
 sed -e "s,@date@,$DATESTAMP,g" package.json.in > package.json
@@ -27,4 +41,12 @@ mv platforms/android/assets/www/_cordova.js platforms/android/assets/www/cordova
 mv platforms/android/assets/www/_cordova_plugins.js platforms/android/assets/www/cordova_plugins.js
 mv platforms/android/assets/www/scripts/3rdparty/_testflight.js platforms/android/assets/www/scripts/3rdparty/testflight.js
 
-cordova build "$@"
+if $SKIP_BUILD; then
+	echo "Skipping build."
+	exit 0
+fi
+
+cordova build --release "$@"
+
+jarsigner -keystore ~/share/android/android-release-key.keystore -digestalg SHA1 -sigalg MD5withRSA platforms/android/bin/CruiseMonkey-release-unsigned.apk ranger
+zipalign -v 4 platforms/android/bin/CruiseMonkey-release-unsigned.apk platforms/android/bin/CruiseMonkey-release-signed.apk

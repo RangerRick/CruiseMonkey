@@ -14,6 +14,7 @@
 		'cruisemonkey.controllers.DeckList',
 		'cruisemonkey.controllers.Events',
 		'cruisemonkey.controllers.Header',
+		'cruisemonkey.controllers.Help',
 		'cruisemonkey.controllers.Login',
 		'cruisemonkey.controllers.Logout',
 		'cruisemonkey.Database',
@@ -51,6 +52,11 @@
 				url: '/deck-plans/:deck',
 				templateUrl: 'template/deck-plans.html',
 				controller: 'CMDeckListCtrl'
+			})
+			.state('help', {
+				url: '/help',
+				templateUrl: 'template/help.html',
+				controller: 'CMHelpCtrl'
 			})
 			.state('about', {
 				url: '/about',

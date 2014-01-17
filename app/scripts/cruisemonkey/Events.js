@@ -874,6 +874,8 @@ function CMFavorite(rawdata) {
 
 		var initEventCache = function() {
 			$q.all([getAllEvents(), getAllFavorites()]).then(function(results) {
+				/*jshint camelcase: false */
+
 				log.info('EventService.initEventCache(): Retrieved events & favorites from the database; pushing to cache.');
 				var events    = results[0];
 				var favorites = results[1];
@@ -886,9 +888,9 @@ function CMFavorite(rawdata) {
 				});
 				$rootScope.$broadcast('cm.eventCachePrimed');
 
+				/*
 				log.info('EventService.initEventCache(): Pulling latest docs from remote.');
 				$q.when(getRemoteDocs()).then(function(remote) {
-					/*jshint camelcase: false */
 					if (remote && remote.total_rows) {
 						log.debug('EventService.initEventCache(): remote =', remote);
 						angular.forEach(remote.rows, function(row, index) {
@@ -908,6 +910,11 @@ function CMFavorite(rawdata) {
 					$rootScope.$broadcast('cm.eventCacheInitialized');
 					log.info('EventService.initEventCache(): finished initializing.');
 				});
+				*/
+
+				initialized.resolve(true);
+				$rootScope.$broadcast('cm.eventCacheInitialized');
+				log.info('EventService.initEventCache(): finished initializing.');
 			});
 
 			$rootScope.$on('cm.documentUpdated', function(ev, doc) {

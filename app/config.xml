@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<widget xmlns="http://www.w3.org/ns/widgets" xmlns:gap="http://phonegap.com/ns/1.0" id="com.raccoonfink.cruisemonkey" version="3.9.1+20140116181949">
+<widget xmlns="http://www.w3.org/ns/widgets" xmlns:gap="http://phonegap.com/ns/1.0" id="com.raccoonfink.cruisemonkey" version="3.9.1+20140116210008">
 	<name>CruiseMonkey</name>
 	<description>Keep Track of Your Cruise</description>
 
@@ -49,9 +49,9 @@
 	<gap:plugin name="org.apache.cordova.console" />
 	<gap:plugin name="org.apache.cordova.device" />
 	<gap:plugin name="org.apache.cordova.device-orientation" />
-	<gap:plugin name="org.apache.cordova.geolocation" />
-	<gap:plugin name="org.apache.cordova.media" />
-	<gap:plugin name="org.apache.cordova.media-capture" />
+	<!-- <gap:plugin name="org.apache.cordova.geolocation" /> -->
+	<!-- <gap:plugin name="org.apache.cordova.media" /> -->
+	<!-- <gap:plugin name="org.apache.cordova.media-capture" /> -->
 	<gap:plugin name="org.apache.cordova.network-information" />
 	<gap:plugin name="org.apache.cordova.dialogs" />
 	<gap:plugin name="org.apache.cordova.splashscreen" />
