@@ -175,6 +175,7 @@ module.exports = function (grunt) {
         files: {
           src: [
             '<%= yeoman.dist %>/scripts/{,*/}*.js',
+            '!<%= yeoman.dist %>/scripts/3rdparty/testflight.js',
             '!<%= yeoman.dist %>/scripts/3rdparty/_testflight.js',
             '<%= yeoman.dist %>/styles/{,*/}*.css',
             '<%= yeoman.dist %>/images/*.{gif,png}',

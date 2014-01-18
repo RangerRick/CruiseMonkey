@@ -1,7 +1,7 @@
 (function() {
 	'use strict';
 
-	angular.module('cruisemonkey.Navigation', ['cruisemonkey.Logging'])
+	angular.module('cruisemonkey.controllers.Navigation', ['cruisemonkey.Logging'])
 	.controller('CMNavigationCtrl', ['$rootScope', '$scope', '$location', '$document', 'UserService', 'LoggingService', '$mobileFrame', function($rootScope, $scope, $location, $document, UserService, log, $mobileFrame) {
 		log.info('Initializing CMNavigationCtrl');
 

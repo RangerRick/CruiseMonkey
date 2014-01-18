@@ -7,22 +7,19 @@
 	[
 		'ui.router',
 		'ionic',
+		'btford.phonegap.ready',
+		'angularLocalStorage',
 		'cruisemonkey.Config',
 		'cruisemonkey.controllers.About',
 		'cruisemonkey.controllers.Advanced',
 		'cruisemonkey.controllers.Amenities',
 		'cruisemonkey.controllers.DeckList',
 		'cruisemonkey.controllers.Events',
-		'cruisemonkey.controllers.Header',
 		'cruisemonkey.controllers.Help',
 		'cruisemonkey.controllers.Login',
 		'cruisemonkey.controllers.Logout',
-		'cruisemonkey.Database',
-		'cruisemonkey.Navigation',
-		'cruisemonkey.Events',
-		'cruisemonkey.User',
-		'btford.phonegap.ready',
-		'angularLocalStorage'
+		'cruisemonkey.controllers.Navigation',
+		'cruisemonkey.User'
 	])
 	.config(['$stateProvider', '$urlRouterProvider', function($stateProvider, $urlRouterProvider) {
 		$urlRouterProvider.otherwise('/events/official');
@@ -69,7 +66,7 @@
 				controller: 'CMAdvancedCtrl'
 			});
 	}])
-	.run(['$q', '$rootScope', '$window', '$location', '$timeout', '$urlRouter', 'UserService', 'EventService', 'storage', 'phonegapReady', function($q, $rootScope, $window, $location, $timeout, $urlRouter, UserService, EventService, storage, phonegapReady) {
+	.run(['$q', '$rootScope', '$window', '$location', '$timeout', '$urlRouter', 'UserService', 'storage', 'phonegapReady', function($q, $rootScope, $window, $location, $timeout, $urlRouter, UserService, storage, phonegapReady) {
 		console.log('CruiseMonkey run() called.');
 
 		$rootScope.safeApply = function(fn) {

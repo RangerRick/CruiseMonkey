@@ -4,7 +4,14 @@
 	/*global moment: true*/
 	/*global Modernizr: true*/
 	/*global CMEvent: true*/
-	angular.module('cruisemonkey.controllers.Events', ['cruisemonkey.User', 'cruisemonkey.Events', 'cruisemonkey.Logging', 'ionic', 'angularLocalStorage'])
+	angular.module('cruisemonkey.controllers.Events', [
+		'ui.router',
+		'ionic',
+		'angularLocalStorage',
+		'cruisemonkey.User',
+		'cruisemonkey.Events',
+		'cruisemonkey.Logging'
+	])
 	.filter('orderByEvent', function() {
 		return function(input, searchString) {
 			if (!angular.isObject(input)) { return input; }

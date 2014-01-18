@@ -1,8 +1,13 @@
 #!/bin/bash -e
 
+DONT_SIGN=false
 SKIP_BUILD=false
-while getopts "s" opt; do
+while getopts "ds" opt; do
 	case $opt in
+		d)
+			echo "don't sign" >&2
+			DONT_SIGN=true
+			;;
 		s)
 			echo "skip build" >&2
 			SKIP_BUILD=true
@@ -46,7 +51,11 @@ if $SKIP_BUILD; then
 	exit 0
 fi
 
-cordova build --release "$@"
+cordova build --release
 
-jarsigner -keystore ~/share/android/android-release-key.keystore -digestalg SHA1 -sigalg MD5withRSA platforms/android/bin/CruiseMonkey-release-unsigned.apk ranger
-zipalign -v 4 platforms/android/bin/CruiseMonkey-release-unsigned.apk platforms/android/bin/CruiseMonkey-release-signed.apk
+if $DONT_SIGN; then
+	:
+else
+	jarsigner -keystore ~/share/android/android-release-key.keystore -digestalg SHA1 -sigalg MD5withRSA platforms/android/bin/CruiseMonkey-release-unsigned.apk ranger
+	zipalign -v 4 platforms/android/bin/CruiseMonkey-release-unsigned.apk platforms/android/bin/CruiseMonkey-release-signed.apk
+fi

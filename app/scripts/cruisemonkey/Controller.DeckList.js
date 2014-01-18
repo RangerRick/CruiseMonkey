@@ -1,7 +1,11 @@
 (function() {
 	'use strict';
 
-	angular.module('cruisemonkey.controllers.DeckList', ['angularLocalStorage', 'cruisemonkey.Logging'])
+	angular.module('cruisemonkey.controllers.DeckList', [
+		'ui.router',
+		'angularLocalStorage',
+		'cruisemonkey.Logging'
+	])
 	.controller('CMDeckListCtrl', ['storage', '$scope', '$rootScope', '$timeout', '$state', '$stateParams', '$location', '$document', 'LoggingService', function(storage, $scope, $rootScope, $timeout, $state, $stateParams, $location, $document, log) {
 		log.info('Initializing CMDeckListCtrl');
 

@@ -55,12 +55,15 @@ var fireDocumentReady = function() {
 
 if (window.applicationCache && window.applicationCache.addEventListener) {
 	window.addEventListener('load', function(e) {
+		
+		/*
 		var loading = document.getElementById('loading');
 
 		loading.innerHTML = 'Checking for updates...';
+		*/
 
 		var notifyUpdate = function(text) {
-			loading.innerHTML = text;
+			/* loading.innerHTML = text; */
 			console.log(text);
 		};
 
@@ -208,11 +211,13 @@ window.setTimeout(function() {
 	<title ng-bind="'CruiseMonkey - ' + $root.title">CruiseMonkey</title>
 </head>
 <body class="antialiased off-canvas hide-extras">
+	<!--
 	<div class="cmloading container" ng-class="{hidden: hideSpinner}" ng-cloak>
 		<div class="centered">
 			<div class="spinner"></div><br /><div id="loading">Loading...</div>
 		</div>
 	</div>
+	-->
 
 	<div class="ng-cloak">
 	<side-menus>
@@ -226,7 +231,7 @@ window.setTimeout(function() {
 					</button>
 				</div>
 			</header>
-			<content has-header="true" overflow-scroll="false" scroll="false">
+			<content has-header="true" scroll="false">
 				<div ui-view></div>
 			</content>
 		</pane>
@@ -234,7 +239,7 @@ window.setTimeout(function() {
 			<header class="bar bar-header bar-dark">
 				<h1 class="title bar-bold">CruiseMonkey</h1>
 			</header>
-			<content has-header="true" class="nav">
+			<content has-header="true" class="nav" overflow-scroll="true" scroll="true">
 				<ul id="nav">
 					<li class="item item-complex"><a href="#/events/official">Official Events</a></li>
 					<li class="item item-complex"><a href="#/events/unofficial">Unofficial Events</a></li>
@@ -282,7 +287,6 @@ window.setTimeout(function() {
 	<script src="scripts/cruisemonkey/Controller.Amenities.js"></script>
 	<script src="scripts/cruisemonkey/Controller.DeckList.js"></script>
 	<script src="scripts/cruisemonkey/Controller.Events.js"></script>
-	<script src="scripts/cruisemonkey/Controller.Header.js"></script>
 	<script src="scripts/cruisemonkey/Controller.Help.js"></script>
 	<script src="scripts/cruisemonkey/Controller.Login.js"></script>
 	<script src="scripts/cruisemonkey/Controller.Logout.js"></script>
