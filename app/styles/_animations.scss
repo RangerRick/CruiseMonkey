@@ -244,8 +244,9 @@ $ios7-transition-duration: 250ms;
     right: -1px;
     bottom: 0;
     left: -1px;
-    border-left: 1px solid #ddd;
+    width: auto;
     border-right: 1px solid #ddd;
+    border-left: 1px solid #ddd;
   }
   > .ng-enter, &.ng-enter {
     /* NEW content placed far RIGHT BEFORE it slides IN from the RIGHT */
@@ -268,8 +269,9 @@ $ios7-transition-duration: 250ms;
       right: -1px;
       bottom: 0;
       left: -1px;
-      border-left: 1px solid #ddd;
+      width: auto;
       border-right: 1px solid #ddd;
+      border-left: 1px solid #ddd;
     }
     > .ng-enter, &.ng-enter {
       /* NEW content placed far LEFT BEFORE it slides IN from the LEFT */
@@ -400,7 +402,7 @@ $ios7-transition-duration: 250ms;
 
 .slide-in-up {
   // Start it down low
-  @include translate3d(0, 0%, 0);
+  @include translate3d(0, 0, 0);
   opacity: 1;
 
   &.ng-enter, .ng-enter {
@@ -432,7 +434,7 @@ $ios7-transition-duration: 250ms;
 .slide-in-up-add {
   @include animation-duration(400ms);
   @include animation-timing-function($slide-in-up-function);
-  @include animation-fill-mode(both);
+  @include animation-fill-mode(forwards);
 }
 .slide-in-up-add-active {
   @include animation-name(slideInUp);
