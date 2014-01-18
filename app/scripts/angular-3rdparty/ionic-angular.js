@@ -2,7 +2,7 @@
  * Copyright 2014 Drifty Co.
  * http://drifty.com/
  *
- * Ionic, v0.9.21
+ * Ionic, v0.9.20
  * A powerful HTML5 mobile app framework.
  * http://ionicframework.com/
  *
@@ -72,12 +72,6 @@ angular.module('ionic.ui.service.scrollDelegate', [])
     scrollTop: function(animate) {
       $rootScope.$broadcast('scroll.scrollTop', animate);
     },
-    scrollBottom: function(animate) {
-      $rootScope.$broadcast('scroll.scrollBottom', animate);
-    },
-    resize: function() {
-      $rootScope.$broadcast('scroll.resize');
-    },
     tapScrollToTop: function(element) {
       var _this = this;
 
@@ -122,13 +116,6 @@ angular.module('ionic.ui.service.scrollDelegate', [])
        */
       $scope.$parent.$on('scroll.scrollTop', function(e, animate) {
         $scope.$parent.scrollView && $scope.$parent.scrollView.scrollTo(0, 0, animate === false ? false : true);
-      });
-      $scope.$parent.$on('scroll.scrollBottom', function(e, animate) {
-        var sv = $scope.$parent.scrollView;
-        var max;
-        if(!sv) { return; }
-        max = sv.getScrollMax();
-        sv.scrollTo(0, max.top, animate === false ? false : true);
       });
     }
   };
@@ -432,6 +419,24 @@ angular.module('ionic.service.platform', [])
  * height of header bars on iOS 7.
  */
 .provider('$ionicPlatform', function() {
+  var platform = 'web';
+  var isPlatformReady = false;
+
+  if(window.cordova || window.PhoneGap || window.phonegap) {
+    platform = 'cordova';
+  }
+
+  var isReady = function() {
+    if(platform == 'cordova') {
+      return window.device || window.Cordova;
+    }
+    return true;
+  };
+
+  // We need to do some stuff as soon as we know the platform,
+  // like adjust header margins for iOS 7, etc.
+  ionic.Platform.detect();
+
 
   return {
     setPlatform: function(p) {
@@ -474,7 +479,8 @@ angular.module('ionic.service.platform', [])
           var q = $q.defer();
 
           $timeout(function readyWait() {
-            if(ionic.Platform.isReady) {
+            if(isReady()) {
+              isPlatformReady = true;
               q.resolve();
               cb();
             } else {
@@ -487,7 +493,6 @@ angular.module('ionic.service.platform', [])
       };
     }]
   };
-  
 });
 
 })(ionic);
@@ -1495,12 +1500,7 @@ angular.module('ionic.ui.list', ['ngAnimate'])
     link: function($scope, $element, $attr) {
       $scope.listView = new ionic.views.ListView({
         el: $element[0],
-        listEl: $element[0].children[0],
-        onReorder: function(el, oldIndex, newIndex) {
-          $scope.$apply(function() {
-            $scope.onReorder({el: el, start: oldIndex, end: newIndex});
-          });
-        }
+        listEl: $element[0].children[0]
       });
 
       if($attr.animation) {

@@ -2,14 +2,9 @@
 /**
  * Platform
  * --------------------------------------------------
- * Platform specific tweaks when in Cordova.
  */
 
-.platform-ios7:not(.fullscreen) {
-  // iOS7 has a status bar which sits on top of the header.
-  // Bump down everything to make room for it. However, if
-  // if its in Cordova, and set to fullscreen, then disregard the bump.
-
+.platform-ios7 {
   .bar-header {
     height: 64px;
 
@@ -22,7 +17,10 @@
     }
   }
 
-  .has-header, 
+  .has-header {
+    top: 64px;
+  }
+
   .bar-subheader {
     top: 64px;
   }
@@ -32,15 +30,15 @@
   }
 }
 
-.platform-ios7.status-bar-hide {
-  // Cordova doesn't adjust the body height correctly, this makes up for it
-  margin-bottom: 20px;
-}
-
 .platform-android {
-  
-  .bar-header,
-  .has-header,
+  .bar-header {
+    height: 48px;
+  }
+
+  .has-header {
+    top: 48px;
+  }
+
   .bar-subheader {
     top: 48px;
   }
