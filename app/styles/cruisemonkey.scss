@@ -106,10 +106,41 @@ $gutterMonkey: url(../images/cruise-monkey-transparent-bg.png);
 		}
 	}
 }
+
 .bar-bold {
 	font-family: $sidebarHeaderFont;
 	font-weight: bold;
 	font-size: 26px;
+}
+
+div.cm-notification {
+	position: fixed;
+	width: 100%;
+	left: 0;
+	bottom: 0;
+	background-color: rgba(50,50,50,.7);
+	z-index: 5000;
+
+	div.cm-notification-inner {
+		display: inline-block;
+		padding: 5px;
+		width: 90%;
+		float: left;
+		color: white;
+		font-family: $eventListFont;
+		font-weight: bold;
+		font-size: 20px;
+	}
+
+	div.cm-notification-spinner {
+		float: right;
+		position: fixed;
+		padding: 5px;
+		right: 0;
+		bottom: 0;
+		color: white;
+		font-size: 20px;
+	}
 }
 
 body {
@@ -297,6 +328,16 @@ header.bar.bar-header {
 	user-drag: none;
 	-moz-user-select: none;
 	-webkit-user-drag: none;
+
+	div.icon {
+		display: block;
+		width: 90%;
+		max-width: 500px;
+		margin: auto;
+		user-drag: none;
+		-moz-user-select: none;
+		-webkit-user-drag: none;
+	}
 
 	img {
 		display: block;

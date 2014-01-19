@@ -1,7 +1,10 @@
-<content has-header="false" scroll="true">
-<slide-box show-pager="false" active-slide="deckIndex">
+<content has-header="true" overflow-scroll="true" scroll="true">
+<slide-box show-pager="false" active-slide="currentSlide" on-slide-changed="slideChanged(index)">
 	<slide ng-repeat="deck in [2,3,4,5,6,7,8,9,10,11,12,13,14,15]">
-		<div class="box deck-plans"><img ng-src="images/decks/deck{{deck}}.svg" type="image/svg+xml" id="deck{{deck}}"></img></div>
+		<div class="box deck-plans" ng-switch="shouldBeVisible(deck)">
+			<img ng-switch-when="true" ng-src="images/decks/deck{{deck}}.svg" type="image/svg+xml" id="deck{{deck}}"></img>
+			<div ng-switch-default><i class="icon ion-help-buoy" style="font-size: 100px"></i></div>
+		</div>
 	</slide>
 </slide-box>
 </content>

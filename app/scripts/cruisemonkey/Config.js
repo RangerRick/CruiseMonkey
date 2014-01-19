@@ -8,7 +8,7 @@
 	.value('config.database.replicate', true)
 	.value('config.database.refresh', 20000)
 	.value('config.twitarr.root', 'https://twitarr.rylath.net/')
-	.value('config.app.version', '3.9.1+20140117215922');
+	.value('config.app.version', '3.9.1+20140119145636');
 	
 	angular.module('cruisemonkey.Settings', [
 		'angularLocalStorage',

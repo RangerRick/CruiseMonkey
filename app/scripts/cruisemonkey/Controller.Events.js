@@ -75,7 +75,7 @@
 			return array;
 		};
 	})
-	.controller('CMEditEventCtrl', ['$q', '$scope', '$rootScope', '$modal', 'UserService', 'LoggingService', function($q, $scope, $rootScope, $modal, UserService, log) {
+	.controller('CMEditEventCtrl', ['$q', '$scope', '$rootScope', 'UserService', 'LoggingService', function($q, $scope, $rootScope, UserService, log) {
 		log.info('Initializing CMEditEventCtrl');
 
 		if ($rootScope.editEvent) {
@@ -96,7 +96,7 @@
 			// console.log($scope.event);
 		}
 	}])
-	.controller('CMEventCtrl', ['storage', '$scope', '$rootScope', '$timeout', '$stateParams', '$location', '$q', 'Modal', '$templateCache', 'UserService', 'EventService', 'LoggingService', function(storage, $scope, $rootScope, $timeout, $stateParams, $location, $q, Modal, $templateCache, UserService, EventService, log) {
+	.controller('CMEventCtrl', ['storage', '$scope', '$rootScope', '$timeout', '$stateParams', '$location', '$q', '$ionicModal', '$templateCache', 'UserService', 'EventService', 'LoggingService', function(storage, $scope, $rootScope, $timeout, $stateParams, $location, $q, $ionicModal, $templateCache, UserService, EventService, log) {
 		log.info('Initializing CMEventCtrl');
 
 		$rootScope.eventType = $stateParams.eventType;
@@ -212,7 +212,7 @@
 			refreshEvents();
 		}, 0);
 
-		Modal.fromTemplateUrl('edit-event.html', function(modal) {
+		$ionicModal.fromTemplateUrl('edit-event.html', function(modal) {
 			$scope.modal = modal;
 		}, {
 			scope: $scope,

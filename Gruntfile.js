@@ -355,8 +355,10 @@ module.exports = function (grunt) {
             'index.html',
             'template/about.html',
             'template/advanced.html',
+            'template/amenities.html',
             'template/deck-plans.html',
             'template/event-list.html',
+            'template/help.html',
             'template/logout.html',
             'template/login.html',
             'bower_components/html5shiv/dist/html5shiv.js'

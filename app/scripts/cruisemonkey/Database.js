@@ -3,8 +3,14 @@
 
 	/*global PouchDB: true*/
 	/*global Connection: true*/
-	angular.module('cruisemonkey.Database', ['cruisemonkey.Logging', 'cruisemonkey.Config', 'cruisemonkey.Settings', 'angularLocalStorage'])
-	.factory('Database', ['$q', '$location', '$interval', '$timeout', '$rootScope', '$window', 'LoggingService', 'storage', 'config.database.replicate', 'SettingsService', function($q, $location, $interval, $timeout, $rootScope, $window, log, storage, replicate, SettingsService) {
+	angular.module('cruisemonkey.Database', [
+		'angularLocalStorage',
+		'cruisemonkey.Cordova',
+		'cruisemonkey.Logging',
+		'cruisemonkey.Config',
+		'cruisemonkey.Settings'
+	])
+	.factory('Database', ['$q', '$location', '$interval', '$timeout', '$rootScope', '$window', 'LoggingService', 'storage', 'config.database.replicate', 'SettingsService', 'CordovaService', function($q, $location, $interval, $timeout, $rootScope, $window, log, storage, replicate, SettingsService, CordovaService) {
 		log.info('Initializing CruiseMonkey database: ' + SettingsService.getDatabaseName());
 
 		storage.bind($rootScope, '_seq', {
@@ -94,6 +100,8 @@
 						});
 					}
 				});
+			} else {
+				log.warn('Replication disabled.');
 			}
 		};
 
@@ -157,24 +165,35 @@
 		};
 
 		var setUp = function() {
-			$timeout(function() {
-				if (navigator && navigator.connection) {
-					if (navigator.connection.addEventListener) {
-						log.info("Database.setUp(): Browser has native navigator.connection support.");
-						navigator.connection.addEventListener('change', handleConnectionTypeChange, false);
-						handleConnectionTypeChange();
-					} else {
-						log.info("Database.setUp(): Browser does not have native navigator.connection support.  Trying with Cordova.");
-						document.addEventListener('online', handleConnectionTypeChange, false);
-						document.addEventListener('offline', handleConnectionTypeChange, false);
-						handleConnectionTypeChange();
-					}
-				} else {
-					log.warn("Database.setUp(): Unsure how to handle connection management; starting replication and hoping for the best.");
-					startReplication();
-				}
+			CordovaService.ifCordova(function() {
+				// is cordova
+				document.addEventListener('online', startReplication, false);
+				document.addEventListener('offline', stopReplication, false);
+				document.addEventListener('resume', startReplication, false);
+				document.addEventListener('pause', stopReplication, false);
 				databaseReady();
-			}, 0);
+			}, function() {
+				$timeout(function() {
+					if (navigator && navigator.connection) {
+						if (navigator.connection.addEventListener) {
+							log.info("Database.setUp(): Browser has native navigator.connection support.");
+							navigator.connection.addEventListener('change', handleConnectionTypeChange, false);
+							handleConnectionTypeChange();
+						} else {
+							log.info("Database.setUp(): Browser does not have native navigator.connection support.  Trying with online/offline events.");
+							document.addEventListener('online', startReplication, false);
+							document.addEventListener('offline', stopReplication, false);
+							document.addEventListener('resume', startReplication, false);
+							document.addEventListener('pause', stopReplication, false);
+							handleConnectionTypeChange();
+						}
+					} else {
+						log.warn("Database.setUp(): Unsure how to handle connection management; starting replication and hoping for the best.");
+						startReplication();
+					}
+					databaseReady();
+				}, 0);
+			});
 		};
 
 		var tearDown = function() {

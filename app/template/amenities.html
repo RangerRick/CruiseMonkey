@@ -1,10 +1,10 @@
-<header class="bar item-input-inset">
-	<label class="item-input-wrapper">
-		<i class="icon ion-ios7-search placeholder-icon"></i>
-		<input type="search" placeholder="Search" ng-model="searchString" />
-	</label>
-</header>
-<content has-header="true" scroll="true">
+<content has-header="true" overflow-scroll="true" scroll="true">
+	<header class="bar bar-header item-input-inset">
+		<label class="item-input-wrapper">
+			<i class="icon ion-ios7-search placeholder-icon"></i>
+			<input type="search" placeholder="Search" ng-model="searchString" />
+		</label>
+	</header>
 	<div class="event-list list">
 		<span ng-repeat="amenity in amenities | amenityFilter:searchString">
 			<div ng-if="headerAmenities[amenity.getUniqueId()]" class="item item-divider header">Deck {{amenity.getDeck().getFloor()}}</div>

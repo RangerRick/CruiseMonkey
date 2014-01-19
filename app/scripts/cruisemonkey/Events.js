@@ -876,9 +876,10 @@ function CMFavorite(rawdata) {
 			$q.all([getAllEvents(), getAllFavorites()]).then(function(results) {
 				/*jshint camelcase: false */
 
-				log.info('EventService.initEventCache(): Retrieved events & favorites from the database; pushing to cache.');
 				var events    = results[0];
 				var favorites = results[1];
+
+				log.info('EventService.initEventCache(): Retrieved ' + events.length + ' events & ' + favorites.length + ' favorites from the database; pushing to cache.');
 
 				angular.forEach(events, function(ev, index) {
 					handleEventUpdated(ev);
@@ -915,6 +916,8 @@ function CMFavorite(rawdata) {
 				initialized.resolve(true);
 				$rootScope.$broadcast('cm.eventCacheInitialized');
 				log.info('EventService.initEventCache(): finished initializing.');
+
+				db.replicateNow();
 			});
 
 			$rootScope.$on('cm.documentUpdated', function(ev, doc) {

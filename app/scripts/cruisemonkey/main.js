@@ -5,11 +5,11 @@
 
 	angular.module('cruisemonkey',
 	[
-		'ui.router',
 		'ionic',
-		'btford.phonegap.ready',
+		'ui.router',
 		'angularLocalStorage',
 		'cruisemonkey.Config',
+		'cruisemonkey.Cordova',
 		'cruisemonkey.controllers.About',
 		'cruisemonkey.controllers.Advanced',
 		'cruisemonkey.controllers.Amenities',
@@ -21,7 +21,10 @@
 		'cruisemonkey.controllers.Navigation',
 		'cruisemonkey.User'
 	])
-	.config(['$stateProvider', '$urlRouterProvider', function($stateProvider, $urlRouterProvider) {
+	.config(['$stateProvider', '$urlRouterProvider', '$compileProvider', function($stateProvider, $urlRouterProvider, $compileProvider) {
+		$compileProvider.aHrefSanitizationWhitelist(/^\s*(https?|ftp|mailto|file|tel):/);
+		$compileProvider.imgSrcSanitizationWhitelist(/^\s*(https?|file):/);
+
 		$urlRouterProvider.otherwise('/events/official');
 
 		$stateProvider
@@ -66,7 +69,7 @@
 				controller: 'CMAdvancedCtrl'
 			});
 	}])
-	.run(['$q', '$rootScope', '$window', '$location', '$timeout', '$urlRouter', 'UserService', 'storage', 'phonegapReady', function($q, $rootScope, $window, $location, $timeout, $urlRouter, UserService, storage, phonegapReady) {
+	.run(['$q', '$rootScope', '$window', '$location', '$timeout', '$urlRouter', 'UserService', 'storage', 'CordovaService', function($q, $rootScope, $window, $location, $timeout, $urlRouter, UserService, storage, CordovaService) {
 		console.log('CruiseMonkey run() called.');
 
 		$rootScope.safeApply = function(fn) {
@@ -80,17 +83,6 @@
 			}
 		};
 
-		var waiting = $q.defer();
-		$rootScope.$on('cm.eventCachePrimed', function() {
-			waiting.resolve(true);
-		});
-		waiting.promise.then(function() {
-			// wait a little longer for things to settle down
-			$timeout(function() {
-				$rootScope.hideSpinner = true;
-			}, 3000);
-		});
-
 		$window.handleOpenURL = function(url) {
 			var translated = url.replace('cruisemonkey://','/');
 			$rootScope.safeApply(function() {
@@ -98,32 +90,27 @@
 			});
 		};
 
-		var initCordova = function() {
-			if (window.device) {
-				$rootScope.isCordova = true;
-				console.log('main: This is a Cordova device!');
+		/*
+		CordovaService.ifCordova(function() {
+			// is cordova
+			$rootScope.hideSpinner = true;
+			$rootScope.isCordova = true;
+			console.log('main: This is a Cordova device!');
 
-				var tf = new TestFlight();
-				$rootScope.testFlight = tf;
-			} else {
-				console.log('main: This is not a Cordova device.');
-			}
-		};
-
-		$rootScope.isCordova = false;
-		if (window.device) {
-			initCordova();
-		} else {
-			phonegapReady(initCordova);
-		}
+			//$rootScope.testFlight = new TestFlight();
+		}, function() {
+			// is not cordova
+			$rootScope.hideSpinner = true;
+			$rootScope.isCordova = false;
+			console.log('main: This is not a Cordova device.');
+		});
+		*/
 
 		$rootScope.openLeft = function() {
 			$rootScope.sideMenuController.toggleLeft();
 		};
 
 		$rootScope.$on('$locationChangeSuccess', function(evt, newUrl, oldUrl) {
-			// console.log('locationChangeSuccess:',evt,newUrl,oldUrl);
-
 			$rootScope.user = UserService.get();
 			$rootScope.sideMenuController.close();
 
