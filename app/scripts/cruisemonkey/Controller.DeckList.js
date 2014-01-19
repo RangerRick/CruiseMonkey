@@ -53,10 +53,10 @@
 
 		$scope.shouldBeVisible = function(deck) {
 			if (deck >= ($scope.deck - 1) && deck <= ($scope.deck + 1)) {
-				log.info('shouldBeVisible = true (deck = ' + deck + ')');
+				//log.info('shouldBeVisible = true (deck = ' + deck + ')');
 				return true;
 			} else {
-				log.info('shouldBeVisible = false (deck = ' + deck + ')');
+				//log.info('shouldBeVisible = false (deck = ' + deck + ')');
 				return false;
 			}
 		};

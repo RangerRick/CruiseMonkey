@@ -3,8 +3,9 @@
 <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
 <svg version="1.1"
 	 id="svg2" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:cc="http://creativecommons.org/ns#" xmlns:dc="http://purl.org/dc/elements/1.1/"
-	 xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="132.879px"
-	 height="813.15px" viewBox="0 0 132.879 813.15" enable-background="new 0 0 132.879 813.15" xml:space="preserve">
+	 xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="132.882px"
+	 height="813.416px" viewBox="-0.002 -0.471 132.882 813.416" enable-background="new -0.002 -0.471 132.882 813.416"
+	 xml:space="preserve">
 <g id="g10" transform="matrix(1.25,0,0,-1.25,0,990)">
 	<g id="g1158">
 		<g id="g1160">
@@ -115,7 +116,7 @@
 			<path id="path1306" fill="#FFFFFF" d="M75.132,317.854h5.93v17.216h-5.93v-17.22V317.854z"/>
 			<path id="path1308" fill="none" stroke="#918F90" stroke-width="0.472" d="M75.132,317.854h5.93v17.216h-5.93v-17.22V317.854z"/>
 			<path id="path1310" fill="#FFFFFF" d="M40.282,259.154H22.746v-6.125h17.537l-0.002,6.12v0.005H40.282z"/>
-			<path id="path1312" fill="#FFFFFF" d="M61.036,254.563H48.618v6.127h12.42v-6.13v0.002H61.036z"/>
+			<path id="path1312" fill="#FFFFFF" d="M61.036,254.563H48.618v6.127h12.42v-6.13v0.002h-0.002V254.563z"/>
 			<path id="path1314" fill="#FFFFFF" d="M36.954,302.434h-5.677v1.145h5.677v-1.141V302.434z"/>
 			<path id="path1316" fill="none" stroke="#918F90" stroke-width="0.472" d="M36.954,302.434h-5.677v1.145h5.677v-1.141V302.434z"
 				/>
