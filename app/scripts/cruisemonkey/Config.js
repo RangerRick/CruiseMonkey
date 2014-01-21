@@ -32,7 +32,7 @@
 			var twRoot = $rootScope._settings['twitarr.root'] || twitarrRoot;
 			
 			if (dbHost === dbName) {
-				console.log('Database host invalid!')
+				console.log('Database host invalid!');
 				dbHost = databaseHost;
 			}
 

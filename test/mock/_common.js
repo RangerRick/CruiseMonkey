@@ -1,3 +1,5 @@
+var isMobile = false;
+
 var LoggedInUserService = function() {
 	var user = {
 		loggedIn: true,

@@ -46,7 +46,42 @@
 			.state('events', {
 				url: '/events/:eventType',
 				templateUrl: 'template/event-list.html',
-				controller: 'CMEventCtrl'
+				controller: 'CMEventCtrl',
+				resolve: {
+					events: ['$q', '$stateParams', '$rootScope', 'LoggingService', 'EventService', function($q, $stateParams, $rootScope, log, EventService) {
+						log.debug('events.resolve: waiting for ' + $stateParams.eventType + ' events');
+						var ret = $q.defer();
+						if ($stateParams.eventType === 'official') {
+							EventService.getOfficialEvents().then(function(events) {
+								log.debug('events.resolve: got ' + events.length + ' official events');
+								ret.resolve(events);
+							}, function() {
+								log.warn('events.resolve: failed to get official events');
+								ret.resolve([]);
+							});
+						} else if ($stateParams.eventType === 'unofficial') {
+							EventService.getUnofficialEvents().then(function(events) {
+								log.debug('events.resolve: got ' + events.length + ' unofficial events');
+								ret.resolve(events);
+							}, function() {
+								log.warn('events.resolve: failed to get unofficial events');
+								ret.resolve([]);
+							});
+						} else if ($stateParams.eventType === 'my') {
+							EventService.getMyEvents().then(function(events) {
+								log.debug('events.resolve: got ' + events.length + ' my events');
+								ret.resolve(events);
+							}, function() {
+								log.warn('failed to get my events');
+								ret.resolve([]);
+							});
+						} else {
+							log.warn('unknown event type: ' + $stateParams.eventType);
+							ret.resolve([]);
+						}
+						return ret.promise;
+					}]
+				}
 			})
 			.state('deck-plans', {
 				url: '/deck-plans/:deck',

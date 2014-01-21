@@ -2,7 +2,7 @@
 	'use strict';
 	/*global log4javascript: true*/
 
-	var defaultLevel = log4javascript.Level.INFO;
+	var defaultLevel = log4javascript.Level.DEBUG;
 
 	function StringAppender() {}
 

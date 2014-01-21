@@ -4,40 +4,42 @@
 	/*global isMobile: true*/
 
 	angular.module('cruisemonkey.Cordova', [
-		'ng'
+		'ng',
+		'cruisemonkey.Logging'
 	])
-	.factory('CordovaService', ['$rootScope', '$document', '$window', '$q', '$timeout', function($rootScope, $document, $window, $q, $timeout) {
+	.factory('CordovaService', ['$rootScope', '$document', '$window', '$q', '$timeout', 'LoggingService', function($rootScope, $document, $window, $q, $timeout, log) {
 		var isCordova = $q.defer();
 
 		var onDeviceReady = function() {
-			console.log('CruiseMonkey Cordova Initialized.');
+			log.info('CruiseMonkey Cordova Initialized.');
 
 			if ($window.device) {
-				console.log('Found Cordova Device Information.');
-				console.log('Model:    ' + $window.device.model);
-				console.log('Cordova:  ' + $window.device.cordova);
-				console.log('Platform: ' + $window.device.platform);
-				console.log('UUID:     ' + $window.device.uuid);
-				console.log('Version:  ' + $window.device.version);
+				log.info('Found Cordova Device Information.');
+				log.info('Model:    ' + $window.device.model);
+				log.info('Cordova:  ' + $window.device.cordova);
+				log.info('Platform: ' + $window.device.platform);
+				log.info('UUID:     ' + $window.device.uuid);
+				log.info('Version:  ' + $window.device.version);
 			} else {
-				console.log('WARNING: deviceready event fired, but window.device not found!');
+				log.warn('Deviceready event fired, but window.device not found!');
 			}
 			isCordova.resolve(true);
 		};
 
 		if (isMobile) {
-			console.log('"isMobile" set.  Assuming Cordova.');
+			log.info('CordovaService: "isMobile" set.  Assuming Cordova.');
 			onDeviceReady();
 			document.addEventListener("deviceready", function() {
-				console.log('Initialization has already happened, but deviceready fired again. WTF?');
+				log.warn('Initialization has already happened, but deviceready fired again. WTF?');
 			}, false);
 		} else {
+			log.info('CordovaService: "isMobile" not set.  Waiting for Cordova initialization.');
 			document.addEventListener("deviceready", onDeviceReady, false);
 			$timeout(function() {
-				console.log('Cordova initialization never happened.  Assuming it never will.');
+				log.warn('Cordova initialization never happened.  Assuming it never will.');
 				document.removeEventListener("deviceready", onDeviceReady);
 				isCordova.resolve(false);
-			}, 5000);
+			}, 1000);
 		}
 
 		return {

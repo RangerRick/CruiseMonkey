@@ -18,6 +18,11 @@
 			'storeName': 'cm.db.sync'
 		});
 		log.info('last sequence: ' + $rootScope._seq);
+		var _lastSeq = $rootScope._seq;
+
+		if ($rootScope._seq === 0) {
+			$rootScope.notificationText = 'Downloading CruiseMonkey events from the server...';
+		}
 
 		var getHost = function() {
 			var host = SettingsService.getDatabaseHost();
@@ -30,7 +35,8 @@
 		var db = null,
 			timeout = null,
 			watchingChanges = false,
-			replicating = null;
+			replicating = null,
+			ready = $q.defer();
 
 		var initializeDatabase = function() {
 			db = new PouchDB(SettingsService.getDatabaseName());
@@ -45,6 +51,7 @@
 
 		var databaseReady = function() {
 			if (watchingChanges) {
+				log.warn('Already watching for document changes.');
 				return;
 			}
 
@@ -60,9 +67,9 @@
 			db.changes({
 				since: seq,
 				onChange: function(change) {
-					console.log('change: ', change);
+					//console.log('change: ', change);
 					if (change.seq) {
-						$rootScope._seq = change.seq;
+						_lastSeq = change.seq;
 					}
 					if (change.deleted) {
 						$rootScope.$broadcast('cm.documentDeleted', change);
@@ -76,6 +83,7 @@
 			});
 
 			log.info('Database.databaseReady(): Database ready for change updates.');
+			ready.resolve(true);
 			$rootScope.$broadcast('cm.databaseReady');
 		};
 
@@ -86,13 +94,18 @@
 				}
 
 				replicating = $q.defer();
-				log.info('Attempting to replicate with ' + getHost());
 				$rootScope.$broadcast('cm.replicationStarting');
+				log.info('Replicating from ' + getHost());
 				db.replicate.from(getHost(), {
 					'complete': function() {
+						$rootScope._seq = _lastSeq;
+						$rootScope.$broadcast('cm.localDatabaseSynced');
+
+						log.info('Replicating to ' + getHost());
 						db.replicate.to(getHost(), {
 							'complete': function() {
 								log.info('Replication complete.');
+								$rootScope.$broadcast('cm.remoteDatabaseSynced');
 								$rootScope.$broadcast('cm.replicationComplete');
 								replicating.resolve(false);
 								replicating = null;
@@ -102,6 +115,7 @@
 				});
 			} else {
 				log.warn('Replication disabled.');
+				$rootScope._seq = _lastSeq;
 			}
 		};
 
@@ -145,23 +159,26 @@
 
 		var handleConnectionTypeChange = function(ev) {
 			if (navigator.connection.type !== undefined) {
-				console.log('Connection type is: ' + navigator.connection.type);
+				log.info('Connection type is: ' + navigator.connection.type);
 				if (navigator.connection.type === Connection.NONE) {
 					stopReplication();
 				} else {
 					startReplication();
 				}
+				return true;
 			} else if (navigator.connection.bandwidth !== undefined) {
-				console.log('Connection bandwidth is: ' + navigator.connection.bandwidth);
+				log.info('Connection bandwidth is: ' + navigator.connection.bandwidth);
 				if (navigator.connection.bandwidth > 0) {
 					startReplication();
 				} else {
 					stopReplication();
 				}
+				return true;
 			} else {
-				log.info('Got a connection type event.');
+				log.info('Ignoring connection change event.');
 				console.log(ev);
 			}
+			return false;
 		};
 
 		var setUp = function() {
@@ -171,13 +188,17 @@
 				document.addEventListener('offline', stopReplication, false);
 				document.addEventListener('resume', startReplication, false);
 				document.addEventListener('pause', stopReplication, false);
+
 				databaseReady();
+				startReplication();
 			}, function() {
 				$timeout(function() {
 					if (navigator && navigator.connection) {
 						if (navigator.connection.addEventListener) {
 							log.info("Database.setUp(): Browser has native navigator.connection support.");
 							navigator.connection.addEventListener('change', handleConnectionTypeChange, false);
+
+							databaseReady();
 							handleConnectionTypeChange();
 						} else {
 							log.info("Database.setUp(): Browser does not have native navigator.connection support.  Trying with online/offline events.");
@@ -185,13 +206,18 @@
 							document.addEventListener('offline', stopReplication, false);
 							document.addEventListener('resume', startReplication, false);
 							document.addEventListener('pause', stopReplication, false);
-							handleConnectionTypeChange();
+
+							databaseReady();
+							if (!handleConnectionTypeChange()) {
+								startReplication();
+							}
 						}
 					} else {
 						log.warn("Database.setUp(): Unsure how to handle connection management; starting replication and hoping for the best.");
+						databaseReady();
 						startReplication();
 					}
-					databaseReady();
+
 				}, 0);
 			});
 		};
@@ -206,18 +232,45 @@
 			}
 		};
 
+		var getDatabase = function() {
+			var deferred = $q.defer();
+			$q.when(ready).then(function() {
+				deferred.resolve(db);
+			});
+			return deferred.promise;
+		};
+
 		var resetDatabase = function() {
 			$rootScope.safeApply(function() {
 				tearDown();
 				watchingChanges = false;
 				$rootScope._seq = 0;
+				_lastSeq = 0;
+				$timeout.cancel(timeout);
+				timeout = undefined;
+				ready.reject('resetting');
+				ready = $q.defer();
+				storage.set('cm.lasturl', '/events/official');
 
 				PouchDB.destroy(SettingsService.getDatabaseName(), function(err) {
 					if (err) {
 						$window.alert('Failed to destroy existing database!');
 					} else {
-						log.info('Reloading CruiseMonkey.');
-						$window.location.reload();
+						var reloadHref = $window.location.href;
+						if (reloadHref.indexOf('#') > -1) {
+							reloadHref = reloadHref.split('#')[0];
+						}
+						log.info('Reloading CruiseMonkey Database at ' + reloadHref);
+						// $window.location = reloadHref;
+						$window.open(reloadHref, '_self');
+						/*
+						CordovaService.ifCordova(function() {
+							$window.open(reloadHref, '_self');
+						},
+						function() {
+							$window.open(reloadHref);
+						});
+						*/
 					}
 				});
 			});
@@ -235,7 +288,7 @@
 
 		return {
 			'reset': resetDatabase,
-			'database': db,
+			'getDatabase': getDatabase,
 			'replicateNow': doReplicate,
 			'startReplication': startReplication,
 			'stopReplication': stopReplication
