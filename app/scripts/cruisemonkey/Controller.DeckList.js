@@ -28,10 +28,11 @@
 				passedDeck = parseInt($stateParams.deck, 10);
 			}
 			if (passedDeck && passedDeck > 0) {
+				log.info('passedDeck = ' + passedDeck);
 				$scope.deck = passedDeck;
-				$scope.currentSlide = $scope.deck - 2;
 			}
 		}
+		$scope.currentSlide = $scope.deck - 2;
 
 		var previous = function() {
 			$scope.$broadcast('slideBox.prevSlide');
@@ -52,13 +53,9 @@
 		};
 
 		$scope.shouldBeVisible = function(deck) {
-			if (deck >= ($scope.deck - 1) && deck <= ($scope.deck + 1)) {
-				//log.info('shouldBeVisible = true (deck = ' + deck + ')');
-				return true;
-			} else {
-				//log.info('shouldBeVisible = false (deck = ' + deck + ')');
-				return false;
-			}
+			//return $scope.deck === deck;
+			/* pre-cache the one before and after */
+			return (deck >= ($scope.deck - 1) && deck <= ($scope.deck + 1));
 		};
 
 		var updateUI = function() {

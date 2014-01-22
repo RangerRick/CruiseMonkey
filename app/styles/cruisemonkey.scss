@@ -329,14 +329,22 @@ header.bar.bar-header {
 	-moz-user-select: none;
 	-webkit-user-drag: none;
 
-	div.icon {
-		display: block;
-		width: 90%;
-		max-width: 500px;
+	div {
+		max-width: 200px;
 		margin: auto;
+		margin-top: 20px;
 		user-drag: none;
 		-moz-user-select: none;
 		-webkit-user-drag: none;
+
+		i.icon {
+			display: block;
+			user-drag: none;
+			-moz-user-select: none;
+			-webkit-user-drag: none;
+			font-size: 200px;
+			text-align: center;
+		}
 	}
 
 	img {
