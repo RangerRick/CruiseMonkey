@@ -259,13 +259,37 @@ window.ionic = {
   ionic.EventController = {
     VIRTUALIZED_EVENTS: ['tap', 'swipe', 'swiperight', 'swipeleft', 'drag', 'hold', 'release'],
 
+    isAndroidBrowser: (navigator.userAgent.indexOf('Android') > 0 && navigator.userAgent.indexOf('Chrome') < 0),
+
     // Trigger a new event
     trigger: function(eventType, data) {
       var event = new CustomEvent(eventType, { detail: data });
 
       // Make sure to trigger the event on the given target, or dispatch it from
       // the window if we don't have an event target
-      data && data.target && data.target.dispatchEvent(event) || window.dispatchEvent(event);
+      if(data && data.target) {
+
+        // fire the event
+        data.target.dispatchEvent(event) || window.dispatchEvent(event);
+
+        // fix for "click" firing twice on our Android friends
+        if(ionic.EventController.isAndroidBrowser && eventType === 'click') {
+          // Due to a bug, old Android browser fires both touchstart/touchend
+          // and mousedown/mouseup. Because both are fired it results in
+          // the "click" running twice on an element. Since this was a 
+          // triggered "click", which probably came from our "tap", then 
+          // set this element to be disabled for X milliseconds. While this 
+          // element is disabled, a second "click" by the browser would not 
+          // execute, hence the "click" only fires once from the initial "tap".
+          var orgVal = data.target.disabled;
+          data.target.disabled = true;
+
+          // After X milliseconds set the disabled value back to what it was
+          setTimeout(function(){
+            data.target.disabled = orgVal;
+          }, 200);
+        }
+      }
     },
   
     // Bind an event
@@ -1910,19 +1934,13 @@ window.ionic = {
   // polyfill use to simulate native "tap"
   function inputTapPolyfill(ele, e) {
     if(ele.type === "radio") {
-      ele.checked = !ele.checked;
-      ionic.trigger('click', {
-        target: ele
-      });
+      if(!ele.checked) ele.checked = true;
+      ionic.trigger('click', { target: ele });
     } else if(ele.type === "checkbox") {
       ele.checked = !ele.checked;
-      ionic.trigger('change', {
-        target: ele
-      });
+      ionic.trigger('click', { target: ele });
     } else if(ele.type === "submit" || ele.type === "button") {
-      ionic.trigger('click', {
-        target: ele
-      });
+      ionic.trigger('click', { target: ele });
     } else {
       ele.focus();
     }
@@ -1931,34 +1949,34 @@ window.ionic = {
     return false;
   }
 
-  function tapPolyfill(e) {
+  function tapPolyfill(orgEvent) {
     // if the source event wasn't from a touch event then don't use this polyfill
-    if(!e.gesture || e.gesture.pointerType !== "touch" || !e.gesture.srcEvent) return;
+    if(!orgEvent.gesture || orgEvent.gesture.pointerType !== "touch" || !orgEvent.gesture.srcEvent) return;
 
     // An internal Ionic indicator for angular directives that contain
     // elements that normally need poly behavior, but are already processed
     // (like the radio directive that has a radio button in it, but handles
     // the tap stuff itself). This is in contrast to preventDefault which will
     // mess up other operations like change events and such
-    if(e.alreadyHandled) {
-      return;
-    }
+    if(orgEvent.alreadyHandled) return;
 
-    e = e.gesture.srcEvent; // evaluate the actual source event, not the created event by gestures.js
-
+    var e = orgEvent.gesture.srcEvent; // evaluate the actual source event, not the created event by gestures.js
     var ele = e.target;
 
     while(ele) {
       if( ele.tagName === "INPUT" || ele.tagName === "TEXTAREA" || ele.tagName === "SELECT" ) {
+        orgEvent.alreadyHandled = true;
         return inputTapPolyfill(ele, e);
       } else if( ele.tagName === "LABEL" ) {
         if(ele.control) {
+          orgEvent.alreadyHandled = true;
           return inputTapPolyfill(ele.control, e);
         }
       } else if( ele.tagName === "A" || ele.tagName === "BUTTON" ) {
         ionic.trigger('click', {
           target: ele
         });
+        orgEvent.alreadyHandled = true;
         e.stopPropagation();
         e.preventDefault();
         return false;
@@ -1979,7 +1997,7 @@ window.ionic = {
   }
 
   // global tap event listener polyfill for HTML elements that were "tapped" by the user
-  ionic.on("tap", tapPolyfill, window);
+  ionic.on("tap", tapPolyfill, document);
 
 })(this, document, ionic);
 ;
@@ -5814,17 +5832,20 @@ ionic.views.TabBar = ionic.views.View.inherit({
     initialize: function(opts) {
       this.el = opts.el;
       this.checkbox = opts.checkbox;
+      this.track = opts.track;
       this.handle = opts.handle;
       this.openPercent = -1;
     },
 
     tap: function(e) {
-      this.val( !this.checkbox.checked );
+      if(this.el.getAttribute('disabled') !== 'disabled') {
+        this.val( !this.checkbox.checked );
+      }
     },
 
     drag: function(e) {
-      var slidePageLeft = this.checkbox.offsetLeft + (this.handle.offsetWidth / 2);
-      var slidePageRight = this.checkbox.offsetLeft + this.checkbox.offsetWidth - (this.handle.offsetWidth / 2);
+      var slidePageLeft = this.track.offsetLeft + (this.handle.offsetWidth / 2);
+      var slidePageRight = this.track.offsetLeft + this.track.offsetWidth - (this.handle.offsetWidth / 2);
 
       if(e.pageX >= slidePageRight - 4) {
         this.val(true);
@@ -5845,7 +5866,7 @@ ionic.views.TabBar = ionic.views.View.inherit({
         } else if(openPercent === 100) {
           this.val(true);
         } else {
-          var openPixel = Math.round( (openPercent / 100) * this.checkbox.offsetWidth - (this.handle.offsetWidth) );
+          var openPixel = Math.round( (openPercent / 100) * this.track.offsetWidth - (this.handle.offsetWidth) );
           openPixel = (openPixel < 1 ? 0 : openPixel);
           this.handle.style.webkitTransform = 'translate3d(' + openPixel + 'px,0,0)';
         }
