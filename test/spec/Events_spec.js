@@ -1,4 +1,4 @@
-describe('cruisemonkey.Events', function() {
+xdescribe('cruisemonkey.Events', function() {
 	var log         = null;
 	var service     = null;
 	var userService = null;

@@ -1,4 +1,4 @@
-describe('Logging', function() {
+xdescribe('Logging', function() {
 	var log = null;
 
 	beforeEach(module('cruisemonkey.Logging', function($provide) {

@@ -10,7 +10,8 @@
 		'angularLocalStorage',
 		'cruisemonkey.User',
 		'cruisemonkey.Events',
-		'cruisemonkey.Logging'
+		'cruisemonkey.Logging',
+		'cruisemonkey.Notifications'
 	])
 	.filter('orderByEvent', function() {
 		return function(input, searchString) {
@@ -96,7 +97,7 @@
 			// console.log($scope.event);
 		}
 	}])
-	.controller('CMEventCtrl', ['storage', '$scope', '$rootScope', '$timeout', '$stateParams', '$location', '$q', '$ionicModal', '$templateCache', 'UserService', 'events', 'EventService', 'LoggingService', function(storage, $scope, $rootScope, $timeout, $stateParams, $location, $q, $ionicModal, $templateCache, UserService, events, EventService, log) {
+	.controller('CMEventCtrl', ['storage', '$scope', '$rootScope', '$timeout', '$stateParams', '$location', '$q', '$ionicModal', '$templateCache', 'UserService', 'events', 'EventService', 'LoggingService', 'NotificationService', function(storage, $scope, $rootScope, $timeout, $stateParams, $location, $q, $ionicModal, $templateCache, UserService, events, EventService, log, notifications) {
 		if (!$stateParams.eventType) {
 			$location.path('/events/official');
 			return;
@@ -178,9 +179,11 @@
 			refreshEvents();
 		});
 		$scope.$on('cm.localDatabaseSynced', function(ev) {
-			log.debug('CMEventCtrl: local database synced, refreshing');
-			doRefresh().then(function() {
-				$rootScope.notificationText = undefined;
+			log.debug('CMEventCtrl: local database synced, refreshing.');
+			$timeout(function() {
+				doRefresh(true).then(function() {
+					log.debug('CMEventCtrl: finished refreshing.');
+				});
 			});
 		});
 

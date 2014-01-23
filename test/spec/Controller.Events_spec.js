@@ -1,4 +1,4 @@
-describe('cruisemonkey.controllers.Events', function() {
+xdescribe('cruisemonkey.controllers.Events', function() {
 	var orderByEvent = null;
 	
 	beforeEach(function() {

@@ -5,12 +5,13 @@
 	/*global Connection: true*/
 	angular.module('cruisemonkey.Database', [
 		'angularLocalStorage',
+		'cruisemonkey.Config',
 		'cruisemonkey.Cordova',
 		'cruisemonkey.Logging',
-		'cruisemonkey.Config',
+		'cruisemonkey.Notifications',
 		'cruisemonkey.Settings'
 	])
-	.factory('Database', ['$q', '$location', '$interval', '$timeout', '$rootScope', '$window', 'LoggingService', 'storage', 'config.database.replicate', 'SettingsService', 'CordovaService', function($q, $location, $interval, $timeout, $rootScope, $window, log, storage, replicate, SettingsService, CordovaService) {
+	.factory('Database', ['$q', '$location', '$interval', '$timeout', '$rootScope', '$window', 'LoggingService', 'storage', 'config.database.replicate', 'SettingsService', 'CordovaService', 'NotificationService', function($q, $location, $interval, $timeout, $rootScope, $window, log, storage, replicate, SettingsService, CordovaService, NotificationService) {
 		log.info('Initializing CruiseMonkey database: ' + SettingsService.getDatabaseName());
 
 		storage.bind($rootScope, '_seq', {
@@ -20,8 +21,10 @@
 		log.info('last sequence: ' + $rootScope._seq);
 		var _lastSeq = $rootScope._seq;
 
+		var syncComplete = $q.defer();
+
 		if ($rootScope._seq === 0) {
-			$rootScope.notificationText = 'Downloading CruiseMonkey events from the server...';
+			NotificationService.status('Downloading CruiseMonkey events from the server...', syncComplete.promise);
 		}
 
 		var getHost = function() {
@@ -94,24 +97,30 @@
 				}
 
 				replicating = $q.defer();
-				$rootScope.$broadcast('cm.replicationStarting');
-				log.info('Replicating from ' + getHost());
-				db.replicate.from(getHost(), {
-					'complete': function() {
-						$rootScope._seq = _lastSeq;
-						$rootScope.$broadcast('cm.localDatabaseSynced');
+				
+				$timeout(function() {
+					$rootScope.$broadcast('cm.replicationStarting');
+					log.info('Replicating from ' + getHost());
+					db.replicate.from(getHost(), {
+						'complete': function() {
+							$rootScope._seq = _lastSeq;
+							$rootScope.$broadcast('cm.localDatabaseSynced');
+							syncComplete.resolve(true);
 
-						log.info('Replicating to ' + getHost());
-						db.replicate.to(getHost(), {
-							'complete': function() {
-								log.info('Replication complete.');
-								$rootScope.$broadcast('cm.remoteDatabaseSynced');
-								$rootScope.$broadcast('cm.replicationComplete');
-								replicating.resolve(false);
-								replicating = null;
-							}
-						});
-					}
+							$timeout(function() {
+								log.info('Replicating to ' + getHost());
+								db.replicate.to(getHost(), {
+									'complete': function() {
+										log.info('Replication complete.');
+										$rootScope.$broadcast('cm.remoteDatabaseSynced');
+										$rootScope.$broadcast('cm.replicationComplete');
+										replicating.resolve(false);
+										replicating = null;
+									}
+								});
+							});
+						}
+					});
 				});
 			} else {
 				log.warn('Replication disabled.');
@@ -261,16 +270,7 @@
 							reloadHref = reloadHref.split('#')[0];
 						}
 						log.info('Reloading CruiseMonkey Database at ' + reloadHref);
-						// $window.location = reloadHref;
 						$window.open(reloadHref, '_self');
-						/*
-						CordovaService.ifCordova(function() {
-							$window.open(reloadHref, '_self');
-						},
-						function() {
-							$window.open(reloadHref);
-						});
-						*/
 					}
 				});
 			});

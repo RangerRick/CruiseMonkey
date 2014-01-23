@@ -114,7 +114,7 @@ if (typeof String.prototype.contains !== 'function') {
 		<pane side-menu-content>
 			<header class="bar bar-header bar-dark">
 				<button class="button button-icon" ng-click="openLeft()"><i class="icon ion-navicon"></i></button>
-				<h1 class="title">{{title}}</h1>
+				<h1 class="title" ng-click="sideMenuController.toggleLeft()">{{title}}</h1>
 				<div class="buttons">
 					<button ng-repeat="button in rightButtons" class="button button-clear no-animation" ng-class="button.type" ng-click="button.tap($event, $index)" ng-bind-html="button.content">
 					</button>
@@ -144,8 +144,8 @@ if (typeof String.prototype.contains !== 'function') {
 			</content>
 		</side-menu>
 	</side-menus>
-	<div class="cm-notification" ng-if="notificationText">
-		<div id="notification" class="cm-notification-inner">{{notificationText}}</div>
+	<div class="cm-notification" ng-if="statusNotification">
+		<div id="notification" class="cm-notification-inner">{{statusNotification}}</div>
 		<div class="cm-notification-spinner"><i class="icon ion-loading-a icon-refreshing"></i></div>
 	</div>
 
@@ -184,6 +184,7 @@ if (typeof String.prototype.contains !== 'function') {
 	<script src="scripts/cruisemonkey/Decks.js"></script>
 	<script src="scripts/cruisemonkey/Events.js"></script>
 	<script src="scripts/cruisemonkey/Logging.js"></script>
+	<script src="scripts/cruisemonkey/Notifications.js"></script>
 	<script src="scripts/cruisemonkey/User.js"></script>
 	<script src="scripts/cruisemonkey/main.js"></script>
 	<!-- endbuild -->
