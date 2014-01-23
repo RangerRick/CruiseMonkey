@@ -190,11 +190,6 @@ header.bar.bar-header {
 		}
 	}
 }
-.icon-add          { background-image: url("#{$yellowSVG}/plus.svg")         }
-.icon-arrow-right4 { background-image: url("#{$yellowSVG}/arrow-right4.svg") }
-.icon-arrow-left4  { background-image: url("#{$yellowSVG}/arrow-left4.svg")  }
-
-
 .add-event-form span.invalid {
 	float: right;
 	color: red;
@@ -203,47 +198,6 @@ header.bar.bar-header {
 .list-entry {
 	border-bottom: $simpleBorder;
 	padding: 10px;
-
-	input {
-		display: none;
-	}
-
-	input + label {
-		-moz-user-select: none;
-		-webkit-user-select: none;
-		-ms-user-select:none;
-		user-select:none;
-		display: block;
-		background:url("#{$greySVG}/star2.svg") no-repeat;
-		background-position: center center;
-		background-size:26px 26px;
-		width: 32px;
-		height: 32px;
-	}
-
-	.favorite input[type=checkbox] + label {
-		background:url("#{$greySVG}/star2.svg") no-repeat;
-	}
-
-	.favorite input[type=checkbox]:checked + label {
-		background:url("#{$yellowSVG}/star2.svg") no-repeat;
-	}
-
-	.trash input + label {
-		background:url("#{$yellowSVG}/trash.svg") no-repeat;
-	}
-
-	.public input[type=checkbox] + label {
-		background:url("#{$greySVG}/eye.svg") no-repeat;
-	}
-
-	.public input[type=checkbox]:checked + label {
-		background:url("#{$yellowSVG}/eye.svg") no-repeat;
-	}
-
-	.edit input + label {
-		background:url("#{$yellowSVG}/pencil.svg") no-repeat;
-	}
 }
 
 #nav li.item a {
@@ -309,15 +263,6 @@ header.bar.bar-header {
 	font-weight: bold;
 }
 
-.favorite,.trash,.public,.edit {
-	float: right;
-	display: inline-block;
-	width: 32px;
-	height: 32px;
-	top: 2px;
-	z-index: 1;
-}
-
 /*
  * Deck Plans
  */
@@ -358,91 +303,4 @@ header.bar.bar-header {
 		-moz-user-select: none;
 		-webkit-user-drag: none;
 	}
-	div.arrow {
-		position: absolute;
-		width: 5%;
-		min-width: 40px;
-		top: 40px;
-		bottom: 0;
-		height: 100%;
-		img {
-			position: absolute;
-			top: 0;
-			bottom: 0;
-			padding: 0;
-			margin-top: auto;
-			margin-bottom: auto;
-		}
-	}
-	.left {
-		left: $navWidth;
-	}
-	.right {
-		right: 0;
-	}
-}
-
-/*
- * Pop-Ups
- */
-.c-container {
-	position: relative;
-	width: 100%;
-	height: 100%;
-}
-.c-centered {
-	width: 280px;
-	height: 200px;
-	overflow: auto;
-	margin: auto;
-	position: absolute;
-	top: 0;
-	bottom: 0;
-	left: 0;
-	right: 0;
-}
-
-/*
- * Event Pop-Up
- */
-.modal {
-	position: absolute;
-	top: 0;
-	left: 0;
-	right: 0;
-	bottom: 0;
-	width: 100%;
-	height: 100%;
-	background-color: $mainBG;
-}
-
-.add-event-form {
-	table {
-		width: 320px;
-		overflow: auto;
-		margin-left: auto;
-		margin-right: auto;
-		position: absolute;
-		left: 0;
-		right: 0;
-	}
-	h3 {
-		padding: 5px;
-		font-weight: 900;
-	}
-	td {
-		padding: 5px;
-	}
-	.buttons {
-		button: {
-			display: inline-block;
-		}
-		text-align: right;
-	}
-}
-
-form.add-event-form {
-	position: relative;
-	width: 100%;
-	height: 100%;
 }

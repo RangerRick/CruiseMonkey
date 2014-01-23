@@ -343,6 +343,7 @@ function CMFavorite(rawdata) {
 			var deferred = $q.defer();
 
 			$q.when(db.getDatabase()).then(function(database) {
+				/*jshint camelcase: false */
 				database.query({
 					map: mapFunc
 				}, {
@@ -514,6 +515,7 @@ function CMFavorite(rawdata) {
 			var deferred = $q.defer();
 
 			$q.when(db.getDatabase()).then(function(database) {
+				/*jshint camelcase: false */
 				database.query({
 					map: function(doc) {
 						if (doc.type === 'event' && doc.username === 'official') {
@@ -580,6 +582,7 @@ function CMFavorite(rawdata) {
 			var deferred = $q.defer();
 
 			$q.when(db.getDatabase()).then(function(database) {
+				/*jshint camelcase: false */
 				database.query({
 					map: function(doc) {
 						if (doc.type === 'event' && doc.username !== 'official') {

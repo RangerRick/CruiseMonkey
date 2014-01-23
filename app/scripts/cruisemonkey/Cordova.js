@@ -26,20 +26,17 @@
 			isCordova.resolve(true);
 		};
 
+		document.addEventListener("deviceready", onDeviceReady, false);
+
 		if (isMobile) {
 			log.info('CordovaService: "isMobile" set.  Assuming Cordova.');
-			onDeviceReady();
-			document.addEventListener("deviceready", function() {
-				log.warn('Initialization has already happened, but deviceready fired again. WTF?');
-			}, false);
 		} else {
 			log.info('CordovaService: "isMobile" not set.  Waiting for Cordova initialization.');
-			document.addEventListener("deviceready", onDeviceReady, false);
 			$timeout(function() {
 				log.warn('Cordova initialization never happened.  Assuming it never will.');
 				document.removeEventListener("deviceready", onDeviceReady);
 				isCordova.resolve(false);
-			}, 1000);
+			}, 5000);
 		}
 
 		return {

@@ -49,27 +49,30 @@
 				controller: 'CMEventCtrl',
 				resolve: {
 					events: ['$q', '$stateParams', '$rootScope', 'LoggingService', 'EventService', function($q, $stateParams, $rootScope, log, EventService) {
-						log.debug('events.resolve: waiting for ' + $stateParams.eventType + ' events');
+						log.info('events.resolve: waiting for ' + $stateParams.eventType + ' events');
 						var ret = $q.defer();
 						if ($stateParams.eventType === 'official') {
+							$rootScope.title = 'Official Events';
 							EventService.getOfficialEvents().then(function(events) {
-								log.debug('events.resolve: got ' + events.length + ' official events');
+								log.info('events.resolve: got ' + events.length + ' official events');
 								ret.resolve(events);
 							}, function() {
 								log.warn('events.resolve: failed to get official events');
 								ret.resolve([]);
 							});
 						} else if ($stateParams.eventType === 'unofficial') {
+							$rootScope.title = 'Unofficial Events';
 							EventService.getUnofficialEvents().then(function(events) {
-								log.debug('events.resolve: got ' + events.length + ' unofficial events');
+								log.info('events.resolve: got ' + events.length + ' unofficial events');
 								ret.resolve(events);
 							}, function() {
 								log.warn('events.resolve: failed to get unofficial events');
 								ret.resolve([]);
 							});
 						} else if ($stateParams.eventType === 'my') {
+							$rootScope.title = 'My Events';
 							EventService.getMyEvents().then(function(events) {
-								log.debug('events.resolve: got ' + events.length + ' my events');
+								log.info('events.resolve: got ' + events.length + ' my events');
 								ret.resolve(events);
 							}, function() {
 								log.warn('failed to get my events');

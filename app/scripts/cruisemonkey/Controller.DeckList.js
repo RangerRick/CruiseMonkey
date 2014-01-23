@@ -8,6 +8,7 @@
 	])
 	.controller('CMDeckListCtrl', ['storage', '$scope', '$rootScope', '$timeout', '$state', '$stateParams', '$location', '$document', 'LoggingService', function(storage, $scope, $rootScope, $timeout, $state, $stateParams, $location, $document, log) {
 		log.info('Initializing CMDeckListCtrl');
+		$rootScope.title = "Deck Plans";
 
 		storage.bind($scope, 'deck', {
 			'defaultValue': 2,
@@ -21,7 +22,7 @@
 		if ($stateParams.deck) {
 			log.info('$stateParams.deck: ' + $stateParams.deck);
 			var passedDeck = 0;
-			if ($stateParams.deck.contains('-')) {
+			if ($stateParams.deck.indexOf('-') > -1) {
 				var parts = $stateParams.deck.split('-');
 				passedDeck = parseInt(parts.shift(), 10);
 			} else {
@@ -63,7 +64,7 @@
 			var newButtons = [
 				{
 					'type': 'button-clear',
-					'content': '<i class="icon icon-arrow-left4"></i>',
+					'content': '<i class="icon icon-cm ion-arrow-left-b"></i>',
 					tap: function(e) {
 						previous();
 						return false;
@@ -71,7 +72,7 @@
 				},
 				{
 					'type': 'button-clear',
-					'content': '<i class="icon icon-arrow-right4"></i>',
+					'content': '<i class="icon icon-cm ion-arrow-right-b"></i>',
 					tap: function(e) {
 						next();
 						return false;

@@ -141,7 +141,7 @@
 				log.warn('CMEventCtrl.doRefresh(): unknown event type: ' + $scope.eventType);
 				$timeout(function() {
 					deferred.resolve(false);
-				})
+				});
 			}
 
 			return deferred.promise;
@@ -203,7 +203,7 @@
 		$scope.trash = function(ev) {
 			var eventId = ev.getId();
 			for (var i=0; i < $scope.events.length; i++) {
-				if ($scope.events[i].getId() == eventId) {
+				if ($scope.events[i].getId() === eventId) {
 					$scope.events.splice(i, 1);
 					$scope.$broadcast('scroll.resize');
 					break;
@@ -223,12 +223,12 @@
 
 		$scope.onFavoriteChanged = function(event) {
 			$scope.safeApply(function() {
-				var eventId = event.getId();
+				var i, eventId = event.getId();
 				log.debug('CMEventCtrl.onFavoriteChanged(' + eventId + ')');
 
 				if (event.isFavorite()) {
 					event.setFavorite(undefined);
-					for (var i = 0; i < $scope.events.length; i++) {
+					for (i = 0; i < $scope.events.length; i++) {
 						if ($scope.events[i].getId() === eventId) {
 							$scope.events.splice(i, 1);
 							$scope.$broadcast('scroll.resize');
@@ -238,7 +238,7 @@
 					EventService.removeFavorite(eventId);
 				} else {
 					var existing;
-					for (var i = 0; i < $scope.events.length; i++) {
+					for (i = 0; i < $scope.events.length; i++) {
 						if ($scope.events[i].getId() === eventId) {
 							existing = $scope.events[i];
 							break;
