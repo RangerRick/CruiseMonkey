@@ -9,7 +9,7 @@
 	.value('config.database.refresh', 20000)
 	.value('config.notifications.timeout', 5000)
 	.value('config.twitarr.root', 'https://twitarr.rylath.net/')
-	.value('config.app.version', '3.9.1+20140122204248');
+	.value('config.app.version', '3.9.1+20140123232538');
 	
 	angular.module('cruisemonkey.Settings', [
 		'angularLocalStorage',
@@ -25,6 +25,15 @@
 			},
 			'storeName': 'cm.settings'
 		});
+
+		var getDefaults = function() {
+			return angular.copy({
+				databaseHost: databaseHost,
+				databaseName: databaseName,
+				databaseRefresh: databaseRefresh,
+				twitarrRoot: twitarrRoot
+			});
+		};
 
 		var getSettings = function() {
 			var dbHost = $rootScope._settings['database.host'] || databaseHost;
@@ -58,6 +67,7 @@
 
 		return {
 			'getSettings': getSettings,
+			'getDefaults': getDefaults,
 			'getDatabaseHost': function() {
 				return getSettings().databaseHost;
 			},

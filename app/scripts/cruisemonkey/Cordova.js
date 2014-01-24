@@ -9,6 +9,7 @@
 	])
 	.factory('CordovaService', ['$rootScope', '$document', '$window', '$q', '$timeout', 'LoggingService', function($rootScope, $document, $window, $q, $timeout, log) {
 		var isCordova = $q.defer();
+		var initWait = 5000;
 
 		var onDeviceReady = function() {
 			log.info('CruiseMonkey Cordova Initialized.');
@@ -33,10 +34,10 @@
 		} else {
 			log.info('CordovaService: "isMobile" not set.  Waiting for Cordova initialization.');
 			$timeout(function() {
-				log.warn('Cordova initialization never happened.  Assuming it never will.');
+				log.warn("Cordova initialization didn't happen within " + initWait + "ms.  Assuming it never will.");
 				document.removeEventListener("deviceready", onDeviceReady);
 				isCordova.resolve(false);
-			}, 5000);
+			}, initWait);
 		}
 
 		return {

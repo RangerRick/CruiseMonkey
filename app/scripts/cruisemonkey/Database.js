@@ -11,19 +11,16 @@
 		'cruisemonkey.Notifications',
 		'cruisemonkey.Settings'
 	])
-	.factory('Database', ['$q', '$location', '$interval', '$timeout', '$rootScope', '$window', 'LoggingService', 'storage', 'config.database.replicate', 'SettingsService', 'CordovaService', 'NotificationService', function($q, $location, $interval, $timeout, $rootScope, $window, log, storage, replicate, SettingsService, CordovaService, NotificationService) {
+	.factory('Database', ['$q', '$location', '$interval', '$timeout', '$rootScope', '$window', '$http', 'LoggingService', 'storage', 'config.database.replicate', 'SettingsService', 'CordovaService', 'NotificationService', function($q, $location, $interval, $timeout, $rootScope, $window, $http, log, storage, replicate, SettingsService, CordovaService, NotificationService) {
 		log.info('Initializing CruiseMonkey database: ' + SettingsService.getDatabaseName());
 
-		storage.bind($rootScope, '_seq', {
-			'defaultValue': 0,
-			'storeName': 'cm.db.sync'
+		storage.bind($rootScope, '_firstSync', {
+			'defaultValue': true,
+			'storeName': 'cm.db.firstSync'
 		});
-		log.info('last sequence: ' + $rootScope._seq);
-		var _lastSeq = $rootScope._seq;
 
 		var syncComplete = $q.defer();
-
-		if ($rootScope._seq === 0) {
+		if ($rootScope._firstSync) {
 			NotificationService.status('Downloading CruiseMonkey events from the server...', syncComplete.promise);
 		}
 
@@ -37,57 +34,73 @@
 
 		var db = null,
 			timeout = null,
-			watchingChanges = false,
 			replicating = null,
 			ready = $q.defer();
 
-		var initializeDatabase = function() {
-			db = new PouchDB(SettingsService.getDatabaseName());
-			timeout = null;
-			watchingChanges = false;
+		var initializeFromRemote = function() {
+			var host = getHost();
+			var deferred = $q.defer();
 
-			db.compact();
-
-			log.info('Database.initializeDatabase(): Database initialization complete.');
-			$rootScope.$broadcast('cm.databaseInitialized');
+			if (host && replicate) {
+				log.debug('Database.initializeFromRemote(): Getting all docs.');
+				$http.get(host + '/_all_docs?include_docs=true', { 'headers': { 'Accept': 'application/json' } })
+					.success(function(data, status, headers, config) {
+						if (data && data.total_rows) {
+							deferred.resolve(true);
+							angular.forEach(data.rows, function(row, index) {
+								db.put(row.doc);
+							});
+							deferred.resolve(true);
+							syncComplete.resolve(true);
+						}
+					})
+					.error(function(data, status, headers, config) {
+						log.error('Database.initializeFromRemote(): failed to get all_docs from remote host = ', status);
+						deferred.reject(status);
+					});
+			} else {
+				$timeout(function() {
+					log.warn('Database.initializeFromRemote(): replication disabled, resolving with empty object');
+					deferred.resolve(false);
+				});
+			}
+			return deferred.promise;
 		};
 
-		var databaseReady = function() {
-			if (watchingChanges) {
-				log.warn('Already watching for document changes.');
-				return;
-			}
+		var initialize = function() {
+			log.info('Database.initialize(): Initializing database.');
 
-			watchingChanges = true;
-			
-			log.info('Watching for document changes.');
-			var seq = $rootScope._seq;
-			if (!seq) {
-				seq = 0;
-			}
-			
-			/*jshint camelcase: false */
-			db.changes({
-				since: seq,
-				onChange: function(change) {
-					//console.log('change: ', change);
-					if (change.seq) {
-						_lastSeq = change.seq;
-					}
-					if (change.deleted) {
-						$rootScope.$broadcast('cm.documentDeleted', change);
-					} else {
-						$rootScope.$broadcast('cm.documentUpdated', change.doc);
-					}
-				},
-				continuous: true,
-				conflicts: true,
-				include_docs: true
+			var deferred = $q.defer();
+
+			db = new PouchDB(SettingsService.getDatabaseName());
+
+			$timeout(function() {
+				log.debug('Database.initialize(): Compacting database.');
+				db.compact(function() {
+					log.info('Database.initializeDatabase(): Compaction complete.');
+
+					/*jshint camelcase: false */
+					log.info('Database.initializeDatabase(): Watching for document changes.');
+					db.changes({
+						onChange: function(change) {
+							//console.log('change: ', change);
+							if (change.deleted) {
+								$rootScope.$broadcast('cm.documentDeleted', change);
+							} else {
+								$rootScope.$broadcast('cm.documentUpdated', change.doc);
+							}
+						},
+						continuous: true,
+						conflicts: true,
+						include_docs: true
+					});
+
+					ready.resolve(true);
+					deferred.resolve(true);
+				});
 			});
 
-			log.info('Database.databaseReady(): Database ready for change updates.');
-			ready.resolve(true);
-			$rootScope.$broadcast('cm.databaseReady');
+			return deferred.promise;
 		};
 
 		var doReplicate = function() {
@@ -103,15 +116,16 @@
 					log.info('Replicating from ' + getHost());
 					db.replicate.from(getHost(), {
 						'complete': function() {
-							$rootScope._seq = _lastSeq;
+							log.info('Finished replicating from ' + getHost());
 							$rootScope.$broadcast('cm.localDatabaseSynced');
 							syncComplete.resolve(true);
 
+							log.info('Replicating to ' + getHost());
 							$timeout(function() {
 								log.info('Replicating to ' + getHost());
 								db.replicate.to(getHost(), {
 									'complete': function() {
-										log.info('Replication complete.');
+										log.info('Finished replicating to ' + getHost());
 										$rootScope.$broadcast('cm.remoteDatabaseSynced');
 										$rootScope.$broadcast('cm.replicationComplete');
 										replicating.resolve(false);
@@ -124,7 +138,7 @@
 				});
 			} else {
 				log.warn('Replication disabled.');
-				$rootScope._seq = _lastSeq;
+				syncComplete.resolve(false);
 			}
 		};
 
@@ -146,6 +160,7 @@
 				}
 			} else {
 				log.warn('startReplication() called, but replication is not enabled!');
+				syncComplete.resolve(false);
 			}
 			return false;
 		};
@@ -190,6 +205,7 @@
 			return false;
 		};
 
+		/*
 		var setUp = function() {
 			CordovaService.ifCordova(function() {
 				// is cordova
@@ -240,10 +256,12 @@
 				document.removeEventListener('offline', handleConnectionTypeChange, false);
 			}
 		};
+		*/
 
 		var getDatabase = function() {
 			var deferred = $q.defer();
 			$q.when(ready).then(function() {
+				log.debug('Database.getDatabase(): Database is ready.');
 				deferred.resolve(db);
 			});
 			return deferred.promise;
@@ -251,14 +269,8 @@
 
 		var resetDatabase = function() {
 			$rootScope.safeApply(function() {
-				tearDown();
-				watchingChanges = false;
-				$rootScope._seq = 0;
-				_lastSeq = 0;
 				$timeout.cancel(timeout);
-				timeout = undefined;
-				ready.reject('resetting');
-				ready = $q.defer();
+				$rootScope._firstSync = true;
 				storage.set('cm.lasturl', '/events/official');
 
 				PouchDB.destroy(SettingsService.getDatabaseName(), function(err) {
@@ -276,22 +288,22 @@
 			});
 		};
 
-		/* start everything up */
-		initializeDatabase();
-		setUp();
-
+		/*
 		$rootScope.$on('cm.settingsChanged', function() {
 			log.info('Database: Settings changed.  Restarting replication.');
 			stopReplication();
 			startReplication();
 		});
+		*/
 
 		return {
 			'reset': resetDatabase,
+			'initialize': initialize,
 			'getDatabase': getDatabase,
 			'replicateNow': doReplicate,
-			'startReplication': startReplication,
-			'stopReplication': stopReplication
+			'syncRemote': initializeFromRemote,
+			'online': startReplication,
+			'offline': stopReplication
 		};
 	}]);
 }());

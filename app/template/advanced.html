@@ -22,7 +22,7 @@
 				<span class="input-label">Twit-Arr URL</span>
 				<input type="url" name="twitarrRoot" ng-model="settings.twitarrRoot" />
 			</label>
-			<button class="button button-full button-assertive" ng-click="resetSettings()" ng-disabled="form.$invalid || isUnchanged()">Reset</button>
+			<button class="button button-full button-assertive" ng-click="resetSettings()" ng-disabled="form.$invalid">Reset to Defaults</button>
 			<button class="button button-full button-positive" ng-click="saveSettings()" ng-disabled="form.$invalid || isUnchanged()">Save</button>
 		</form>
 	</div>
@@ -38,13 +38,14 @@
 	</div>
 
 	<div class="card">
-		<div class="item item-divider">Reset Your Database</div>
+		<div class="item item-divider">Reset Your Cache</div>
 		<div class="item item-text-wrap">
-			This will clear your local client cache and re-sync from the CruiseMonkey server.
-			If you are not online when you hit this, it <em>will</em> leave you with an empty CruiseMonkey!
-			CruiseMonkey will reload when you reset your database.
+			This will clear your local client cache and re-sync from the CruiseMonkey server.  Any events
+			or favorites you have created will come back, as long as CruiseMonkey has had time to sync them
+			to the server.  If you are not online when you hit this, it <em>will</em> leave you with an
+			empty CruiseMonkey!  CruiseMonkey will reload when you reset your cache.
 		</div>
-		<button class="button button-full button-positive" ng-click="resetDatabase()">Reset Database</button>
+		<button class="button button-full button-positive" ng-click="resetDatabase()">Reset Cache</button>
 	</div>
 </div>
 </content>

@@ -2,6 +2,7 @@
 	'use strict';
 
 	/*global TestFlight: true*/
+	/*global isMobile: true*/
 
 	angular.module('cruisemonkey',
 	[
@@ -19,6 +20,9 @@
 		'cruisemonkey.controllers.Login',
 		'cruisemonkey.controllers.Logout',
 		'cruisemonkey.controllers.Navigation',
+		'cruisemonkey.Database',
+		'cruisemonkey.Notifications',
+		'cruisemonkey.Seamail',
 		'cruisemonkey.User'
 	])
 	.config(['$stateProvider', '$urlRouterProvider', '$compileProvider', function($stateProvider, $urlRouterProvider, $compileProvider) {
@@ -49,12 +53,12 @@
 				controller: 'CMEventCtrl',
 				resolve: {
 					events: ['$q', '$stateParams', '$rootScope', 'LoggingService', 'EventService', function($q, $stateParams, $rootScope, log, EventService) {
-						log.info('events.resolve: waiting for ' + $stateParams.eventType + ' events');
+						log.debug('events.resolve: waiting for ' + $stateParams.eventType + ' events');
 						var ret = $q.defer();
 						if ($stateParams.eventType === 'official') {
 							$rootScope.title = 'Official Events';
 							EventService.getOfficialEvents().then(function(events) {
-								log.info('events.resolve: got ' + events.length + ' official events');
+								log.debug('events.resolve: got ' + events.length + ' official events');
 								ret.resolve(events);
 							}, function() {
 								log.warn('events.resolve: failed to get official events');
@@ -63,7 +67,7 @@
 						} else if ($stateParams.eventType === 'unofficial') {
 							$rootScope.title = 'Unofficial Events';
 							EventService.getUnofficialEvents().then(function(events) {
-								log.info('events.resolve: got ' + events.length + ' unofficial events');
+								log.debug('events.resolve: got ' + events.length + ' unofficial events');
 								ret.resolve(events);
 							}, function() {
 								log.warn('events.resolve: failed to get unofficial events');
@@ -72,7 +76,7 @@
 						} else if ($stateParams.eventType === 'my') {
 							$rootScope.title = 'My Events';
 							EventService.getMyEvents().then(function(events) {
-								log.info('events.resolve: got ' + events.length + ' my events');
+								log.debug('events.resolve: got ' + events.length + ' my events');
 								ret.resolve(events);
 							}, function() {
 								log.warn('failed to get my events');
@@ -107,8 +111,8 @@
 				controller: 'CMAdvancedCtrl'
 			});
 	}])
-	.run(['$q', '$rootScope', '$window', '$location', '$timeout', '$urlRouter', 'UserService', 'storage', 'CordovaService', function($q, $rootScope, $window, $location, $timeout, $urlRouter, UserService, storage, CordovaService) {
-		console.log('CruiseMonkey run() called.');
+	.run(['$q', '$rootScope', '$window', '$location', '$timeout', '$interval', '$urlRouter', '$http', 'UserService', 'storage', 'CordovaService', 'Database', 'LoggingService', 'NotificationService', 'SettingsService', 'SeamailService', function($q, $rootScope, $window, $location, $timeout, $interval, $urlRouter, $http, UserService, storage, CordovaService, Database, log, notifications, SettingsService, SeamailService) {
+		log.debug('CruiseMonkey run() called.');
 
 		$rootScope.safeApply = function(fn) {
 			var phase = this.$root.$$phase;
@@ -127,22 +131,6 @@
 				$location.path(translated);
 			});
 		};
-
-		/*
-		CordovaService.ifCordova(function() {
-			// is cordova
-			$rootScope.hideSpinner = true;
-			$rootScope.isCordova = true;
-			console.log('main: This is a Cordova device!');
-
-			//$rootScope.testFlight = new TestFlight();
-		}, function() {
-			// is not cordova
-			$rootScope.hideSpinner = true;
-			$rootScope.isCordova = false;
-			console.log('main: This is not a Cordova device.');
-		});
-		*/
 
 		$rootScope.openLeft = function() {
 			$rootScope.sideMenuController.toggleLeft();
@@ -191,11 +179,88 @@
 			}
 		}
 
+		var firstStart = true;
+		var databaseInitialized = $q.defer();
+		$rootScope.foreground = true;
+		// if we're not mobile, we don't know if we're online or not, so set it online
+		$rootScope.online = !isMobile;
+
+		var handleStateChange = function() {
+			databaseInitialized.promise.then(function() {
+				if ($rootScope.foreground && $rootScope.online) {
+					log.debug('handleStateChange: setting online');
+					if (firstStart) {
+						firstStart = false;
+						$q.when(Database.syncRemote())['finally'](function() {
+							// no matter whether it works or not, set everything else up
+							Database.online();
+							SeamailService.online();
+						});
+					} else {
+						Database.online();
+						SeamailService.online();
+					}
+				} else {
+					log.debug('handleStateChange: setting offline');
+					Database.offline();
+					SeamailService.offline();
+				}
+			});
+		};
+		handleStateChange();
+
+		$rootScope.$watch('foreground', function(newValue, oldValue) {
+			if (newValue === oldValue) {
+				log.warn('foreground: ' + oldValue + ' -> ' + newValue);
+				return;
+			}
+			log.debug('foreground status is now ' + $rootScope.foreground);
+			handleStateChange();
+		});
+		$rootScope.$watch('online', function(newValue, oldValue) {
+			if (newValue === oldValue) {
+				log.warn('online: ' + oldValue + ' -> ' + newValue);
+				return;
+			}
+			log.debug('online status is now ' + $rootScope.online);
+			handleStateChange();
+		});
+
+		document.addEventListener('pause', function() {
+			$rootScope.safeApply(function() {
+				$rootScope.foreground = false;
+			});
+		}, false);
+		document.addEventListener('resume', function() {
+			$rootScope.safeApply(function() {
+				$rootScope.foreground = true;
+			});
+		}, false);
+
+		document.addEventListener('offline', function() {
+			$rootScope.safeApply(function() {
+				$rootScope.online = false;
+			});
+		}, false);
+		document.addEventListener('online', function() {
+			$rootScope.safeApply(function() {
+				$rootScope.online = true;
+			});
+		}, false);
+
+		Database.initialize().then(function() {
+			databaseInitialized.resolve(true);
+			$rootScope.$broadcast('cm.main.databaseInitialized');
+		}, function(err) {
+			log.error('Failed to initialize database!');
+			databaseInitialized.reject(err);
+		});
+
 		$rootScope.$on('cm.loggedIn', function(event) {
-			console.log('User logged in, refreshing menu.');
+			log.info('User "' + UserService.getUsername() + '" logged in.');
 		});
 		$rootScope.$on('cm.loggedOut', function(event) {
-			console.log('User logged out, refreshing menu.');
+			log.info('User logged out.');
 		});
 	}])
 	;

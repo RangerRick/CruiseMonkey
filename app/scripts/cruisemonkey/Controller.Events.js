@@ -116,27 +116,34 @@
 		$scope.events = events;
 
 		var timeout = null;
+
 		var doRefresh = function() {
 			var deferred = $q.defer();
 
-			log.info('CMEventCtrl.doRefresh(): refreshing.');
+			log.debug('CMEventCtrl.doRefresh(): refreshing.');
 			if ($scope.eventType === 'official') {
 				$q.when(EventService.getOfficialEvents()).then(function(e) {
 					deferred.resolve(true);
 					$scope.events = e;
 					$scope.$broadcast('scroll.resize');
+				}, function() {
+					deferred.resolve(false);
 				});
 			} else if ($scope.eventType === 'unofficial') {
 				$q.when(EventService.getUnofficialEvents()).then(function(e) {
 					deferred.resolve(true);
 					$scope.events = e;
 					$scope.$broadcast('scroll.resize');
+				}, function() {
+					deferred.resolve(false);
 				});
 			} else if ($scope.eventType === 'my') {
 				$q.when(EventService.getMyEvents()).then(function(e) {
 					deferred.resolve(true);
 					$scope.events = e;
 					$scope.$broadcast('scroll.resize');
+				}, function() {
+					deferred.resolve(false);
 				});
 			} else {
 				log.warn('CMEventCtrl.doRefresh(): unknown event type: ' + $scope.eventType);
@@ -151,7 +158,7 @@
 		var refreshInterval = 5;
 		var refreshEvents = function(immediately) {
 			if (timeout) {
-				log.debug('CMEventCtrl.refreshEvents(): Refresh already in-flight.  Skipping.');
+				log.trace('CMEventCtrl.refreshEvents(): Refresh already in-flight.  Skipping.');
 				return;
 			} else if (immediately) {
 				log.debug('CMEventCtrl.refreshEvents(): Refreshing immediately.');
@@ -178,13 +185,11 @@
 		$scope.$on('cm.documentDeleted', function(ev, doc) {
 			refreshEvents();
 		});
-		$scope.$on('cm.localDatabaseSynced', function(ev) {
-			log.debug('CMEventCtrl: local database synced, refreshing.');
+		$scope.$on('cm.main.databaseInitialized', function() {
+			log.debug('CMEventCtrl: Database initialized, refreshing.');
 			$timeout(function() {
-				doRefresh(true).then(function() {
-					log.debug('CMEventCtrl: finished refreshing.');
-				});
-			});
+				refreshEvents(true);
+			}, 1000);
 		});
 
 		$scope.clearSearchString = function() {

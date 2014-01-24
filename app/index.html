@@ -145,7 +145,7 @@ if (typeof String.prototype.contains !== 'function') {
 		</side-menu>
 	</side-menus>
 	<div class="cm-notification" ng-if="statusNotification">
-		<div id="notification" class="cm-notification-inner">{{statusNotification}}</div>
+		<div id="notification" class="cm-notification-inner" ng-bind-html="statusNotification"></div>
 		<div class="cm-notification-spinner"><i class="icon ion-loading-a icon-refreshing"></i></div>
 	</div>
 
@@ -185,6 +185,7 @@ if (typeof String.prototype.contains !== 'function') {
 	<script src="scripts/cruisemonkey/Events.js"></script>
 	<script src="scripts/cruisemonkey/Logging.js"></script>
 	<script src="scripts/cruisemonkey/Notifications.js"></script>
+	<script src="scripts/cruisemonkey/Seamail.js"></script>
 	<script src="scripts/cruisemonkey/User.js"></script>
 	<script src="scripts/cruisemonkey/main.js"></script>
 	<!-- endbuild -->

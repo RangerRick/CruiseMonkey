@@ -1,8 +1,15 @@
 (function() {
 	'use strict';
 
-	angular.module('cruisemonkey.controllers.Login', ['cruisemonkey.Logging', 'cruisemonkey.User', 'cruisemonkey.Config', 'cruisemonkey.Settings'])
-	.controller('CMLoginCtrl', ['$scope', '$rootScope', '$location', '$http', 'UserService', 'LoggingService', 'SettingsService', function($scope, $rootScope, $location, $http, UserService, log, SettingsService) {
+	angular.module('cruisemonkey.controllers.Login', [
+		'cruisemonkey.Config',
+		'cruisemonkey.Cordova',
+		'cruisemonkey.Logging',
+		'cruisemonkey.Notifications',
+		'cruisemonkey.Settings',
+		'cruisemonkey.User'
+	])
+	.controller('CMLoginCtrl', ['$scope', '$rootScope', '$location', '$http', 'UserService', 'LoggingService', 'SettingsService', 'CordovaService', 'NotificationService', function($scope, $rootScope, $location, $http, UserService, log, SettingsService, CordovaService, notifications) {
 		log.info('Initializing CMLoginCtrl');
 		$rootScope.title = "Log In";
 
@@ -26,8 +33,9 @@
 		};
 
 		$scope.cancel = function() {
-			$rootScope.user = {};
-			$rootScope.$broadcast('cm.loggedOut');
+			var oldUser = $rootScope.user;
+			$rootScope.user = UserService.reset();
+			$rootScope.$broadcast('cm.loggedOut', oldUser);
 			$location.path('/events/official');
 		};
 
@@ -43,14 +51,23 @@
 
 		$scope.saveUser = function(user) {
 			user.loggedIn = true;
+			if (user.username) {
+				user.username = user.username.toLowerCase();
+			}
 			log.info('saving user');
-			console.log(user);
+			log.debug(user);
 			UserService.save(user);
 			$rootScope.user = UserService.get();
 		};
 
 		$scope.update = function(user) {
 			var twitarrRoot = SettingsService.getTwitarrRoot();
+
+			if (!user.username) {
+				notifications.alert('No username! Something went wrong.');
+				return;
+			}
+			user.username = user.username.toLowerCase();
 
 			$http({
 				method: 'GET',
@@ -66,29 +83,29 @@
 				}
 			})
 			.success(function(data, status, headers, config) {
-				console.log('success:',data);
+				log.debug('success:',data);
+				user.key = data.key;
 				$scope.saveUser(user);
-				$rootScope.$broadcast('cm.loggedIn');
+				$rootScope.$broadcast('cm.loggedIn', user);
 				$location.path('/events/my');
 			})
 			.error(function(data, status, headers, config) {
-				console.log('failure!');
-				console.log('data:', data);
-				console.log('status:',status);
-				console.log('headers:',headers);
-				console.log('config:',config);
+				log.warn('failure!');
+				log.debug('data:', data);
+				log.debug('status:',status);
+				log.debug('headers:',headers);
+				log.debug('config:',config);
 
-				if (!$rootScope.isCordova) {
+				CordovaService.ifCordova(function() {
+					// on cordova, it should be a hard failure
+				}, function() {
+					// when testing in the browser, save the user anyways as if login succeeded
 					$scope.saveUser(user);
-					$rootScope.$broadcast('cm.loggedIn');
+					$rootScope.$broadcast('cm.loggedIn', user);
 					$location.path('/events/my');
-				}
+				});
 
-				if ($rootScope.isCordova) {
-					navigator.notification.alert('Failed to log in to twit-arr!', function(){});
-				} else {
-					window.alert('Failed to log in to twit-arr!');
-				}
+				notifications.alert('Failed to log in to twit-arr!');
 			});
 
 			return;

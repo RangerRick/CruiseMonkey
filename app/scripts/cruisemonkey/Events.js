@@ -302,6 +302,14 @@ function CMFavorite(rawdata) {
 		var listeners = [],
 			databaseReady = false;
 
+		var promisedResult = function(result) {
+			var deferred = $q.defer();
+			$timeout(function() {
+				deferred.resolve(result);
+			});
+			return deferred.promise;
+		};
+
 		var rejectedResult = function(reason) {
 			var deferred = $q.defer();
 			$timeout(function() {
@@ -491,28 +499,52 @@ function CMFavorite(rawdata) {
 			return deferred.promise;
 		};
 
+		var _allEvents = null;
 		var getAllEvents = function() {
+			if (_allEvents) {
+				return _allEvents;
+			}
+
 			log.debug('EventService.getAllEvents()');
-			return doQuery(CMEvent, function(doc) {
+			_allEvents = doQuery(CMEvent, function(doc) {
 				if (doc.type === 'event') {
 					emit(doc.username, doc);
 				}
 			}, {reduce: true});
+			_allEvents['finally'](function() {
+				_allEvents = null;
+			});
+			return _allEvents;
 		};
 
+		var _allFavorites = null;
 		var getAllFavorites = function() {
+			if (_allFavorites) {
+				return _allFavorites;
+			}
+
 			log.debug('EventService.getAllFavorites()');
-			return doQuery(CMFavorite, function(doc) {
+			_allFavorites = doQuery(CMFavorite, function(doc) {
 				if (doc.type === 'favorite') {
 					emit(doc.username, doc);
 				}
 			}, {reduce:true});
+			_allFavorites['finally'](function() {
+				_allFavorites = null;
+			});
+			return _allFavorites;
 		};
 
+		var _officialEvents = null;
 		var getOfficialEvents = function() {
+			if (_officialEvents) {
+				return _officialEvents;
+			}
+
 			log.debug('EventService.getOfficialEvents()');
 
 			var deferred = $q.defer();
+			_officialEvents = deferred.promise;
 
 			$q.when(db.getDatabase()).then(function(database) {
 				/*jshint camelcase: false */
@@ -572,14 +604,23 @@ function CMFavorite(rawdata) {
 				});
 			});
 
-			return deferred.promise;
+			_officialEvents['finally'](function() {
+				_officialEvents = null;
+			});
+			return _officialEvents;
 		};
 
+		var _unofficialEvents = null;
 		var getUnofficialEvents = function() {
+			if (_unofficialEvents) {
+				return _unofficialEvents;
+			}
+
 			log.debug('EventService.getUnofficialEvents()');
 
 			var username = UserService.getUsername();
 			var deferred = $q.defer();
+			_unofficialEvents = deferred.promise;
 
 			$q.when(db.getDatabase()).then(function(database) {
 				/*jshint camelcase: false */
@@ -638,10 +679,18 @@ function CMFavorite(rawdata) {
 				});
 			});
 
-			return deferred.promise;
+			_unofficialEvents['finally'](function() {
+				_unofficialEvents = null;
+			});
+			return _unofficialEvents;
 		};
 
+		var _userEvents = null;
 		var getUserEvents = function() {
+			if (_userEvents) {
+				return _userEvents;
+			}
+
 			log.debug('EventService.getUserEvents()');
 
 			var username = UserService.getUsername();
@@ -649,16 +698,25 @@ function CMFavorite(rawdata) {
 				return rejectedResult('EventService.getUserEvent(): user not logged in');
 			}
 
-			return doEventQuery(username, function(doc) {
+			_userEvents = doEventQuery(username, function(doc) {
 				if (doc.type === 'event' && doc.username !== 'official') {
 					emit(doc.username, {'_id': doc._id, 'type': doc.type});
 				}
 			}, function(doc) {
 				return (doc.username === username);
 			});
+			_userEvents['finally'](function() {
+				_userEvents = null;
+			});
+			return _userEvents;
 		};
 
+		var _myEvents = null;
 		var getMyEvents = function() {
+			if (_myEvents) {
+				return _myEvents;
+			}
+
 			log.debug('EventService.getMyEvents()');
 
 			var username = UserService.getUsername();
@@ -666,7 +724,7 @@ function CMFavorite(rawdata) {
 				return rejectedResult('EventService.getMyEvents(): user not logged in');
 			}
 
-			return doEventQuery(username, function(doc) {
+			_myEvents = doEventQuery(username, function(doc) {
 				if (doc.type === 'event') {
 					emit(doc.username, {'_id': doc._id, 'type': doc.type});
 				} else if (doc.type === 'favorite') {
@@ -676,9 +734,18 @@ function CMFavorite(rawdata) {
 			}, function(doc) {
 				return (doc.isPublic || doc.username === username);
 			});
+			_myEvents['finally'](function() {
+				_myEvents = null;
+			});
+			return _myEvents;
 		};
 
+		var _myFavorites = null;
 		var getMyFavorites = function() {
+			if (_myFavorites) {
+				return _myFavorites;
+			}
+
 			log.debug('EventService.getMyFavorites()');
 
 			var username = UserService.getUsername();
@@ -687,6 +754,7 @@ function CMFavorite(rawdata) {
 			}
 
 			var deferred = $q.defer();
+			_myFavorites = deferred.promise;
 
 			$q.when(db.getDatabase()).then(function(database) {
 				/*jshint camelcase: false */
@@ -743,10 +811,18 @@ function CMFavorite(rawdata) {
 				});
 			});
 
-			return deferred.promise;
+			_myFavorites['finally'](function() {
+				_myFavorites = null;
+			});
+			return _myFavorites;
 		};
 
+		var _isFavorite = null;
 		var isFavorite = function(eventId) {
+			if (_isFavorite) {
+				return _isFavorite;
+			}
+
 			log.debug('EventService.isFavorite()');
 
 			var username = UserService.getUsername();
@@ -755,6 +831,7 @@ function CMFavorite(rawdata) {
 			}
 
 			var deferred = $q.defer();
+			_isFavorite = deferred.promise;
 
 			$q.when(db.getDatabase()).then(function(database) {
 				/*jshint camelcase: false */
@@ -780,7 +857,10 @@ function CMFavorite(rawdata) {
 				});
 			});
 
-			return deferred.promise;
+			_isFavorite['finally'](function() {
+				_isFavorite = null;
+			});
+			return _isFavorite;
 		};
 
 		var addFavorite = function(eventId) {
@@ -892,12 +972,18 @@ function CMFavorite(rawdata) {
 			return deferred.promise;
 		};
 
+		var _remoteDocs = null;
 		var getRemoteDocs = function() {
+			if (_remoteDocs) {
+				return _remoteDocs;
+			}
+
 			if (!databaseHost) {
 				databaseHost = $location.host();
 			}
 			var host = 'http://' + databaseHost + ':5984/' + databaseName;
 			var deferred = $q.defer();
+			_remoteDocs = deferred.promise;
 
 			if (replicate) {
 				$http.get(host + '/_all_docs?include_docs=true', { 'headers': { 'Accept': 'application/json' } })
@@ -914,39 +1000,17 @@ function CMFavorite(rawdata) {
 					deferred.resolve({});
 				});
 			}
-			return deferred.promise;
+			
+			_remoteDocs['finally'](function() {
+				_remoteDocs = null;
+			});
+			return _remoteDocs;
 		};
 
 		$rootScope.$on('$destroy', function() {
 			angular.forEach(listeners, function(listener) {
 				listener();
 			});
-		});
-
-		$rootScope.$on('cm.databaseReady', function() {
-			log.info('EventService: Initializing caches.');
-
-			/*jshint camelcase: false */
-
-			/*
-			$q.when(getRemoteDocs()).then(function(remote) {
-				if (remote && remote.total_rows) {
-					log.debug('EventService.initEventCache(): remote =', remote);
-					angular.forEach(remote.rows, function(row, index) {
-						var doc = row.doc;
-						if (doc.type === 'event') {
-							var ev = doc;
-							delete ev.isFavorite;
-							delete ev.isNewDay;
-							handleEventUpdated(ev);
-						} else if (doc.type === 'favorite') {
-							var fav = doc;
-							handleFavoriteUpdated(fav);
-						}
-					});
-				}
-			});
-			*/
 		});
 
 		return {

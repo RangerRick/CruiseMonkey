@@ -26,7 +26,7 @@
 		};
 
 		$scope.resetSettings = function() {
-			var updated = SettingsService.getSettings();
+			var updated = SettingsService.getDefaults();
 			console.log('resetting to', updated);
 			$scope.settings = updated;
 		};
