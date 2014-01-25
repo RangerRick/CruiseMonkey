@@ -137,6 +137,11 @@
 			$rootScope.sideMenuController.toggleLeft();
 		};
 
+		$rootScope.closeLeft = function() {
+			log.info('Closing Sidebar.');
+			$rootScope.sideMenuController.close();
+		};
+
 		$rootScope.$on('$locationChangeSuccess', function(evt, newUrl, oldUrl) {
 			$rootScope.user = UserService.get();
 			$rootScope.sideMenuController.close();

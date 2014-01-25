@@ -114,7 +114,7 @@ if (typeof String.prototype.contains !== 'function') {
 		<pane side-menu-content>
 			<header class="bar bar-header bar-dark">
 				<button class="button button-icon" ng-click="openLeft()"><i class="icon ion-navicon"></i></button>
-				<h1 class="title" ng-click="openLeft()">{{title}}</h1>
+				<h1 class="title">{{title}}</h1>
 				<div class="buttons">
 					<button ng-repeat="button in rightButtons" class="button button-clear no-animation" ng-class="button.type" ng-click="button.tap($event, $index)" ng-bind-html="button.content">
 					</button>
@@ -122,7 +122,7 @@ if (typeof String.prototype.contains !== 'function') {
 			</header>
 			<nav-view></nav-view>
 		</pane>
-		<side-menu side="left" ng-click="sideMenuController.close()">
+		<side-menu side="left" ng-click="closeLeft()">
 			<header class="bar bar-header bar-dark">
 				<h1 class="title bar-bold">CruiseMonkey</h1>
 			</header>
