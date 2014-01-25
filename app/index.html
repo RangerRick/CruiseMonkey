@@ -114,7 +114,7 @@ if (typeof String.prototype.contains !== 'function') {
 		<pane side-menu-content>
 			<header class="bar bar-header bar-dark">
 				<button class="button button-icon" ng-click="openLeft()"><i class="icon ion-navicon"></i></button>
-				<h1 class="title" ng-click="sideMenuController.toggleLeft()">{{title}}</h1>
+				<h1 class="title" ng-click="openLeft()">{{title}}</h1>
 				<div class="buttons">
 					<button ng-repeat="button in rightButtons" class="button button-clear no-animation" ng-class="button.type" ng-click="button.tap($event, $index)" ng-bind-html="button.content">
 					</button>
@@ -151,6 +151,7 @@ if (typeof String.prototype.contains !== 'function') {
 
 	<!-- build:js scripts/3rdparty.js -->
 	<script src="scripts/3rdparty/modernizr-latest.js"></script>
+	<script src="bower_components/classlist/classList.js"></script>
 	<script src="scripts/3rdparty/pouchdb-nightly.js"></script>
 	<script src="bower_components/momentjs/moment.js"></script>
 	<script src="bower_components/log4javascript/log4javascript_uncompressed.js"></script>

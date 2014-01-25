@@ -133,6 +133,7 @@
 		};
 
 		$rootScope.openLeft = function() {
+			log.info('Opening Sidebar.');
 			$rootScope.sideMenuController.toggleLeft();
 		};
 
