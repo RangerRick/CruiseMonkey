@@ -182,6 +182,17 @@ function CMEvent(rawdata) {
 		self._favorite = fav;
 	};
 
+	self.getDisplayTime = function() {
+		if (self.getStart()) {
+			var ret = self.getStart().format('hh:mma');
+			if (self.getEnd()) {
+				ret += '-' + self.getEnd().format('hh:mma');
+			}
+			return ret;
+		}
+		return undefined;
+	}
+
 	self.toEditableBean = function() {
 		var bean = {
 			id: self.getId(),

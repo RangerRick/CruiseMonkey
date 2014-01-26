@@ -2,7 +2,8 @@
 
 DONT_SIGN=false
 SKIP_BUILD=false
-while getopts "ds" opt; do
+DEBUG=false
+while getopts "dsx" opt; do
 	case $opt in
 		d)
 			echo "don't sign" >&2
@@ -11,6 +12,10 @@ while getopts "ds" opt; do
 		s)
 			echo "skip build" >&2
 			SKIP_BUILD=true
+			;;
+		x)
+			echo "debug" >&2
+			DEBUG=true
 			;;
 		\?)
 			echo "Invalid argument: -$OPTARG" >&2
@@ -28,7 +33,13 @@ mv app/scripts/cruisemonkey/Config.js.bak app/scripts/cruisemonkey/Config.js
 #/usr/libexec/PlistBuddy -c "Set :CFBundleVersion $VERSION" platforms/ios/CruiseMonkey/CruiseMonkey-Info.plist
 #/usr/libexec/PlistBuddy -c "Set :CFBundleShortVersionString $SHORTVERSION" platforms/ios/CruiseMonkey/CruiseMonkey-Info.plist
 
-grunt build
+if $DEBUG; then
+	grunt build
+	rsync -avr --delete app/ www/
+	rsync -avr .tmp/ www/
+else
+	grunt build
+fi
 
 install -d -m 755 platforms/{ios,android/assets,web}/www
 

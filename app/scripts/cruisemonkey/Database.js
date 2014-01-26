@@ -45,6 +45,7 @@
 				log.debug('Database.initializeFromRemote(): Getting all docs.');
 				$http.get(host + '/_all_docs?include_docs=true', { 'headers': { 'Accept': 'application/json' } })
 					.success(function(data, status, headers, config) {
+						/*jshint camelcase: false */
 						if (data && data.total_rows) {
 							deferred.resolve(true);
 							angular.forEach(data.rows, function(row, index) {

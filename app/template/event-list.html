@@ -50,7 +50,7 @@
 		<!-- <button class="button button-clear" ng-click="clearSearchString()">Cancel</button> -->
 	</div>
 	<div class="event-list list">
-		<span ng-repeat="event in events | orderByEvent:searchString">
+		<span bindonce ng-repeat="event in events | orderByEvent:searchString">
 			<div ng-if="event.isNewDay()" class="item item-divider header">{{prettyDate(event.getStart())}}</div>
 
 			<div class="list-entry item item-text-wrap" ng-class-even="'even'" ng-class-odd="'odd'">
@@ -66,11 +66,11 @@
 				<span class="item-note edit" ng-show="(user.username && user.username == event.getUsername())">
 					<button id="{{event.getId()}}-edit" ng-click="edit(event)" class="button button-cm button-icon icon active ion-gear-a"></button>
 				</span>
-				<div class="summary">{{event.getSummary()}}</div>
-				<div class="time">Time: {{justTime(event.getStart())}} - {{justTime(event.getEnd())}}</div>
-				<div class="createdBy" ng-show="event.getUsername() != 'official'">Created By: {{event.getUsername()}}</div>
-				<div class="location" ng-show="event.getLocation()">Location: {{event.getLocation()}}</div>
-				<div class="description">{{event.getDescription()}}</div>
+				<div class="summary" bo-text="event.getSummary()"></div>
+				<div class="time" bo-text="'Time: ' + event.getDisplayTime()"></div>
+				<div class="createdBy" bo-show="event.getUsername() != 'official'" bo-text="'Created By: ' + event.getUsername()"></div>
+				<div class="location" bo-show="event.getLocation()" bo-text="'Location: ' + event.getLocation()"></div>
+				<div class="description" bo-show="event.getDescription()" bo-text="event.getDescription()"></div>
 			</div>
 		</span>
 	</div>

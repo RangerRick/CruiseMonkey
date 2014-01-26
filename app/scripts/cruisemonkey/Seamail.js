@@ -4,9 +4,10 @@
 	angular.module('cruisemonkey.Seamail', [
 		'cruisemonkey.Config',
 		'cruisemonkey.Logging',
+		'cruisemonkey.Notifications',
 		'cruisemonkey.User'
 	])
-	.factory('SeamailService', ['$q', '$rootScope', '$timeout', '$interval', '$http', 'SettingsService', 'UserService', 'LoggingService', function($q, $rootScope, $timeout, $interval, $http, SettingsService, UserService, log) {
+	.factory('SeamailService', ['$q', '$rootScope', '$timeout', '$interval', '$http', 'SettingsService', 'NotificationService', 'UserService', 'LoggingService', function($q, $rootScope, $timeout, $interval, $http, SettingsService, notifications, UserService, log) {
 		var lastEmailCount = 0;
 		var interval = null;
 

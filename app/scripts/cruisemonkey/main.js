@@ -9,6 +9,7 @@
 		'ionic',
 		'ui.router',
 		'angularLocalStorage',
+		'pasvaz.bindonce',
 		'cruisemonkey.Config',
 		'cruisemonkey.Cordova',
 		'cruisemonkey.controllers.About',
@@ -20,6 +21,7 @@
 		'cruisemonkey.controllers.Login',
 		'cruisemonkey.controllers.Logout',
 		'cruisemonkey.controllers.Navigation',
+		'cruisemonkey.controllers.Photos',
 		'cruisemonkey.Database',
 		'cruisemonkey.Notifications',
 		'cruisemonkey.Seamail',
@@ -94,6 +96,11 @@
 				url: '/deck-plans/:deck',
 				templateUrl: 'template/deck-plans.html',
 				controller: 'CMDeckListCtrl'
+			})
+			.state('photos', {
+				url: '/photos',
+				templateUrl: 'template/photos.html',
+				controller: 'CMPhotoCtrl'
 			})
 			.state('help', {
 				url: '/help',

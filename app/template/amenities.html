@@ -6,12 +6,12 @@
 		</label>
 	</header>
 	<div class="event-list list">
-		<span ng-repeat="amenity in amenities | amenityFilter:searchString">
-			<div ng-if="headerAmenities[amenity.getUniqueId()]" class="item item-divider header">Deck {{amenity.getDeck().getFloor()}}</div>
+		<span bindonce ng-repeat="amenity in amenities | amenityFilter:searchString">
+			<div class="item item-divider header" bo-if="headerAmenities[amenity.getUniqueId()]" bo-text="'Deck ' + amenity.getDeck().getFloor()"></div>
 			<a class="item item-icon-right item-text-wrap" ng-click="openAmenity(amenity)">
-				<div class="summary">{{amenity.getSummary()}}</div>
-				<div class="description" ng-show="amenity.getDescription()">{{amenity.getDescription()}}</div>
-				<i ng-if="amenity.getIcon()" class="icon {{amenity.getIcon()}}"></i>
+				<div class="summary" bo-text="amenity.getSummary()"></div>
+				<div class="description" bo-show="amenity.getDescription()" bo-text="amenity.getDescription()"></div>
+				<i bo-if="amenity.getIcon()" class="icon {{amenity.getIcon()}}"></i>
 			</a>
 		</span>
 	</div>

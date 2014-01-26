@@ -8,6 +8,7 @@
 		'ui.router',
 		'ionic',
 		'angularLocalStorage',
+		'pasvaz.bindonce',
 		'cruisemonkey.User',
 		'cruisemonkey.Events',
 		'cruisemonkey.Logging',
