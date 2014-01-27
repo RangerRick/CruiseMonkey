@@ -1,24 +1,25 @@
-<content has-header="true" overflow-scroll="true" scroll="true" on-infinite-scroll="loadMore">
-	<list>
-		<div class="card" ng-repeat="entry in entries">
-			<div class="item item-divider item-text-wrap" ng-if="entry.message">{{getPhotoUrl(entry)}}</div>
-			<div class="item item-image">
-				<img ng-src="getPhotoUrl(entry)" />
-			</div>
-			<div class="item item-divider item-text-wrap" ng-if="entry.message">{{entry.message}}</div>
-		</div>
-	</list>
-	<infinite-scroll></infinite-scroll>
-	<!--
-	<slide-box show-pager="false" on-slide-changed="slideChanged(index)">
-		<slide ng-repeat="entry in entries">
-			<div class="box card">
+<!-- on-infinite-scroll="loadMore" -->
+<content has-header="true" overflow-scroll="false" scroll="true" on-refresh="reload()">
+	<refresher></refresher>
+	<slide-box show-pager="false" active-slide="currentSlide" on-slide-changed="slideChanged(index)">
+		<slide bindonce ng-repeat="entry in entries">
+			<div class="card">
+				<div class="item item-divider item-text-wrap" bo-if="entry.message" bo-text="entry.username? ('@' + entry.username + ' ' + entry.message) : entry.message"></div>
 				<div class="item item-image">
-					<img ng-src="getPhotoUrl(entry)" />
+					<img bo-src="entry.url" />
 				</div>
-				<div class="item item-divider item-text-wrap">{{entry.message}}</div>
 			</div>
 		</slide>
 	</slide-box>
+	<!--
+	<list>
+		<div bindonce ng-repeat="entry in entries" class="card">
+			<div class="item item-divider item-text-wrap" bo-if="entry.message">{{entry.message}}</div>
+			<div class="item item-image">
+				<img bo-src="entry.url" />
+			</div>
+		</div>
+	</list>
+	<infinite-scroll></infinite-scroll>
 	-->
 </content>

@@ -40,21 +40,30 @@
 			}, initWait);
 		}
 
+		var ifNotCordova = {
+			'else': function(callback) {
+				$q.when(isCordova.promise).then(function(cordova) {
+					if (!cordova) {
+						callback();
+					}
+				});
+			}
+		};
+
+		var ifCordova = function(callback) {
+			$q.when(isCordova.promise).then(function(cordova) {
+				if (cordova) {
+					callback();
+				}
+			});
+			return ifNotCordova;
+		};
+
 		return {
 			'isCordova': function() {
 				return isCordova.promise;
 			},
-			'ifCordova': function(yesCallback, noCallback) {
-				$q.when(isCordova.promise).then(function(cordova) {
-					if (cordova && yesCallback) {
-						yesCallback();
-					} else {
-						if (noCallback) {
-							noCallback();
-						}
-					}
-				});
-			}
+			'if': ifCordova
 		};
 	}]);
 }());

@@ -12,15 +12,15 @@
 		'cruisemonkey.Cordova',
 		'cruisemonkey.Logging'
 	])
-	.factory('NotificationService', ['$q', '$rootScope', '$timeout', '$window', 'config.notifications.timeout', 'LoggingService', 'CordovaService', function($q, $rootScope, $timeout, $window, notificationTimeout, log, CordovaService) {
+	.factory('NotificationService', ['$q', '$rootScope', '$timeout', '$window', 'config.notifications.timeout', 'LoggingService', 'CordovaService', function($q, $rootScope, $timeout, $window, notificationTimeout, log, cordova) {
 		var notificationQueue = [];
 		var nextId = 0;
 
 		var doAlert = function(message, callback) {
-			CordovaService.ifCordova(function() {
+			cordova.if(function() {
 				log.info('NotificationService.doAlert(): native cordova: ' + message);
 				navigator.notification.alert(message, callback);
-			}, function() {
+			}).else(function() {
 				log.info('NotificationService.doAlert(): not native cordova: ' + message);
 				$window.alert(message);
 				callback();

@@ -191,7 +191,7 @@ function CMEvent(rawdata) {
 			return ret;
 		}
 		return undefined;
-	}
+	};
 
 	self.toEditableBean = function() {
 		var bean = {

@@ -11,7 +11,7 @@
 		'cruisemonkey.Notifications',
 		'cruisemonkey.Settings'
 	])
-	.factory('Database', ['$q', '$location', '$interval', '$timeout', '$rootScope', '$window', '$http', 'LoggingService', 'storage', 'config.database.replicate', 'SettingsService', 'CordovaService', 'NotificationService', function($q, $location, $interval, $timeout, $rootScope, $window, $http, log, storage, replicate, SettingsService, CordovaService, NotificationService) {
+	.factory('Database', ['$q', '$location', '$interval', '$timeout', '$rootScope', '$window', '$http', 'LoggingService', 'storage', 'config.database.replicate', 'SettingsService', 'CordovaService', 'NotificationService', function($q, $location, $interval, $timeout, $rootScope, $window, $http, log, storage, replicate, SettingsService, cordova, NotificationService) {
 		log.info('Initializing CruiseMonkey database: ' + SettingsService.getDatabaseName());
 
 		storage.bind($rootScope, '_firstSync', {
@@ -208,7 +208,7 @@
 
 		/*
 		var setUp = function() {
-			CordovaService.ifCordova(function() {
+			cordova.if(function() {
 				// is cordova
 				document.addEventListener('online', startReplication, false);
 				document.addEventListener('offline', stopReplication, false);
@@ -217,7 +217,7 @@
 
 				databaseReady();
 				startReplication();
-			}, function() {
+			}).else(function() {
 				$timeout(function() {
 					if (navigator && navigator.connection) {
 						if (navigator.connection.addEventListener) {

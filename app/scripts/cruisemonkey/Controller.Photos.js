@@ -4,41 +4,141 @@
 	angular.module('cruisemonkey.controllers.Photos', [
 		'ionic',
 		'cruisemonkey.Config',
+		'cruisemonkey.Cordova',
 		'cruisemonkey.Logging'
 	])
-	.controller('CMPhotoCtrl', ['$rootScope', '$scope', '$timeout', '$http', 'SettingsService', 'LoggingService', function($rootScope, $scope, $timeout, $http, SettingsService, log) {
+	.factory('PhotoService', ['$q', '$rootScope', '$http', '$timeout', 'SettingsService', 'CordovaService', 'LoggingService', function($q, $rootScope, $http, $timeout, settings, cordova, log) {
+		var finished, nextPage, nextEntry, entries;
+
+		var reset = function() {
+			finished = false;
+			nextPage = 0;
+			nextEntry = 0;
+			entries = [];
+		};
+		reset();
+
+		var _gettingMore;
+		var getMoreEntries = function() {
+			if (_gettingMore) {
+				return _gettingMore;
+			}
+
+			var deferred = $q.defer();
+			_gettingMore = deferred.promise;
+			_gettingMore['finally'](function() {
+				_gettingMore = null;
+			});
+
+			var url = settings.getTwitarrRoot() + 'api/v2/photos/list?page=' + nextPage;
+			$http.get(url, {
+				'headers': {
+					'Accept': 'application/json'
+				}
+			})
+			.success(function(data, status, headers, config) {
+				console.log('PhotoService.getNextPhoto(): data=',data);
+				console.log('PhotoService.getNextPhoto(): status=',status);
+				if (data && data.status === 'ok') {
+					if (data.photos.length > 0) {
+						angular.forEach(data.photos, function(entry, index) {
+							entry.url = settings.getTwitarrRoot() + 'img/photos/' + entry.photo;
+						});
+						nextPage++;
+						console.log('photos=',data.photos);
+						deferred.resolve(data.photos);
+					} else {
+						deferred.reject(data);
+					}
+				} else {
+					log.warn('Successful response, but status was ' + data.status);
+					deferred.reject(data);
+				}
+			})
+			.error(function(data, status, headers, config) {
+				log.warn('Bad response: ' + data);
+				deferred.reject(data);
+			});
+			
+			return _gettingMore;
+		};
+
+		var _getNextPhoto = function(deferred) {
+			if (finished) {
+				$timeout(function() {
+					deferred.reject('finished');
+				});
+			} else if (entries[nextEntry]) {
+				$timeout(function() {
+					deferred.resolve(entries[nextEntry++]);
+				});
+			} else {
+				getMoreEntries().then(function(entries) {
+					if (entries.length > 0) {
+						angular.forEach(entries, function(entry, index) {
+							entries.push(entry);
+						});
+						deferred.resolve(entries[nextEntry++]);
+					} else {
+						finished = true;
+						deferred.reject('finished');
+					}
+				}, function(err) {
+					finished = true;
+					deferred.reject('finished');
+				});
+			}
+		};
+
+		var _getNext;
+		var getNextPhoto = function() {
+			if (_getNext) {
+				_getNext = $q.defer();
+				$q.when(_getNext).then(function() {
+					_getNextPhoto(_getNext);
+				});
+				return _getNext.promise;
+			} else {
+				_getNext = $q.defer();
+				_getNextPhoto(_getNext);
+				return _getNext.promise;
+			}
+		};
+
+		return {
+			reset: reset,
+			getMore: getMoreEntries,
+			getNextPhoto: getNextPhoto
+		};
+	}])
+	.controller('CMPhotoCtrl', ['$rootScope', '$scope', '$ionicSlideBoxDelegate', 'LoggingService', 'PhotoService', function($rootScope, $scope, $ionicSlideBoxDelegate, log, photos) {
 		log.info('Initializing CMPhotoCtrl');
 		$rootScope.title = "Twit-Arr Pics";
 
 		$scope.finished = false;
-		$scope.nextPage = 0;
-		$scope.currentEntry = 0;
 		$scope.entries = [];
+		$scope.currentSlide = 0;
 
-		$scope.slideChanged = function(index) {
-			$scope.currentEntry = index;
+		var doneFunc = function() {
+			$ionicSlideBoxDelegate.update();
+			$scope.$broadcast('slideBox.setSlide', $scope.currentSlide);
+			$scope.$broadcast('scroll.refreshComplete');
 		};
 
-		// https://twitarr.rylath.net/img/photos/md_09a99598-829c-4c52-ab7d-1e7368712254.jpg
-		$scope.getPhotoUrl = function(entry) {
+		$scope.reload = function() {
+			log.debug('CMPhotoCtrl.reload()');
+			$scope.finished = false;
+			$scope.entries = [];
+			photos.reset();
+			$scope.currentSlide = 0;
+
 			/*
-			log.info('getPhotoUrl: entries.length=' + $scope.entries.length + ', currentEntry=' + $scope.currentEntry);
-			var end = $scope.entries.length - 1;
-			// if we're near the end of the list, get more
-			if (!$scope.finished && currentEntry === $scope.entries.length - 1) {
-				$timeout(function() {
-					$scope.loadMore();
-				}, 500);
+			function() {
+				$scope.$broadcast('scroll.refreshComplete');
 			}
 			*/
-			var url;
-			if (true || $scope.entries[$scope.currentEntry] === entry) {
-				url = SettingsService.getTwitarrRoot() + 'img/photos/md_' + entry.photo;
-			} else {
-				url = "";
-			}
-			log.info('getPhotoUrl(): ' + url);
-			return url;
+
+			$scope.loadMore(doneFunc);
 		};
 
 		$scope.loadMore = function(done) {
@@ -47,33 +147,27 @@
 				done();
 				return;
 			}
-			var url = SettingsService.getTwitarrRoot() + 'api/v1/photos/list?page=' + $scope.nextPage;
-			log.info('CMPhotoCtrl.loadMore(): getting ' + url);
-			$http.get(url, {
-				'headers': {
-					'Accept': 'application/json'
-				}
-			})
-			.success(function(data, status, headers, config) {
-				console.log('data=',data);
-				console.log('status=',status);
-				if (data && data.status === 'ok') {
-					angular.forEach(data.photos, function(photo, index) {
-						$scope.entries.push(photo);
-					});
-					$scope.nextPage++;
-				} else {
-					log.warn('Successful response, but status was ' + data.status);
-					$scope.finished = true;
-				}
+
+			photos.getMore().then(function(entries) {
+				angular.forEach(entries, function(entry, index) {
+					log.debug('CMPhotoCtrl.loadMore(): got new entry: ' + entry.url);
+					this.push(entry);
+				}, $scope.entries);
 				done();
-			})
-			.error(function(data, status, headers, config) {
-				log.warn('Bad response: ' + data);
+			}, function() {
+				$scope.finished = true;
 				done();
 			});
 		};
-		
-		$scope.loadMore(function() {});
+
+		$scope.slideChanged = function(index) {
+			$scope.currentSlide = index;
+			if (index === $scope.entries.length - 1 || index === $scope.entries.length - 2) {
+				$scope.loadMore(doneFunc);
+			}
+		};
+
+		$scope.loadMore(doneFunc);
+
 	}]);
 }());
