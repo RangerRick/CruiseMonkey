@@ -1,0 +1,744 @@
+<?xml version='1.0' encoding='utf-8'?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+    <PropertyGroup>
+        <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+        <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+        <ProductVersion>10.0.20506</ProductVersion>
+        <SchemaVersion>2.0</SchemaVersion>
+        <ProjectGuid>{3677C1B7-D68B-4CF9-BF8A-E869D437A6DF}</ProjectGuid>
+        <ProjectTypeGuids>{C089C8C0-30E0-4E22-80C0-CE093F111A43};{fae04ec0-301f-11d3-bf4b-00c04f79efbc}</ProjectTypeGuids>
+        <OutputType>Library</OutputType>
+        <AppDesignerFolder>Properties</AppDesignerFolder>
+        <RootNamespace>com.raccoonfink.cruisemonkey</RootNamespace>
+        <AssemblyName>com.raccoonfink.cruisemonkey</AssemblyName>
+        <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+        <SilverlightVersion>$(TargetFrameworkVersion)</SilverlightVersion>
+        <TargetFrameworkProfile>WindowsPhone71</TargetFrameworkProfile>
+        <TargetFrameworkIdentifier>Silverlight</TargetFrameworkIdentifier>
+        <SilverlightApplication>true</SilverlightApplication>
+        <SupportedCultures>
+        </SupportedCultures>
+        <XapOutputs>true</XapOutputs>
+        <GenerateSilverlightManifest>true</GenerateSilverlightManifest>
+        <XapFilename>com.raccoonfink.cruisemonkey.xap</XapFilename>
+        <SilverlightManifestTemplate>Properties\AppManifest.xml</SilverlightManifestTemplate>
+        <SilverlightAppEntry>com.raccoonfink.cruisemonkey.App</SilverlightAppEntry>
+        <ValidateXaml>true</ValidateXaml>
+        <ThrowErrorsInValidation>true</ThrowErrorsInValidation>
+    </PropertyGroup>
+    <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+        <DebugSymbols>true</DebugSymbols>
+        <DebugType>full</DebugType>
+        <Optimize>false</Optimize>
+        <OutputPath>Bin\Debug</OutputPath>
+        <DefineConstants>TRACE;DEBUG;SILVERLIGHT;WINDOWS_PHONE;WP7</DefineConstants>
+        <NoStdLib>true</NoStdLib>
+        <NoConfig>true</NoConfig>
+        <ErrorReport>prompt</ErrorReport>
+        <WarningLevel>4</WarningLevel>
+    </PropertyGroup>
+    <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+        <DebugType>pdbonly</DebugType>
+        <Optimize>true</Optimize>
+        <OutputPath>Bin\Release</OutputPath>
+        <DefineConstants>TRACE;SILVERLIGHT;WINDOWS_PHONE</DefineConstants>
+        <NoStdLib>true</NoStdLib>
+        <NoConfig>true</NoConfig>
+        <ErrorReport>prompt</ErrorReport>
+        <WarningLevel>4</WarningLevel>
+    </PropertyGroup>
+    <ItemGroup>
+        <Reference Include="Microsoft.Devices.Sensors" />
+        <Reference Include="Microsoft.Phone" />
+        <Reference Include="Microsoft.Phone.Interop" />
+        <Reference Include="Microsoft.Xna.Framework" />
+        <Reference Include="System.Device" />
+        <Reference Include="System.Runtime.Serialization" />
+        <Reference Include="System.Servicemodel.Web" />
+        <Reference Include="System.Windows" />
+        <Reference Include="system" />
+        <Reference Include="System.Core" />
+        <Reference Include="System.Net" />
+        <Reference Include="System.Xml" />
+        <Reference Include="System.Xml.Linq" />
+        <Page Include="Plugins\org.apache.cordova.dialogs\NotificationBox.xaml">
+            <SubType>Designer</SubType>
+            <Generator>MSBuild:Compile</Generator>
+        </Page>
+        <Page Include="Plugins\org.apache.cordova.media-capture\AudioRecorder.xaml">
+            <SubType>Designer</SubType>
+            <Generator>MSBuild:Compile</Generator>
+        </Page>
+        <Page Include="Plugins\org.apache.cordova.media-capture\VideoRecorder.xaml">
+            <SubType>Designer</SubType>
+            <Generator>MSBuild:Compile</Generator>
+        </Page>
+    </ItemGroup>
+    <ItemGroup>
+        <Compile Include="App.xaml.cs">
+            <DependentUpon>App.xaml</DependentUpon>
+        </Compile>
+        <Compile Include="cordovalib\BaseCommand.cs" />
+        <Compile Include="cordovalib\BrowserMouseHelper.cs" />
+        <Compile Include="cordovalib\CommandFactory.cs" />
+        <Compile Include="cordovalib\ConfigHandler.cs" />
+        <Compile Include="cordovalib\ConsoleHelper.cs" />
+        <Compile Include="cordovalib\CordovaCommandCall.cs" />
+        <Compile Include="cordovalib\CordovaView.xaml.cs">
+            <DependentUpon>CordovaView.xaml</DependentUpon>
+        </Compile>
+        <Compile Include="cordovalib\DOMStorageHelper.cs" />
+        <Compile Include="cordovalib\IBrowserDecorator.cs" />
+        <Compile Include="cordovalib\ImageExifHelper.cs" />
+        <Compile Include="cordovalib\JSON\JsonHelper.cs" />
+        <Compile Include="cordovalib\NativeExecution.cs" />
+        <Compile Include="cordovalib\OrientationHelper.cs" />
+        <Compile Include="cordovalib\PluginResult.cs" />
+        <Compile Include="cordovalib\ScriptCallback.cs" />
+        <Compile Include="cordovalib\XHRHelper.cs" />
+        <Compile Include="cordovalib\MimeTypeMapper.cs" />
+        <Compile Include="MainPage.xaml.cs">
+            <DependentUpon>MainPage.xaml</DependentUpon>
+        </Compile>
+        <Compile Include="Properties\AssemblyInfo.cs" />
+    </ItemGroup>
+    <ItemGroup>
+        <ApplicationDefinition Include="App.xaml">
+            <SubType>Designer</SubType>
+            <Generator>MSBuild:Compile</Generator>
+        </ApplicationDefinition>
+        <Page Include="MainPage.xaml">
+            <SubType>Designer</SubType>
+            <Generator>MSBuild:Compile</Generator>
+        </Page>
+        <Page Include="cordovalib\CordovaView.xaml">
+            <Generator>MSBuild:Compile</Generator>
+            <SubType>Designer</SubType>
+        </Page>
+    </ItemGroup>
+    <ItemGroup>
+        <Content Include="config.xml" />
+        <Content Include="Images\appbar.back.rest.png" />
+        <Content Include="Images\appbar.close.rest.png" />
+        <Content Include="Images\appbar.feature.video.rest.png" />
+        <Content Include="Images\appbar.next.rest.png" />
+        <Content Include="Images\appbar.save.rest.png" />
+        <Content Include="Images\appbar.stop.rest.png" />
+        <None Include="cordova\lib\build.js" />
+        <None Include="cordova\lib\clean.js" />
+        <None Include="cordova\lib\deploy.js" />
+        <None Include="cordova\lib\log.js" />
+        <None Include="cordova\lib\target-list.js" />
+        <None Include="cordova\build.bat" />
+        <None Include="cordova\clean.bat" />
+        <None Include="cordova\lib\install-device.bat" />
+        <None Include="cordova\lib\install-emulator.bat" />
+        <None Include="cordova\lib\list-devices.bat" />
+        <None Include="cordova\lib\list-emulator-images.bat" />
+        <None Include="cordova\lib\list-started-emulators.bat" />
+        <None Include="cordova\lib\start-emulator.bat" />
+        <None Include="cordova\log.bat" />
+        <None Include="cordova\run.bat" />
+        <None Include="cordova\version.bat" />
+        <None Include="VERSION" />
+        <Content Include="CordovaSourceDictionary.xml">
+            <SubType>Designer</SubType>
+        </Content>
+        <None Include="BuildManifestProcessor.js" />
+        <None Include="Properties\AppManifest.xml">
+            <SubType>Designer</SubType>
+        </None>
+        <None Include="Properties\WMAppManifest.xml">
+            <SubType>Designer</SubType>
+        </None>
+    </ItemGroup>
+    <ItemGroup>
+        <Content Include="ApplicationIcon.png">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
+        <Content Include="Background.png">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
+        <Content Include="SplashScreenImage.jpg" />
+    </ItemGroup>
+    <ItemGroup>
+        <WCFMetadata Include="Service References\" />
+    </ItemGroup>
+    <ItemGroup>
+        <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
+    </ItemGroup>
+    <Import Project="$(MSBuildExtensionsPath)\Microsoft\Silverlight for Phone\$(TargetFrameworkVersion)\Microsoft.Silverlight.$(TargetFrameworkProfile).Overrides.targets" />
+    <Import Project="$(MSBuildExtensionsPath)\Microsoft\Silverlight for Phone\$(TargetFrameworkVersion)\Microsoft.Silverlight.CSharp.targets" />
+    <ProjectExtensions />
+    <PropertyGroup>
+        <PreBuildEvent>CScript "$(ProjectDir)/BuildManifestProcessor.js" "$(ProjectPath)"</PreBuildEvent>
+    </PropertyGroup>
+    <PropertyGroup>
+        <PostBuildEvent>
+        </PostBuildEvent>
+    </PropertyGroup>
+    <ItemGroup>
+        <Compile Include="Plugins\org.apache.cordova.camera\Camera.cs" />
+    </ItemGroup>
+    <ItemGroup>
+        <Compile Include="Plugins\org.apache.cordova.console\DebugConsole.cs" />
+    </ItemGroup>
+    <ItemGroup>
+        <Compile Include="Plugins\org.apache.cordova.device\Device.cs" />
+    </ItemGroup>
+    <ItemGroup>
+        <Compile Include="Plugins\org.apache.cordova.device-orientation\Compass.cs" />
+    </ItemGroup>
+    <ItemGroup>
+        <Compile Include="Plugins\org.apache.cordova.dialogs\Notification.cs" />
+    </ItemGroup>
+    <ItemGroup>
+        <Compile Include="Plugins\org.apache.cordova.dialogs\NotificationBox.xaml.cs">
+            <DependentUpon>NotificationBox.xaml</DependentUpon>
+        </Compile>
+    </ItemGroup>
+    <ItemGroup />
+    <ItemGroup>
+        <Content Include="Plugins\org.apache.cordova.dialogs\notification-beep.wav" />
+    </ItemGroup>
+    <ItemGroup>
+        <Compile Include="Plugins\org.apache.cordova.file\File.cs" />
+    </ItemGroup>
+    <ItemGroup>
+        <Compile Include="Plugins\org.apache.cordova.geolocation\Geolocation.cs" />
+    </ItemGroup>
+    <ItemGroup>
+        <Compile Include="Plugins\org.apache.cordova.inappbrowser\InAppBrowser.cs" />
+    </ItemGroup>
+    <ItemGroup>
+        <Compile Include="Plugins\org.apache.cordova.media\Media.cs" />
+    </ItemGroup>
+    <ItemGroup>
+        <Compile Include="Plugins\org.apache.cordova.media\AudioPlayer.cs" />
+    </ItemGroup>
+    <ItemGroup>
+        <Compile Include="Plugins\org.apache.cordova.media-capture\Capture.cs" />
+    </ItemGroup>
+    <ItemGroup>
+        <Compile Include="Plugins\org.apache.cordova.media-capture\AudioCaptureTask.cs" />
+    </ItemGroup>
+    <ItemGroup />
+    <ItemGroup>
+        <Compile Include="Plugins\org.apache.cordova.media-capture\AudioRecorder.xaml.cs">
+            <DependentUpon>AudioRecorder.xaml</DependentUpon>
+        </Compile>
+    </ItemGroup>
+    <ItemGroup>
+        <Compile Include="Plugins\org.apache.cordova.media-capture\VideoCaptureTask.cs" />
+    </ItemGroup>
+    <ItemGroup />
+    <ItemGroup>
+        <Compile Include="Plugins\org.apache.cordova.media-capture\VideoRecorder.xaml.cs">
+            <DependentUpon>VideoRecorder.xaml</DependentUpon>
+        </Compile>
+    </ItemGroup>
+    <ItemGroup>
+        <Compile Include="Plugins\org.apache.cordova.network-information\NetworkStatus.cs" />
+    </ItemGroup>
+    <ItemGroup>
+        <Compile Include="Plugins\org.apache.cordova.splashscreen\SplashScreen.cs" />
+    </ItemGroup>
+    <ItemGroup>
+        <Compile Include="Plugins\org.apache.cordova.vibration\Vibration.cs" />
+    </ItemGroup>
+    <ItemGroup>
+        <Content Include="www\404.html" />
+    </ItemGroup>
+    <ItemGroup>
+        <Content Include="www\bower_components\html5shiv\.bower.json" />
+    </ItemGroup>
+    <ItemGroup>
+        <Content Include="www\bower_components\html5shiv\dist\html5shiv-printshiv.js" />
+    </ItemGroup>
+    <ItemGroup>
+        <Content Include="www\bower_components\html5shiv\dist\html5shiv.js" />
+    </ItemGroup>
+    <ItemGroup>
+        <Content Include="www\bower_components\html5shiv\readme.md" />
+    </ItemGroup>
+    <ItemGroup>
+        <Content Include="www\config.xml" />
+    </ItemGroup>
+    <ItemGroup>
+        <Content Include="www\config.xml.bak" />
+    </ItemGroup>
+    <ItemGroup>
+        <Content Include="www\cordova.js" />
+    </ItemGroup>
+    <ItemGroup>
+        <Content Include="www\cordova_plugins.js" />
+    </ItemGroup>
+    <ItemGroup>
+        <Content Include="www\cruise-monkey-1136x640.png" />
+    </ItemGroup>
+    <ItemGroup>
+        <Content Include="www\cruise-monkey-1536x2008.png" />
+    </ItemGroup>
+    <ItemGroup>
+        <Content Include="www\cruise-monkey-1536x2048.png" />
+    </ItemGroup>
+    <ItemGroup>
+        <Content Include="www\cruise-monkey-200x320.png" />
+    </ItemGroup>
+    <ItemGroup>
+        <Content Include="www\cruise-monkey-480x800.png" />
+    </ItemGroup>
+    <ItemGroup>
+        <Content Include="www\cruise-monkey-720x1280.png" />
+    </ItemGroup>
+    <ItemGroup>
+        <Content Include="www\cruise-monkey-768x1004.png" />
+    </ItemGroup>
+    <ItemGroup>
+        <Content Include="www\cruise-monkey-768x1024.png" />
+    </ItemGroup>
+    <ItemGroup>
+        <Content Include="www\cruise-monkey-head.ico" />
+    </ItemGroup>
+    <ItemGroup>
+        <Content Include="www\cruisemonkey.manifest" />
+    </ItemGroup>
+    <ItemGroup>
+        <Content Include="www\Default-568h@2x.png" />
+    </ItemGroup>
+    <ItemGroup>
+        <Content Include="www\Default.png" />
+    </ItemGroup>
+    <ItemGroup>
+        <Content Include="www\Default~iphone.png" />
+    </ItemGroup>
+    <ItemGroup>
+        <Content Include="www\favicon.ico" />
+    </ItemGroup>
+    <ItemGroup>
+        <Content Include="www\fonts\085d063f.glyphicons-halflings-regular.ttf" />
+    </ItemGroup>
+    <ItemGroup>
+        <Content Include="www\fonts\12a21d20.glyphicons-halflings-regular.woff" />
+    </ItemGroup>
+    <ItemGroup>
+        <Content Include="www\fonts\2d676aab.ionicons.woff" />
+    </ItemGroup>
+    <ItemGroup>
+        <Content Include="www\fonts\391c9c2e.ionicons.svg" />
+    </ItemGroup>
+    <ItemGroup>
+        <Content Include="www\fonts\48e8d761.hero.otf" />
+    </ItemGroup>
+    <ItemGroup>
+        <Content Include="www\fonts\54b1190d.glyphicons-halflings-regular.svg" />
+    </ItemGroup>
+    <ItemGroup>
+        <Content Include="www\fonts\54f98da8.intro.otf" />
+    </ItemGroup>
+    <ItemGroup>
+        <Content Include="www\fonts\59328399.nexa-bold.otf" />
+    </ItemGroup>
+    <ItemGroup>
+        <Content Include="www\fonts\5bb1b21b.dekar.otf" />
+    </ItemGroup>
+    <ItemGroup>
+        <Content Include="www\fonts\5dfc2a6b.ionicons.eot" />
+    </ItemGroup>
+    <ItemGroup>
+        <Content Include="www\fonts\6815e278.zag-bold.otf" />
+    </ItemGroup>
+    <ItemGroup>
+        <Content Include="www\fonts\9bc8146c.fff_eula_license.pdf" />
+    </ItemGroup>
+    <ItemGroup>
+        <Content Include="www\fonts\a6192e0c.glyphicons-halflings-regular.eot" />
+    </ItemGroup>
+    <ItemGroup>
+        <Content Include="www\fonts\af2d0451.casper.ttf" />
+    </ItemGroup>
+    <ItemGroup>
+        <Content Include="www\fonts\ceb77096.ionicons.ttf" />
+    </ItemGroup>
+    <ItemGroup>
+        <Content Include="www\fonts\e99b9a2f.null-free.otf" />
+    </ItemGroup>
+    <ItemGroup>
+        <Content Include="www\Icon-320.png" />
+    </ItemGroup>
+    <ItemGroup>
+        <Content Include="www\Icon-36.png" />
+    </ItemGroup>
+    <ItemGroup>
+        <Content Include="www\Icon-40.png" />
+    </ItemGroup>
+    <ItemGroup>
+        <Content Include="www\Icon-40@2x.png" />
+    </ItemGroup>
+    <ItemGroup>
+        <Content Include="www\Icon-48.png" />
+    </ItemGroup>
+    <ItemGroup>
+        <Content Include="www\Icon-57.png" />
+    </ItemGroup>
+    <ItemGroup>
+        <Content Include="www\Icon-60@2x.png" />
+    </ItemGroup>
+    <ItemGroup>
+        <Content Include="www\Icon-64.png" />
+    </ItemGroup>
+    <ItemGroup>
+        <Content Include="www\Icon-72.png" />
+    </ItemGroup>
+    <ItemGroup>
+        <Content Include="www\Icon-72@2x.png" />
+    </ItemGroup>
+    <ItemGroup>
+        <Content Include="www\Icon-76.png" />
+    </ItemGroup>
+    <ItemGroup>
+        <Content Include="www\Icon-76@2x.png" />
+    </ItemGroup>
+    <ItemGroup>
+        <Content Include="www\Icon-96.png" />
+    </ItemGroup>
+    <ItemGroup>
+        <Content Include="www\Icon-Small-50.png" />
+    </ItemGroup>
+    <ItemGroup>
+        <Content Include="www\Icon-Small-50@2x.png" />
+    </ItemGroup>
+    <ItemGroup>
+        <Content Include="www\Icon-Small.png" />
+    </ItemGroup>
+    <ItemGroup>
+        <Content Include="www\Icon-Small@2x.png" />
+    </ItemGroup>
+    <ItemGroup>
+        <Content Include="www\Icon.png" />
+    </ItemGroup>
+    <ItemGroup>
+        <Content Include="www\Icon@2x.png" />
+    </ItemGroup>
+    <ItemGroup>
+        <Content Include="www\images\861ccbfa.spinner.gif" />
+    </ItemGroup>
+    <ItemGroup>
+        <Content Include="www\images\9273df5d.cruise-monkey-transparent-bg.png" />
+    </ItemGroup>
+    <ItemGroup>
+        <Content Include="www\images\decks\deck10.svg" />
+    </ItemGroup>
+    <ItemGroup>
+        <Content Include="www\images\decks\deck11.svg" />
+    </ItemGroup>
+    <ItemGroup>
+        <Content Include="www\images\decks\deck12.svg" />
+    </ItemGroup>
+    <ItemGroup>
+        <Content Include="www\images\decks\deck13.svg" />
+    </ItemGroup>
+    <ItemGroup>
+        <Content Include="www\images\decks\deck14.svg" />
+    </ItemGroup>
+    <ItemGroup>
+        <Content Include="www\images\decks\deck15.svg" />
+    </ItemGroup>
+    <ItemGroup>
+        <Content Include="www\images\decks\deck2.svg" />
+    </ItemGroup>
+    <ItemGroup>
+        <Content Include="www\images\decks\deck3.svg" />
+    </ItemGroup>
+    <ItemGroup>
+        <Content Include="www\images\decks\deck4.svg" />
+    </ItemGroup>
+    <ItemGroup>
+        <Content Include="www\images\decks\deck5.svg" />
+    </ItemGroup>
+    <ItemGroup>
+        <Content Include="www\images\decks\deck6.svg" />
+    </ItemGroup>
+    <ItemGroup>
+        <Content Include="www\images\decks\deck7.svg" />
+    </ItemGroup>
+    <ItemGroup>
+        <Content Include="www\images\decks\deck8.svg" />
+    </ItemGroup>
+    <ItemGroup>
+        <Content Include="www\images\decks\deck9.svg" />
+    </ItemGroup>
+    <ItemGroup>
+        <Content Include="www\images\dff11ce4.cruise-monkey-transparent-bg@2x.png" />
+    </ItemGroup>
+    <ItemGroup>
+        <Content Include="www\images\e9a10de6.cruise-monkey-transparent.png" />
+    </ItemGroup>
+    <ItemGroup>
+        <Content Include="www\index.html" />
+    </ItemGroup>
+    <ItemGroup>
+        <Content Include="www\index.html.bak" />
+    </ItemGroup>
+    <ItemGroup>
+        <Content Include="www\module.min.js" />
+    </ItemGroup>
+    <ItemGroup>
+        <Content Include="www\plugins\com.testflightapp.cordova-plugin\www\testflight.js" />
+    </ItemGroup>
+    <ItemGroup>
+        <Content Include="www\plugins\org.apache.cordova.camera\www\Camera.js" />
+    </ItemGroup>
+    <ItemGroup>
+        <Content Include="www\plugins\org.apache.cordova.camera\www\CameraConstants.js" />
+    </ItemGroup>
+    <ItemGroup>
+        <Content Include="www\plugins\org.apache.cordova.camera\www\CameraPopoverHandle.js" />
+    </ItemGroup>
+    <ItemGroup>
+        <Content Include="www\plugins\org.apache.cordova.camera\www\CameraPopoverOptions.js" />
+    </ItemGroup>
+    <ItemGroup>
+        <Content Include="www\plugins\org.apache.cordova.console\www\console-via-logger.js" />
+    </ItemGroup>
+    <ItemGroup>
+        <Content Include="www\plugins\org.apache.cordova.console\www\logger.js" />
+    </ItemGroup>
+    <ItemGroup>
+        <Content Include="www\plugins\org.apache.cordova.device\www\device.js" />
+    </ItemGroup>
+    <ItemGroup>
+        <Content Include="www\plugins\org.apache.cordova.device-orientation\www\compass.js" />
+    </ItemGroup>
+    <ItemGroup>
+        <Content Include="www\plugins\org.apache.cordova.device-orientation\www\CompassError.js" />
+    </ItemGroup>
+    <ItemGroup>
+        <Content Include="www\plugins\org.apache.cordova.device-orientation\www\CompassHeading.js" />
+    </ItemGroup>
+    <ItemGroup>
+        <Content Include="www\plugins\org.apache.cordova.dialogs\www\notification.js" />
+    </ItemGroup>
+    <ItemGroup>
+        <Content Include="www\plugins\org.apache.cordova.file\www\DirectoryEntry.js" />
+    </ItemGroup>
+    <ItemGroup>
+        <Content Include="www\plugins\org.apache.cordova.file\www\DirectoryReader.js" />
+    </ItemGroup>
+    <ItemGroup>
+        <Content Include="www\plugins\org.apache.cordova.file\www\Entry.js" />
+    </ItemGroup>
+    <ItemGroup>
+        <Content Include="www\plugins\org.apache.cordova.file\www\File.js" />
+    </ItemGroup>
+    <ItemGroup>
+        <Content Include="www\plugins\org.apache.cordova.file\www\FileEntry.js" />
+    </ItemGroup>
+    <ItemGroup>
+        <Content Include="www\plugins\org.apache.cordova.file\www\FileError.js" />
+    </ItemGroup>
+    <ItemGroup>
+        <Content Include="www\plugins\org.apache.cordova.file\www\FileReader.js" />
+    </ItemGroup>
+    <ItemGroup>
+        <Content Include="www\plugins\org.apache.cordova.file\www\FileSystem.js" />
+    </ItemGroup>
+    <ItemGroup>
+        <Content Include="www\plugins\org.apache.cordova.file\www\FileUploadOptions.js" />
+    </ItemGroup>
+    <ItemGroup>
+        <Content Include="www\plugins\org.apache.cordova.file\www\FileUploadResult.js" />
+    </ItemGroup>
+    <ItemGroup>
+        <Content Include="www\plugins\org.apache.cordova.file\www\FileWriter.js" />
+    </ItemGroup>
+    <ItemGroup>
+        <Content Include="www\plugins\org.apache.cordova.file\www\Flags.js" />
+    </ItemGroup>
+    <ItemGroup>
+        <Content Include="www\plugins\org.apache.cordova.file\www\LocalFileSystem.js" />
+    </ItemGroup>
+    <ItemGroup>
+        <Content Include="www\plugins\org.apache.cordova.file\www\Metadata.js" />
+    </ItemGroup>
+    <ItemGroup>
+        <Content Include="www\plugins\org.apache.cordova.file\www\ProgressEvent.js" />
+    </ItemGroup>
+    <ItemGroup>
+        <Content Include="www\plugins\org.apache.cordova.file\www\requestFileSystem.js" />
+    </ItemGroup>
+    <ItemGroup>
+        <Content Include="www\plugins\org.apache.cordova.file\www\resolveLocalFileSystemURI.js" />
+    </ItemGroup>
+    <ItemGroup>
+        <Content Include="www\plugins\org.apache.cordova.file\www\wp\FileUploadOptions.js" />
+    </ItemGroup>
+    <ItemGroup>
+        <Content Include="www\plugins\org.apache.cordova.inappbrowser\www\InAppBrowser.js" />
+    </ItemGroup>
+    <ItemGroup>
+        <Content Include="www\plugins\org.apache.cordova.media\www\Media.js" />
+    </ItemGroup>
+    <ItemGroup>
+        <Content Include="www\plugins\org.apache.cordova.media\www\MediaError.js" />
+    </ItemGroup>
+    <ItemGroup>
+        <Content Include="www\plugins\org.apache.cordova.media-capture\www\capture.js" />
+    </ItemGroup>
+    <ItemGroup>
+        <Content Include="www\plugins\org.apache.cordova.media-capture\www\CaptureAudioOptions.js" />
+    </ItemGroup>
+    <ItemGroup>
+        <Content Include="www\plugins\org.apache.cordova.media-capture\www\CaptureError.js" />
+    </ItemGroup>
+    <ItemGroup>
+        <Content Include="www\plugins\org.apache.cordova.media-capture\www\CaptureImageOptions.js" />
+    </ItemGroup>
+    <ItemGroup>
+        <Content Include="www\plugins\org.apache.cordova.media-capture\www\CaptureVideoOptions.js" />
+    </ItemGroup>
+    <ItemGroup>
+        <Content Include="www\plugins\org.apache.cordova.media-capture\www\MediaFile.js" />
+    </ItemGroup>
+    <ItemGroup>
+        <Content Include="www\plugins\org.apache.cordova.media-capture\www\MediaFileData.js" />
+    </ItemGroup>
+    <ItemGroup>
+        <Content Include="www\plugins\org.apache.cordova.network-information\www\Connection.js" />
+    </ItemGroup>
+    <ItemGroup>
+        <Content Include="www\plugins\org.apache.cordova.network-information\www\network.js" />
+    </ItemGroup>
+    <ItemGroup>
+        <Content Include="www\plugins\org.apache.cordova.splashscreen\www\splashscreen.js" />
+    </ItemGroup>
+    <ItemGroup>
+        <Content Include="www\plugins\org.apache.cordova.vibration\www\vibration.js" />
+    </ItemGroup>
+    <ItemGroup>
+        <Content Include="www\robots.txt" />
+    </ItemGroup>
+    <ItemGroup>
+        <Content Include="www\scripts\3rdparty\15b07c09.pouchdb-nightly.js" />
+    </ItemGroup>
+    <ItemGroup>
+        <Content Include="www\scripts\3rdparty\2789805a.require.min.js" />
+    </ItemGroup>
+    <ItemGroup>
+        <Content Include="www\scripts\3rdparty\2cd4f340.pouchdb-nightly.min.js" />
+    </ItemGroup>
+    <ItemGroup>
+        <Content Include="www\scripts\3rdparty\3e9c4bdd.jasmine.async.js" />
+    </ItemGroup>
+    <ItemGroup>
+        <Content Include="www\scripts\3rdparty\4ec10a07.script.js" />
+    </ItemGroup>
+    <ItemGroup>
+        <Content Include="www\scripts\3rdparty\5fdb9209.zepto.js" />
+    </ItemGroup>
+    <ItemGroup>
+        <Content Include="www\scripts\3rdparty\937863cd.modernizr-latest.js" />
+    </ItemGroup>
+    <ItemGroup>
+        <Content Include="www\scripts\3rdparty\a6c30912.custom.modernizr.js" />
+    </ItemGroup>
+    <ItemGroup>
+        <Content Include="www\scripts\3rdparty\c93830f9.require.js" />
+    </ItemGroup>
+    <ItemGroup>
+        <Content Include="www\scripts\3rdparty\cb2928f5.jquery.js" />
+    </ItemGroup>
+    <ItemGroup>
+        <Content Include="www\scripts\3rdparty\testflight.js" />
+    </ItemGroup>
+    <ItemGroup>
+        <Content Include="www\scripts\angular-3rdparty\24fdde3f.ionic.js" />
+    </ItemGroup>
+    <ItemGroup>
+        <Content Include="www\scripts\angular-3rdparty\4a93e9ab.angular-hammer.js" />
+    </ItemGroup>
+    <ItemGroup>
+        <Content Include="www\scripts\angular-3rdparty\4cc1ac0f.angular-hammer.min.js" />
+    </ItemGroup>
+    <ItemGroup>
+        <Content Include="www\scripts\angular-3rdparty\68ec96c5.ionic.min.js" />
+    </ItemGroup>
+    <ItemGroup>
+        <Content Include="www\scripts\angular-3rdparty\bc39d43f.ionic-angular.min.js" />
+    </ItemGroup>
+    <ItemGroup>
+        <Content Include="www\scripts\angular-3rdparty\fa86b864.ionic-angular.js" />
+    </ItemGroup>
+    <ItemGroup>
+        <Content Include="www\scripts\d4ba3000.cm.js" />
+    </ItemGroup>
+    <ItemGroup>
+        <Content Include="www\scripts\dc4d0302.3rdparty.js" />
+    </ItemGroup>
+    <ItemGroup>
+        <Content Include="www\styles\3532f5a6.cm.css" />
+    </ItemGroup>
+    <ItemGroup>
+        <Content Include="www\styles\527b6d16.3rdparty.css" />
+    </ItemGroup>
+    <ItemGroup>
+        <Content Include="www\styles\c9c4c3d7.main.css" />
+    </ItemGroup>
+    <ItemGroup>
+        <Content Include="www\template\about.html" />
+    </ItemGroup>
+    <ItemGroup>
+        <Content Include="www\template\about.html.bak" />
+    </ItemGroup>
+    <ItemGroup>
+        <Content Include="www\template\advanced.html" />
+    </ItemGroup>
+    <ItemGroup>
+        <Content Include="www\template\advanced.html.bak" />
+    </ItemGroup>
+    <ItemGroup>
+        <Content Include="www\template\amenities.html" />
+    </ItemGroup>
+    <ItemGroup>
+        <Content Include="www\template\amenities.html.bak" />
+    </ItemGroup>
+    <ItemGroup>
+        <Content Include="www\template\deck-plans.html" />
+    </ItemGroup>
+    <ItemGroup>
+        <Content Include="www\template\deck-plans.html.bak" />
+    </ItemGroup>
+    <ItemGroup>
+        <Content Include="www\template\event-list.html" />
+    </ItemGroup>
+    <ItemGroup>
+        <Content Include="www\template\event-list.html.bak" />
+    </ItemGroup>
+    <ItemGroup>
+        <Content Include="www\template\help.html" />
+    </ItemGroup>
+    <ItemGroup>
+        <Content Include="www\template\help.html.bak" />
+    </ItemGroup>
+    <ItemGroup>
+        <Content Include="www\template\login.html" />
+    </ItemGroup>
+    <ItemGroup>
+        <Content Include="www\template\login.html.bak" />
+    </ItemGroup>
+    <ItemGroup>
+        <Content Include="www\template\logout.html" />
+    </ItemGroup>
+    <ItemGroup>
+        <Content Include="www\template\logout.html.bak" />
+    </ItemGroup>
+    <ItemGroup>
+        <Content Include="www\template\photos.html" />
+    </ItemGroup>
+    <ItemGroup>
+        <Content Include="www\template\photos.html.bak" />
+    </ItemGroup>
+    <ItemGroup>
+        <Content Include="www\twitarr.rylath.net.cer" />
+    </ItemGroup>
+</Project>
