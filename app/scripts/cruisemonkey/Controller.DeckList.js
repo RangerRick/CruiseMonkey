@@ -98,6 +98,7 @@
 
 		$scope.$watch('deck', function(newValue, oldValue) {
 			$rootScope.title = 'Deck ' + $scope.deck;
+			/*
 			$state.transitionTo('deck-plans', {
 				deck: $scope.deck
 			}, {
@@ -106,6 +107,7 @@
 				notify: false,
 				reload: false
 			});
+			*/
 			updateUI();
 		});
 

@@ -103,28 +103,28 @@ function CMAmenity(id, summary, icon, category, description) {
 
 	var _deckInfo = {
 		2: new CMDeck(2, [
-			new CMAmenity('alhambra-theatre', 'Alhambra Theatre', 'ion-music-note', 'Entertainment'),
-			new CMAmenity('conference-center', 'Conference Center', 'ion-printer', 'Business'),
-			new CMAmenity('studio-b', 'Studio B and Ice Rink (Entrance on Deck 3)', 'ion-music-note', 'Entertainment')
+			new CMAmenity('alhambra-theatre', 'Alhambra Theatre', 'ion-music-note', 'Entertainment', 'Spanning three decks, the Alhambra Theatre holds 1,320 people.'),
+			new CMAmenity('conference-center', 'Conference Center', 'ion-printer', 'Business', 'Comfortable conference center featuring state-of-the-art presentation equipment and a variety of meeting rooms.'),
+			new CMAmenity('studio-b', 'Studio B and Ice Rink (Entrance on Deck 3)', 'ion-music-note', 'Entertainment', 'Features open skating for guests throughout each cruise, plus excellent ice shows featuring professional skaters from all over the world.')
 		]),
 		3: new CMDeck(3, [
-			new CMAmenity('alhambra-theatre', 'Alhambra Theatre', 'ion-music-note', 'Entertainment'),
-			new CMAmenity('centrum', 'Centrum'),
-			new CMAmenity('studio-b', 'Studio B and Ice Rink (Entrance on Deck 3)', 'ion-music-note', 'Entertainment'),
-			new CMAmenity('on-air-club', 'On Air Club', 'ion-mic-b', 'Entertainment'),
-			new CMAmenity('rctv', 'RCTV'),
-			new CMAmenity('art-gallery', 'Art Gallery', 'ion-images', 'Shopping'),
-			new CMAmenity('anthony-and-cleopatra', 'Anthony and Cleopatra', 'ion-fork', 'Dining'),
-			new CMAmenity('othello', 'Othello', 'ion-fork', 'Dining'),
-			new CMAmenity('romeo-and-juliet-dining-room', 'Romeo and Juliet Dining Room', 'ion-fork', 'Dining')
+			new CMAmenity('alhambra-theatre', 'Alhambra Theatre', 'ion-music-note', 'Entertainment', 'Spanning three decks, the Alhambra Theatre holds 1,320 people.'),
+			new CMAmenity('centrum', 'Centrum', undefined, undefined, 'A seven-story atrium surrounded by bars, lounges, and unique shops. Best compared to the lobby of a grand hotel.'),
+			new CMAmenity('studio-b', 'Studio B and Ice Rink (Entrance on Deck 3)', 'ion-music-note', 'Entertainment', 'Features open skating for guests throughout each cruise, plus excellent ice shows featuring professional skaters from all over the world.'),
+			new CMAmenity('on-air-club', 'On Air Club', 'ion-mic-b', 'Entertainment', 'Just outside of the Studio B ice rink complex is the On the Air Club. Equipped with television screens, this venue shows sports games and events.'),
+			new CMAmenity('rctv', 'RCTV', 'ion-ios7-videocam', 'Entertainment', "RCTV is the ship's television production operation. The television control can be seen outside of Studio B. The entertainment staff make use of the television facilities producing shows and recording events that are seen on the in-cabin television."),
+			new CMAmenity('art-gallery', 'Art Gallery', 'ion-images', 'Shopping', 'Original art is displayed in the onboard art gallery as well as throughout the ship. To purchase something for your own collection, visit an onboard art auction.'),
+			new CMAmenity('anthony-and-cleopatra', 'Anthony and Cleopatra', 'ion-fork', 'Dining', 'The main dining room.'),
+			new CMAmenity('othello', 'Othello', 'ion-fork', 'Dining', 'The main dining room.'),
+			new CMAmenity('romeo-and-juliet-dining-room', 'Romeo and Juliet Dining Room', 'ion-fork', 'Dining', 'The main dining room.')
 		]),
 		4: new CMDeck(4, [
-			new CMAmenity('alhambra-theatre', 'Alhambra Theatre', 'ion-music-note', 'Entertainment'),
-			new CMAmenity('schooner-bar', 'Schooner Bar', 'ion-wineglass', 'Bar'),
-			new CMAmenity('the-raven', 'The Raven', 'ion-mic-c', 'Dancing'),
-			new CMAmenity('casino-royale', 'Casino Royale', undefined, 'Casino'),
-			new CMAmenity('photo-gallery-and-shop', 'Photo Gallery and Shop', 'ion-images', 'Shopping'),
-			new CMAmenity('boleros-lounge', 'Boleros Lounge', 'ion-wineglass', 'Bar'),
+			new CMAmenity('alhambra-theatre', 'Alhambra Theatre', 'ion-music-note', 'Entertainment', 'Spanning three decks, the Alhambra Theatre holds 1,320 people.'),
+			new CMAmenity('schooner-bar', 'Schooner Bar', 'ion-wineglass', 'Bar', 'During the day and early evening, it is the scene for trivia contests and similar activities.  In the evenings, it becomes a piano bar.'),
+			new CMAmenity('the-raven', 'The Labyrinth (a.k.a The Raven)', 'ion-mic-c', 'Dancing', 'The Labyrinth is a Gothic inspired disco.  It occupies portions of decks three and four and has a bar on each level.  Guests on Deck Four can look down to see the dance floor on Deck Three. At the door, guests are greeted by two stained glass works by Harry Cardcross, "The Raven of the Tower" and "The Raven of the Battle" (left).  Carrying on the Tower of London theme,by the dance floor, there are nearly life size figures of a Beefeater (by Orest Kormashov) and of a mod Beefeaterette.'),
+			new CMAmenity('casino-royale', 'Casino Royale', undefined, 'Casino', 'Casino Royale can accommodate about 450 people and is equipped with gaming tables, slot machines, electronic gaming and its own bar.  Named after the Ian Fleming novel that began the James Bond series, two murals of the stars of the James Bond movies in character flank  the main entrance to the casino.'),
+			new CMAmenity('photo-gallery-and-shop', 'Photo Gallery and Shop', 'ion-images', 'Shopping', 'The Photo Gallery and Shop on deck 4 by the atrium is where guests can visit to view professional photographs of their experiences onboard. In addition the latest cameras and accessories are available to purchase along with a digital studio allowing passengers to download and print images from their digital cameras.'),
+			new CMAmenity('boleros-lounge', 'Boleros Lounge', 'ion-wineglass', 'Bar', 'The 77-seat Boleros Lounge on deck 4 is situated around the atrium and is Independence’s Latin Bar. With windows overlooking the promenade deck and its own stage and dance floor, entertainment ranges from live bands playing salsa music making it the ideal night time hotspot to dance the night away in with a refreshing mango mojito or caipirinha.  Classical music is also played at this venue and it is ideally situated for pre dinner drinks before heading off to the main dining rooms.'),
 			new CMAmenity('macbeth-dining-room', 'Macbeth Dining Room', 'ion-fork', 'Dining')
 		]),
 		5: new CMDeck(5, [
