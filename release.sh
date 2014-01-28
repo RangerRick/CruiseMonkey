@@ -1,21 +1,36 @@
 #!/bin/bash -e
 
-DONT_SIGN=false
-SKIP_BUILD=false
+SIGN=true
 DEBUG=false
-while getopts "dsx" opt; do
+ANDROID=false
+IOS=false
+BLACKBERRY=false
+WP7=false
+while getopts "aibwdx" opt; do
 	case $opt in
 		d)
 			echo "don't sign" >&2
-			DONT_SIGN=true
-			;;
-		s)
-			echo "skip build" >&2
-			SKIP_BUILD=true
+			SIGN=false
 			;;
 		x)
 			echo "debug" >&2
 			DEBUG=true
+			;;
+		a)
+			echo "- build Android" >&2
+			ANDROID=true
+			;;
+		i)
+			echo "- build iOS" >&2
+			IOS=true
+			;;
+		b)
+			echo "- build Blackberry 10" >&2
+			BLACKBERRY=true
+			;;
+		w)
+			echo "- build Windows Phone" >&2
+			WP7=true
 			;;
 		\?)
 			echo "Invalid argument: -$OPTARG" >&2
@@ -23,6 +38,11 @@ while getopts "dsx" opt; do
 			;;
 	esac
 done
+
+if $SIGN && [ -z "$SIGNING_PASS" ]; then
+	echo "You need to set \$SIGNING_PASS if you want to sign."
+	exit 1
+fi
 
 DATESTAMP=`date '+%Y%m%d%H%M%S'`
 sed -e "s,@date@,$DATESTAMP,g" package.json.in > package.json
@@ -42,14 +62,15 @@ else
 fi
 
 find * -name config.xml -exec perl -pi.bak -e "s/version=\"[^\"]*\"/version=\"$SHORTVERSION\"/" {} \; 2>/dev/null || :
-mkdir -p platforms/{ios,android/assets,wp7,web}
+mkdir -p platforms/{ios,android/assets,blackberry10,wp7,web}
 
 cp -R www platforms/ios/
 cp -R www platforms/android/assets/
+cp -R www platforms/blackberry10/
 cp -R www platforms/wp7/
 cp -R www platforms/web/
 
-chmod -R 666 www platforms/{ios,android/assets,wp7,web}/www
+chmod -R uga+rw www platforms/{ios,android/assets,blackberry10,wp7,web}/www
 
 # iOS
 rm -rf platforms/ios/www/cruisemonkey*.png
@@ -67,6 +88,14 @@ mv platforms/wp7/www/scripts/3rdparty/_testflight.js platforms/wp7/www/scripts/3
 perl -pi.bak -e 's,var isMobile = false,var isMobile = true,g' platforms/wp7/www/index.html
 perl -pi.bak -e 's,overflow-scroll="true",overflow-scroll="false",g' platforms/wp7/www/template/*.html
 
+# Blackberry 10
+rm -rf platforms/blackberry10/www/cruisemonkey*.png
+mv platforms/blackberry10/www/_cordova.js platforms/blackberry10/www/cordova.js
+mv platforms/blackberry10/www/_cordova_plugins.js platforms/blackberry10/www/cordova_plugins.js
+mv platforms/blackberry10/www/scripts/3rdparty/_testflight.js platforms/blackberry10/www/scripts/3rdparty/testflight.js
+perl -pi.bak -e 's,var isMobile = false,var isMobile = true,g' platforms/blackberry10/www/index.html
+perl -pi.bak -e 's,overflow-scroll="true",overflow-scroll="false",g' platforms/blackberry10/www/template/*.html
+
 # Android
 rm -rf platforms/android/assets/www/cruisemonkey*.png
 mv platforms/android/assets/www/_cordova.js platforms/android/assets/www/cordova.js
@@ -83,20 +112,37 @@ mv www/scripts/3rdparty/_testflight.js www/scripts/3rdparty/testflight.js
 perl -pi.bak -e 's,var isMobile = false,var isMobile = true,g' www/index.html
 perl -pi.bak -e 's,overflow-scroll="true",overflow-scroll="false",g' www/template/*.html
 
-find platforms/{ios,android/assets,wp7,web}/www -name \*.bak -exec rm -rf {} \;
+find * -name \*.bak -exec rm -rf {} \;
 
-chmod -R 666 www platforms/{ios,android/assets,wp7,web}
+chmod -R uga+rw www platforms/{ios,android/assets,blackberry10,wp7,web}
 
-if $SKIP_BUILD; then
-	echo "Skipping build."
-	exit 0
+if $ANDROID; then
+	if $SIGN; then
+		cordova build --release android
+		jarsigner -storepass "$SIGNING_PASS" -keystore ~/share/android/android-release-key.keystore -digestalg SHA1 -sigalg MD5withRSA platforms/android/bin/CruiseMonkey-release-unsigned.apk ranger
+		zipalign -v 4 platforms/android/bin/CruiseMonkey-release-unsigned.apk platforms/android/bin/CruiseMonkey-release-signed.apk
+	else
+		cordova build android
+	fi
 fi
-
-cordova build --release
-
-if $DONT_SIGN; then
-	:
-else
-	jarsigner -keystore ~/share/android/android-release-key.keystore -digestalg SHA1 -sigalg MD5withRSA platforms/android/bin/CruiseMonkey-release-unsigned.apk ranger
-	zipalign -v 4 platforms/android/bin/CruiseMonkey-release-unsigned.apk platforms/android/bin/CruiseMonkey-release-signed.apk
+if $IOS; then
+	if $SIGN; then
+		cordova build --release ios
+	else
+		cordova build ios
+	fi
+fi
+if $BLACKBERRY; then
+	if $SIGN; then
+		cordova build blackberry10
+	else
+		cordova build --release blackberry10 --keystorepass "$SIGNING_PASS"
+	fi
+fi
+if $WP7; then
+	if $SIGN; then
+		cordova build --release wp7
+	else
+		cordova build wp7
+	fi
 fi
