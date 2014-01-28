@@ -1,7 +1,6 @@
 *.swp
 *.swo
 .DS_Store
-.cordova
 .sass-cache
 .staging
 .tmp
