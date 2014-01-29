@@ -45,12 +45,6 @@ If you have beta tested previous CruiseMonkey releases, **please email me at [te
 Bugs and Enhancement Requests
 =============================
 
-Known Issues
-------------
-
-* Login may not working on Android yet.  If CruiseMonkey refuses to let you log in, please [email me](mailto:testflight@raccoonfink.com).
-* Sometimes it is possible to drag the app in a way that causes the "main" window to stay stuck out of alignment.
-
 Opening an Issue (Bug or Enhancement)
 -------------------------------------
 
@@ -69,3 +63,86 @@ Licensing
 
 CruiseMonkey by Benjamin Reed is licensed under the [Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License](http://creativecommons.org/licenses/by-nc-sa/4.0/).
 ![](http://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png "Creative Commons by-nc-sa")
+
+Release Notes
+=============
+
+3.9.2+20140128222317
+--------------------
+
+* update to latest Ionic (fixes Android double-tap menu open/close)
+* rework menu to indicate current selection
+* change event loading to be more asynchronous (ie, don't freeze the UI while loading data)
+* add Seamail indicator in the menu
+* add Seamail link for viewing seamail
+* add descriptions to amenities
+* reset button in Advanced resets to "factory defaults" now
+* add a Twit-Arr photo browser
+* more cleanup of database initialization code
+* optimizations to the event list, should be more responsive
+
+3.9.1+20140122195945
+--------------------
+
+* update to the latest Ionic
+* update to the latest AngularJS and angular-ui-router
+* fix deck loading when the deck controller remembers the previous deck viewed
+* remove a bunch of unused resources (smaller download)
+* more refactoring of the event query subsystem, should reduce memory usage a bit
+* tons of style cleanup and tweaking
+
+3.9.1+20140119145636
+--------------------
+
+* reworked initialization
+* handle mobile/desktop-browser differences better
+* add a real API for performing actions only when on mobile
+* update Ionic to 0.9.21 prerelease
+* rewrite deck viewer to use less memory
+* make database replication aware of running in the background on mobile devices
+* replicate immediately when the user modifies a favorite or an event
+* fix scrolling on touch devices to not allow dragging the
+  UI to the left or right when dragging at an angle
+
+
+3.9.1+20140116210008
+--------------------
+
+* add help page
+* clean up replication some more
+
+
+3.9.1+20140116181949
+--------------------
+
+* Android build fixes
+* Turn optimization up on iOS compile
+* Settings code cleanup
+* Make database refresh configurable
+* Replicate every 20 seconds by default
+* Replicate whenever user updates data
+* Don't allow time travel (event end must be greater than start)
+
+3.9.1+20140115225334
+--------------------
+
+* update PouchDB
+
+3.9.1+20140113123643
+--------------------
+
+* doc updates
+* version number fix
+
+3.9.1+20140113111748
+--------------------
+
+* remove landscape support
+* add custom URL
+* clean up logout controller
+
+3.9.1+20140112220547
+--------------------
+
+* initial release to testflight for users
+

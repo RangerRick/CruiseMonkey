@@ -42,7 +42,7 @@ while getopts "aibwdxph" opt; do
 usage: $0 [options]
 
 	-h		This help
-	-d		Don't Sign/Encrypto
+	-d		Don't Sign/Encrypt
 	-x		Debug Mode (copies raw HTML/JavaScript rather than minified)
 	-p		Only do 'cordova prepare' rather than 'cordova build'
 
@@ -83,7 +83,7 @@ else
 	grunt build
 fi
 
-find * -name config.xml -exec perl -pi.bak -e "s/version=\"[^\"]*\"/version=\"$SHORTVERSION\"/" {} \; 2>/dev/null || :
+#find * -name config.xml -exec perl -pi.bak -e "s/version=\"[^\"]*\"/version=\"$SHORTVERSION\"/" {} \; 2>/dev/null || :
 mkdir -p platforms/{ios,android/assets,blackberry10,wp7,web}
 
 cp -R www platforms/ios/

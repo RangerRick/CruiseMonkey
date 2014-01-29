@@ -9,7 +9,7 @@
 	.value('config.database.refresh', 20000)
 	.value('config.notifications.timeout', 5000)
 	.value('config.twitarr.root', 'https://twitarr.rylath.net/')
-	.value('config.app.version', '3.9.2+20140128222317');
+	.value('config.app.version', '3.9.2+20140128223728');
 	
 	angular.module('cruisemonkey.Settings', [
 		'angularLocalStorage',
