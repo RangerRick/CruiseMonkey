@@ -162,13 +162,6 @@ a:hover {
 	}
 }
 
-.nav > li.bottom {
-	position: absolute;
-	bottom: 0;
-	border-top: $gutterSeparator;
-	border-bottom: none;
-}
-
 header.bar.bar-header {
 	.buttons {
 		/*
@@ -204,6 +197,10 @@ header.bar.bar-header {
 	display: inline-block;
 	width: 100%;
 	padding: 15px;
+}
+
+#nav li.item a.active {
+	background-color: $cmBabyBlue;
 }
 
 /*

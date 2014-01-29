@@ -128,19 +128,30 @@ if (typeof String.prototype.contains !== 'function') {
 			</header>
 			<content has-header="true" class="nav" overflow-scroll="true" scroll="true">
 				<ul id="nav">
-					<li class="item item-complex"><a href="#/events/official">Official Events</a></li>
-					<li class="item item-complex"><a href="#/events/unofficial">Unofficial Events</a></li>
-					<li class="item item-complex" ng-if="user.loggedIn"><a href="#/events/my">My Events</a></li>
-					<li class="item item-complex"><a href="#/deck-plans/">Deck Plans</a></li>
-					<li class="item item-complex"><a href="#/amenities">Amenities</a></li>
-					<li class="item item-complex"><a href="#/photos">Twit-Arr Pics</a></li>
-					<li class="item item-complex"><a href="#/help">Help</a></li>
-					<li class="item item-complex"><a href="#/about">About</a></li>
+					<li class="item item-divider">JoCo Events</li>
+					<li class="item item-complex"><a ui-sref-active="active" ui-sref="events({eventType:'official'})">Official Events</a></li>
+					<li class="item item-complex"><a ui-sref-active="active" ui-sref="events({eventType:'unofficial'})">Unofficial Events</a></li>
+					<li class="item item-complex" ng-if="user.loggedIn"><a ui-sref-active="active" ui-sref="events({eventType:'my'})">My Events</a></li>
 
-					<li class="item item-complex" ng-if="user.loggedIn"><a href="#/logout">Log Out</a></li>
-					<li class="item item-complex" ng-if="!user.loggedIn"><a href="#/login">Log In</a></li>
+					<li class="item item-divider">Ship Information</li>
+					<li class="item item-complex"><a ui-sref-active="active" ui-sref="deck-plans">Deck Plans</a></li>
+					<li class="item item-complex"><a ui-sref-active="active" ui-sref="amenities">Amenities</a></li>
 
-					<li class="item item-complex bottom"><a href="#/advanced">Advanced</a></li>
+					<li class="item item-divider">Twit-Arr</li>
+					<li class="item item-complex"><a ui-sref-active="active" ui-sref="photos">Twit-Arr Pics</a></li>
+					<li class="item item-complex item-icon-left" ng-if="user.loggedIn">
+						<a ng-click="openSeamail()">
+							SeaMail
+							<span class="badge badge-assertive" ng-if="seamailCount > 0">{{seamailCount}}</span>
+						</a>
+					</li>
+
+					<li class="item item-divider">Miscellaneous</li>
+					<li class="item item-complex" ng-if="user.loggedIn"><a ui-sref-active="active" ui-sref="logout">Log Out</a></li>
+					<li class="item item-complex" ng-if="!user.loggedIn"><a ui-sref-active="active" ui-sref="login">Log In</a></li>
+					<li class="item item-complex"><a ui-sref-active="active" ui-sref="help">Help</a></li>
+					<li class="item item-complex"><a ui-sref-active="active" ui-sref="about">About</a></li>
+					<li class="item item-complex bottom"><a ui-sref-active="active" ui-sref="advanced">Advanced</a></li>
 				</ul>
 			</content>
 		</side-menu>

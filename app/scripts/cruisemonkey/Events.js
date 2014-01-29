@@ -592,18 +592,20 @@ function CMFavorite(rawdata) {
 										log.debug('EventService.getOfficialEvents(): event (' + doc._id + ') did not match matchFunc()!  Skipping.');
 										lastEvent = undefined;
 									}
-								} else if (doc.type === 'favorite' && username) {
-									if (lastEvent === undefined) {
-										log.debug('EventService.getOfficialEvents(): favorite matched, but no event scanned!');
-									} else if (lastEvent.getId() !== doc.eventId) {
-										log.debug('EventService.getOfficialEvents(): favorite matched, but eventId (' + doc.eventId + ') does not match last event (' + lastEvent.getId() + ')');
-									} else if (doc.username !== username) {
-										log.debug('EventService.getOfficialEvents(): favorite matched, but username (' + doc.username + ') does not match logged-in user (' + username + ')');
-									} else {
-										var fav = new CMFavorite(row.doc);
-										fav.setEvent(lastEvent);
-										lastEvent.setFavorite(fav);
-										log.debug('EventService.getOfficialEvents(): found favorite: ' + fav.toString());
+								} else if (doc.type === 'favorite') {
+									if (username) {
+										if (lastEvent === undefined) {
+											// log.debug('EventService.getOfficialEvents(): favorite matched, but no event scanned!');
+										} else if (lastEvent.getId() !== doc.eventId) {
+											log.debug('EventService.getOfficialEvents(): favorite matched, but eventId (' + doc.eventId + ') does not match last event (' + lastEvent.getId() + ')');
+										} else if (doc.username !== username) {
+											log.debug('EventService.getOfficialEvents(): favorite matched, but username (' + doc.username + ') does not match logged-in user (' + username + ')');
+										} else {
+											var fav = new CMFavorite(row.doc);
+											fav.setEvent(lastEvent);
+											lastEvent.setFavorite(fav);
+											log.debug('EventService.getOfficialEvents(): found favorite: ' + fav.toString());
+										}
 									}
 								} else {
 									log.warn('EventService.getOfficialEvents(): unknown document type (' + doc.type + ') matched for id: ' + doc._id);
@@ -667,18 +669,20 @@ function CMFavorite(rawdata) {
 										log.debug('EventService.getUnofficialEvents(): event (' + doc._id + ') did not match matchFunc()!  Skipping.');
 										lastEvent = undefined;
 									}
-								} else if (doc.type === 'favorite' && username) {
-									if (lastEvent === undefined) {
-										log.debug('EventService.getUnofficialEvents(): favorite matched, but no event scanned!');
-									} else if (lastEvent.getId() !== doc.eventId) {
-										log.debug('EventService.getUnofficialEvents(): favorite matched, but eventId (' + doc.eventId + ') does not match last event (' + lastEvent.getId() + ')');
-									} else if (doc.username !== username) {
-										log.debug('EventService.getUnofficialEvents(): favorite matched, but username (' + doc.username + ') does not match logged-in user (' + username + ')');
-									} else {
-										var fav = new CMFavorite(row.doc);
-										fav.setEvent(lastEvent);
-										lastEvent.setFavorite(fav);
-										log.debug('EventService.getUnofficialEvents(): found favorite: ' + fav.toString());
+								} else if (doc.type === 'favorite') {
+									if (username) {
+										if (lastEvent === undefined) {
+											log.debug('EventService.getUnofficialEvents(): favorite matched, but no event scanned!');
+										} else if (lastEvent.getId() !== doc.eventId) {
+											log.debug('EventService.getUnofficialEvents(): favorite matched, but eventId (' + doc.eventId + ') does not match last event (' + lastEvent.getId() + ')');
+										} else if (doc.username !== username) {
+											log.debug('EventService.getUnofficialEvents(): favorite matched, but username (' + doc.username + ') does not match logged-in user (' + username + ')');
+										} else {
+											var fav = new CMFavorite(row.doc);
+											fav.setEvent(lastEvent);
+											lastEvent.setFavorite(fav);
+											log.debug('EventService.getUnofficialEvents(): found favorite: ' + fav.toString());
+										}
 									}
 								} else {
 									log.warn('EventService.getUnofficialEvents(): unknown document type (' + doc.type + ') matched for id: ' + doc._id);

@@ -9,7 +9,7 @@
 		'cruisemonkey.Settings',
 		'cruisemonkey.User'
 	])
-	.controller('CMLoginCtrl', ['$scope', '$rootScope', '$location', '$http', 'UserService', 'LoggingService', 'SettingsService', 'CordovaService', 'NotificationService', function($scope, $rootScope, $location, $http, UserService, log, SettingsService, cordova, notifications) {
+	.controller('CMLoginCtrl', ['$scope', '$rootScope', '$location', '$http', 'UserService', 'LoggingService', 'SettingsService', 'CordovaService', 'NotificationService', function($scope, $rootScope, $location, $http, UserService, log, SettingsService, cor, notifications) {
 		log.info('Initializing CMLoginCtrl');
 		$rootScope.title = "Log In";
 
@@ -69,6 +69,8 @@
 			}
 			user.username = user.username.toLowerCase();
 
+			notifications.status('Logging in...');
+
 			$http({
 				method: 'POST',
 				url: twitarrRoot + 'api/v2/user/auth',
@@ -84,6 +86,7 @@
 			})
 			.success(function(data, status, headers, config) {
 				log.debug('success:',data);
+				notifications.removeStatus('Logging in...');
 				user.key = data.key;
 				$scope.saveUser(user);
 				$rootScope.$broadcast('cm.loggedIn', user);
@@ -91,14 +94,15 @@
 			})
 			.error(function(data, status, headers, config) {
 				log.warn('failure!');
+				notifications.removeStatus('Logging in...');
 				log.debug('data:', data);
 				log.debug('status:',status);
 				log.debug('headers:',headers);
 				log.debug('config:',config);
 
-				cordova.if(function() {
+				cor.ifCordova(function() {
 					// on cordova, it should be a hard failure
-				}).else(function() {
+				}).otherwise(function() {
 					// when testing in the browser, save the user anyways as if login succeeded
 					$scope.saveUser(user);
 					$rootScope.$broadcast('cm.loggedIn', user);

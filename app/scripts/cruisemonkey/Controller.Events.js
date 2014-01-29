@@ -98,7 +98,19 @@
 			// console.log($scope.event);
 		}
 	}])
-	.controller('CMEventCtrl', ['storage', '$scope', '$rootScope', '$timeout', '$stateParams', '$location', '$q', '$ionicModal', '$templateCache', 'UserService', 'events', 'EventService', 'LoggingService', 'NotificationService', function(storage, $scope, $rootScope, $timeout, $stateParams, $location, $q, $ionicModal, $templateCache, UserService, events, EventService, log, notifications) {
+	.factory('EventCache', [function() {
+		var cache = {};
+		
+		return {
+			get: function(name) {
+				return cache[name];
+			},
+			put: function(name, data) {
+				cache[name] = data;
+			}
+		};
+	}])
+	.controller('CMEventCtrl', ['storage', '$scope', '$rootScope', '$timeout', '$stateParams', '$location', '$q', '$ionicModal', '$templateCache', 'UserService', 'EventService', 'EventCache', 'LoggingService', 'NotificationService', function(storage, $scope, $rootScope, $timeout, $stateParams, $location, $q, $ionicModal, $templateCache, UserService, EventService, EventCache, log, notifications) {
 		if (!$stateParams.eventType) {
 			$location.path('/events/official');
 			return;
@@ -109,12 +121,36 @@
 		$scope.eventType = $stateParams.eventType;
 		$rootScope.title = $scope.eventType.capitalize() + ' Events';
 
+		var message = 'Updating ' + $scope.eventType.capitalize() + ' events...';
+
 		storage.bind($scope, 'searchString', {
 			'storeName': 'cm.event.' + $scope.eventType
 		});
 		log.debug('$scope.searchString: ' + $scope.searchString);
 
-		$scope.events = events;
+		$scope.events = EventCache.get($scope.eventType) || [];
+		if ($scope.events.length === 0) {
+			notifications.status(message);
+		}
+
+		var eventMethod = EventService.getOfficialEvents;
+		if ($scope.eventType === 'official') {
+			eventMethod = EventService.getOfficialEvents;
+		} else if ($scope.eventType === 'unofficial') {
+			eventMethod = EventService.getUnofficialEvents;
+		} else if ($scope.eventType === 'my') {
+			eventMethod = EventService.getMyEvents;
+		}
+
+		eventMethod().then(function(events) {
+			log.debug('CMEventCtrl: got ' + events.length + ' ' + $scope.eventType + ' events');
+			$scope.events = events;
+			EventCache.put($scope.eventType, events);
+			notifications.removeStatus(message);
+		}, function() {
+			log.warn('CMEventCtrl: failed to get ' + $scope.eventType + ' events');
+			notifications.removeStatus(message);
+		});
 
 		var timeout = null;
 

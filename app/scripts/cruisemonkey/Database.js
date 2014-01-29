@@ -8,21 +8,15 @@
 		'cruisemonkey.Config',
 		'cruisemonkey.Cordova',
 		'cruisemonkey.Logging',
-		'cruisemonkey.Notifications',
 		'cruisemonkey.Settings'
 	])
-	.factory('Database', ['$q', '$location', '$interval', '$timeout', '$rootScope', '$window', '$http', 'LoggingService', 'storage', 'config.database.replicate', 'SettingsService', 'CordovaService', 'NotificationService', function($q, $location, $interval, $timeout, $rootScope, $window, $http, log, storage, replicate, SettingsService, cordova, NotificationService) {
+	.factory('Database', ['$q', '$location', '$interval', '$timeout', '$rootScope', '$window', '$http', 'LoggingService', 'storage', 'config.database.replicate', 'SettingsService', 'CordovaService', function($q, $location, $interval, $timeout, $rootScope, $window, $http, log, storage, replicate, SettingsService, cor) {
 		log.info('Initializing CruiseMonkey database: ' + SettingsService.getDatabaseName());
 
 		storage.bind($rootScope, '_firstSync', {
 			'defaultValue': true,
 			'storeName': 'cm.db.firstSync'
 		});
-
-		var syncComplete = $q.defer();
-		if ($rootScope._firstSync) {
-			NotificationService.status('Downloading CruiseMonkey events from the server...', syncComplete.promise);
-		}
 
 		var getHost = function() {
 			var host = SettingsService.getDatabaseHost();
@@ -52,7 +46,6 @@
 								db.put(row.doc);
 							});
 							deferred.resolve(true);
-							syncComplete.resolve(true);
 						}
 					})
 					.error(function(data, status, headers, config) {
@@ -119,7 +112,6 @@
 						'complete': function() {
 							log.info('Finished replicating from ' + getHost());
 							$rootScope.$broadcast('cm.localDatabaseSynced');
-							syncComplete.resolve(true);
 
 							log.info('Replicating to ' + getHost());
 							$timeout(function() {
@@ -139,7 +131,6 @@
 				});
 			} else {
 				log.warn('Replication disabled.');
-				syncComplete.resolve(false);
 			}
 		};
 
@@ -161,7 +152,6 @@
 				}
 			} else {
 				log.warn('startReplication() called, but replication is not enabled!');
-				syncComplete.resolve(false);
 			}
 			return false;
 		};
@@ -208,7 +198,7 @@
 
 		/*
 		var setUp = function() {
-			cordova.if(function() {
+			cor.ifCordova(function() {
 				// is cordova
 				document.addEventListener('online', startReplication, false);
 				document.addEventListener('offline', stopReplication, false);
@@ -217,7 +207,7 @@
 
 				databaseReady();
 				startReplication();
-			}).else(function() {
+			}).otherwise(function() {
 				$timeout(function() {
 					if (navigator && navigator.connection) {
 						if (navigator.connection.addEventListener) {

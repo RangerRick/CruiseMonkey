@@ -42,7 +42,7 @@
 				if (data && data.status === 'ok') {
 					if (data.photos.length > 0) {
 						angular.forEach(data.photos, function(entry, index) {
-							entry.url = settings.getTwitarrRoot() + 'img/photos/' + entry.photo;
+							entry.url = settings.getTwitarrRoot() + 'img/photos/md_' + entry.photo;
 						});
 						nextPage++;
 						console.log('photos=',data.photos);
@@ -114,6 +114,7 @@
 	.controller('CMPhotoCtrl', ['$rootScope', '$scope', '$ionicSlideBoxDelegate', 'LoggingService', 'PhotoService', function($rootScope, $scope, $ionicSlideBoxDelegate, log, photos) {
 		log.info('Initializing CMPhotoCtrl');
 		$rootScope.title = "Twit-Arr Pics";
+		$rootScope.rightButtons = [];
 
 		$scope.finished = false;
 		$scope.entries = [];
@@ -123,6 +124,24 @@
 			$ionicSlideBoxDelegate.update();
 			$scope.$broadcast('slideBox.setSlide', $scope.currentSlide);
 			$scope.$broadcast('scroll.refreshComplete');
+		};
+
+		var previous = function() {
+			$scope.$broadcast('slideBox.prevSlide');
+		};
+		var next = function() {
+			$scope.$broadcast('slideBox.nextSlide');
+		};
+
+		var keyListener = function(ev) {
+			if (ev.keyCode === 37) {
+				previous();
+				return false;
+			} else if (ev.keyCode === 39) {
+				next();
+				return false;
+			}
+			return true;
 		};
 
 		$scope.reload = function() {
@@ -153,6 +172,9 @@
 					log.debug('CMPhotoCtrl.loadMore(): got new entry: ' + entry.url);
 					this.push(entry);
 				}, $scope.entries);
+				if (!$scope.currentEntry) {
+					$scope.currentEntry = $scope.entries[$scope.currentSlide];
+				}
 				done();
 			}, function() {
 				$scope.finished = true;
@@ -162,10 +184,16 @@
 
 		$scope.slideChanged = function(index) {
 			$scope.currentSlide = index;
+			$scope.currentEntry = $scope.entries[index];
 			if (index === $scope.entries.length - 1 || index === $scope.entries.length - 2) {
 				$scope.loadMore(doneFunc);
 			}
 		};
+
+		document.addEventListener('keydown', keyListener, true);
+		$scope.$on('$destroy', function() {
+			document.removeEventListener('keydown', keyListener, true);
+		});
 
 		$scope.loadMore(doneFunc);
 

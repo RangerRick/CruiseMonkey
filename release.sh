@@ -6,31 +6,53 @@ ANDROID=false
 IOS=false
 BLACKBERRY=false
 WP7=false
-while getopts "aibwdx" opt; do
+PREPARE=false
+while getopts "aibwdxph" opt; do
 	case $opt in
 		d)
-			echo "don't sign" >&2
+			echo "- Don't Sign" >&2
 			SIGN=false
 			;;
 		x)
-			echo "debug" >&2
+			echo "- Using raw HTML/JavaScript (Debug)" >&2
 			DEBUG=true
 			;;
+		p)
+			echo "- Only do 'cordova prepare'" >&2
+			PREPARE=true
+			;;
 		a)
-			echo "- build Android" >&2
+			echo "- Build Android" >&2
 			ANDROID=true
 			;;
 		i)
-			echo "- build iOS" >&2
+			echo "- Build iOS" >&2
 			IOS=true
 			;;
 		b)
-			echo "- build Blackberry 10" >&2
+			echo "- Build Blackberry 10" >&2
 			BLACKBERRY=true
 			;;
 		w)
-			echo "- build Windows Phone" >&2
+			echo "- Build Windows Phone" >&2
 			WP7=true
+			;;
+		h)
+			cat <<END
+usage: $0 [options]
+
+	-h		This help
+	-d		Don't Sign/Encrypto
+	-x		Debug Mode (copies raw HTML/JavaScript rather than minified)
+	-p		Only do 'cordova prepare' rather than 'cordova build'
+
+	-a		Build Android
+	-i		Build iOS
+	-b		Build Blackberry 10
+	-w		Build Windows Phone 7
+
+END
+			exit 0
 			;;
 		\?)
 			echo "Invalid argument: -$OPTARG" >&2
@@ -102,7 +124,7 @@ mv platforms/android/assets/www/_cordova.js platforms/android/assets/www/cordova
 mv platforms/android/assets/www/_cordova_plugins.js platforms/android/assets/www/cordova_plugins.js
 mv platforms/android/assets/www/scripts/3rdparty/_testflight.js platforms/android/assets/www/scripts/3rdparty/testflight.js
 perl -pi.bak -e 's,var isMobile = false,var isMobile = true,g' platforms/android/assets/www/index.html
-perl -pi.bak -e 's,overflow-scroll="true",overflow-scroll="false",g' platforms/android/assets/www/template/*.html
+#perl -pi.bak -e 's,overflow-scroll="true",overflow-scroll="false",g' platforms/android/assets/www/template/*.html
 
 # Source WWW
 rm -rf www/cruisemonkey*.png
@@ -116,33 +138,38 @@ find * -name \*.bak -exec rm -rf {} \;
 
 chmod -R uga+rw www platforms/{ios,android/assets,blackberry10,wp7,web}
 
+BUILDCMD="build"
+if $PREPARE; then
+	BUILDCMD="prepare"
+fi
+
 if $ANDROID; then
 	if $SIGN; then
-		cordova build --release android
+		cordova $BUILDCMD --release android
 		jarsigner -storepass "$SIGNING_PASS" -keystore ~/share/android/android-release-key.keystore -digestalg SHA1 -sigalg MD5withRSA platforms/android/bin/CruiseMonkey-release-unsigned.apk ranger
 		zipalign -v 4 platforms/android/bin/CruiseMonkey-release-unsigned.apk platforms/android/bin/CruiseMonkey-release-signed.apk
 	else
-		cordova build android
+		cordova $BUILDCMD android
 	fi
 fi
 if $IOS; then
 	if $SIGN; then
-		cordova build --release ios
+		cordova $BUILDCMD --release ios
 	else
-		cordova build ios
+		cordova $BUILDCMD ios
 	fi
 fi
 if $BLACKBERRY; then
 	if $SIGN; then
-		cordova build blackberry10
+		cordova $BUILDCMD blackberry10
 	else
-		cordova build --release blackberry10 --keystorepass "$SIGNING_PASS"
+		cordova $BUILDCMD --release blackberry10 --keystorepass "$SIGNING_PASS"
 	fi
 fi
 if $WP7; then
 	if $SIGN; then
-		cordova build --release wp7
+		cordova $BUILDCMD --release wp7
 	else
-		cordova build wp7
+		cordova $BUILDCMD wp7
 	fi
 fi

@@ -41,7 +41,7 @@
 		}
 
 		var ifNotCordova = {
-			'else': function(callback) {
+			'otherwise': function(callback) {
 				$q.when(isCordova.promise).then(function(cordova) {
 					if (!cordova) {
 						callback();
@@ -63,7 +63,7 @@
 			'isCordova': function() {
 				return isCordova.promise;
 			},
-			'if': ifCordova
+			'ifCordova': ifCordova
 		};
 	}]);
 }());

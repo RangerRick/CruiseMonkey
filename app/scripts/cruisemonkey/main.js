@@ -52,45 +52,7 @@
 			.state('events', {
 				url: '/events/:eventType',
 				templateUrl: 'template/event-list.html',
-				controller: 'CMEventCtrl',
-				resolve: {
-					events: ['$q', '$stateParams', '$rootScope', 'LoggingService', 'EventService', function($q, $stateParams, $rootScope, log, EventService) {
-						log.debug('events.resolve: waiting for ' + $stateParams.eventType + ' events');
-						var ret = $q.defer();
-						if ($stateParams.eventType === 'official') {
-							$rootScope.title = 'Official Events';
-							EventService.getOfficialEvents().then(function(events) {
-								log.debug('events.resolve: got ' + events.length + ' official events');
-								ret.resolve(events);
-							}, function() {
-								log.warn('events.resolve: failed to get official events');
-								ret.resolve([]);
-							});
-						} else if ($stateParams.eventType === 'unofficial') {
-							$rootScope.title = 'Unofficial Events';
-							EventService.getUnofficialEvents().then(function(events) {
-								log.debug('events.resolve: got ' + events.length + ' unofficial events');
-								ret.resolve(events);
-							}, function() {
-								log.warn('events.resolve: failed to get unofficial events');
-								ret.resolve([]);
-							});
-						} else if ($stateParams.eventType === 'my') {
-							$rootScope.title = 'My Events';
-							EventService.getMyEvents().then(function(events) {
-								log.debug('events.resolve: got ' + events.length + ' my events');
-								ret.resolve(events);
-							}, function() {
-								log.warn('failed to get my events');
-								ret.resolve([]);
-							});
-						} else {
-							log.warn('unknown event type: ' + $stateParams.eventType);
-							ret.resolve([]);
-						}
-						return ret.promise;
-					}]
-				}
+				controller: 'CMEventCtrl'
 			})
 			.state('deck-plans', {
 				url: '/deck-plans/:deck',
@@ -118,7 +80,7 @@
 				controller: 'CMAdvancedCtrl'
 			});
 	}])
-	.run(['$q', '$rootScope', '$window', '$location', '$timeout', '$interval', '$urlRouter', '$http', 'UserService', 'storage', 'CordovaService', 'Database', 'LoggingService', 'NotificationService', 'SettingsService', 'SeamailService', function($q, $rootScope, $window, $location, $timeout, $interval, $urlRouter, $http, UserService, storage, CordovaService, Database, log, notifications, SettingsService, SeamailService) {
+	.run(['$q', '$rootScope', '$window', '$location', '$timeout', '$interval', '$urlRouter', '$http', 'UserService', 'storage', 'CordovaService', 'Database', 'LoggingService', 'NotificationService', 'SettingsService', 'SeamailService', function($q, $rootScope, $window, $location, $timeout, $interval, $urlRouter, $http, UserService, storage, cor, Database, log, notifications, SettingsService, SeamailService) {
 		log.debug('CruiseMonkey run() called.');
 
 		$rootScope.safeApply = function(fn) {
@@ -149,9 +111,18 @@
 			$rootScope.sideMenuController.close();
 		};
 
+		$rootScope.openSeamail = function() {
+			$window.open(SettingsService.getTwitarrRoot() + '#/seamail/inbox', '_blank');
+			/*
+			cor.ifCordova(function() {
+			}).otherwise(function() {
+				$window.open(SettingsService.getTwitarrRoot() + '#/seamail/inbox', '_blank');
+			});
+			*/
+		};
+
 		$rootScope.$on('$locationChangeSuccess', function(evt, newUrl, oldUrl) {
 			$rootScope.user = UserService.get();
-			$rootScope.sideMenuController.close();
 
 			evt.preventDefault();
 
@@ -181,6 +152,11 @@
 			angular.noop();
 
 			return;
+		});
+
+
+		$rootScope.$on('$viewContentLoaded', function(evt, toState, toParams, fromState, fromParams) {
+			$rootScope.sideMenuController.close();
 		});
 
 		var savedUrl = storage.get('cm.lasturl');
