@@ -1,7 +1,6 @@
 (function () {
 	'use strict';
 
-	/*global TestFlight: true*/
 	/*global isMobile: true*/
 
 	angular.module('cruisemonkey',

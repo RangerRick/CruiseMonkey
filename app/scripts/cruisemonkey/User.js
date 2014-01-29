@@ -38,14 +38,6 @@
 			},
 			'save': function(newUser) {
 				newUser.username = newUser.username.toLowerCase();
-				if ($rootScope.testFlight) {
-					$rootScope.testFlight.addCustomEnvironmentInformation(function() {
-						// success
-						console.log('username submitted to testflight');
-					}, function() {
-						// failure
-					}, 'username', newUser.username);
-				}
 				$rootScope._user = angular.copy(newUser);
 			},
 			'reset': function() {
