@@ -17,27 +17,26 @@
   ],
   "dependencies": {
     "log4javascript": "~1.4.5",
-    "angular": "1.2.9",
-    "angular-cookies": "1.2.9",
-    "angular-loader": "1.2.9",
-    "angular-route": "1.2.9",
-    "angular-resource": "1.2.9",
+    "angular": "1.2.10",
+    "angular-cookies": "1.2.10",
+    "angular-loader": "1.2.10",
+    "angular-route": "1.2.10",
+    "angular-resource": "1.2.10",
     "angular-datepicker": "~1.0.0",
     "fastclick": "~0.6.10",
     "html5shiv": "~3.7.0",
-    "jquery": "~2.0.3",
-    "momentjs": "2.5.0",
+    "momentjs": "2.5.1",
     "angularLocalStorage": "~0.1.7",
-    "angular-animate": "1.2.9",
-    "angular-touch": "1.2.9",
-    "angular-sanitize": "1.2.9",
+    "angular-animate": "1.2.10",
+    "angular-touch": "1.2.10",
+    "angular-sanitize": "1.2.10",
     "angular-ui-router": "0.2.7",
-    "angular-mocks": "1.2.9",
+    "angular-mocks": "1.2.10",
     "classlist": "*",
     "angular-bindonce": "~0.3.0"
   },
   "devDependencies": {
     "jasmine.async": "~0.1.0",
-    "angular-mocks": "1.2.9"
+    "angular-mocks": "1.2.10"
   }
 }
