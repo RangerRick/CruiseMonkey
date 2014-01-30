@@ -35,11 +35,19 @@
 			replicated = false,
 			replicationTo = null,
 			replicationFrom = null,
+			resetting = false,
 			ready = $q.defer();
 
 		var initializeFromRemote = function() {
 			var host = getHost();
 			var deferred = $q.defer();
+
+			if (resetting) {
+				$timeout(function() {
+					deferred.reject(false);
+				});
+				return deferred.promise;
+			}
 
 			$q.when(ready).then(function() {
 				if (host && replicate) {
@@ -61,6 +69,9 @@
 							newDocs.push(doc);
 						});
 
+						console.log('newDocs=',newDocs);
+						deferred.reject(err);
+						/*
 						db.bulkDocs({
 							docs: newDocs,
 							new_edits: false
@@ -75,6 +86,7 @@
 							}
 
 						});
+						*/
 					});
 				} else {
 					$timeout(function() {
@@ -91,6 +103,13 @@
 			log.info('Database.initialize(): Initializing database.');
 
 			var deferred = $q.defer();
+
+			if (resetting) {
+				$timeout(function() {
+					deferred.reject(false);
+				});
+				return deferred.promise;
+			}
 
 			db = new PouchDB(SettingsService.getDatabaseName());
 			remoteDb = new PouchDB(getHost());
@@ -149,6 +168,10 @@
 		};
 
 		var startReplication = function() {
+			if (resetting) {
+				return false;
+			}
+
 			$q.when(ready).then(function() {
 				if (replicationFrom) {
 					log.warn('Database.startReplication(): Replication from the remote DB has already been started!');
@@ -163,6 +186,9 @@
 						*/
 						'complete': function(err, details) {
 							$rootScope.safeApply(function() {
+								if (resetting) {
+									return;
+								}
 								log.error('Stopped replication from remote DB: ' + err);
 								log.error('Details: ' + details);
 								if (db) {
@@ -187,6 +213,9 @@
 						*/
 						'complete': function(err, details) {
 							$rootScope.safeApply(function() {
+								if (resetting) {
+									return;
+								}
 								log.error('Stopped replication to remote DB: ' + err);
 								log.error('Details: ' + details);
 								if (db) {
@@ -217,30 +246,6 @@
 			}
 		};
 
-		var handleConnectionTypeChange = function(ev) {
-			if (navigator.connection.type !== undefined) {
-				log.info('Connection type is: ' + navigator.connection.type);
-				if (navigator.connection.type === Connection.NONE) {
-					stopReplication();
-				} else {
-					startReplication();
-				}
-				return true;
-			} else if (navigator.connection.bandwidth !== undefined) {
-				log.info('Connection bandwidth is: ' + navigator.connection.bandwidth);
-				if (navigator.connection.bandwidth > 0) {
-					startReplication();
-				} else {
-					stopReplication();
-				}
-				return true;
-			} else {
-				log.info('Ignoring connection change event.');
-				console.log(ev);
-			}
-			return false;
-		};
-
 		var _getDatabase = null;
 		var getDatabase = function() {
 			if (_getDatabase) {
@@ -259,7 +264,13 @@
 
 		var resetDatabase = function() {
 			$rootScope.safeApply(function() {
-				stopReplication();
+				resetting = true;
+				if (replicationFrom) {
+					replicationFrom.cancel();
+				}
+				if (replicationTo) {
+					replicationTo.cancel();
+				}
 				db = null;
 				remoteDb = null;
 				storage.set('cm.lasturl', '/events/official');

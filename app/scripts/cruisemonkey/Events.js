@@ -34,6 +34,13 @@ function CMEvent(rawdata) {
 
 		self._rawdata.type = 'event';
 
+		if (self._rawdata.start === 'Invalid date') {
+			self._rawdata.start = undefined;
+		}
+		if (self._rawdata.end === 'Invalid date') {
+			self._rawdata.end = undefined;
+		}
+
 		delete self._rawdata.isFavorite;
 		delete self._rawdata.isNewDay;
 	};
@@ -77,7 +84,7 @@ function CMEvent(rawdata) {
 	  * @return {Moment} the start date.
 	  */
 	self.getStart = function() {
-		if (self._start === undefined) {
+		if (self._start === undefined && self._rawdata.start !== undefined) {
 			self._start = moment(self._rawdata.start);
 		}
 		return self._start;
@@ -112,7 +119,7 @@ function CMEvent(rawdata) {
 	  * @return {Moment} the end date.
 	  */
 	self.getEnd = function() {
-		if (self._end === undefined) {
+		if (self._end === undefined && self._rawdata.end !== undefined) {
 			self._end = moment(self._rawdata.end);
 		}
 		return self._end;
@@ -198,7 +205,7 @@ function CMEvent(rawdata) {
 			id: self.getId(),
 			revision: self.getRevision(),
 			startDate: self.getStart().format(dateStringFormat),
-			endDate: self.getEnd().format(dateStringFormat),
+			endDate: self.getEnd()? self.getEnd().format(dateStringFormat) : undefined,
 			summary: self.getSummary(),
 			description: self.getDescription(),
 			location: self.getLocation(),
@@ -208,9 +215,8 @@ function CMEvent(rawdata) {
 		bean.isValid = function() {
 			if (bean.summary === undefined || bean.summary === '') { return false; }
 			if (bean.startDate === undefined || bean.startDate === '') { return false; }
-			if (bean.endDate === undefined || bean.endDate === '') { return false; }
 
-			if (moment(bean.endDate).isBefore(moment(bean.startDate))) {
+			if (bean.endDate && moment(bean.endDate).isBefore(moment(bean.startDate))) {
 				return false;
 			}
 
@@ -442,7 +448,6 @@ function CMFavorite(rawdata) {
 								eventToAdd.setRevision(response.rev);
 								log.trace('eventToAdd: ' + eventToAdd.toString());
 								deferred.resolve(eventToAdd);
-								db.replicateNow();
 							}
 						});
 					});
@@ -477,7 +482,6 @@ function CMFavorite(rawdata) {
 						} else {
 							ev.setRevision(response.rev);
 							deferred.resolve(ev);
-							db.replicateNow();
 						}
 					});
 				});
@@ -505,7 +509,6 @@ function CMFavorite(rawdata) {
 							deferred.reject(err);
 						} else {
 							deferred.resolve(response);
-							db.replicateNow();
 						}
 					});
 				});

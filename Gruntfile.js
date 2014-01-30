@@ -175,8 +175,7 @@ module.exports = function (grunt) {
         files: {
           src: [
             '<%= yeoman.dist %>/scripts/{,*/}*.js',
-            '!<%= yeoman.dist %>/scripts/3rdparty/testflight.js',
-            '!<%= yeoman.dist %>/scripts/3rdparty/_testflight.js',
+            '<%= yeoman.dist %>/scripts/{,*/}*.js',
             '<%= yeoman.dist %>/styles/{,*/}*.css',
             '<%= yeoman.dist %>/images/*.{gif,png}',
             '<%= yeoman.dist %>/images/entypo/**/*.{png,svg}',
@@ -332,9 +331,14 @@ module.exports = function (grunt) {
     },
     uglify: {
       options: {
+        mangle: false
+        /*
+        sourceMap: true,
+        sourceMapIncludeSources: true,
         mangle: {
           except: ['jQuery', 'angular', '$resource', '$http', '$routeProvider']
         }
+        */
       } /*,
       dist: {
         files: {
@@ -370,8 +374,7 @@ module.exports = function (grunt) {
             'robots.txt',
             'bower_components/{,**/}*',
             '_cordova.js',
-            '_cordova_plugins.js',
-            'scripts/3rdparty/_testflight.js'
+            '_cordova_plugins.js'
           ]
         },
         dest: 'www/cruisemonkey.manifest',

@@ -368,6 +368,7 @@
 					tap: function(e) {
 						var ev = new CMEvent();
 						ev.setStart(moment());
+						ev.setEnd(ev.getStart().clone());
 						ev.setEnd(ev.getEnd().add('hours', 1));
 						ev.setUsername(UserService.getUsername());
 						ev.setPublic(true);
