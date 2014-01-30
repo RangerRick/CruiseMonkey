@@ -109,7 +109,7 @@
 					$location.path('/events/my');
 				});
 
-				notifications.alert('Failed to log in to twit-arr!');
+				notifications.alert('Failed to log in to twit-arr! You may need to import the twit-arr certificate in "Advanced" before login will work.');
 			});
 
 			return;

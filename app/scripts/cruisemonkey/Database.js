@@ -8,14 +8,16 @@
 		'cruisemonkey.Config',
 		'cruisemonkey.Cordova',
 		'cruisemonkey.Logging',
-		'cruisemonkey.Settings'
+		'cruisemonkey.Notifications',
+		'cruisemonkey.Settings',
+		'cruisemonkey.User'
 	])
-	.factory('Database', ['$q', '$location', '$interval', '$timeout', '$rootScope', '$window', '$http', 'LoggingService', 'storage', 'config.database.replicate', 'SettingsService', 'CordovaService', function($q, $location, $interval, $timeout, $rootScope, $window, $http, log, storage, replicate, SettingsService, cor) {
+	.factory('Database', ['$q', '$location', '$interval', '$timeout', '$rootScope', '$window', '$http', 'LoggingService', 'storage', 'config.database.replicate', 'SettingsService', 'CordovaService', 'NotificationService', 'UserService', function($q, $location, $interval, $timeout, $rootScope, $window, $http, log, storage, replicate, SettingsService, cor, notifications, UserService) {
 		log.info('Initializing CruiseMonkey database: ' + SettingsService.getDatabaseName());
 
-		storage.bind($rootScope, '_firstSync', {
-			'defaultValue': true,
-			'storeName': 'cm.db.firstSync'
+		storage.bind($rootScope, 'lastSequence', {
+			'defaultValue': 0,
+			'storeName': 'cm.lastSequence'
 		});
 
 		var getHost = function() {
@@ -27,37 +29,61 @@
 		};
 
 		var db = null,
-			timeout = null,
+			remoteDb = null,
+			api = null,
 			replicating = null,
+			replicated = false,
+			replicationTo = null,
+			replicationFrom = null,
 			ready = $q.defer();
 
 		var initializeFromRemote = function() {
 			var host = getHost();
 			var deferred = $q.defer();
 
-			if (host && replicate) {
-				log.debug('Database.initializeFromRemote(): Getting all docs.');
-				$http.get(host + '/_all_docs?include_docs=true', { 'headers': { 'Accept': 'application/json' } })
-					.success(function(data, status, headers, config) {
-						/*jshint camelcase: false */
-						if (data && data.total_rows) {
-							deferred.resolve(true);
-							angular.forEach(data.rows, function(row, index) {
-								db.put(row.doc);
-							});
-							deferred.resolve(true);
+			$q.when(ready).then(function() {
+				if (host && replicate) {
+					log.debug('Database.initializeFromRemote(): Getting all docs.');
+					remoteDb.allDocs({
+						include_docs: true
+					}, function(err, response) {
+						if (err) {
+							log.error('Database.initializeFromRemote(): ' + err);
+							deferred.reject(err);
+							return;
 						}
-					})
-					.error(function(data, status, headers, config) {
-						log.error('Database.initializeFromRemote(): failed to get all_docs from remote host = ', status);
-						deferred.reject(status);
+
+						var newDocs = [];
+						angular.forEach(response.rows, function(doc) {
+							while (doc.doc) {
+								doc = doc.doc;
+							}
+							newDocs.push(doc);
+						});
+
+						db.bulkDocs({
+							docs: newDocs,
+							new_edits: false
+						}, function(err, response) {
+							if (err) {
+								log.error('Database.initializeFromRemote(): ' + err);
+								deferred.reject(err);
+								return;
+							} else {
+								log.info('Database.initializeFromRemote(): ' + response);
+								deferred.resolve(response);
+							}
+
+						});
 					});
-			} else {
-				$timeout(function() {
-					log.warn('Database.initializeFromRemote(): replication disabled, resolving with empty object');
-					deferred.resolve(false);
-				});
-			}
+				} else {
+					$timeout(function() {
+						log.warn('Database.initializeFromRemote(): replication disabled, resolving with empty object');
+						deferred.resolve({});
+					});
+				}
+			});
+
 			return deferred.promise;
 		};
 
@@ -67,108 +93,127 @@
 			var deferred = $q.defer();
 
 			db = new PouchDB(SettingsService.getDatabaseName());
+			remoteDb = new PouchDB(getHost());
 
 			$timeout(function() {
 				log.debug('Database.initialize(): Compacting database.');
 				db.compact(function() {
-					log.info('Database.initializeDatabase(): Compaction complete.');
+					$rootScope.safeApply(function() {
+						log.info('Database.initializeDatabase(): Compaction complete.');
 
-					/*jshint camelcase: false */
-					log.info('Database.initializeDatabase(): Watching for document changes.');
-					db.changes({
-						onChange: function(change) {
-							//console.log('change: ', change);
-							if (change.deleted) {
-								$rootScope.$broadcast('cm.documentDeleted', change);
-							} else {
-								$rootScope.$broadcast('cm.documentUpdated', change.doc);
-							}
-						},
-						continuous: true,
-						conflicts: true,
-						include_docs: true
+						/*jshint camelcase: false */
+						log.info('Database.initializeDatabase(): Watching for document changes.');
+						db.changes({
+							since: $rootScope.lastSequence,
+							onChange: function(change) {
+								$rootScope.safeApply(function() {
+									$rootScope.lastSequence = change.seq;
+									$timeout(function() {
+										$rootScope.$broadcast('cm.database.documentchanged', change);
+									});
+								});
+							},
+							complete: function() {
+								$rootScope.safeApply(function() {
+									$timeout(function() {
+										$rootScope.$broadcast('cm.database.changesprocessed');
+									});
+								});
+							},
+							continuous: true,
+							conflicts: true,
+							include_docs: true
+						});
+
+						ready.resolve(api);
+						deferred.resolve(api);
 					});
-
-					ready.resolve(true);
-					deferred.resolve(true);
 				});
 			});
 
 			return deferred.promise;
 		};
 
-		var doReplicate = function() {
-			if (replicate) {
-				if (replicating) {
-					return;
-				}
-
-				replicating = $q.defer();
-				
-				$timeout(function() {
-					$rootScope.$broadcast('cm.replicationStarting');
-					log.info('Replicating from ' + getHost());
-					db.replicate.from(getHost(), {
-						'complete': function() {
-							log.info('Finished replicating from ' + getHost());
-							$rootScope.$broadcast('cm.localDatabaseSynced');
-
-							log.info('Replicating to ' + getHost());
-							$timeout(function() {
-								log.info('Replicating to ' + getHost());
-								db.replicate.to(getHost(), {
-									'complete': function() {
-										log.info('Finished replicating to ' + getHost());
-										$rootScope.$broadcast('cm.remoteDatabaseSynced');
-										$rootScope.$broadcast('cm.replicationComplete');
-										replicating.resolve(false);
-										replicating = null;
-									}
-								});
-							});
-						}
-					});
-				});
-			} else {
-				log.warn('Replication disabled.');
+		var replicationFilter = function(doc, req) {
+			if (doc.type === 'event') {
+				return true;
 			}
+			if (doc.type === 'favorite') {
+				if (req.query.username && doc.username !== req.query.username) {
+					return false;
+				} else {
+					return true;
+				}
+			}
+			return true;
 		};
 
 		var startReplication = function() {
-			if (replicate) {
-				if (timeout !== null) {
-					log.warn('Replication has already been started!  Timeout ID = ' + timeout);
-					return false;
+			$q.when(ready).then(function() {
+				if (replicationFrom) {
+					log.warn('Database.startReplication(): Replication from the remote DB has already been started!');
 				} else {
-					var refresh = SettingsService.getDatabaseRefresh();
-					log.info('Enabling replication with ' + getHost() + ' (refresh = ' + refresh + ')');
-
-					timeout = $interval(function() {
-						doReplicate();
-					}, refresh);
-					doReplicate();
-
-					return true;
+					log.info('Database.startReplication(): Starting replication from the remote DB...');
+					replicationFrom = db.replicate.from(remoteDb, {
+						'continuous': true,
+						/*
+						'onChange': function(change) {
+							console.log('db.replicate.from.onChange:',change);
+						},
+						*/
+						'complete': function(err, details) {
+							$rootScope.safeApply(function() {
+								log.error('Stopped replication from remote DB: ' + err);
+								log.error('Details: ' + details);
+								if (db) {
+									replicationFrom.cancel();
+									replicationFrom = null;
+								}
+							});
+						}
+					});
 				}
-			} else {
-				log.warn('startReplication() called, but replication is not enabled!');
-			}
-			return false;
+
+				if (replicationTo) {
+					log.warn('Database.startReplication(): Replication to the remote DB has already been started!');
+				} else {
+					log.info('Database.startReplication(): Starting replication to the remote DB...');
+					replicationTo = db.replicate.to(remoteDb, {
+						'continuous': true,
+						/*
+						'onChange': function(change) {
+							console.log('db.replicate.to.onChange:',change);
+						},
+						*/
+						'complete': function(err, details) {
+							$rootScope.safeApply(function() {
+								log.error('Stopped replication to remote DB: ' + err);
+								log.error('Details: ' + details);
+								if (db) {
+									replicationTo.cancel();
+									replicationTo = null;
+								}
+							});
+						}
+					});
+				}
+			});
+
+			return true;
 		};
 
 		var stopReplication = function() {
-			if (replicate) {
-				if (timeout !== null) {
-					log.info('Stopping replication with ' + getHost());
-					$interval.cancel(timeout);
-					timeout = null;
-					return true;
-				} else {
-					log.info('Replication is already stopped!');
-					return false;
-				}
+			if (replicationFrom) {
+				log.info('Database.stopReplication(): Stopping replication from the remote DB...');
+				replicationFrom.cancel();
 			} else {
-				log.warn('stopReplication() called, but replication is not enabled!');
+				log.warn('Database.stopReplication(): Replication from the remote DB has already been stopped!');
+			}
+			if (replicationTo) {
+				log.info('Database.stopReplication(): Stopping replication to the remote DB...');
+				replicationTo.cancel();
+			} else {
+				log.warn('Database.stopReplication(): Replication to the remote DB has already been stopped!');
 			}
 		};
 
@@ -196,105 +241,57 @@
 			return false;
 		};
 
-		/*
-		var setUp = function() {
-			cor.ifCordova(function() {
-				// is cordova
-				document.addEventListener('online', startReplication, false);
-				document.addEventListener('offline', stopReplication, false);
-				document.addEventListener('resume', startReplication, false);
-				document.addEventListener('pause', stopReplication, false);
-
-				databaseReady();
-				startReplication();
-			}).otherwise(function() {
-				$timeout(function() {
-					if (navigator && navigator.connection) {
-						if (navigator.connection.addEventListener) {
-							log.info("Database.setUp(): Browser has native navigator.connection support.");
-							navigator.connection.addEventListener('change', handleConnectionTypeChange, false);
-
-							databaseReady();
-							handleConnectionTypeChange();
-						} else {
-							log.info("Database.setUp(): Browser does not have native navigator.connection support.  Trying with online/offline events.");
-							document.addEventListener('online', startReplication, false);
-							document.addEventListener('offline', stopReplication, false);
-							document.addEventListener('resume', startReplication, false);
-							document.addEventListener('pause', stopReplication, false);
-
-							databaseReady();
-							if (!handleConnectionTypeChange()) {
-								startReplication();
-							}
-						}
-					} else {
-						log.warn("Database.setUp(): Unsure how to handle connection management; starting replication and hoping for the best.");
-						databaseReady();
-						startReplication();
-					}
-
-				}, 0);
-			});
-		};
-
-		var tearDown = function() {
-			stopReplication();
-			if (navigator && navigator.connection && navigator.connection.removeEventListener) {
-				navigator.connection.removeEventListener('change', handleConnectionTypeChange, false);
-			} else {
-				document.removeEventListener('online', handleConnectionTypeChange, false);
-				document.removeEventListener('offline', handleConnectionTypeChange, false);
-			}
-		};
-		*/
-
+		var _getDatabase = null;
 		var getDatabase = function() {
+			if (_getDatabase) {
+				return _getDatabase;
+			}
+
 			var deferred = $q.defer();
+			_getDatabase = deferred.promise;
+
 			$q.when(ready).then(function() {
-				log.debug('Database.getDatabase(): Database is ready.');
 				deferred.resolve(db);
 			});
-			return deferred.promise;
+
+			return _getDatabase;
 		};
 
 		var resetDatabase = function() {
 			$rootScope.safeApply(function() {
-				$timeout.cancel(timeout);
-				$rootScope._firstSync = true;
+				stopReplication();
+				db = null;
+				remoteDb = null;
 				storage.set('cm.lasturl', '/events/official');
+				storage.set('cm.lastSequence', 0);
+				storage.set('cm.firstInitialization', true);
 
 				PouchDB.destroy(SettingsService.getDatabaseName(), function(err) {
-					if (err) {
-						$window.alert('Failed to destroy existing database!');
-					} else {
-						var reloadHref = $window.location.href;
-						if (reloadHref.indexOf('#') > -1) {
-							reloadHref = reloadHref.split('#')[0];
+					$rootScope.safeApply(function() {
+						if (err) {
+							$window.alert('Failed to destroy existing database!');
+						} else {
+							var reloadHref = $window.location.href;
+							if (reloadHref.indexOf('#') > -1) {
+								reloadHref = reloadHref.split('#')[0];
+							}
+							log.info('Reloading CruiseMonkey Database at ' + reloadHref);
+							$window.open(reloadHref, '_self');
 						}
-						log.info('Reloading CruiseMonkey Database at ' + reloadHref);
-						$window.open(reloadHref, '_self');
-					}
+					});
 				});
 			});
 		};
 
-		/*
-		$rootScope.$on('cm.settingsChanged', function() {
-			log.info('Database: Settings changed.  Restarting replication.');
-			stopReplication();
-			startReplication();
-		});
-		*/
-
-		return {
+		api = {
 			'reset': resetDatabase,
 			'initialize': initialize,
 			'getDatabase': getDatabase,
-			'replicateNow': doReplicate,
 			'syncRemote': initializeFromRemote,
 			'online': startReplication,
 			'offline': stopReplication
 		};
+
+		return api;
 	}]);
 }());

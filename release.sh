@@ -146,8 +146,10 @@ fi
 if $ANDROID; then
 	if $SIGN; then
 		cordova $BUILDCMD --release android
-		jarsigner -storepass "$SIGNING_PASS" -keystore ~/share/android/android-release-key.keystore -digestalg SHA1 -sigalg MD5withRSA platforms/android/bin/CruiseMonkey-release-unsigned.apk ranger
-		zipalign -v 4 platforms/android/bin/CruiseMonkey-release-unsigned.apk platforms/android/bin/CruiseMonkey-release-signed.apk
+		if [ $BUILDCMD = "build" ]; then
+			jarsigner -storepass "$SIGNING_PASS" -keystore ~/share/android/android-release-key.keystore -digestalg SHA1 -sigalg MD5withRSA platforms/android/bin/CruiseMonkey-release-unsigned.apk ranger
+			zipalign -v 4 platforms/android/bin/CruiseMonkey-release-unsigned.apk platforms/android/bin/CruiseMonkey-release-signed.apk
+		fi
 	else
 		cordova $BUILDCMD android
 	fi

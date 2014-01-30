@@ -93,6 +93,11 @@
 			}
 		};
 
+		storage.bind($rootScope, 'firstInitialization', {
+			'defaultValue': true,
+			'storeName': 'cm.firstInitialization'
+		});
+
 		$window.handleOpenURL = function(url) {
 			var translated = url.replace('cruisemonkey://','/');
 			$rootScope.safeApply(function() {
@@ -112,12 +117,6 @@
 
 		$rootScope.openSeamail = function() {
 			$window.open(SettingsService.getTwitarrRoot() + '#/seamail/inbox', '_blank');
-			/*
-			cor.ifCordova(function() {
-			}).otherwise(function() {
-				$window.open(SettingsService.getTwitarrRoot() + '#/seamail/inbox', '_blank');
-			});
-			*/
 		};
 
 		$rootScope.$on('$locationChangeSuccess', function(evt, newUrl, oldUrl) {
@@ -167,29 +166,38 @@
 			}
 		}
 
-		var firstStart = true;
 		var databaseInitialized = $q.defer();
 		$rootScope.foreground = true;
 		// if we're not mobile, we don't know if we're online or not, so set it online
 		$rootScope.online = !isMobile;
+		if (navigator && navigator.network && navigator.network.connection) {
+			/*global Connection: true*/
+			$rootScope.online = navigator.network.connection.type !== Connection.NONE;
+			log.info('navigator support found, setting to online');
+		}
 
 		var handleStateChange = function() {
 			databaseInitialized.promise.then(function() {
 				if ($rootScope.foreground && $rootScope.online) {
 					log.debug('handleStateChange: setting online');
-					if (firstStart) {
-						firstStart = false;
-						$q.when(Database.syncRemote())['finally'](function() {
-							// no matter whether it works or not, set everything else up
+					if ($rootScope.firstInitialization) {
+						var message = 'Synchronizing events from CruiseMonkey database...';
+						notifications.status(message);
+						Database.syncRemote()['finally'](function() {
+							$rootScope.firstInitialization = false;
 							Database.online();
 							SeamailService.online();
+							notifications.removeStatus(message);
+							$rootScope.$broadcast('cm.main.refreshEvents');
 						});
 					} else {
 						Database.online();
 						SeamailService.online();
+						$rootScope.$broadcast('cm.main.refreshEvents');
 					}
 				} else {
 					log.debug('handleStateChange: setting offline');
+					notifications.status('Offline.  Unable to sync events.', 5000);
 					Database.offline();
 					SeamailService.offline();
 				}
@@ -236,8 +244,8 @@
 			});
 		}, false);
 
-		Database.initialize().then(function() {
-			databaseInitialized.resolve(true);
+		Database.initialize().then(function(db) {
+			databaseInitialized.resolve(db);
 			$rootScope.$broadcast('cm.main.databaseInitialized');
 		}, function(err) {
 			log.error('Failed to initialize database!');

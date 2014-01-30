@@ -110,7 +110,7 @@
 			}
 		};
 	}])
-	.controller('CMEventCtrl', ['storage', '$scope', '$rootScope', '$timeout', '$stateParams', '$location', '$q', '$ionicModal', '$templateCache', 'UserService', 'EventService', 'EventCache', 'LoggingService', 'NotificationService', function(storage, $scope, $rootScope, $timeout, $stateParams, $location, $q, $ionicModal, $templateCache, UserService, EventService, EventCache, log, notifications) {
+	.controller('CMEventCtrl', ['storage', '$scope', '$rootScope', '$interval', '$timeout', '$stateParams', '$location', '$q', '$ionicModal', '$templateCache', 'UserService', 'EventService', 'EventCache', 'LoggingService', 'NotificationService', function(storage, $scope, $rootScope, $interval, $timeout, $stateParams, $location, $q, $ionicModal, $templateCache, UserService, EventService, EventCache, log, notifications) {
 		if (!$stateParams.eventType) {
 			$location.path('/events/official');
 			return;
@@ -142,55 +142,39 @@
 			eventMethod = EventService.getMyEvents;
 		}
 
-		eventMethod().then(function(events) {
-			log.debug('CMEventCtrl: got ' + events.length + ' ' + $scope.eventType + ' events');
-			$scope.events = events;
-			EventCache.put($scope.eventType, events);
-			notifications.removeStatus(message);
-		}, function() {
-			log.warn('CMEventCtrl: failed to get ' + $scope.eventType + ' events');
-			notifications.removeStatus(message);
-		});
-
 		var timeout = null;
 
+		var refreshing = null;
 		var doRefresh = function() {
-			var deferred = $q.defer();
-
-			log.debug('CMEventCtrl.doRefresh(): refreshing.');
-			if ($scope.eventType === 'official') {
-				$q.when(EventService.getOfficialEvents()).then(function(e) {
-					deferred.resolve(true);
-					$scope.events = e;
-					$scope.$broadcast('scroll.resize');
-				}, function() {
-					deferred.resolve(false);
-				});
-			} else if ($scope.eventType === 'unofficial') {
-				$q.when(EventService.getUnofficialEvents()).then(function(e) {
-					deferred.resolve(true);
-					$scope.events = e;
-					$scope.$broadcast('scroll.resize');
-				}, function() {
-					deferred.resolve(false);
-				});
-			} else if ($scope.eventType === 'my') {
-				$q.when(EventService.getMyEvents()).then(function(e) {
-					deferred.resolve(true);
-					$scope.events = e;
-					$scope.$broadcast('scroll.resize');
-				}, function() {
-					deferred.resolve(false);
-				});
-			} else {
-				log.warn('CMEventCtrl.doRefresh(): unknown event type: ' + $scope.eventType);
-				$timeout(function() {
-					deferred.resolve(false);
-				});
+			if (refreshing) {
+				return refreshing;
 			}
 
-			return deferred.promise;
+			var deferred = $q.defer();
+			refreshing = deferred.promise;
+
+			log.debug('CMEventCtrl.doRefresh(): refreshing.');
+			$q.when(eventMethod()).then(function(e) {
+				log.debug('CMEventCtrl: got ' + e.length + ' ' + $scope.eventType + ' events');
+				deferred.resolve(true);
+				$scope.events = e;
+				EventCache.put($scope.eventType, e);
+				notifications.removeStatus(message);
+				$scope.$broadcast('scroll.resize');
+			}, function() {
+				log.warn('CMEventCtrl: failed to get ' + $scope.eventType + ' events');
+				notifications.removeStatus(message);
+				deferred.resolve(false);
+			});
+
+			refreshing['finally'](function() {
+				refreshing = null;
+			});
+
+			return refreshing;
 		};
+
+		doRefresh();
 
 		var refreshInterval = 5;
 		var refreshEvents = function(immediately) {
@@ -216,17 +200,43 @@
 			animation: 'slide-in-up'
 		});
 
-		$scope.$on('cm.documentUpdated', function(ev, doc) {
+		$scope.$on('cm.main.refreshEvents', function() {
+			log.debug('CMEventCtrl: Manual refresh triggered.');
+			$timeout(function() {
+				refreshEvents(true);
+			}, 100);
+		});
+		$scope.$on('cm.database.documentchanged', function() {
+			//log.debug('CMEventCtrl: Document changed.');
 			refreshEvents();
 		});
-		$scope.$on('cm.documentDeleted', function(ev, doc) {
+		$scope.$on('cm.database.changesprocessed', function() {
+			log.debug('CMEventCtrl: Changes processed.');
 			refreshEvents();
+		});
+		$scope.$on('cm.main.databaseInitialized', function() {
+			log.debug('CMEventCtrl: Database initialized.');
+			$timeout(function() {
+				refreshEvents(true);
+			}, 100);
+		});
+		$scope.$on('cm.localDatabaseSynced', function() {
+			log.debug('CMEventCtrl: Local database synced, refreshing.');
+			$timeout(function() {
+				refreshEvents(true);
+			}, 100);
+		});
+		$scope.$on('cm.EventService.remoteDocsUpdated', function() {
+			log.debug('CMEventCtrl: Remote docs fetched, refreshing.');
+			$timeout(function() {
+				refreshEvents(true);
+			}, 100);
 		});
 		$scope.$on('cm.main.databaseInitialized', function() {
 			log.debug('CMEventCtrl: Database initialized, refreshing.');
 			$timeout(function() {
 				refreshEvents(true);
-			}, 1000);
+			}, 100);
 		});
 
 		$scope.clearSearchString = function() {
@@ -295,6 +305,7 @@
 						return;
 					}
 
+					existing.setFavorite(new Favorite());
 					EventService.addFavorite(eventId).then(function(fav) {
 						fav.setEvent(existing);
 						existing.setFavorite(fav);

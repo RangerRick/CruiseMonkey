@@ -366,7 +366,7 @@ function CMFavorite(rawdata) {
 				database.query({
 					map: mapFunc
 				}, {
-					reduce:true,
+					reduce: true,
 					include_docs:true,
 					key:username
 				}, function(err, res) {
@@ -379,6 +379,10 @@ function CMFavorite(rawdata) {
 							var lastEvent;
 							var doc;
 							angular.forEach(res.rows, function(row, index) {
+								// console.log('row=',row);
+								if (!row.doc) {
+									return;
+								}
 								doc = row.doc;
 								if (doc.type === 'event') {
 									if (matchFunc(doc)) {
@@ -523,6 +527,7 @@ function CMFavorite(rawdata) {
 				}
 			}, {reduce: true});
 			_allEvents['finally'](function() {
+				log.debug('EventService.getAllEvents(): finished.');
 				_allEvents = null;
 			});
 			return _allEvents;
@@ -539,8 +544,9 @@ function CMFavorite(rawdata) {
 				if (doc.type === 'favorite') {
 					emit(doc.username, doc);
 				}
-			}, {reduce:true});
+			}, {reduce: true});
 			_allFavorites['finally'](function() {
+				log.debug('EventService.getAllFavorites(): finished.');
 				_allFavorites = null;
 			});
 			return _allFavorites;
@@ -569,7 +575,7 @@ function CMFavorite(rawdata) {
 						}
 					}
 				}, {
-					reduce:true,
+					reduce: true,
 					include_docs:true
 				}, function(err, res) {
 					$rootScope.$apply(function() {
@@ -618,6 +624,7 @@ function CMFavorite(rawdata) {
 			});
 
 			_officialEvents['finally'](function() {
+				log.debug('EventService.getOfficialEvents(): finished.');
 				_officialEvents = null;
 			});
 			return _officialEvents;
@@ -647,7 +654,7 @@ function CMFavorite(rawdata) {
 						}
 					}
 				}, {
-					reduce:true,
+					reduce: true,
 					include_docs:true
 				}, function(err, res) {
 					$rootScope.$apply(function() {
@@ -695,6 +702,7 @@ function CMFavorite(rawdata) {
 			});
 
 			_unofficialEvents['finally'](function() {
+				log.debug('EventService.getUnofficialEvents(): finished.');
 				_unofficialEvents = null;
 			});
 			return _unofficialEvents;
@@ -721,6 +729,7 @@ function CMFavorite(rawdata) {
 				return (doc.username === username);
 			});
 			_userEvents['finally'](function() {
+				log.debug('EventService.getUserEvents(): finished.');
 				_userEvents = null;
 			});
 			return _userEvents;
@@ -750,6 +759,7 @@ function CMFavorite(rawdata) {
 				return (doc.isPublic || doc.username === username);
 			});
 			_myEvents['finally'](function() {
+				log.debug('EventService.getMyEvents(): finished.');
 				_myEvents = null;
 			});
 			return _myEvents;
@@ -781,7 +791,7 @@ function CMFavorite(rawdata) {
 						}
 					}
 				}, {
-					reduce:true,
+					reduce: true,
 					include_docs:true,
 					key:username
 				}, function(err, res) {
@@ -827,6 +837,7 @@ function CMFavorite(rawdata) {
 			});
 
 			_myFavorites['finally'](function() {
+				log.debug('EventService.getMyFavorites(): finished.');
 				_myFavorites = null;
 			});
 			return _myFavorites;
@@ -857,7 +868,7 @@ function CMFavorite(rawdata) {
 						}
 					}
 				}, {
-					reduce:true,
+					reduce: true,
 					include_docs:true,
 					key: {username: username, eventId: eventId}
 				}, function(err, res) {
@@ -873,6 +884,7 @@ function CMFavorite(rawdata) {
 			});
 
 			_isFavorite['finally'](function() {
+				log.debug('EventService.isFavorite(): finished.');
 				_isFavorite = null;
 			});
 			return _isFavorite;
@@ -900,6 +912,7 @@ function CMFavorite(rawdata) {
 							log.error(err);
 							deferred.reject(err);
 						} else {
+							log.debug('EventService.addFavorite(): favorite added.');
 							fav._id = res.id;
 							fav._rev = res.rev;
 							deferred.resolve(new CMFavorite(fav));
@@ -970,6 +983,7 @@ function CMFavorite(rawdata) {
 								});
 
 								/* when all of the deletes have finished, then resolve & return */
+								log.debug('EventService.removeFavorite(): finished.');
 								$q.all(promises).then(function() {
 									deferred.resolve(res.total_rows);
 								}, function(err) {
@@ -1003,6 +1017,7 @@ function CMFavorite(rawdata) {
 			if (replicate) {
 				$http.get(host + '/_all_docs?include_docs=true', { 'headers': { 'Accept': 'application/json' } })
 					.success(function(data, status, headers, config) {
+						log.debug('EventService.getRemoteDocs(): finished.');
 						deferred.resolve(data);
 					})
 					.error(function(data, status, headers, config) {
