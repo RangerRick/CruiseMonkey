@@ -2,7 +2,7 @@
  * Copyright 2014 Drifty Co.
  * http://drifty.com/
  *
- * Ionic, v0.9.22-alpha
+ * Ionic, v0.9.23-alpha
  * A powerful HTML5 mobile app framework.
  * http://ionicframework.com/
  *
@@ -16,7 +16,7 @@
 window.ionic = {
   controllers: {},
   views: {},
-  version: '0.9.22-alpha'
+  version: '0.9.23-alpha'
 };;
 (function(ionic) {
 
@@ -236,7 +236,9 @@ window.ionic = {
   // Custom event polyfill
   if(!window.CustomEvent) {
     (function() {
-      var CustomEvent;
+      var CustomEvent,
+      ua = navigator.userAgent,
+      androidVersion = ua.indexOf('Android') >= 0? parseFloat(ua.slice(ua.indexOf("Android")+8)) : 0;
 
       CustomEvent = function(event, params) {
         var evt;
@@ -245,8 +247,16 @@ window.ionic = {
           cancelable: false,
           detail: undefined
         };
-        evt = document.createEvent("CustomEvent");
-        evt.initCustomEvent(event, params.bubbles, params.cancelable, params.detail);
+        if (androidVersion < 4.0) {
+          evt = document.createEvent("Event");
+          for (var param in params) {
+            evt[param] = params[param];
+          }
+          evt.initEvent(event, params.bubbles, params.cancelable);
+        } else {
+          evt = document.createEvent("CustomEvent");
+          evt.initCustomEvent(event, params.bubbles, params.cancelable, params.detail);
+        }
         return evt;
       };
 
@@ -319,7 +329,7 @@ window.ionic = {
   * Simple gesture controllers with some common gestures that emit
   * gesture events.
   *
-  * Ported from github.com/EightMedia/ionic.Gestures.js - thanks!
+  * Ported from github.com/EightMedia/hammer.js Gestures - thanks!
   */
 (function(ionic) {
   
