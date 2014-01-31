@@ -331,14 +331,10 @@ module.exports = function (grunt) {
     },
     uglify: {
       options: {
-        mangle: false
-        /*
-        sourceMap: true,
-        sourceMapIncludeSources: true,
+        /*mangle: false*/
         mangle: {
           except: ['jQuery', 'angular', '$resource', '$http', '$routeProvider']
         }
-        */
       } /*,
       dist: {
         files: {

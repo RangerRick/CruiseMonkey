@@ -67,6 +67,18 @@ CruiseMonkey by Benjamin Reed is licensed under the [Creative Commons Attributio
 Release Notes
 =============
 
+3.9.3
+-----
+
+* Fix Android icon
+* Fix clicking menu items on Android
+* Upgrade database and settings on start of a new version
+* Update Ionic to 0.9.22
+* Even *more* work on event synchronization; data should appear faster on first launch now
+* Allow events to not have end dates
+* Handle online/offline properly in mobile mode
+* All menu items actually fit without scrolling on small screens
+
 3.9.2+20140128222317
 --------------------
 

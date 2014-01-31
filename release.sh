@@ -139,6 +139,7 @@ if $PREPARE; then
 fi
 
 if $ANDROID; then
+	rm -rf platforms/android/bin
 	if $SIGN; then
 		cordova $BUILDCMD --release android
 		if [ $BUILDCMD = "build" ]; then

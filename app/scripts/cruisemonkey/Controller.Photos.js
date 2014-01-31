@@ -3,9 +3,9 @@
 
 	angular.module('cruisemonkey.controllers.Photos', [
 		'ionic',
-		'cruisemonkey.Config',
 		'cruisemonkey.Cordova',
-		'cruisemonkey.Logging'
+		'cruisemonkey.Logging',
+		'cruisemonkey.Settings'
 	])
 	.factory('PhotoService', ['$q', '$rootScope', '$http', '$timeout', 'SettingsService', 'CordovaService', 'LoggingService', function($q, $rootScope, $http, $timeout, settings, cordova, log) {
 		var finished, nextPage, nextEntry, entries;

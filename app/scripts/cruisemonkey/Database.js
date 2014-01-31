@@ -10,10 +10,34 @@
 		'cruisemonkey.Logging',
 		'cruisemonkey.Notifications',
 		'cruisemonkey.Settings',
+		'cruisemonkey.Upgrades',
 		'cruisemonkey.User'
 	])
-	.factory('Database', ['$q', '$location', '$interval', '$timeout', '$rootScope', '$window', '$http', 'LoggingService', 'storage', 'config.database.replicate', 'SettingsService', 'CordovaService', 'NotificationService', 'UserService', function($q, $location, $interval, $timeout, $rootScope, $window, $http, log, storage, replicate, SettingsService, cor, notifications, UserService) {
+	.factory('Database', ['$q', '$location', '$interval', '$timeout', '$rootScope', '$window', '$http', 'LoggingService', 'UpgradeService', 'storage', 'config.database.replicate', 'SettingsService', 'CordovaService', 'NotificationService', 'UserService', function($q, $location, $interval, $timeout, $rootScope, $window, $http, log, upgrades, storage, replicate, SettingsService, cor, notifications, UserService) {
+		var getDatabaseName = function() {
+			if ($window.navigator.userAgent.indexOf('Android') >= 0) {
+				return 'websql://' + SettingsService.getDatabaseName();
+			} else {
+				return SettingsService.getDatabaseName();
+			}
+		};
+
 		log.info('Initializing CruiseMonkey database: ' + SettingsService.getDatabaseName());
+
+		upgrades.register('3.9.3', 'Reset Event Cache', function() {
+			var dbname = getDatabaseName();
+			var deferred = $q.defer();
+			PouchDB.destroy(dbname, function(err) {
+				$rootScope.safeApply(function() {
+					if (err) {
+						deferred.reject('Failed to destroy ' + dbname + ': ' + err);
+					} else {
+						deferred.resolve(true);
+					}
+				});
+			});
+			return deferred.promise;
+		});
 
 		storage.bind($rootScope, 'lastSequence', {
 			'defaultValue': 0,
@@ -69,9 +93,8 @@
 							newDocs.push(doc);
 						});
 
-						console.log('newDocs=',newDocs);
+						//console.log('newDocs=',newDocs);
 						deferred.reject(err);
-						/*
 						db.bulkDocs({
 							docs: newDocs,
 							new_edits: false
@@ -86,7 +109,6 @@
 							}
 
 						});
-						*/
 					});
 				} else {
 					$timeout(function() {
@@ -111,7 +133,7 @@
 				return deferred.promise;
 			}
 
-			db = new PouchDB(SettingsService.getDatabaseName());
+			db = new PouchDB(getDatabaseName());
 			remoteDb = new PouchDB(getHost());
 
 			$timeout(function() {
@@ -277,7 +299,7 @@
 				storage.set('cm.lastSequence', 0);
 				storage.set('cm.firstInitialization', true);
 
-				PouchDB.destroy(SettingsService.getDatabaseName(), function(err) {
+				PouchDB.destroy(getDatabaseName(), function(err) {
 					$rootScope.safeApply(function() {
 						if (err) {
 							$window.alert('Failed to destroy existing database!');

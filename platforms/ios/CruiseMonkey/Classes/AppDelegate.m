@@ -27,7 +27,6 @@
 
 #import "AppDelegate.h"
 #import "MainViewController.h"
-#import "TestFlight.h"
 
 #import <Cordova/CDVPlugin.h>
 
@@ -64,7 +63,6 @@
  */
 - (BOOL)application:(UIApplication*)application didFinishLaunchingWithOptions:(NSDictionary*)launchOptions
 {
-    [TestFlight takeOff:@"f3ad30f5-f481-44ba-9887-1ca57a0a3749"];
     CGRect screenBounds = [[UIScreen mainScreen] bounds];
 
 #if __has_feature(objc_arc)

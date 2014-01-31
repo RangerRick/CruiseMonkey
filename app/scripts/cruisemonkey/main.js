@@ -24,6 +24,8 @@
 		'cruisemonkey.Database',
 		'cruisemonkey.Notifications',
 		'cruisemonkey.Seamail',
+		'cruisemonkey.Settings',
+		'cruisemonkey.Upgrades',
 		'cruisemonkey.User'
 	])
 	.config(['$stateProvider', '$urlRouterProvider', '$compileProvider', function($stateProvider, $urlRouterProvider, $compileProvider) {
@@ -79,8 +81,19 @@
 				controller: 'CMAdvancedCtrl'
 			});
 	}])
-	.run(['$q', '$rootScope', '$window', '$location', '$timeout', '$interval', '$urlRouter', '$http', 'UserService', 'storage', 'CordovaService', 'Database', 'LoggingService', 'NotificationService', 'SettingsService', 'SeamailService', function($q, $rootScope, $window, $location, $timeout, $interval, $urlRouter, $http, UserService, storage, cor, Database, log, notifications, SettingsService, SeamailService) {
+	.run(['$q', '$rootScope', '$window', '$location', '$timeout', '$interval', '$urlRouter', '$http', 'UserService', 'storage', 'CordovaService', 'UpgradeService', 'Database', 'LoggingService', 'NotificationService', 'SettingsService', 'SeamailService', function($q, $rootScope, $window, $location, $timeout, $interval, $urlRouter, $http, UserService, storage, cor, upgrades, Database, log, notifications, SettingsService, SeamailService) {
 		log.debug('CruiseMonkey run() called.');
+
+		upgrades.register('3.9.3', 'Old Cookies Cleaned Up', function() {
+			// remove old cm.db.sync cookie
+			storage.remove('cm.db.sync');
+
+			// update deck to be a number, if it isn't
+			var deck = storage.get('cm.deck');
+			if (deck !== undefined && (typeof deck === 'string' || deck instanceof String)) {
+				storage.put('cm.deck', parseInt(deck, 10));
+			}
+		});
 
 		$rootScope.safeApply = function(fn) {
 			var phase = this.$root.$$phase;
@@ -230,6 +243,9 @@
 		document.addEventListener('resume', function() {
 			$rootScope.safeApply(function() {
 				$rootScope.foreground = true;
+				cor.ifCordova(function() {
+					navigator.splashscreen.hide();
+				});
 			});
 		}, false);
 
@@ -244,12 +260,20 @@
 			});
 		}, false);
 
-		Database.initialize().then(function(db) {
-			databaseInitialized.resolve(db);
-			$rootScope.$broadcast('cm.main.databaseInitialized');
-		}, function(err) {
-			log.error('Failed to initialize database!');
-			databaseInitialized.reject(err);
+		$q.when(upgrades.upgrade()).then(function() {
+			Database.initialize().then(function(db) {
+				databaseInitialized.resolve(db);
+				cor.ifCordova(function() {
+					navigator.splashscreen.hide();
+				});
+				$rootScope.$broadcast('cm.main.databaseInitialized');
+			}, function(err) {
+				cor.ifCordova(function() {
+					navigator.splashscreen.hide();
+				});
+				log.error('Failed to initialize database!');
+				databaseInitialized.reject(err);
+			});
 		});
 
 		$rootScope.$on('cm.loggedIn', function(event) {

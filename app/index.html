@@ -11,7 +11,7 @@
 <meta name="viewport" content="width=device-width, user-scalable=0, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0" />
 <meta name="format-detection" content="telephone=no" />
 <meta name="apple-mobile-web-app-capable" content="yes" />
-<link rel="apple-touch-icon" href="icon.png" />
+<link rel="apple-touch-icon" href="Icon.png" />
 <link rel="apple-touch-icon" sizes="29x29" href="Icon-Small.png" />
 <link rel="apple-touch-icon" sizes="57x57" href="Icon-57.png" />
 <link rel="apple-touch-icon" sizes="50x50" href="Icon-Small-50.png" />
@@ -20,7 +20,6 @@
 <link rel="apple-touch-icon" sizes="100x100" href="Icon-Small-50@2x.png" />
 <link rel="apple-touch-icon" sizes="114x114" href="Icon@2x.png" />
 <link rel="apple-touch-icon" sizes="144x144" href="Icon-72@2x.png" />
-<link rel="apple-touch-startup-image" href="cruise-monkey-1536x2048.png" />
 
 <!-- build:css(.tmp) styles/3rdparty.css -->
 <link rel="stylesheet" href="styles/normalize.css" />
@@ -113,7 +112,7 @@ if (typeof String.prototype.contains !== 'function') {
 		<!-- animation="slide-left-right-ios7" -->
 		<pane side-menu-content>
 			<header class="bar bar-header bar-dark">
-				<button class="button button-icon" ng-click="openLeft()"><i class="icon ion-navicon"></i></button>
+				<button class="button button-icon"><i class="icon ion-navicon"></i></button>
 				<h1 class="title">{{title}}</h1>
 				<div class="buttons">
 					<button ng-repeat="button in rightButtons" class="button button-clear no-animation" ng-class="button.type" ng-click="button.tap($event, $index)" ng-bind-html="button.content">
@@ -199,6 +198,7 @@ if (typeof String.prototype.contains !== 'function') {
 	<script src="scripts/cruisemonkey/Logging.js"></script>
 	<script src="scripts/cruisemonkey/Notifications.js"></script>
 	<script src="scripts/cruisemonkey/Seamail.js"></script>
+	<script src="scripts/cruisemonkey/Upgrades.js"></script>
 	<script src="scripts/cruisemonkey/User.js"></script>
 	<script src="scripts/cruisemonkey/main.js"></script>
 	<!-- endbuild -->

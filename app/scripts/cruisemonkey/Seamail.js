@@ -3,9 +3,9 @@
 
 	angular.module('cruisemonkey.Seamail', [
 		'angularLocalStorage',
-		'cruisemonkey.Config',
 		'cruisemonkey.Logging',
 		'cruisemonkey.Notifications',
+		'cruisemonkey.Settings',
 		'cruisemonkey.User'
 	])
 	.factory('SeamailService', ['$q', '$rootScope', '$timeout', '$interval', '$http', 'SettingsService', 'NotificationService', 'UserService', 'LoggingService', 'storage', function($q, $rootScope, $timeout, $interval, $http, SettingsService, notifications, UserService, log, storage) {

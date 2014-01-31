@@ -11,11 +11,11 @@
 				<input type="hidden" name="eType" value="{{eventData.type}}" />
 				<div class="list">
 					<label class="item item-input item-stacked-label">
-						<span class="input-label">Summary</span> <span ng-show="form.eSummary.$invalid" class="invalid">Required.</span>
+						<span class="input-label">Event Title</span> <span ng-show="form.eSummary.$invalid" class="invalid">Required.</span>
 						<input type="text" ng-model="eventData.summary" name="eSummary" required />
 					</label>
 					<label class="item item-input item-stacked-label">
-						<span class="input-label">Description</span>
+						<span class="input-label">Event Summary</span>
 						<textarea type="text" ng-model="eventData.description" name="eDescription"></textarea>
 					</label>
 					<label class="item item-input item-stacked-label">

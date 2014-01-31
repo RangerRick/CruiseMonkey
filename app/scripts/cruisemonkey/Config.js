@@ -4,26 +4,33 @@
 	angular.module('cruisemonkey.Config', [])
 	.value('config.logging.useStringAppender', false)
 	.value('config.database.host', 'cm.raccoonfink.com')
-	.value('config.database.name', 'cruisemonkey')
+	.value('config.database.name', 'cmtest')
 	.value('config.database.replicate', true)
 	.value('config.database.refresh', 20000)
 	.value('config.notifications.timeout', 5000)
 	.value('config.twitarr.root', 'https://twitarr.rylath.net/')
-	.value('config.app.version', '3.9.2+20140130140628');
+	.value('config.app.version', '3.9.3');
 	
 	angular.module('cruisemonkey.Settings', [
 		'angularLocalStorage',
-		'cruisemonkey.Config'
+		'cruisemonkey.Config',
+		'cruisemonkey.Upgrades'
 	])
-	.factory('SettingsService', ['storage', '$rootScope', 'config.database.host', 'config.database.name', 'config.database.refresh', 'config.twitarr.root', function(storage, $rootScope, databaseHost, databaseName, databaseRefresh, twitarrRoot) {
+	.factory('SettingsService', ['storage', '$rootScope', 'config.database.host', 'config.database.name', 'config.database.refresh', 'config.twitarr.root', 'UpgradeService', function(storage, $rootScope, databaseHost, databaseName, databaseRefresh, twitarrRoot, upgrades) {
+		var defaultValue = {
+			'database.host': databaseHost,
+			'database.name': databaseName,
+			'database.refresh': databaseRefresh,
+			'twitarr.root': twitarrRoot
+		};
+
 		storage.bind($rootScope, '_settings', {
-			'defaultValue': {
-				'database.host': databaseHost,
-				'database.name': databaseName,
-				'database.refresh': databaseRefresh,
-				'twitarr.root': twitarrRoot
-			},
+			'defaultValue': defaultValue,
 			'storeName': 'cm.settings'
+		});
+
+		upgrades.register('3.9.3', 'Database and Twit-Arr Settings Reset', function() {
+			$rootScope._settings = getDefaults();
 		});
 
 		var getDefaults = function() {

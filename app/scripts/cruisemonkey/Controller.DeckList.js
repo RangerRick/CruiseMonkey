@@ -16,7 +16,7 @@
 		});
 
 		if ($scope.deck !== undefined && isNaN($scope.deck)) {
-			$scope.deck = parseInt($scope.deck);
+			$scope.deck = parseInt($scope.deck, 10);
 		}
 
 		if ($stateParams.deck) {
