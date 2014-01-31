@@ -9,7 +9,8 @@
 	.value('config.database.refresh', 20000)
 	.value('config.notifications.timeout', 5000)
 	.value('config.twitarr.root', 'https://twitarr.rylath.net/')
-	.value('config.app.version', '3.9.3');
+	.value('config.app.version', '3.9.3')
+	.value('config.upgrade', true);
 	
 	angular.module('cruisemonkey.Settings', [
 		'angularLocalStorage',
@@ -22,6 +23,17 @@
 			'database.name': databaseName,
 			'database.refresh': databaseRefresh,
 			'twitarr.root': twitarrRoot
+		};
+
+		$rootScope.safeApply = function(fn) {
+			var phase = this.$root.$$phase;
+			if(phase === '$apply' || phase === '$digest') {
+				if(fn && (typeof(fn) === 'function')) {
+					fn();
+				}
+			} else {
+				this.$apply(fn);
+			}
 		};
 
 		storage.bind($rootScope, '_settings', {
@@ -43,11 +55,11 @@
 		};
 
 		var getSettings = function() {
-			var dbHost = $rootScope._settings['database.host'] || databaseHost;
-			var dbName = $rootScope._settings['database.name'] || databaseName;
+			var dbHost    = $rootScope._settings['database.host']    || databaseHost;
+			var dbName    = $rootScope._settings['database.name']    || databaseName;
 			var dbRefresh = $rootScope._settings['database.refresh'] || databaseRefresh;
-			var twRoot = $rootScope._settings['twitarr.root'] || twitarrRoot;
-			
+			var twRoot    = $rootScope._settings['twitarr.root']     || twitarrRoot;
+
 			if (dbHost === dbName) {
 				console.log('Database host invalid!');
 				dbHost = databaseHost;

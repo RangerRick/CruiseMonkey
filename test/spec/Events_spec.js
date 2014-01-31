@@ -1,4 +1,4 @@
-xdescribe('cruisemonkey.Events', function() {
+describe('cruisemonkey.Events', function() {
 	var log         = null;
 	var service     = null;
 	var userService = null;
@@ -7,11 +7,14 @@ xdescribe('cruisemonkey.Events', function() {
 	var $timeout    = null;
 	var $rootScope  = null;
 
-	var dbName      = 'cmtest';
+	var dbName      = 'cmunittest';
 	var async       = new AsyncSpec(this);
 
 	var getEvents = function(results) {
 		var ret = {};
+		if (!results) {
+			return ret;
+		}
 		angular.forEach(results, function(item) {
 			if (item !== undefined && item.getId !== undefined) {
 				ret[item.getId()] = item;
@@ -21,18 +24,6 @@ xdescribe('cruisemonkey.Events', function() {
 	};
 
 	async.beforeEach(function(done) {
-		console.log('destroying database ' + dbName);
-		PouchDB.destroy(dbName, function(err) {
-			if (err) {
-				console.log('failed to destroy database ' + dbName);
-			} else {
-				console.log('destroyed ' + dbName);
-				done();
-			}
-		});
-	});
-
-	async.beforeEach(function(done) {
 		module('cruisemonkey.Database', 'cruisemonkey.User', 'cruisemonkey.Events', function($provide) {
 			$provide.value('config.logging.useStringAppender', true);
 			$provide.value('config.database.host', 'localhost');
@@ -40,6 +31,7 @@ xdescribe('cruisemonkey.Events', function() {
 			$provide.value('config.database.replicate', false);
 			$provide.value('config.database.refresh', 20000);
 			$provide.value('config.twitarr.root', 'https://twitarr.rylath.net/');
+			$provide.value('config.upgrade', false);
 		});
 		inject(['LoggingService', 'EventService', 'UserService', 'Database', '$q', '$timeout', '$rootScope', function(LoggingService, EventService, UserService, Database, q, timeout, scope) {
 			log         = LoggingService;
@@ -49,8 +41,12 @@ xdescribe('cruisemonkey.Events', function() {
 			$q          = q;
 			$timeout    = timeout;
 			$rootScope  = scope;
+
+			db.initialize().then(function() {
+				done();
+			});
+			$timeout.flush();
 		}]);
-		done();
 	});
 
 	async.beforeEach(function(done) {
@@ -118,6 +114,7 @@ xdescribe('cruisemonkey.Events', function() {
 		PouchDB.destroy(dbName, function(err) {
 			if (err) {
 				console.log('failed to destroy database ' + dbName);
+				done();
 			} else {
 				console.log('destroyed ' + dbName);
 				done();
@@ -130,8 +127,11 @@ xdescribe('cruisemonkey.Events', function() {
 			expect(db).not.toBeNull();
 			expect(service.getAllEvents).not.toBeUndefined();
 			service.getAllEvents().then(function(result) {
-				expect(result.length).toEqual(4);
 				var items = getEvents(result);
+				angular.forEach(items, function(item) {
+					console.log(item.toString());
+				});
+				expect(result.length).toEqual(4);
 				expect(items).not.toBeNull();
 				expect(items['1']).not.toBeNull();
 				expect(items['1'].getSummary()).toBe('Murder');

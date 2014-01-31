@@ -28,7 +28,7 @@
 		'cruisemonkey.Logging',
 		'cruisemonkey.Notifications'
 	])
-	.factory('UpgradeService', ['$q', '$timeout', 'LoggingService', 'NotificationService', 'storage', 'config.app.version', function($q, $timeout, log, notifications, storage, version) {
+	.factory('UpgradeService', ['$q', '$timeout', 'LoggingService', 'NotificationService', 'storage', 'config.app.version', 'config.upgrade', function($q, $timeout, log, notifications, storage, version, upgrade) {
 		var previousVersion = storage.get('cm.version');
 		if (!previousVersion) {
 			previousVersion = '0.0.0';
@@ -40,7 +40,7 @@
 		var actions = [];
 
 		var registerAction = function(version, affected, callback) {
-			log.info('action registered for version ' + version + ': ' + affected);
+			log.debug('action registered for version ' + version + ': ' + affected);
 			actions.push({
 				'version': version,
 				'affected': affected,
@@ -53,8 +53,14 @@
 
 			var def = $q.defer();
 
-			log.info('UpgradeService.upgrade(): previous version = ' + previousVersion + ', current version = ' + currentVersion);
-			if (compareVersions(currentVersion, previousVersion) > 0) {
+			log.debug('UpgradeService.upgrade(): previous version = ' + previousVersion + ', current version = ' + currentVersion);
+			
+			if (!upgrade) {
+				log.info('Upgrades disabled.');
+				$timeout(function() {
+					def.resolve(false);
+				});
+			} else if (compareVersions(currentVersion, previousVersion) > 0) {
 				log.info('Upgrade for ' + currentVersion + ' has not yet run.');
 
 				var deferred = [];

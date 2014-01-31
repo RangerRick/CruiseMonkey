@@ -15,14 +15,14 @@
 	])
 	.factory('Database', ['$q', '$location', '$interval', '$timeout', '$rootScope', '$window', '$http', 'LoggingService', 'UpgradeService', 'storage', 'config.database.replicate', 'SettingsService', 'CordovaService', 'NotificationService', 'UserService', function($q, $location, $interval, $timeout, $rootScope, $window, $http, log, upgrades, storage, replicate, SettingsService, cor, notifications, UserService) {
 		var getDatabaseName = function() {
-			if ($window.navigator.userAgent.indexOf('Android') >= 0) {
+			if ($window.navigator && $window.navigator.userAgent && $window.navigator.userAgent.indexOf('Android') >= 0) {
 				return 'websql://' + SettingsService.getDatabaseName();
 			} else {
 				return SettingsService.getDatabaseName();
 			}
 		};
 
-		log.info('Initializing CruiseMonkey database: ' + SettingsService.getDatabaseName());
+		log.info('Initializing CruiseMonkey database: ' + getDatabaseName());
 
 		upgrades.register('3.9.3', 'Reset Event Cache', function() {
 			var dbname = getDatabaseName();
@@ -134,7 +134,10 @@
 			}
 
 			db = new PouchDB(getDatabaseName());
-			remoteDb = new PouchDB(getHost());
+			if (replicate) {
+				log.debug('Database.initialize(): Replication enabled, initializing remoteDb.');
+				remoteDb = new PouchDB(getHost());
+			}
 
 			$timeout(function() {
 				log.debug('Database.initialize(): Compacting database.');
@@ -191,6 +194,10 @@
 
 		var startReplication = function() {
 			if (resetting) {
+				return false;
+			}
+
+			if (!replicate) {
 				return false;
 			}
 
