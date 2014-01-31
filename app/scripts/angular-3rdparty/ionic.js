@@ -236,9 +236,7 @@ window.ionic = {
   // Custom event polyfill
   if(!window.CustomEvent) {
     (function() {
-      var CustomEvent,
-      ua = navigator.userAgent,
-      androidVersion = ua.indexOf('Android') >= 0? parseFloat(ua.slice(ua.indexOf("Android")+8)) : 0;
+      var CustomEvent;
 
       CustomEvent = function(event, params) {
         var evt;
@@ -247,15 +245,15 @@ window.ionic = {
           cancelable: false,
           detail: undefined
         };
-        if (androidVersion < 4.0) {
+        try {
+          evt = document.createEvent("CustomEvent");
+          evt.initCustomEvent(event, params.bubbles, params.cancelable, params.detail);
+        } catch (error) {
           evt = document.createEvent("Event");
           for (var param in params) {
             evt[param] = params[param];
           }
           evt.initEvent(event, params.bubbles, params.cancelable);
-        } else {
-          evt = document.createEvent("CustomEvent");
-          evt.initCustomEvent(event, params.bubbles, params.cancelable, params.detail);
         }
         return evt;
       };
