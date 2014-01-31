@@ -4,6 +4,7 @@
 	/*global moment: true*/
 	/*global Modernizr: true*/
 	/*global CMEvent: true*/
+	/*global CMFavorite: true*/
 	angular.module('cruisemonkey.controllers.Events', [
 		'ui.router',
 		'ionic',

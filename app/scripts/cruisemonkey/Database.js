@@ -75,6 +75,7 @@
 
 			$q.when(ready).then(function() {
 				if (host && replicate) {
+					/*jshint camelcase: false */
 					log.debug('Database.initializeFromRemote(): Getting all docs.');
 					remoteDb.allDocs({
 						include_docs: true

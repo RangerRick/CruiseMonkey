@@ -271,10 +271,10 @@ header.bar.bar-header {
 	-moz-user-select: none;
 	-webkit-user-drag: none;
 
-	div {
-		max-width: 200px;
+	div.placeholder {
+		width: 220px;
 		margin: auto;
-		max-height: 250px;
+		height: 220px;
 		margin-top: 20px;
 		user-drag: none;
 		-moz-user-select: none;

@@ -28,7 +28,7 @@
 		'cruisemonkey.Logging',
 		'cruisemonkey.Notifications'
 	])
-	.factory('UpgradeService', ['$q', '$timeout', 'LoggingService', 'NotificationService', 'storage', 'config.app.version', 'config.upgrade', function($q, $timeout, log, notifications, storage, version, upgrade) {
+	.factory('UpgradeService', ['$q', '$timeout', 'LoggingService', 'NotificationService', 'storage', 'config.app.version', 'config.upgrade', function($q, $timeout, log, notifications, storage, version, shouldUpgrade) {
 		var previousVersion = storage.get('cm.version');
 		if (!previousVersion) {
 			previousVersion = '0.0.0';
@@ -48,14 +48,14 @@
 			});
 		};
 
-		var upgrade = function() {
+		var doUpgrade = function() {
 			var performed = [];
 
 			var def = $q.defer();
 
 			log.debug('UpgradeService.upgrade(): previous version = ' + previousVersion + ', current version = ' + currentVersion);
 			
-			if (!upgrade) {
+			if (!shouldUpgrade) {
 				log.info('Upgrades disabled.');
 				$timeout(function() {
 					def.resolve(false);
@@ -97,7 +97,7 @@
 
 		return {
 			'register': registerAction,
-			'upgrade': upgrade
-		}
+			'upgrade': doUpgrade
+		};
 	}]);
 }());
