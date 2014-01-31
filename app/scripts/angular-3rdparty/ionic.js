@@ -236,7 +236,9 @@ window.ionic = {
   // Custom event polyfill
   if(!window.CustomEvent) {
     (function() {
-      var CustomEvent;
+      var CustomEvent,
+      ua = navigator.userAgent,
+      androidVersion = ua.indexOf('Android') >= 0? parseFloat(ua.slice(ua.indexOf("Android")+8)) : 0;
 
       CustomEvent = function(event, params) {
         var evt;
@@ -245,15 +247,15 @@ window.ionic = {
           cancelable: false,
           detail: undefined
         };
-        try {
-          evt = document.createEvent("CustomEvent");
-          evt.initCustomEvent(event, params.bubbles, params.cancelable, params.detail);
-        } catch (error) {
+        if (androidVersion < 4.0) {
           evt = document.createEvent("Event");
           for (var param in params) {
             evt[param] = params[param];
           }
           evt.initEvent(event, params.bubbles, params.cancelable);
+        } else {
+          evt = document.createEvent("CustomEvent");
+          evt.initCustomEvent(event, params.bubbles, params.cancelable, params.detail);
         }
         return evt;
       };
@@ -4959,7 +4961,8 @@ ionic.views.Scroll = ionic.views.View.inherit({
     initialize: function(opts) {
       opts = ionic.extend({
         focusFirstInput: false,
-        unfocusOnHide: true
+        unfocusOnHide: true,
+        focusFirstDelay: 600
       }, opts);
 
       ionic.extend(this, opts);
@@ -4967,11 +4970,16 @@ ionic.views.Scroll = ionic.views.View.inherit({
       this.el = opts.el;
     },
     show: function() {
+      var self = this;
+
       this.el.classList.add('active');
 
       if(this.focusFirstInput) {
-        var input = this.el.querySelector('input, textarea');
-        input && input.focus && input.focus();
+        // Let any animations run first
+        window.setTimeout(function() {
+          var input = self.el.querySelector('input, textarea');
+          input && input.focus && input.focus();
+        }, this.focusFirstDelay);
       }
     },
     hide: function() {
@@ -4980,9 +4988,12 @@ ionic.views.Scroll = ionic.views.View.inherit({
       // Unfocus all elements
       if(this.unfocusOnHide) {
         var inputs = this.el.querySelectorAll('input, textarea');
-        for(var i = 0; i < inputs.length; i++) {
-          inputs[i].blur && inputs[i].blur();
-        }
+        // Let any animations run first
+        window.setTimeout(function() {
+          for(var i = 0; i < inputs.length; i++) {
+            inputs[i].blur && inputs[i].blur();
+          }
+        });
       }
     }
   });
