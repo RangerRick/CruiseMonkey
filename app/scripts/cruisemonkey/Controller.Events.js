@@ -276,20 +276,27 @@
 			});
 		};
 
-		$scope.onFavoriteChanged = function(event) {
+		$scope.onFavoriteChanged = function(ev) {
 			$scope.safeApply(function() {
-				var i, eventId = event.getId();
+				var i, eventId = ev.getId();
 				log.debug('CMEventCtrl.onFavoriteChanged(' + eventId + ')');
 
-				if (event.isFavorite()) {
-					event.setFavorite(undefined);
-					for (i = 0; i < $scope.events.length; i++) {
-						if ($scope.events[i].getId() === eventId) {
-							$scope.events.splice(i, 1);
-							$scope.$broadcast('scroll.resize');
-							break;
+				if (ev.isFavorite()) {
+					// Event was favorited, unfavorite it
+					ev.setFavorite(undefined);
+
+					// If we're in the 'my' browser, it should disappear from the list
+					if ($scope.eventType === 'my') {
+						for (i = 0; i < $scope.events.length; i++) {
+							if ($scope.events[i].getId() === eventId) {
+								$scope.events.splice(i, 1);
+								$scope.$broadcast('scroll.resize');
+								break;
+							}
 						}
 					}
+
+					// Remove from the database
 					EventService.removeFavorite(eventId);
 				} else {
 					var existing;
@@ -305,11 +312,15 @@
 						return;
 					}
 
-					existing.setFavorite(new Favorite());
+					// Add a temporary favorite object so the UI updates
+					existing.setFavorite(new CMFavorite());
+
 					EventService.addFavorite(eventId).then(function(fav) {
 						fav.setEvent(existing);
 						existing.setFavorite(fav);
-						$scope.$broadcast('scroll.resize');
+					}, function() {
+						notifications.alert('Failed to favorite ' + ev.getSummary() + '!');
+						existing.setFavorite(undefined);
 					});
 				}
 			});
