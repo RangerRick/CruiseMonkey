@@ -15,7 +15,7 @@
 				<input type="text" name="databaseName" ng-model="settings.databaseName" />
 			</label>
 			<label class="item item-input item-stacked-label">
-				<span class="input-label">Replication Refresh Time (milliseconds)</span> <span class="error" ng-show="myForm.input.$error">Must be at least 10000!</span>
+				<span class="input-label">Replication Refresh Time (ms)</span> <span class="error" ng-show="myForm.input.$error">Must be at least 10000!</span>
 				<input type="number" name="databaseRefresh" ng-model="settings.databaseRefresh" min="10000" required />
 			</label>
 			<label class="item item-input item-stacked-label">
@@ -41,9 +41,9 @@
 		<div class="item item-divider">Reset Your Cache</div>
 		<div class="item item-text-wrap">
 			This will clear your local client cache and re-sync from the CruiseMonkey server.  Any events
-			or favorites you have created will come back, as long as CruiseMonkey has had time to sync them
+			or favorites you have created will come back, as long as CruiseMonkey had previously synced them
 			to the server.  If you are not online when you hit this, it <em>will</em> leave you with an
-			empty CruiseMonkey!  CruiseMonkey will reload when you reset your cache.
+			empty CruiseMonkey!
 		</div>
 		<button class="button button-full button-positive" ng-click="resetDatabase()">Reset Cache</button>
 	</div>
