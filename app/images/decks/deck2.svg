@@ -108,7 +108,7 @@
 				L28.046,634.846z"/>
 			<path id="path1298" fill="#FFFFFF" d="M72.714,634.596h5.916v17.219h-5.916V634.596L72.714,634.596z"/>
 			<path id="path1300" fill="none" stroke="#918F90" stroke-width="0.472" d="M72.714,634.596h5.916v17.219h-5.916V634.596
-				L72.714,634.596z M50.589,548.595H23.585v-64.348h11.188v-8.413h37.337v8.413h11.203v64.348H56.432 M71.427,540.926H36.492
+				L72.714,634.596z M50.589,548.595H23.585v-64.348h11.188v-8.413h37.337v8.413h11.202v64.348h-26.88 M71.427,540.926H36.492
 				v-53.598h34.932L71.427,540.926L71.427,540.926z M68.629,480.385H38.911v-2.748h29.718v2.75V480.385z M68.629,483.135H38.911
 				v-2.748h29.718v2.75V483.135z"/>
 			<path id="path1302" fill="#FFFFFF" d="M25.753,317.865h5.929v17.22h-5.929V317.865z"/>
@@ -1015,25 +1015,25 @@
 	<text transform="matrix(0.92 0 0 -0.8 97.7902 448.0648)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">2</text>
 	<text transform="matrix(0.92 0 0 -0.8 89.4199 440.2148)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">2</text>
 	<text transform="matrix(0.92 0 0 -0.8 91.9105 440.2148)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">3</text>
-	<text transform="matrix(0.92 0 0 -0.8 94.4003 440.2148)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">0</text>
+	<text transform="matrix(0.92 0 0 -0.8 94.3996 440.2148)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">0</text>
 	<text transform="matrix(0.92 0 0 -0.8 96.8902 440.2148)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">4</text>
 	<text transform="matrix(0.92 0 0 -0.8 99.3808 440.2148)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">†</text>
-	<text transform="matrix(0.92 0 0 -0.8 90.5003 433.2953)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">2</text>
+	<text transform="matrix(0.92 0 0 -0.8 90.4996 433.2953)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">2</text>
 	<text transform="matrix(0.92 0 0 -0.8 92.9902 433.2953)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">3</text>
 	<text transform="matrix(0.92 0 0 -0.8 95.4808 433.2953)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">0</text>
 	<text transform="matrix(0.92 0 0 -0.8 97.9699 433.2953)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">6</text>
-	<text transform="matrix(0.92 0 0 -0.8 90.5003 426.5055)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">2</text>
+	<text transform="matrix(0.92 0 0 -0.8 90.4996 426.5055)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">2</text>
 	<text transform="matrix(0.92 0 0 -0.8 92.9902 426.5055)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">3</text>
 	<text transform="matrix(0.92 0 0 -0.8 95.4808 426.5055)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">0</text>
 	<text transform="matrix(0.92 0 0 -0.8 97.9699 426.5055)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">8</text>
-	<text transform="matrix(0.92 0 0 -0.8 90.5003 419.3547)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">2</text>
+	<text transform="matrix(0.92 0 0 -0.8 90.4996 419.3547)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">2</text>
 	<text transform="matrix(0.92 0 0 -0.8 92.9902 419.3547)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">3</text>
 	<text transform="matrix(0.92 0 0 -0.8 95.4808 419.3547)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">1</text>
 	<text transform="matrix(0.92 0 0 -0.8 97.9699 419.3547)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">0</text>
 	<text transform="matrix(0.92 0 0 -0.8 90.3902 411.8648)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">2</text>
 	<text transform="matrix(0.92 0 0 -0.8 92.8808 411.8648)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">3</text>
 	<text transform="matrix(0.92 0 0 -0.8 95.3699 411.8648)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">1</text>
-	<text transform="matrix(0.92 0 0 -0.8 97.8503 411.8648)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">2</text>
+	<text transform="matrix(0.92 0 0 -0.8 97.8496 411.8648)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">2</text>
 	<text transform="matrix(0.92 0 0 -0.8 89.4902 404.7148)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">2</text>
 	<text transform="matrix(0.92 0 0 -0.8 91.9808 404.7148)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">3</text>
 	<text transform="matrix(0.92 0 0 -0.8 94.4699 404.7148)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">1</text>
@@ -1042,11 +1042,11 @@
 	<text transform="matrix(0.92 0 0 -0.8 90.3902 397.575)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">2</text>
 	<text transform="matrix(0.92 0 0 -0.8 92.8808 397.575)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">3</text>
 	<text transform="matrix(0.92 0 0 -0.8 95.3699 397.575)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">1</text>
-	<text transform="matrix(0.92 0 0 -0.8 97.8503 397.575)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">6</text>
+	<text transform="matrix(0.92 0 0 -0.8 97.8496 397.575)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">6</text>
 	<text transform="matrix(0.92 0 0 -0.8 90.3902 390.425)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">2</text>
 	<text transform="matrix(0.92 0 0 -0.8 92.8808 390.425)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">3</text>
 	<text transform="matrix(0.92 0 0 -0.8 95.3699 390.425)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">1</text>
-	<text transform="matrix(0.92 0 0 -0.8 97.8503 390.425)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">8</text>
+	<text transform="matrix(0.92 0 0 -0.8 97.8496 390.425)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">8</text>
 	<text transform="matrix(0.92 0 0 -0.8 89.7402 382.0945)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">2</text>
 	<text transform="matrix(0.92 0 0 -0.8 92.2308 382.0945)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">3</text>
 	<text transform="matrix(0.92 0 0 -0.8 94.7199 382.0945)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">2</text>
@@ -1060,15 +1060,15 @@
 	<text transform="matrix(0.92 0 0 -0.8 91.6308 367.9648)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">3</text>
 	<text transform="matrix(0.92 0 0 -0.8 94.1105 367.9648)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">2</text>
 	<text transform="matrix(0.92 0 0 -0.8 96.6011 367.9648)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">4</text>
-	<text transform="matrix(0.92 0 0 -0.8 99.0902 367.9648)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">†</text>
+	<text transform="matrix(0.92 0 0 -0.8 99.0894 367.9648)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">†</text>
 	<text transform="matrix(0.92 0 0 -0.8 90.3808 360.8148)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">2</text>
 	<text transform="matrix(0.92 0 0 -0.8 92.8699 360.8148)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">3</text>
 	<text transform="matrix(0.92 0 0 -0.8 95.3605 360.8148)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">2</text>
-	<text transform="matrix(0.92 0 0 -0.8 97.8503 360.8148)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">6</text>
+	<text transform="matrix(0.92 0 0 -0.8 97.8496 360.8148)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">6</text>
 	<text transform="matrix(0.92 0 0 -0.8 90.3808 353.6656)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">2</text>
 	<text transform="matrix(0.92 0 0 -0.8 92.8699 353.6656)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">3</text>
 	<text transform="matrix(0.92 0 0 -0.8 95.3605 353.6656)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">2</text>
-	<text transform="matrix(0.92 0 0 -0.8 97.8503 353.6656)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">8</text>
+	<text transform="matrix(0.92 0 0 -0.8 97.8496 353.6656)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">8</text>
 	<text transform="matrix(0.92 0 0 -0.8 88.7902 346.1758)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">2</text>
 	<text transform="matrix(0.92 0 0 -0.8 91.2808 346.1758)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">3</text>
 	<text transform="matrix(0.92 0 0 -0.8 93.7699 346.1758)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">3</text>
@@ -1077,21 +1077,21 @@
 	<text transform="matrix(0.92 0 0 -0.8 90.3808 339.3758)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">2</text>
 	<text transform="matrix(0.92 0 0 -0.8 92.8699 339.3758)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">3</text>
 	<text transform="matrix(0.92 0 0 -0.8 95.3605 339.3758)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">3</text>
-	<text transform="matrix(0.92 0 0 -0.8 97.8503 339.3758)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">2</text>
+	<text transform="matrix(0.92 0 0 -0.8 97.8496 339.3758)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">2</text>
 	<text transform="matrix(0.92 0 0 -0.8 90.3808 332.225)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">2</text>
 	<text transform="matrix(0.92 0 0 -0.8 92.8699 332.225)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">3</text>
 	<text transform="matrix(0.92 0 0 -0.8 95.3605 332.225)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">3</text>
-	<text transform="matrix(0.92 0 0 -0.8 97.8503 332.225)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">4</text>
+	<text transform="matrix(0.92 0 0 -0.8 97.8496 332.225)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">4</text>
 	<text transform="matrix(0.92 0 0 -0.8 89.1402 325.0844)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">2</text>
 	<text transform="matrix(0.92 0 0 -0.8 91.6308 325.0844)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">3</text>
 	<text transform="matrix(0.92 0 0 -0.8 94.1105 325.0844)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">3</text>
 	<text transform="matrix(0.92 0 0 -0.8 96.6011 325.0844)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">6</text>
-	<text transform="matrix(0.92 0 0 -0.8 99.0902 325.0844)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">†</text>
+	<text transform="matrix(0.92 0 0 -0.8 99.0894 325.0844)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">†</text>
 	<text transform="matrix(0.92 0 0 -0.8 89.1402 317.9344)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">2</text>
 	<text transform="matrix(0.92 0 0 -0.8 91.6308 317.9344)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">3</text>
 	<text transform="matrix(0.92 0 0 -0.8 94.1105 317.9344)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">3</text>
 	<text transform="matrix(0.92 0 0 -0.8 96.6011 317.9344)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">8</text>
-	<text transform="matrix(0.92 0 0 -0.8 99.0902 317.9344)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">†</text>
+	<text transform="matrix(0.92 0 0 -0.8 99.0894 317.9344)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">†</text>
 	<text transform="matrix(0.92 0 0 -0.8 90.2011 305.5641)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">2</text>
 	<text transform="matrix(0.92 0 0 -0.8 92.6902 305.5641)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">3</text>
 	<text transform="matrix(0.92 0 0 -0.8 95.1808 305.5641)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">4</text>
@@ -1106,37 +1106,37 @@
 	<text transform="matrix(0.92 0 0 -0.8 97.6699 282.5844)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">8</text>
 	<text transform="matrix(0.92 0 0 -0.8 89.4199 268.0742)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">2</text>
 	<text transform="matrix(0.92 0 0 -0.8 91.9105 268.0742)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">3</text>
-	<text transform="matrix(0.92 0 0 -0.8 94.4003 268.0742)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">5</text>
+	<text transform="matrix(0.92 0 0 -0.8 94.3996 268.0742)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">5</text>
 	<text transform="matrix(0.92 0 0 -0.8 96.8902 268.0742)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">2</text>
 	<text transform="matrix(0.92 0 0 -0.8 99.3699 268.0742)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">†</text>
 	<text transform="matrix(0.92 0 0 -0.8 89.4199 260.9242)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">2</text>
 	<text transform="matrix(0.92 0 0 -0.8 91.9105 260.9242)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">3</text>
-	<text transform="matrix(0.92 0 0 -0.8 94.4003 260.9242)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">5</text>
+	<text transform="matrix(0.92 0 0 -0.8 94.3996 260.9242)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">5</text>
 	<text transform="matrix(0.92 0 0 -0.8 96.8902 260.9242)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">4</text>
 	<text transform="matrix(0.92 0 0 -0.8 99.3699 260.9242)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">†</text>
 	<text transform="matrix(0.92 0 0 -0.8 89.4199 253.7844)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">2</text>
 	<text transform="matrix(0.92 0 0 -0.8 91.9105 253.7844)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">3</text>
-	<text transform="matrix(0.92 0 0 -0.8 94.4003 253.7844)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">5</text>
+	<text transform="matrix(0.92 0 0 -0.8 94.3996 253.7844)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">5</text>
 	<text transform="matrix(0.92 0 0 -0.8 96.8902 253.7844)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">6</text>
 	<text transform="matrix(0.92 0 0 -0.8 99.3699 253.7844)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">†</text>
 	<text transform="matrix(0.92 0 0 -0.8 89.4199 246.6445)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">2</text>
 	<text transform="matrix(0.92 0 0 -0.8 91.9105 246.6445)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">3</text>
-	<text transform="matrix(0.92 0 0 -0.8 94.4003 246.6445)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">5</text>
+	<text transform="matrix(0.92 0 0 -0.8 94.3996 246.6445)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">5</text>
 	<text transform="matrix(0.92 0 0 -0.8 96.8902 246.6445)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">8</text>
 	<text transform="matrix(0.92 0 0 -0.8 99.3699 246.6445)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">†</text>
 	<text transform="matrix(0.92 0 0 -0.8 89.4199 239.4945)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">2</text>
 	<text transform="matrix(0.92 0 0 -0.8 91.9105 239.4945)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">3</text>
-	<text transform="matrix(0.92 0 0 -0.8 94.4003 239.4945)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">6</text>
+	<text transform="matrix(0.92 0 0 -0.8 94.3996 239.4945)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">6</text>
 	<text transform="matrix(0.92 0 0 -0.8 96.8902 239.4945)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">0</text>
 	<text transform="matrix(0.92 0 0 -0.8 99.3699 239.4945)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">†</text>
 	<text transform="matrix(0.92 0 0 -0.8 89.4199 232.3445)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">2</text>
 	<text transform="matrix(0.92 0 0 -0.8 91.9105 232.3445)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">3</text>
-	<text transform="matrix(0.92 0 0 -0.8 94.4003 232.3445)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">6</text>
+	<text transform="matrix(0.92 0 0 -0.8 94.3996 232.3445)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">6</text>
 	<text transform="matrix(0.92 0 0 -0.8 96.8902 232.3445)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">2</text>
 	<text transform="matrix(0.92 0 0 -0.8 99.3699 232.3445)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">†</text>
 	<text transform="matrix(0.92 0 0 -0.8 89.4199 225.1945)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">2</text>
 	<text transform="matrix(0.92 0 0 -0.8 91.9105 225.1945)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">3</text>
-	<text transform="matrix(0.92 0 0 -0.8 94.4003 225.1945)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">6</text>
+	<text transform="matrix(0.92 0 0 -0.8 94.3996 225.1945)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">6</text>
 	<text transform="matrix(0.92 0 0 -0.8 96.8902 225.1945)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">4</text>
 	<text transform="matrix(0.92 0 0 -0.8 99.3699 225.1945)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">†</text>
 	<text transform="matrix(0.92 0 0 -0.8 90.4308 218.0445)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">2</text>
@@ -1149,7 +1149,7 @@
 	<text transform="matrix(0.92 0 0 -0.8 97.8902 210.9039)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">8</text>
 	<text transform="matrix(0.92 0 0 -0.8 89.1511 203.7547)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">2</text>
 	<text transform="matrix(0.92 0 0 -0.8 91.6402 203.7547)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">3</text>
-	<text transform="matrix(0.92 0 0 -0.8 94.13 203.7547)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">7</text>
+	<text transform="matrix(0.92 0 0 -0.8 94.1292 203.7547)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">7</text>
 	<text transform="matrix(0.92 0 0 -0.8 96.6199 203.7547)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">0</text>
 	<text transform="matrix(0.92 0 0 -0.8 99.1105 203.7547)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">†</text>
 	<text transform="matrix(0.92 0 0 -0.8 89.0699 196.3242)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">2</text>
@@ -1159,17 +1159,17 @@
 	<text transform="matrix(0.92 0 0 -0.8 99.0308 196.3242)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">†</text>
 	<text transform="matrix(0.92 0 0 -0.8 89.1511 189.4648)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">2</text>
 	<text transform="matrix(0.92 0 0 -0.8 91.6402 189.4648)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">3</text>
-	<text transform="matrix(0.92 0 0 -0.8 94.13 189.4648)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">7</text>
+	<text transform="matrix(0.92 0 0 -0.8 94.1292 189.4648)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">7</text>
 	<text transform="matrix(0.92 0 0 -0.8 96.6199 189.4648)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">4</text>
 	<text transform="matrix(0.92 0 0 -0.8 99.1105 189.4648)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">†</text>
 	<text transform="matrix(0.92 0 0 -0.8 89.1511 182.3148)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">2</text>
 	<text transform="matrix(0.92 0 0 -0.8 91.6402 182.3148)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">3</text>
-	<text transform="matrix(0.92 0 0 -0.8 94.13 182.3148)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">7</text>
+	<text transform="matrix(0.92 0 0 -0.8 94.1292 182.3148)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">7</text>
 	<text transform="matrix(0.92 0 0 -0.8 96.6199 182.3148)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">6</text>
 	<text transform="matrix(0.92 0 0 -0.8 99.1105 182.3148)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">†</text>
 	<text transform="matrix(0.92 0 0 -0.8 89.1511 175.1742)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">2</text>
 	<text transform="matrix(0.92 0 0 -0.8 91.6402 175.1742)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">3</text>
-	<text transform="matrix(0.92 0 0 -0.8 94.13 175.1742)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">7</text>
+	<text transform="matrix(0.92 0 0 -0.8 94.1292 175.1742)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">7</text>
 	<text transform="matrix(0.92 0 0 -0.8 96.6199 175.1742)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">8</text>
 	<text transform="matrix(0.92 0 0 -0.8 99.1105 175.1742)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">†</text>
 	<text transform="matrix(0.92 0 0 -0.8 26.0249 247.1047)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">2</text>
@@ -1204,27 +1204,27 @@
 	<text transform="matrix(0.92 0 0 -0.8 28.514 197.0844)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">6</text>
 	<text transform="matrix(0.92 0 0 -0.8 31.0039 197.0844)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">7</text>
 	<text transform="matrix(0.92 0 0 -0.8 33.4929 197.0844)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">3</text>
-	<text transform="matrix(0.92 0 0 -0.8 70.0886 253.6945)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">2</text>
+	<text transform="matrix(0.92 0 0 -0.8 70.0878 253.6945)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">2</text>
 	<text transform="matrix(0.92 0 0 -0.8 72.5777 253.6945)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">3</text>
 	<text transform="matrix(0.92 0 0 -0.8 75.0699 253.6945)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">5</text>
 	<text transform="matrix(0.92 0 0 -0.8 77.5589 253.6945)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">7</text>
-	<text transform="matrix(0.92 0 0 -0.8 70.0886 246.5547)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">2</text>
+	<text transform="matrix(0.92 0 0 -0.8 70.0878 246.5547)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">2</text>
 	<text transform="matrix(0.92 0 0 -0.8 72.5777 246.5547)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">3</text>
 	<text transform="matrix(0.92 0 0 -0.8 75.0699 246.5547)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">5</text>
 	<text transform="matrix(0.92 0 0 -0.8 77.5589 246.5547)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">9</text>
-	<text transform="matrix(0.92 0 0 -0.8 70.0886 239.4047)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">2</text>
+	<text transform="matrix(0.92 0 0 -0.8 70.0878 239.4047)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">2</text>
 	<text transform="matrix(0.92 0 0 -0.8 72.5777 239.4047)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">3</text>
 	<text transform="matrix(0.92 0 0 -0.8 75.0699 239.4047)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">6</text>
 	<text transform="matrix(0.92 0 0 -0.8 77.5589 239.4047)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">1</text>
-	<text transform="matrix(0.92 0 0 -0.8 70.0886 232.2539)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">2</text>
+	<text transform="matrix(0.92 0 0 -0.8 70.0878 232.2539)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">2</text>
 	<text transform="matrix(0.92 0 0 -0.8 72.5777 232.2539)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">3</text>
 	<text transform="matrix(0.92 0 0 -0.8 75.0699 232.2539)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">6</text>
 	<text transform="matrix(0.92 0 0 -0.8 77.5589 232.2539)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">3</text>
-	<text transform="matrix(0.92 0 0 -0.8 70.0886 217.9641)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">2</text>
+	<text transform="matrix(0.92 0 0 -0.8 70.0878 217.9641)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">2</text>
 	<text transform="matrix(0.92 0 0 -0.8 72.5777 217.9641)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">3</text>
 	<text transform="matrix(0.92 0 0 -0.8 75.0699 217.9641)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">6</text>
 	<text transform="matrix(0.92 0 0 -0.8 77.5589 217.9641)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">7</text>
-	<text transform="matrix(0.92 0 0 -0.8 70.0886 210.8141)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">2</text>
+	<text transform="matrix(0.92 0 0 -0.8 70.0878 210.8141)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">2</text>
 	<text transform="matrix(0.92 0 0 -0.8 72.5777 210.8141)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">3</text>
 	<text transform="matrix(0.92 0 0 -0.8 75.0699 210.8141)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">6</text>
 	<text transform="matrix(0.92 0 0 -0.8 77.5589 210.8141)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">9</text>
@@ -1245,23 +1245,23 @@
 	<text transform="matrix(0.92 0 0 -0.8 31.3914 340.0953)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">3</text>
 	<text transform="matrix(0.92 0 0 -0.8 33.8812 340.0953)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">3</text>
 	<text transform="matrix(0.92 0 0 -0.8 70.4386 368.7648)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">2</text>
-	<text transform="matrix(0.92 0 0 -0.8 72.9269 368.7648)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">3</text>
+	<text transform="matrix(0.92 0 0 -0.8 72.9261 368.7648)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">3</text>
 	<text transform="matrix(0.92 0 0 -0.8 75.4152 368.7648)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">2</text>
 	<text transform="matrix(0.92 0 0 -0.8 77.9066 368.7648)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">5</text>
 	<text transform="matrix(0.92 0 0 -0.8 70.4386 361.6148)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">2</text>
-	<text transform="matrix(0.92 0 0 -0.8 72.9269 361.6148)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">3</text>
+	<text transform="matrix(0.92 0 0 -0.8 72.9261 361.6148)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">3</text>
 	<text transform="matrix(0.92 0 0 -0.8 75.4152 361.6148)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">2</text>
 	<text transform="matrix(0.92 0 0 -0.8 77.9066 361.6148)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">7</text>
 	<text transform="matrix(0.92 0 0 -0.8 70.4386 354.4758)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">2</text>
-	<text transform="matrix(0.92 0 0 -0.8 72.9269 354.4758)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">3</text>
+	<text transform="matrix(0.92 0 0 -0.8 72.9261 354.4758)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">3</text>
 	<text transform="matrix(0.92 0 0 -0.8 75.4152 354.4758)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">2</text>
 	<text transform="matrix(0.92 0 0 -0.8 77.9066 354.4758)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">9</text>
 	<text transform="matrix(0.92 0 0 -0.8 70.4386 347.3258)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">2</text>
-	<text transform="matrix(0.92 0 0 -0.8 72.9269 347.3258)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">3</text>
+	<text transform="matrix(0.92 0 0 -0.8 72.9261 347.3258)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">3</text>
 	<text transform="matrix(0.92 0 0 -0.8 75.4152 347.3258)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">3</text>
 	<text transform="matrix(0.92 0 0 -0.8 77.9066 347.3258)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">1</text>
 	<text transform="matrix(0.92 0 0 -0.8 70.4386 340.1852)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">2</text>
-	<text transform="matrix(0.92 0 0 -0.8 72.9269 340.1852)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">3</text>
+	<text transform="matrix(0.92 0 0 -0.8 72.9261 340.1852)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">3</text>
 	<text transform="matrix(0.92 0 0 -0.8 75.4152 340.1852)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">3</text>
 	<text transform="matrix(0.92 0 0 -0.8 77.9066 340.1852)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">3</text>
 	<text transform="matrix(0.92 0 0 -0.8 58.423 433.6953)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">2</text>
@@ -1411,60 +1411,60 @@
 	<text transform="matrix(0.92 0 0 -0.8 8.5648 575.8156)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">5</text>
 	<text transform="matrix(0.92 0 0 -0.8 11.0539 575.8156)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">6</text>
 	<text transform="matrix(0.92 0 0 -0.8 13.5437 575.8156)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">8</text>
-	<text transform="matrix(0.92 0 0 -0.8 89.98 669.9461)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">2</text>
+	<text transform="matrix(0.92 0 0 -0.8 89.9792 669.9461)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">2</text>
 	<text transform="matrix(0.92 0 0 -0.8 92.4699 669.9461)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">2</text>
 	<text transform="matrix(0.92 0 0 -0.8 94.9605 669.9461)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">4</text>
 	<text transform="matrix(0.92 0 0 -0.8 97.4511 669.9461)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">0</text>
-	<text transform="matrix(0.92 0 0 -0.8 89.98 662.7961)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">2</text>
+	<text transform="matrix(0.92 0 0 -0.8 89.9792 662.7961)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">2</text>
 	<text transform="matrix(0.92 0 0 -0.8 92.4699 662.7961)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">2</text>
 	<text transform="matrix(0.92 0 0 -0.8 94.9605 662.7961)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">4</text>
 	<text transform="matrix(0.92 0 0 -0.8 97.4511 662.7961)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">2</text>
-	<text transform="matrix(0.92 0 0 -0.8 89.98 655.6461)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">2</text>
+	<text transform="matrix(0.92 0 0 -0.8 89.9792 655.6461)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">2</text>
 	<text transform="matrix(0.92 0 0 -0.8 92.4699 655.6461)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">2</text>
 	<text transform="matrix(0.92 0 0 -0.8 94.9605 655.6461)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">4</text>
 	<text transform="matrix(0.92 0 0 -0.8 97.4511 655.6461)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">4</text>
-	<text transform="matrix(0.92 0 0 -0.8 89.98 648.4961)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">2</text>
+	<text transform="matrix(0.92 0 0 -0.8 89.9792 648.4961)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">2</text>
 	<text transform="matrix(0.92 0 0 -0.8 92.4699 648.4961)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">2</text>
 	<text transform="matrix(0.92 0 0 -0.8 94.9605 648.4961)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">4</text>
 	<text transform="matrix(0.92 0 0 -0.8 97.4511 648.4961)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">6</text>
-	<text transform="matrix(0.92 0 0 -0.8 89.98 641.3563)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">2</text>
+	<text transform="matrix(0.92 0 0 -0.8 89.9792 641.3563)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">2</text>
 	<text transform="matrix(0.92 0 0 -0.8 92.4699 641.3563)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">2</text>
 	<text transform="matrix(0.92 0 0 -0.8 94.9605 641.3563)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">4</text>
 	<text transform="matrix(0.92 0 0 -0.8 97.4511 641.3563)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">8</text>
 	<text transform="matrix(0.92 0 0 -0.8 88.9699 634.2062)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">2</text>
 	<text transform="matrix(0.92 0 0 -0.8 91.4605 634.2062)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">2</text>
-	<text transform="matrix(0.92 0 0 -0.8 93.9503 634.2062)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">5</text>
+	<text transform="matrix(0.92 0 0 -0.8 93.9496 634.2062)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">5</text>
 	<text transform="matrix(0.92 0 0 -0.8 96.4402 634.2062)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">0</text>
 	<text transform="matrix(0.92 0 0 -0.8 98.9308 634.2062)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">†</text>
 	<text transform="matrix(0.92 0 0 -0.8 88.9699 627.0563)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">2</text>
 	<text transform="matrix(0.92 0 0 -0.8 91.4605 627.0563)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">2</text>
-	<text transform="matrix(0.92 0 0 -0.8 93.9503 627.0563)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">5</text>
+	<text transform="matrix(0.92 0 0 -0.8 93.9496 627.0563)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">5</text>
 	<text transform="matrix(0.92 0 0 -0.8 96.4402 627.0563)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">2</text>
 	<text transform="matrix(0.92 0 0 -0.8 98.9308 627.0563)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">†</text>
-	<text transform="matrix(0.92 0 0 -0.8 89.98 619.9062)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">2</text>
+	<text transform="matrix(0.92 0 0 -0.8 89.9792 619.9062)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">2</text>
 	<text transform="matrix(0.92 0 0 -0.8 92.4699 619.9062)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">2</text>
 	<text transform="matrix(0.92 0 0 -0.8 94.9605 619.9062)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">5</text>
 	<text transform="matrix(0.92 0 0 -0.8 97.4511 619.9062)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">4</text>
-	<text transform="matrix(0.92 0 0 -0.8 89.98 612.7656)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">2</text>
+	<text transform="matrix(0.92 0 0 -0.8 89.9792 612.7656)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">2</text>
 	<text transform="matrix(0.92 0 0 -0.8 92.4699 612.7656)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">2</text>
 	<text transform="matrix(0.92 0 0 -0.8 94.9605 612.7656)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">5</text>
 	<text transform="matrix(0.92 0 0 -0.8 97.4511 612.7656)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">6</text>
-	<text transform="matrix(0.92 0 0 -0.8 89.98 605.6156)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">2</text>
+	<text transform="matrix(0.92 0 0 -0.8 89.9792 605.6156)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">2</text>
 	<text transform="matrix(0.92 0 0 -0.8 92.4699 605.6156)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">2</text>
 	<text transform="matrix(0.92 0 0 -0.8 94.9605 605.6156)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">5</text>
 	<text transform="matrix(0.92 0 0 -0.8 97.4511 605.6156)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">8</text>
 	<text transform="matrix(0.92 0 0 -0.8 88.9699 598.4758)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">2</text>
 	<text transform="matrix(0.92 0 0 -0.8 91.4605 598.4758)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">2</text>
-	<text transform="matrix(0.92 0 0 -0.8 93.9503 598.4758)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">6</text>
+	<text transform="matrix(0.92 0 0 -0.8 93.9496 598.4758)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">6</text>
 	<text transform="matrix(0.92 0 0 -0.8 96.4402 598.4758)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">0</text>
 	<text transform="matrix(0.92 0 0 -0.8 98.9308 598.4758)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">†</text>
-	<text transform="matrix(0.92 0 0 -0.8 89.98 591.3258)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">2</text>
+	<text transform="matrix(0.92 0 0 -0.8 89.9792 591.3258)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">2</text>
 	<text transform="matrix(0.92 0 0 -0.8 92.4699 591.3258)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">2</text>
 	<text transform="matrix(0.92 0 0 -0.8 94.9605 591.3258)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">6</text>
 	<text transform="matrix(0.92 0 0 -0.8 97.4511 591.3258)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">2</text>
 	<text transform="matrix(0.92 0 0 -0.8 88.9699 584.1758)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">2</text>
 	<text transform="matrix(0.92 0 0 -0.8 91.4605 584.1758)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">2</text>
-	<text transform="matrix(0.92 0 0 -0.8 93.9503 584.1758)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">6</text>
+	<text transform="matrix(0.92 0 0 -0.8 93.9496 584.1758)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">6</text>
 	<text transform="matrix(0.92 0 0 -0.8 96.4402 584.1758)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">4</text>
 	<text transform="matrix(0.92 0 0 -0.8 98.9308 584.1758)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">†</text>
 	<text transform="matrix(0.92 0 0 -0.8 90.2902 576.736)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">2</text>
@@ -1557,14 +1557,14 @@
 	<text transform="matrix(0.92 0 0 -0.8 14.8312 175.7242)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">†</text>
 	<text transform="matrix(0.92 0 0 -0.8 89.4308 275.2148)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">2</text>
 	<text transform="matrix(0.92 0 0 -0.8 91.9105 275.2148)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">3</text>
-	<text transform="matrix(0.92 0 0 -0.8 94.4003 275.2148)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">5</text>
+	<text transform="matrix(0.92 0 0 -0.8 94.3996 275.2148)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">5</text>
 	<text transform="matrix(0.92 0 0 -0.8 96.8902 275.2148)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">0</text>
 	<text transform="matrix(0.92 0 0 -0.8 99.3808 275.2148)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">†</text>
 	<text transform="matrix(0.92 0 0 -0.8 69.5808 225.5742)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">2</text>
 	<text transform="matrix(0.92 0 0 -0.8 72.073 225.5742)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">3</text>
 	<text transform="matrix(0.92 0 0 -0.8 74.5605 225.5742)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">6</text>
 	<text transform="matrix(0.92 0 0 -0.8 77.0527 225.5742)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">5</text>
-	<text transform="matrix(0.92 0 0 -0.8 79.5402 225.5742)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">†</text>
+	<text transform="matrix(0.92 0 0 -0.8 79.5394 225.5742)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">†</text>
 	<text transform="matrix(0.92 0 0 -0.8 95.3808 571.0258)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">†</text>
 	<text transform="matrix(0 0.92 0.8 0 81.0347 430.7359)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">†</text>
 	<text transform="matrix(0 0.92 0.8 0 81.4957 413.9547)" fill="#231F20" font-family="'ArialNarrow'" font-size="6.0944">†</text>

@@ -153,11 +153,11 @@
 			</g>
 			<g id="g13866" transform="translate(517.2 201.9)">
 				<path id="path13868" fill="#FFFFFF" d="M-465.47,74.815c0,3.414-1.116,6.806-2.752,8.789c-0.98,1.192-3.205,1.256-3.205,1.256
-					h-3.205V66.693h7.051c-0.01,0,2.1,3.431,2.1,8.122"/>
+					h-3.206V66.693h7.052c-0.01,0,2.1,3.431,2.1,8.122"/>
 			</g>
 			<g id="g13870" transform="translate(517.2 201.9)">
 				<path id="path13872" fill="none" stroke="#918F90" d="M-465.47,74.815c0,3.414-1.116,6.806-2.752,8.789
-					c-0.98,1.192-3.205,1.256-3.205,1.256h-3.205V66.693h7.051c-0.01,0,2.1,3.431,2.1,8.122H-465.47z"/>
+					c-0.98,1.192-3.205,1.256-3.205,1.256h-3.206V66.693h7.052c-0.01,0,2.1,3.431,2.1,8.122H-465.47z"/>
 			</g>
 			<g id="g13874" transform="translate(532.12 194.58)">
 				<path id="path13876" fill="none" stroke="#918F90" stroke-width="0.5" d="M-465.47,74.816h-3.102
@@ -178,9 +178,9 @@
 					 M-472.374,116.381l3.624,1.711 M-472.89,117.241l3.441,1.972 M-473.407,118.113l3.167,2.159 M-470.54,120.952
 					c0.841-1.003,1.545-2.109,2.12-3.284l0.818-2.025c0.559-1.722,0.827-3.558,0.73-5.463c-0.061-1.292-0.305-2.539-0.67-3.731
 					c-0.789-2.762-2.522-4.769-3.428-5.727l-0.512-0.539l-2.841,2.722c0.581,0.608,1.37,1.697,1.81,2.408
-					c-0.509,0.528-0.491,1.328,0.062,1.822c0.28,0.248,0.641,0.37,1.003,0.373l-0.054,0.008c0.277,0.908,0.459,1.853,0.509,2.833
-					c0.07,1.339-0.109,2.628-0.468,3.85c-0.359,0.02-0.712,0.163-0.975,0.425c-0.523,0.525-0.486,1.323,0.053,1.82
-					c-0.398,0.736-1.112,1.867-1.655,2.506l3.016,2.566l0.47-0.569L-470.54,120.952z M-472.5,105.373l3.506-1.906 M-473.074,104.548
+					c-0.509,0.528-0.491,1.328,0.062,1.822c0.28,0.248,0.641,0.37,1.002,0.373l-0.054,0.008c0.277,0.908,0.459,1.853,0.509,2.833
+					c0.07,1.339-0.109,2.628-0.468,3.85c-0.359,0.02-0.713,0.163-0.975,0.425c-0.523,0.525-0.486,1.323,0.053,1.82
+					c-0.398,0.736-1.112,1.866-1.655,2.505l3.016,2.567l0.47-0.569L-470.54,120.952z M-472.5,105.373l3.506-1.906 M-473.074,104.548
 					l3.309-2.15 M-473.654,103.707l3.022-2.325"/>
 			</g>
 			<g id="g13878" transform="translate(520.14 239.08)">
@@ -198,7 +198,7 @@
 					c1.511,0,2.855,0.655,3.709,1.675 M-465.692,75.59c0.638,0.731,1.023,1.658,1.023,2.666c0,0.825-0.259,1.597-0.705,2.252
 					 M-457.083,101.518c-1.102,1.242-2.822,2.042-4.745,2.042c-1.779,0-3.379-0.681-4.48-1.761 M-458.247,101.168
 					c-0.886,0.864-2.163,1.403-3.583,1.403c-1.288,0-2.453-0.442-3.318-1.159 M-458.497,100.303
-					c-0.848,0.787-2.027,1.275-3.33,1.275c-1.241,0-2.368-0.439-3.206-1.159"/>
+					c-0.848,0.787-2.027,1.275-3.33,1.275c-1.241,0-2.368-0.439-3.205-1.159"/>
 			</g>
 			<g id="g13886" transform="translate(517.74 239.82)">
 				<path id="path13888" fill="#FFFFFF" stroke="#918F90" stroke-width="0.5" d="M-465.47,74.816
@@ -246,24 +246,24 @@
 			</g>
 			<g id="g13930" transform="translate(512.9 88.749)">
 				<path id="path13932" fill="#FFFFFF" d="M-465.47,74.815c0-0.2,0.016-0.395,0.029-0.592c-0.18-0.047-0.353-0.106-0.545-0.139
-					c-0.355-0.058-0.72-0.089-1.098-0.089c-0.373,0-0.74,0.031-1.091,0.089c-0.352,0.061-0.695,0.15-1.02,0.258
-					c-0.323,0.114-0.636,0.253-0.924,0.412l-1.602-2.884c0.333-0.155,0.677-0.294,1.03-0.419c0.553-0.195,1.138-0.342,1.741-0.442
-					c0.602-0.097,1.23-0.155,1.866-0.155c0.642,0,1.267,0.055,1.873,0.155c0.241,0.042,0.473,0.095,0.705,0.15
+					c-0.355-0.058-0.72-0.089-1.098-0.089c-0.373,0-0.741,0.031-1.091,0.089c-0.352,0.061-0.695,0.15-1.02,0.258
+					c-0.323,0.114-0.636,0.253-0.924,0.412l-1.602-2.884c0.334-0.155,0.677-0.294,1.03-0.419c0.553-0.195,1.138-0.342,1.741-0.442
+					c0.602-0.097,1.23-0.155,1.866-0.155c0.641,0,1.266,0.055,1.873,0.155c0.241,0.042,0.473,0.095,0.705,0.15
 					c1.248-2.208,3.589-3.705,6.28-3.705c2.688,0,5.03,1.494,6.275,3.705c0.234-0.055,0.468-0.108,0.707-0.15
-					c0.605-0.097,1.23-0.155,1.87-0.155c0.641,0,1.266,0.055,1.872,0.155c0.602,0.103,1.189,0.247,1.741,0.442
-					c0.354,0.122,0.698,0.261,1.027,0.419l-1.598,2.884c-0.288-0.159-0.598-0.298-0.925-0.412c-0.325-0.108-0.67-0.197-1.02-0.258
+					c0.605-0.097,1.23-0.155,1.87-0.155c0.641,0,1.266,0.055,1.873,0.155c0.602,0.103,1.189,0.247,1.741,0.442
+					c0.354,0.122,0.698,0.261,1.027,0.419l-1.598,2.884c-0.287-0.159-0.598-0.298-0.925-0.412c-0.325-0.108-0.67-0.197-1.02-0.258
 					c-0.355-0.058-0.716-0.089-1.095-0.089c-0.373,0-0.739,0.031-1.094,0.089c-0.19,0.033-0.365,0.092-0.545,0.139
 					c0.014,0.198,0.034,0.392,0.034,0.592c0,4.066-3.248,7.364-7.245,7.364c-4.02,0.002-7.259-3.298-7.259-7.364"/>
 			</g>
 			<g id="g13934" transform="translate(512.9 88.749)">
 				<path id="path13936" fill="none" stroke="#918F90" stroke-width="0.5" stroke-linejoin="round" d="M-465.47,74.815
 					c0-0.2,0.016-0.395,0.029-0.592c-0.18-0.047-0.353-0.106-0.545-0.139c-0.355-0.058-0.72-0.089-1.098-0.089
-					c-0.373,0-0.74,0.031-1.091,0.089c-0.352,0.061-0.695,0.15-1.02,0.258c-0.323,0.114-0.636,0.253-0.924,0.412l-1.602-2.884
-					c0.333-0.155,0.677-0.294,1.03-0.419c0.553-0.195,1.138-0.342,1.741-0.442c0.602-0.097,1.23-0.155,1.866-0.155
-					c0.642,0,1.267,0.055,1.873,0.155c0.241,0.042,0.473,0.095,0.705,0.15c1.248-2.208,3.589-3.705,6.28-3.705
+					c-0.373,0-0.741,0.031-1.091,0.089c-0.352,0.061-0.695,0.15-1.02,0.258c-0.323,0.114-0.636,0.253-0.924,0.412l-1.602-2.884
+					c0.334-0.155,0.677-0.294,1.03-0.419c0.553-0.195,1.138-0.342,1.741-0.442c0.602-0.097,1.23-0.155,1.866-0.155
+					c0.641,0,1.266,0.055,1.873,0.155c0.241,0.042,0.473,0.095,0.705,0.15c1.248-2.208,3.589-3.705,6.28-3.705
 					c2.688,0,5.03,1.494,6.275,3.705c0.234-0.055,0.468-0.108,0.707-0.15c0.605-0.097,1.23-0.155,1.87-0.155
-					c0.641,0,1.266,0.055,1.872,0.155c0.602,0.103,1.189,0.247,1.741,0.442c0.354,0.122,0.698,0.261,1.027,0.419l-1.598,2.884
-					c-0.288-0.159-0.598-0.298-0.925-0.412c-0.325-0.108-0.67-0.197-1.02-0.258c-0.355-0.058-0.716-0.089-1.095-0.089
+					c0.641,0,1.266,0.055,1.873,0.155c0.602,0.103,1.189,0.247,1.741,0.442c0.354,0.122,0.698,0.261,1.027,0.419l-1.598,2.884
+					c-0.287-0.159-0.598-0.298-0.925-0.412c-0.325-0.108-0.67-0.197-1.02-0.258c-0.355-0.058-0.716-0.089-1.095-0.089
 					c-0.373,0-0.739,0.031-1.094,0.089c-0.19,0.033-0.365,0.092-0.545,0.139c0.014,0.198,0.034,0.392,0.034,0.592
 					c0,4.066-3.248,7.364-7.245,7.364c-4.02,0.002-7.259-3.298-7.259-7.364H-465.47z"/>
 			</g>
@@ -292,7 +292,7 @@
 			</g>
 			<g id="g13950" transform="translate(512.1 82.045)">
 				<path id="path13952" fill="none" stroke="#918F90" stroke-width="0.5" d="M-463.11,78.112l1.06-3.164 M-464.13,77.837
-					l0.772-3.117 M-465.238,77.641l0.163-3.039 M-466.484,77.662l-0.034-3.033 M-467.727,77.694l-0.609-2.911 M-468.956,77.912
+					l0.772-3.117 M-465.238,77.641l0.162-3.039 M-466.484,77.662l-0.034-3.033 M-467.727,77.694l-0.609-2.911 M-468.956,77.912
 					l-0.814-2.773 M-470.22,78.305l-1.388-2.597"/>
 			</g>
 			<g id="g13954" transform="translate(524.73 85.622)">
@@ -300,7 +300,7 @@
 					c0.341-0.055,0.702-0.092,1.081-0.108c0.376-0.014,0.77-0.114,1.177-0.084c0.405,0.028,0.827-0.047,1.259,0.012
 					c0.426,0.058,0.84,0.141,1.24,0.233c0.4,0.1,0.889,0.217,1.25,0.347c0.36,0.133,0.697,0.283,1.017,0.442l1.637-2.434
 					c-0.339-0.166-0.69-0.322-1.055-0.469c-0.573-0.222-1.291-0.425-1.923-0.592c-0.63-0.169-1.289-0.308-1.966-0.408
-					c-0.68-0.097-1.339-0.092-1.984-0.139c-0.641-0.044-1.267,0.047-1.869,0.078c-0.597,0.03-1.17,0.094-1.712,0.197
+					c-0.68-0.097-1.339-0.092-1.984-0.139c-0.641-0.044-1.267,0.047-1.87,0.078c-0.597,0.03-1.169,0.094-1.712,0.197
 					c-0.544,0.1-1.052,0.133-1.523,0.303l1.36,3.205h0.024V74.817L-465.47,74.817z"/>
 			</g>
 			<g id="g13958" transform="translate(524.73 85.622)">
@@ -309,7 +309,7 @@
 					c0.376-0.014,0.77-0.114,1.177-0.084c0.405,0.028,0.827-0.047,1.259,0.012c0.426,0.058,0.84,0.141,1.24,0.233
 					c0.4,0.1,0.889,0.217,1.25,0.347c0.36,0.133,0.697,0.283,1.017,0.442l1.637-2.434c-0.339-0.166-0.69-0.322-1.055-0.469
 					c-0.573-0.222-1.291-0.425-1.923-0.592c-0.63-0.169-1.289-0.308-1.966-0.408c-0.68-0.097-1.339-0.092-1.984-0.139
-					c-0.641-0.044-1.267,0.047-1.869,0.078c-0.597,0.03-1.17,0.094-1.712,0.197c-0.544,0.1-1.052,0.133-1.523,0.303l1.36,3.205
+					c-0.641-0.044-1.267,0.047-1.87,0.078c-0.597,0.03-1.169,0.094-1.712,0.197c-0.544,0.1-1.052,0.133-1.523,0.303l1.36,3.205
 					h0.024V74.817L-465.47,74.817z"/>
 			</g>
 			<g id="g13962" transform="translate(528.08 82.045)">
@@ -320,13 +320,13 @@
 			<g id="g13966" transform="translate(524.86 81.885)">
 				<path id="path13968" fill="#FFFFFF" d="M-465.47,74.815c-0.418,0.078-0.805,0.13-1.184,0.222c-1.045-0.602-2.25-0.95-3.534-0.95
 					c-1.302,0-2.52,0.356-3.572,0.964c-0.391-0.103-0.808-0.155-1.246-0.236c-0.478-0.086-0.99-0.139-1.51-0.17
-					c1.411-1.761,3.681-2.911,6.252-2.911c2.573,0,4.848,1.15,6.255,2.914c-0.5,0.033-0.988,0.083-1.45,0.17"/>
+					c1.412-1.761,3.681-2.911,6.252-2.911c2.573,0,4.848,1.15,6.255,2.914c-0.5,0.033-0.987,0.083-1.45,0.17"/>
 			</g>
 			<g id="g13970" transform="translate(524.86 81.885)">
 				<path id="path13972" fill="none" stroke="#918F90" stroke-linejoin="round" d="M-465.47,74.815
 					c-0.418,0.078-0.805,0.13-1.184,0.222c-1.045-0.602-2.25-0.95-3.534-0.95c-1.302,0-2.52,0.356-3.572,0.964
-					c-0.391-0.103-0.808-0.155-1.246-0.236c-0.478-0.086-0.99-0.139-1.51-0.17c1.411-1.761,3.681-2.911,6.252-2.911
-					c2.573,0,4.848,1.15,6.255,2.914c-0.5,0.033-0.988,0.083-1.45,0.17h-0.012L-465.47,74.815L-465.47,74.815z"/>
+					c-0.391-0.103-0.808-0.155-1.246-0.236c-0.478-0.086-0.99-0.139-1.51-0.17c1.412-1.761,3.681-2.911,6.252-2.911
+					c2.573,0,4.848,1.15,6.255,2.914c-0.5,0.033-0.987,0.083-1.45,0.17h-0.012L-465.47,74.815L-465.47,74.815z"/>
 			</g>
 			<g id="g13974" transform="translate(510.33 138.57)">
 				<path id="path13976" fill="#FFFFFF" d="M-465.47,74.816l-0.151-0.111c0.171-0.117,0.347-0.234,0.505-0.378
@@ -337,13 +337,13 @@
 					c0-1.127-0.47-2.256-1.413-3.116c-0.569-0.52-1.254-0.867-1.97-1.069c-1.982-0.978-3.331-2.875-3.331-5.075
 					c0-2.214,1.359-4.136,3.357-5.106l0.105,0.186c0.288-0.158,0.602-0.297,0.925-0.411c0.324-0.112,0.667-0.197,1.021-0.255
 					c0.352-0.059,0.717-0.092,1.091-0.092c0.379,0,0.743,0.033,1.098,0.092c0.19,0.03,0.364,0.091,0.545,0.136
-					c-0.012,0.194-0.03,0.391-0.03,0.591c0,4.067,3.244,7.361,7.248,7.361c3.995,0,7.241-3.294,7.241-7.361
+					c-0.012,0.194-0.03,0.391-0.03,0.591c0,4.067,3.245,7.361,7.248,7.361c3.995,0,7.241-3.294,7.241-7.361
 					c0-0.2-0.018-0.397-0.032-0.591c0.182-0.048,0.357-0.109,0.548-0.136c0.355-0.059,0.72-0.092,1.095-0.092
 					c0.38,0,0.741,0.033,1.095,0.092c0.352,0.058,0.695,0.144,1.02,0.255c0.327,0.114,0.637,0.253,0.927,0.411l0.055-0.105
 					c1.909,0.997,3.202,2.872,3.202,5.027c0,2.2-1.352,4.095-3.327,5.075c-0.723,0.203-1.405,0.548-1.973,1.069
 					c-0.945,0.858-1.414,1.988-1.414,3.116s0.47,2.253,1.414,3.117c0.934,0.852,2.155,1.28,3.377,1.286
-					c2.655,2.467,4.505,5.659,5.123,9.239c-0.78,0.663-1.27,1.595-1.27,2.642c0,1.05,0.494,1.986,1.281,2.65
-					c-0.584,3.383-2.263,6.436-4.695,8.839c-0.271-0.042-0.541-0.07-0.812-0.07c-1.234,0-2.467,0.428-3.413,1.288
+					c2.655,2.467,4.505,5.659,5.123,9.239c-0.78,0.663-1.27,1.595-1.27,2.642c0,1.05,0.494,1.986,1.28,2.65
+					c-0.584,3.383-2.262,6.436-4.695,8.839c-0.271-0.042-0.541-0.07-0.812-0.07c-1.234,0-2.466,0.428-3.412,1.288
 					c-0.943,0.862-1.411,1.992-1.411,3.117c0,1.128,0.468,2.256,1.411,3.117c0.17,0.153,0.359,0.28,0.546,0.405l-0.152,0.109
 					c-2.852,1.077-6.209,1.708-9.82,1.708c-3.64,0-7-0.631-9.85-1.711"/>
 			</g>
@@ -356,13 +356,13 @@
 					c0-1.127-0.47-2.256-1.413-3.116c-0.569-0.52-1.254-0.867-1.97-1.069c-1.982-0.978-3.331-2.875-3.331-5.075
 					c0-2.214,1.359-4.136,3.357-5.106l0.105,0.186c0.288-0.158,0.602-0.297,0.925-0.411c0.324-0.112,0.667-0.197,1.021-0.255
 					c0.352-0.059,0.717-0.092,1.091-0.092c0.379,0,0.743,0.033,1.098,0.092c0.19,0.03,0.364,0.091,0.545,0.136
-					c-0.012,0.194-0.03,0.391-0.03,0.591c0,4.067,3.244,7.361,7.248,7.361c3.995,0,7.241-3.294,7.241-7.361
+					c-0.012,0.194-0.03,0.391-0.03,0.591c0,4.067,3.245,7.361,7.248,7.361c3.995,0,7.241-3.294,7.241-7.361
 					c0-0.2-0.018-0.397-0.032-0.591c0.182-0.048,0.357-0.109,0.548-0.136c0.355-0.059,0.72-0.092,1.095-0.092
 					c0.38,0,0.741,0.033,1.095,0.092c0.352,0.058,0.695,0.144,1.02,0.255c0.327,0.114,0.637,0.253,0.927,0.411l0.055-0.105
 					c1.909,0.997,3.202,2.872,3.202,5.027c0,2.2-1.352,4.095-3.327,5.075c-0.723,0.203-1.405,0.548-1.973,1.069
 					c-0.945,0.858-1.414,1.988-1.414,3.116s0.47,2.253,1.414,3.117c0.934,0.852,2.155,1.28,3.377,1.286
-					c2.655,2.467,4.505,5.659,5.123,9.239c-0.78,0.663-1.27,1.595-1.27,2.642c0,1.05,0.494,1.986,1.281,2.65
-					c-0.584,3.383-2.263,6.436-4.695,8.839c-0.271-0.042-0.541-0.07-0.812-0.07c-1.234,0-2.467,0.428-3.413,1.288
+					c2.655,2.467,4.505,5.659,5.123,9.239c-0.78,0.663-1.27,1.595-1.27,2.642c0,1.05,0.494,1.986,1.28,2.65
+					c-0.584,3.383-2.262,6.436-4.695,8.839c-0.271-0.042-0.541-0.07-0.812-0.07c-1.234,0-2.466,0.428-3.412,1.288
 					c-0.943,0.862-1.411,1.992-1.411,3.117c0,1.128,0.468,2.256,1.411,3.117c0.17,0.153,0.359,0.28,0.546,0.405l-0.152,0.109
 					c-2.852,1.077-6.209,1.708-9.82,1.708c-3.64,0-7-0.631-9.85-1.711H-465.47z"/>
 			</g>
@@ -590,22 +590,22 @@
 			</g>
 			<g id="g14180" transform="translate(517.12 282.22)">
 				<path id="path14182" fill="none" stroke="#918F90" stroke-width="0.5" stroke-linejoin="round" d="M-465.47,74.816
-					c-1.029-1.147-1.63-2.733-1.63-4.345c0-1.833,0.752-3.522,2.109-4.766l-2.332-2.131c-4.196,3.836-3.877,9.975-0.389,13.478
-					l2.24-2.236H-465.47z M-464.99,65.705l-2.332-2.131 M-465.752,66.606l-2.673-1.766 M-466.345,67.603l-2.945-1.355
+					c-1.029-1.147-1.63-2.733-1.63-4.345c0-1.833,0.752-3.522,2.109-4.766l-2.332-2.131c-4.195,3.836-3.877,9.975-0.389,13.478
+					l2.241-2.236H-465.47z M-464.99,65.705l-2.332-2.131 M-465.752,66.606l-2.673-1.766 M-466.345,67.603l-2.945-1.355
 					 M-466.75,68.676l-3.147-0.908 M-466.977,69.795l-3.262-0.441 M-466.989,70.93l-3.301,0.041 M-466.82,72.053l-3.248,0.52
 					 M-466.438,73.137l-3.118,0.983 M-465.886,74.155l-2.902,1.425"/>
 			</g>
 			<g id="g14184" transform="translate(515.49 277.87)">
 				<path id="path14186" fill="none" stroke="#918F90" stroke-linejoin="round" d="M-465.47,74.816c0-1.778,0.705-3.389,1.849-4.572
 					c0.855,1.294,1.344,2.733,1.344,4.252c0,1.662-0.582,3.228-1.6,4.617c-0.99-1.155-1.59-2.655-1.59-4.297H-465.47z
-					 M-466.23,81.751c-1.845-1.739-3.159-4.192-3.159-6.917c0-2.789,0.994-5.191,3.514-7.3"/>
+					 M-466.23,81.751c-1.845-1.739-3.159-4.192-3.159-6.917c0-2.789,0.995-5.191,3.514-7.3"/>
 			</g>
 			<g id="g14188" transform="translate(498.12 232.99)">
 				<path id="path14190" fill="none" stroke="#918F90" stroke-width="0.5" stroke-linejoin="round" d="M-465.47,74.814
-					c0.23-0.044,0.47-0.069,0.713-0.069c1.87,0,3.52,1.389,3.52,3.094c0,0.536-0.167,1.042-0.434,1.481
+					c0.23-0.044,0.47-0.069,0.713-0.069c1.87,0,3.52,1.389,3.52,3.094c0,0.536-0.166,1.042-0.434,1.481
 					c1.575,0.267,2.769,1.525,2.769,3.036c0,0.781-0.312,1.486-0.832,2.031l0.402,0.572c0.284-0.07,0.58-0.109,0.89-0.109
 					c1.872,0,3.386,1.387,3.386,3.095c0,0.342-0.073,0.661-0.186,0.969c1.091,0.517,1.838,1.542,1.838,2.737
-					c0,0.972-0.491,1.93-1.258,2.5l0.895-0.034v17.203h-3.438v-10.922h-15.941v12.93h4.534v1.759h-9.176 M-464.749,70.172
+					c0,0.972-0.491,1.93-1.258,2.5l0.895-0.034v17.203h-3.438v-10.922h-15.941v12.93h4.534v1.759h-9.177 M-464.749,70.172
 					c1.871,0,3.52-1.386,3.52-3.094c0-0.572-0.184-1.1-0.478-1.559c1.826-0.047,3.294-1.408,3.294-3.087
 					c0-1.108-0.642-2.069-1.601-2.619c0.36-0.492,0.571-1.078,0.571-1.714c0-1.711-1.515-3.097-3.388-3.097
 					c-0.362,0-0.704,0.07-1.03,0.166c-0.439,1.248-1.263,2.159-2.775,2.159c-1.188,0-2.332-0.606-2.935-1.456
@@ -633,11 +633,11 @@
 			</g>
 			<g id="g14208" transform="translate(502.91 237.73)">
 				<path id="path14210" fill="#FFFFFF" d="M-465.47,74.815c0,0.473-0.419,0.858-0.938,0.858c-0.52,0-0.94-0.384-0.94-0.858
-					c0-0.473,0.42-0.856,0.94-0.856s0.94,0.383,0.94,0.856"/>
+					c0-0.473,0.419-0.856,0.94-0.856c0.52,0,0.94,0.383,0.94,0.856"/>
 			</g>
 			<g id="g14212" transform="translate(502.91 237.73)">
 				<path id="path14214" fill="none" stroke="#918F90" stroke-width="0.5" d="M-465.47,74.815c0,0.473-0.419,0.858-0.938,0.858
-					c-0.52,0-0.94-0.384-0.94-0.858c0-0.473,0.42-0.856,0.94-0.856s0.94,0.383,0.94,0.856H-465.47z"/>
+					c-0.52,0-0.94-0.384-0.94-0.858c0-0.473,0.419-0.856,0.94-0.856c0.52,0,0.94,0.383,0.94,0.856H-465.47z"/>
 			</g>
 			<g id="g14216" transform="translate(498.74 233.27)">
 				<path id="path14218" fill="#FFFFFF" d="M-465.47,74.816c0,0.267-0.236,0.48-0.529,0.48c-0.288,0-0.527-0.213-0.527-0.48
@@ -671,7 +671,7 @@
 			<g id="g14244" transform="translate(509.11 246.54)">
 				<path id="path14246" fill="none" stroke="#918F90" stroke-width="0.5" d="M-465.47,74.814c0,0.473-0.42,0.856-0.934,0.856
 					c-0.523,0-0.943-0.383-0.943-0.856c0-0.477,0.42-0.858,0.943-0.858c0.51,0,0.93,0.383,0.93,0.858H-465.47z M-477.27,513.265
-					l1.241-1.133v-4.137h4.287c2.006-6.939,8.905-12.063,17.13-12.063c8.223,0,15.123,5.124,17.128,12.063h4.334v3.641l1.441,1.319"
+					l1.241-1.133v-4.137h4.287c2.006-6.939,8.905-12.063,17.13-12.063c8.223,0,15.123,5.124,17.127,12.063h4.334v3.641l1.441,1.319"
 					/>
 			</g>
 			<path id="path14248" fill="#FFFFFF" stroke="#918F90" stroke-width="0.5" stroke-linecap="round" stroke-linejoin="round" d="
@@ -710,7 +710,7 @@
 					c0,0.398,0.354,0.723,0.791,0.723c0.063,0,0.12-0.02,0.18-0.034c0.07,0.347,0.125,0.697,0.164,1.05
 					c-0.4,0.033-0.723,0.33-0.723,0.709c0,0.4,0.357,0.722,0.789,0.722c0.016,0,0.025-0.006,0.039-0.006v0.064
 					c0,0.294-0.021,0.589-0.039,0.883c-0.432,0-0.789,0.325-0.789,0.722c0,0.352,0.278,0.628,0.638,0.695
-					c-0.055,0.348-0.123,0.697-0.209,1.042c-0.013-0.002-0.034-0.011-0.052-0.011c-0.438,0-0.791,0.323-0.791,0.723
+					c-0.055,0.348-0.123,0.697-0.209,1.042c-0.012-0.002-0.034-0.011-0.052-0.011c-0.438,0-0.791,0.323-0.791,0.723
 					c0,0.291,0.195,0.541,0.466,0.652c-0.091,0.289-0.188,0.567-0.295,0.848c-0.048-0.009-0.087-0.023-0.135-0.023
 					c-0.436,0-0.79,0.32-0.79,0.719c0,0.255,0.148,0.466,0.365,0.597c-0.14,0.292-0.28,0.589-0.434,0.875
 					c-0.098-0.036-0.2-0.059-0.309-0.059c-0.438,0-0.791,0.325-0.791,0.725c0,0.244,0.141,0.45,0.345,0.581
@@ -721,96 +721,96 @@
 		</g>
 	</g>
 	<g id="pyramid-lounge">
-		<text transform="matrix(0.8 0 0 -0.8 43.4419 639.7168)" fill="#231F20" font-family="'ArialNarrow-Bold'" font-size="6.6427">P</text>
-		<text transform="matrix(0.8 0 0 -0.8 46.3958 639.7168)" fill="#231F20" font-family="'ArialNarrow-Bold'" font-size="6.6427">Y</text>
-		<text transform="matrix(0.8 0 0 -0.8 49.3509 639.7168)" fill="#231F20" font-family="'ArialNarrow-Bold'" font-size="6.6427">R</text>
-		<text transform="matrix(0.8 0 0 -0.8 52.3056 639.7168)" fill="#231F20" font-family="'ArialNarrow-Bold'" font-size="6.6427">A</text>
+		<text transform="matrix(0.8 0 0 -0.8 43.4415 639.7168)" fill="#231F20" font-family="'ArialNarrow-Bold'" font-size="6.6427">P</text>
+		<text transform="matrix(0.8 0 0 -0.8 46.3954 639.7168)" fill="#231F20" font-family="'ArialNarrow-Bold'" font-size="6.6427">Y</text>
+		<text transform="matrix(0.8 0 0 -0.8 49.3505 639.7168)" fill="#231F20" font-family="'ArialNarrow-Bold'" font-size="6.6427">R</text>
+		<text transform="matrix(0.8 0 0 -0.8 52.3052 639.7168)" fill="#231F20" font-family="'ArialNarrow-Bold'" font-size="6.6427">A</text>
 		<text transform="matrix(0.8 0 0 -0.8 55.5529 639.7168)" fill="#231F20" font-family="'ArialNarrow-Bold'" font-size="6.6427">M</text>
-		<text transform="matrix(0.8 0 0 -0.8 59.9786 639.7168)" fill="#231F20" font-family="'ArialNarrow-Bold'" font-size="6.6427">I</text>
+		<text transform="matrix(0.8 0 0 -0.8 59.9779 639.7168)" fill="#231F20" font-family="'ArialNarrow-Bold'" font-size="6.6427">I</text>
 		<text transform="matrix(0.8 0 0 -0.8 61.456 639.7168)" fill="#231F20" font-family="'ArialNarrow-Bold'" font-size="6.6427">D</text>
-		<text transform="matrix(0.8 0 0 -0.8 44.9189 634.2965)" fill="#231F20" font-family="'ArialNarrow-Bold'" font-size="6.6427">L</text>
-		<text transform="matrix(0.8 0 0 -0.8 47.2779 634.2965)" fill="#231F20" font-family="'ArialNarrow-Bold'" font-size="6.6427">O</text>
-		<text transform="matrix(0.8 0 0 -0.8 50.5247 634.2965)" fill="#231F20" font-family="'ArialNarrow-Bold'" font-size="6.6427">U</text>
-		<text transform="matrix(0.8 0 0 -0.8 53.7716 634.2965)" fill="#231F20" font-family="'ArialNarrow-Bold'" font-size="6.6427">N</text>
+		<text transform="matrix(0.8 0 0 -0.8 44.9185 634.2965)" fill="#231F20" font-family="'ArialNarrow-Bold'" font-size="6.6427">L</text>
+		<text transform="matrix(0.8 0 0 -0.8 47.2775 634.2965)" fill="#231F20" font-family="'ArialNarrow-Bold'" font-size="6.6427">O</text>
+		<text transform="matrix(0.8 0 0 -0.8 50.5243 634.2965)" fill="#231F20" font-family="'ArialNarrow-Bold'" font-size="6.6427">U</text>
+		<text transform="matrix(0.8 0 0 -0.8 53.7712 634.2965)" fill="#231F20" font-family="'ArialNarrow-Bold'" font-size="6.6427">N</text>
 		<text transform="matrix(0.8 0 0 -0.8 57.3169 634.2965)" fill="#231F20" font-family="'ArialNarrow-Bold'" font-size="6.6427">G</text>
 		<text transform="matrix(0.8 0 0 -0.8 60.5638 634.2965)" fill="#231F20" font-family="'ArialNarrow-Bold'" font-size="6.6427">E</text>
 	</g>
 	<g id="cafe-promenade">
-		<text transform="matrix(0.8 0 0 -0.8 32.3075 367.8879)" fill="#231F20" font-family="'ArialNarrow-Bold'" font-size="6.6427">C</text>
-		<text transform="matrix(0.8 0 0 -0.8 35.2626 367.8879)" fill="#231F20" font-family="'ArialNarrow-Bold'" font-size="6.6427">A</text>
-		<text transform="matrix(0.8 0 0 -0.8 38.5099 367.8879)" fill="#231F20" font-family="'ArialNarrow-Bold'" font-size="6.6427">F</text>
-		<text transform="matrix(0.8 0 0 -0.8 40.8697 367.8879)" fill="#231F20" font-family="'ArialNarrow-Bold'" font-size="6.6427">É</text>
-		<text transform="matrix(0.8 0 0 -0.8 23.4486 362.4558)" fill="#231F20" font-family="'ArialNarrow-Bold'" font-size="6.6427">P</text>
-		<text transform="matrix(0.8 0 0 -0.8 26.4036 362.4558)" fill="#231F20" font-family="'ArialNarrow-Bold'" font-size="6.6427">R</text>
-		<text transform="matrix(0.8 0 0 -0.8 29.3587 362.4558)" fill="#231F20" font-family="'ArialNarrow-Bold'" font-size="6.6427">O</text>
-		<text transform="matrix(0.8 0 0 -0.8 32.6056 362.4558)" fill="#231F20" font-family="'ArialNarrow-Bold'" font-size="6.6427">M</text>
-		<text transform="matrix(0.8 0 0 -0.8 37.0325 362.4558)" fill="#231F20" font-family="'ArialNarrow-Bold'" font-size="6.6427">E</text>
-		<text transform="matrix(0.8 0 0 -0.8 39.6896 362.4558)" fill="#231F20" font-family="'ArialNarrow-Bold'" font-size="6.6427">N</text>
-		<text transform="matrix(0.8 0 0 -0.8 43.2349 362.4558)" fill="#231F20" font-family="'ArialNarrow-Bold'" font-size="6.6427">A</text>
-		<text transform="matrix(0.8 0 0 -0.8 46.4818 362.4558)" fill="#231F20" font-family="'ArialNarrow-Bold'" font-size="6.6427">D</text>
-		<text transform="matrix(0.8 0 0 -0.8 49.7279 362.4558)" fill="#231F20" font-family="'ArialNarrow-Bold'" font-size="6.6427">E</text>
+		<text transform="matrix(0.8 0 0 -0.8 32.3072 367.8879)" fill="#231F20" font-family="'ArialNarrow-Bold'" font-size="6.6427">C</text>
+		<text transform="matrix(0.8 0 0 -0.8 35.2622 367.8879)" fill="#231F20" font-family="'ArialNarrow-Bold'" font-size="6.6427">A</text>
+		<text transform="matrix(0.8 0 0 -0.8 38.5095 367.8879)" fill="#231F20" font-family="'ArialNarrow-Bold'" font-size="6.6427">F</text>
+		<text transform="matrix(0.8 0 0 -0.8 40.8693 367.8879)" fill="#231F20" font-family="'ArialNarrow-Bold'" font-size="6.6427">É</text>
+		<text transform="matrix(0.8 0 0 -0.8 23.4482 362.455)" fill="#231F20" font-family="'ArialNarrow-Bold'" font-size="6.6427">P</text>
+		<text transform="matrix(0.8 0 0 -0.8 26.4032 362.455)" fill="#231F20" font-family="'ArialNarrow-Bold'" font-size="6.6427">R</text>
+		<text transform="matrix(0.8 0 0 -0.8 29.3583 362.455)" fill="#231F20" font-family="'ArialNarrow-Bold'" font-size="6.6427">O</text>
+		<text transform="matrix(0.8 0 0 -0.8 32.6052 362.455)" fill="#231F20" font-family="'ArialNarrow-Bold'" font-size="6.6427">M</text>
+		<text transform="matrix(0.8 0 0 -0.8 37.0322 362.455)" fill="#231F20" font-family="'ArialNarrow-Bold'" font-size="6.6427">E</text>
+		<text transform="matrix(0.8 0 0 -0.8 39.6892 362.455)" fill="#231F20" font-family="'ArialNarrow-Bold'" font-size="6.6427">N</text>
+		<text transform="matrix(0.8 0 0 -0.8 43.2345 362.455)" fill="#231F20" font-family="'ArialNarrow-Bold'" font-size="6.6427">A</text>
+		<text transform="matrix(0.8 0 0 -0.8 46.4814 362.455)" fill="#231F20" font-family="'ArialNarrow-Bold'" font-size="6.6427">D</text>
+		<text transform="matrix(0.8 0 0 -0.8 49.7275 362.455)" fill="#231F20" font-family="'ArialNarrow-Bold'" font-size="6.6427">E</text>
 	</g>
 	<g id="king-lear-dining-room">
-		<text transform="matrix(0.8 0 0 -0.8 42.6708 194.198)" fill="#231F20" font-family="'ArialNarrow-Bold'" font-size="6.7782">K</text>
-		<text transform="matrix(0.8 0 0 -0.8 45.6857 194.198)" fill="#231F20" font-family="'ArialNarrow-Bold'" font-size="6.7782">I</text>
-		<text transform="matrix(0.8 0 0 -0.8 47.1927 194.198)" fill="#231F20" font-family="'ArialNarrow-Bold'" font-size="6.7782">N</text>
-		<text transform="matrix(0.8 0 0 -0.8 50.8099 194.198)" fill="#231F20" font-family="'ArialNarrow-Bold'" font-size="6.7782">G</text>
+		<text transform="matrix(0.8 0 0 -0.8 42.6704 194.198)" fill="#231F20" font-family="'ArialNarrow-Bold'" font-size="6.7782">K</text>
+		<text transform="matrix(0.8 0 0 -0.8 45.6853 194.198)" fill="#231F20" font-family="'ArialNarrow-Bold'" font-size="6.7782">I</text>
+		<text transform="matrix(0.8 0 0 -0.8 47.1923 194.198)" fill="#231F20" font-family="'ArialNarrow-Bold'" font-size="6.7782">N</text>
+		<text transform="matrix(0.8 0 0 -0.8 50.8095 194.198)" fill="#231F20" font-family="'ArialNarrow-Bold'" font-size="6.7782">G</text>
 		<text transform="matrix(0.8 0 0 -0.8 54.1232 194.198)" fill="#231F20" font-family="'ArialNarrow-Bold'" font-size="6.7782"> </text>
 		<text transform="matrix(0.8 0 0 -0.8 55.3279 194.198)" fill="#231F20" font-family="'ArialNarrow-Bold'" font-size="6.7782">L</text>
-		<text transform="matrix(0.8 0 0 -0.8 57.7349 194.198)" fill="#231F20" font-family="'ArialNarrow-Bold'" font-size="6.7782">E</text>
-		<text transform="matrix(0.8 0 0 -0.8 60.4458 194.198)" fill="#231F20" font-family="'ArialNarrow-Bold'" font-size="6.7782">A</text>
-		<text transform="matrix(0.8 0 0 -0.8 63.7599 194.198)" fill="#231F20" font-family="'ArialNarrow-Bold'" font-size="6.7782">R</text>
-		<text transform="matrix(0.8 0 0 -0.8 38.6036 188.7777)" fill="#231F20" font-family="'ArialNarrow-Bold'" font-size="6.7782">D</text>
-		<text transform="matrix(0.8 0 0 -0.8 41.9169 188.7777)" fill="#231F20" font-family="'ArialNarrow-Bold'" font-size="6.7782">I</text>
-		<text transform="matrix(0.8 0 0 -0.8 43.4236 188.7777)" fill="#231F20" font-family="'ArialNarrow-Bold'" font-size="6.7782">N</text>
-		<text transform="matrix(0.8 0 0 -0.8 47.0419 188.7777)" fill="#231F20" font-family="'ArialNarrow-Bold'" font-size="6.7782">I</text>
-		<text transform="matrix(0.8 0 0 -0.8 48.5486 188.7777)" fill="#231F20" font-family="'ArialNarrow-Bold'" font-size="6.7782">N</text>
-		<text transform="matrix(0.8 0 0 -0.8 52.1658 188.7777)" fill="#231F20" font-family="'ArialNarrow-Bold'" font-size="6.7782">G</text>
-		<text transform="matrix(0.8 0 0 -0.8 55.4786 188.7777)" fill="#231F20" font-family="'ArialNarrow-Bold'" font-size="6.7782"> </text>
+		<text transform="matrix(0.8 0 0 -0.8 57.7341 194.198)" fill="#231F20" font-family="'ArialNarrow-Bold'" font-size="6.7782">E</text>
+		<text transform="matrix(0.8 0 0 -0.8 60.4451 194.198)" fill="#231F20" font-family="'ArialNarrow-Bold'" font-size="6.7782">A</text>
+		<text transform="matrix(0.8 0 0 -0.8 63.7591 194.198)" fill="#231F20" font-family="'ArialNarrow-Bold'" font-size="6.7782">R</text>
+		<text transform="matrix(0.8 0 0 -0.8 38.6033 188.7777)" fill="#231F20" font-family="'ArialNarrow-Bold'" font-size="6.7782">D</text>
+		<text transform="matrix(0.8 0 0 -0.8 41.9165 188.7777)" fill="#231F20" font-family="'ArialNarrow-Bold'" font-size="6.7782">I</text>
+		<text transform="matrix(0.8 0 0 -0.8 43.4232 188.7777)" fill="#231F20" font-family="'ArialNarrow-Bold'" font-size="6.7782">N</text>
+		<text transform="matrix(0.8 0 0 -0.8 47.0415 188.7777)" fill="#231F20" font-family="'ArialNarrow-Bold'" font-size="6.7782">I</text>
+		<text transform="matrix(0.8 0 0 -0.8 48.5482 188.7777)" fill="#231F20" font-family="'ArialNarrow-Bold'" font-size="6.7782">N</text>
+		<text transform="matrix(0.8 0 0 -0.8 52.1654 188.7777)" fill="#231F20" font-family="'ArialNarrow-Bold'" font-size="6.7782">G</text>
+		<text transform="matrix(0.8 0 0 -0.8 55.4779 188.7777)" fill="#231F20" font-family="'ArialNarrow-Bold'" font-size="6.7782"> </text>
 		<text transform="matrix(0.8 0 0 -0.8 56.6825 188.7777)" fill="#231F20" font-family="'ArialNarrow-Bold'" font-size="6.7782">R</text>
 		<text transform="matrix(0.8 0 0 -0.8 59.6982 188.7777)" fill="#231F20" font-family="'ArialNarrow-Bold'" font-size="6.7782">O</text>
 		<text transform="matrix(0.8 0 0 -0.8 63.0107 188.7777)" fill="#231F20" font-family="'ArialNarrow-Bold'" font-size="6.7782">O</text>
 		<text transform="matrix(0.8 0 0 -0.8 66.3232 188.7777)" fill="#231F20" font-family="'ArialNarrow-Bold'" font-size="6.7782">M</text>
 	</g>
 	<g id="next-cruise">
-		<text transform="matrix(0.8 0 0 -0.8 26.9728 339.7668)" fill="#231F20" font-family="'ArialNarrow-Bold'" font-size="6.6427">N</text>
-		<text transform="matrix(0.8 0 0 -0.8 30.5177 339.7668)" fill="#231F20" font-family="'ArialNarrow-Bold'" font-size="6.6427">E</text>
-		<text transform="matrix(0.8 0 0 -0.8 33.1747 339.7668)" fill="#231F20" font-family="'ArialNarrow-Bold'" font-size="6.6427">X</text>
-		<text transform="matrix(0.8 0 0 -0.8 36.1298 339.7668)" fill="#231F20" font-family="'ArialNarrow-Bold'" font-size="6.6427">T</text>
-		<text transform="matrix(0.8 0 0 -0.8 24.7568 334.3371)" fill="#231F20" font-family="'ArialNarrow-Bold'" font-size="6.6427">C</text>
-		<text transform="matrix(0.8 0 0 -0.8 27.7118 334.3371)" fill="#231F20" font-family="'ArialNarrow-Bold'" font-size="6.6427">R</text>
-		<text transform="matrix(0.8 0 0 -0.8 30.6669 334.3371)" fill="#231F20" font-family="'ArialNarrow-Bold'" font-size="6.6427">U</text>
-		<text transform="matrix(0.8 0 0 -0.8 33.9138 334.3371)" fill="#231F20" font-family="'ArialNarrow-Bold'" font-size="6.6427">I</text>
-		<text transform="matrix(0.8 0 0 -0.8 35.3907 334.3371)" fill="#231F20" font-family="'ArialNarrow-Bold'" font-size="6.6427">S</text>
-		<text transform="matrix(0.8 0 0 -0.8 38.3458 334.3371)" fill="#231F20" font-family="'ArialNarrow-Bold'" font-size="6.6427">E</text>
+		<text transform="matrix(0.8 0 0 -0.8 26.9724 339.7668)" fill="#231F20" font-family="'ArialNarrow-Bold'" font-size="6.6427">N</text>
+		<text transform="matrix(0.8 0 0 -0.8 30.5173 339.7668)" fill="#231F20" font-family="'ArialNarrow-Bold'" font-size="6.6427">E</text>
+		<text transform="matrix(0.8 0 0 -0.8 33.1743 339.7668)" fill="#231F20" font-family="'ArialNarrow-Bold'" font-size="6.6427">X</text>
+		<text transform="matrix(0.8 0 0 -0.8 36.1294 339.7668)" fill="#231F20" font-family="'ArialNarrow-Bold'" font-size="6.6427">T</text>
+		<text transform="matrix(0.8 0 0 -0.8 24.7564 334.3371)" fill="#231F20" font-family="'ArialNarrow-Bold'" font-size="6.6427">C</text>
+		<text transform="matrix(0.8 0 0 -0.8 27.7115 334.3371)" fill="#231F20" font-family="'ArialNarrow-Bold'" font-size="6.6427">R</text>
+		<text transform="matrix(0.8 0 0 -0.8 30.6665 334.3371)" fill="#231F20" font-family="'ArialNarrow-Bold'" font-size="6.6427">U</text>
+		<text transform="matrix(0.8 0 0 -0.8 33.9134 334.3371)" fill="#231F20" font-family="'ArialNarrow-Bold'" font-size="6.6427">I</text>
+		<text transform="matrix(0.8 0 0 -0.8 35.3904 334.3371)" fill="#231F20" font-family="'ArialNarrow-Bold'" font-size="6.6427">S</text>
+		<text transform="matrix(0.8 0 0 -0.8 38.3454 334.3371)" fill="#231F20" font-family="'ArialNarrow-Bold'" font-size="6.6427">E</text>
 	</g>
 	<g id="dog-and-badger-pub">
-		<text transform="matrix(0.8 0 0 -0.8 23.0087 486.1371)" fill="#231F20" font-family="'ArialNarrow-Bold'" font-size="6.6427">D</text>
-		<text transform="matrix(0.8 0 0 -0.8 26.2556 486.1371)" fill="#231F20" font-family="'ArialNarrow-Bold'" font-size="6.6427">O</text>
-		<text transform="matrix(0.8 0 0 -0.8 29.5017 486.1371)" fill="#231F20" font-family="'ArialNarrow-Bold'" font-size="6.6427">G</text>
-		<text transform="matrix(0.8 0 0 -0.8 32.7486 486.1371)" fill="#231F20" font-family="'ArialNarrow-Bold'" font-size="6.6427"> </text>
-		<text transform="matrix(0.8 0 0 -0.8 33.9286 486.1371)" fill="#231F20" font-family="'ArialNarrow-Bold'" font-size="6.6427">&amp;</text>
-		<text transform="matrix(0.8 0 0 -0.8 37.4736 486.1371)" fill="#231F20" font-family="'ArialNarrow-Bold'" font-size="6.6427"> </text>
-		<text transform="matrix(0.8 0 0 -0.8 38.6536 486.1371)" fill="#231F20" font-family="'ArialNarrow-Bold'" font-size="6.6427">B</text>
-		<text transform="matrix(0.8 0 0 -0.8 41.9009 486.1371)" fill="#231F20" font-family="'ArialNarrow-Bold'" font-size="6.6427">A</text>
-		<text transform="matrix(0.8 0 0 -0.8 45.1478 486.1371)" fill="#231F20" font-family="'ArialNarrow-Bold'" font-size="6.6427">D</text>
-		<text transform="matrix(0.8 0 0 -0.8 48.3947 486.1371)" fill="#231F20" font-family="'ArialNarrow-Bold'" font-size="6.6427">G</text>
-		<text transform="matrix(0.8 0 0 -0.8 51.6419 486.1371)" fill="#231F20" font-family="'ArialNarrow-Bold'" font-size="6.6427">E</text>
-		<text transform="matrix(0.8 0 0 -0.8 54.2927 486.1371)" fill="#231F20" font-family="'ArialNarrow-Bold'" font-size="6.6427">R</text>
-		<text transform="matrix(0.8 0 0 -0.8 35.4068 480.7168)" fill="#231F20" font-family="'ArialNarrow-Bold'" font-size="6.6427">P</text>
-		<text transform="matrix(0.8 0 0 -0.8 38.3618 480.7168)" fill="#231F20" font-family="'ArialNarrow-Bold'" font-size="6.6427">U</text>
-		<text transform="matrix(0.8 0 0 -0.8 41.6087 480.7168)" fill="#231F20" font-family="'ArialNarrow-Bold'" font-size="6.6427">B</text>
+		<text transform="matrix(0.8 0 0 -0.8 23.0083 486.1371)" fill="#231F20" font-family="'ArialNarrow-Bold'" font-size="6.6427">D</text>
+		<text transform="matrix(0.8 0 0 -0.8 26.2552 486.1371)" fill="#231F20" font-family="'ArialNarrow-Bold'" font-size="6.6427">O</text>
+		<text transform="matrix(0.8 0 0 -0.8 29.5013 486.1371)" fill="#231F20" font-family="'ArialNarrow-Bold'" font-size="6.6427">G</text>
+		<text transform="matrix(0.8 0 0 -0.8 32.7482 486.1371)" fill="#231F20" font-family="'ArialNarrow-Bold'" font-size="6.6427"> </text>
+		<text transform="matrix(0.8 0 0 -0.8 33.9283 486.1371)" fill="#231F20" font-family="'ArialNarrow-Bold'" font-size="6.6427">&amp;</text>
+		<text transform="matrix(0.8 0 0 -0.8 37.4732 486.1371)" fill="#231F20" font-family="'ArialNarrow-Bold'" font-size="6.6427"> </text>
+		<text transform="matrix(0.8 0 0 -0.8 38.6532 486.1371)" fill="#231F20" font-family="'ArialNarrow-Bold'" font-size="6.6427">B</text>
+		<text transform="matrix(0.8 0 0 -0.8 41.9005 486.1371)" fill="#231F20" font-family="'ArialNarrow-Bold'" font-size="6.6427">A</text>
+		<text transform="matrix(0.8 0 0 -0.8 45.1474 486.1371)" fill="#231F20" font-family="'ArialNarrow-Bold'" font-size="6.6427">D</text>
+		<text transform="matrix(0.8 0 0 -0.8 48.3943 486.1371)" fill="#231F20" font-family="'ArialNarrow-Bold'" font-size="6.6427">G</text>
+		<text transform="matrix(0.8 0 0 -0.8 51.6415 486.1371)" fill="#231F20" font-family="'ArialNarrow-Bold'" font-size="6.6427">E</text>
+		<text transform="matrix(0.8 0 0 -0.8 54.2919 486.1371)" fill="#231F20" font-family="'ArialNarrow-Bold'" font-size="6.6427">R</text>
+		<text transform="matrix(0.8 0 0 -0.8 35.4064 480.7168)" fill="#231F20" font-family="'ArialNarrow-Bold'" font-size="6.6427">P</text>
+		<text transform="matrix(0.8 0 0 -0.8 38.3615 480.7168)" fill="#231F20" font-family="'ArialNarrow-Bold'" font-size="6.6427">U</text>
+		<text transform="matrix(0.8 0 0 -0.8 41.6083 480.7168)" fill="#231F20" font-family="'ArialNarrow-Bold'" font-size="6.6427">B</text>
 	</g>
 	<g id="sorrentos">
-		<text transform="matrix(0.8 0 0 -0.8 58.6036 532.1371)" fill="#231F20" font-family="'ArialNarrow-Bold'" font-size="6.7782">S</text>
+		<text transform="matrix(0.8 0 0 -0.8 58.6029 532.1371)" fill="#231F20" font-family="'ArialNarrow-Bold'" font-size="6.7782">S</text>
 		<text transform="matrix(0.8 0 0 -0.8 61.6185 532.1371)" fill="#231F20" font-family="'ArialNarrow-Bold'" font-size="6.7782">O</text>
-		<text transform="matrix(0.8 0 0 -0.8 64.9318 532.1371)" fill="#231F20" font-family="'ArialNarrow-Bold'" font-size="6.7782">R</text>
+		<text transform="matrix(0.8 0 0 -0.8 64.931 532.1371)" fill="#231F20" font-family="'ArialNarrow-Bold'" font-size="6.7782">R</text>
 		<text transform="matrix(0.8 0 0 -0.8 67.9466 532.1371)" fill="#231F20" font-family="'ArialNarrow-Bold'" font-size="6.7782">R</text>
 		<text transform="matrix(0.8 0 0 -0.8 70.9622 532.1371)" fill="#231F20" font-family="'ArialNarrow-Bold'" font-size="6.7782">E</text>
 		<text transform="matrix(0.8 0 0 -0.8 73.6732 532.1371)" fill="#231F20" font-family="'ArialNarrow-Bold'" font-size="6.7782">N</text>
-		<text transform="matrix(0.8 0 0 -0.8 77.2896 532.1371)" fill="#231F20" font-family="'ArialNarrow-Bold'" font-size="6.7782">T</text>
+		<text transform="matrix(0.8 0 0 -0.8 77.2888 532.1371)" fill="#231F20" font-family="'ArialNarrow-Bold'" font-size="6.7782">T</text>
 		<text transform="matrix(0.8 0 0 -0.8 80.0013 532.1371)" fill="#231F20" font-family="'ArialNarrow-Bold'" font-size="6.7782">O</text>
-		<text transform="matrix(0.8 0 0 -0.8 83.3146 532.1371)" fill="#231F20" font-family="'ArialNarrow-Bold'" font-size="6.7782">&apos;</text>
+		<text transform="matrix(0.8 0 0 -0.8 83.3138 532.1371)" fill="#231F20" font-family="'ArialNarrow-Bold'" font-size="6.7782">&apos;</text>
 		<text transform="matrix(0.8 0 0 -0.8 84.67 532.1371)" fill="#231F20" font-family="'ArialNarrow-Bold'" font-size="6.7782">S</text>
 	</g>
 	<g id="royal-promenade">
@@ -834,31 +834,31 @@
 		<text transform="matrix(0.8 0 0 -0.8 55.4591 443.3465)" fill="#231F20" font-family="'ArialNarrow-Bold'" font-size="6.6427">V</text>
 		<text transform="matrix(0.8 0 0 -0.8 58.4138 443.3465)" fill="#231F20" font-family="'ArialNarrow-Bold'" font-size="6.6427">I</text>
 		<text transform="matrix(0.8 0 0 -0.8 59.8904 443.3465)" fill="#231F20" font-family="'ArialNarrow-Bold'" font-size="6.6427">N</text>
-		<text transform="matrix(0.8 0 0 -0.8 63.4349 443.3465)" fill="#231F20" font-family="'ArialNarrow-Bold'" font-size="6.6427">T</text>
+		<text transform="matrix(0.8 0 0 -0.8 63.4341 443.3465)" fill="#231F20" font-family="'ArialNarrow-Bold'" font-size="6.6427">T</text>
 		<text transform="matrix(0.8 0 0 -0.8 66.0919 443.3465)" fill="#231F20" font-family="'ArialNarrow-Bold'" font-size="6.6427">A</text>
 		<text transform="matrix(0.8 0 0 -0.8 69.3388 443.3465)" fill="#231F20" font-family="'ArialNarrow-Bold'" font-size="6.6427">G</text>
 		<text transform="matrix(0.8 0 0 -0.8 72.5857 443.3465)" fill="#231F20" font-family="'ArialNarrow-Bold'" font-size="6.6427">E</text>
-		<text transform="matrix(0.8 0 0 -0.8 75.2427 443.3465)" fill="#231F20" font-family="'ArialNarrow-Bold'" font-size="6.6427">S</text>
+		<text transform="matrix(0.8 0 0 -0.8 75.2419 443.3465)" fill="#231F20" font-family="'ArialNarrow-Bold'" font-size="6.6427">S</text>
 	</g>
 	<g id="seasons">
-		<text transform="matrix(0.8 0 0 -0.8 64.2904 347.9558)" fill="#231F20" font-family="'ArialNarrow-Bold'" font-size="6.6427">S</text>
-		<text transform="matrix(0.8 0 0 -0.8 67.2458 347.9558)" fill="#231F20" font-family="'ArialNarrow-Bold'" font-size="6.6427">E</text>
-		<text transform="matrix(0.8 0 0 -0.8 69.9029 347.9558)" fill="#231F20" font-family="'ArialNarrow-Bold'" font-size="6.6427">A</text>
-		<text transform="matrix(0.8 0 0 -0.8 73.1482 347.9558)" fill="#231F20" font-family="'ArialNarrow-Bold'" font-size="6.6427">S</text>
-		<text transform="matrix(0.8 0 0 -0.8 76.1036 347.9558)" fill="#231F20" font-family="'ArialNarrow-Bold'" font-size="6.6427">O</text>
-		<text transform="matrix(0.8 0 0 -0.8 79.3513 347.9558)" fill="#231F20" font-family="'ArialNarrow-Bold'" font-size="6.6427">N</text>
-		<text transform="matrix(0.8 0 0 -0.8 82.8958 347.9558)" fill="#231F20" font-family="'ArialNarrow-Bold'" font-size="6.6427">S</text>
+		<text transform="matrix(0.8 0 0 -0.8 64.2904 347.955)" fill="#231F20" font-family="'ArialNarrow-Bold'" font-size="6.6427">S</text>
+		<text transform="matrix(0.8 0 0 -0.8 67.245 347.955)" fill="#231F20" font-family="'ArialNarrow-Bold'" font-size="6.6427">E</text>
+		<text transform="matrix(0.8 0 0 -0.8 69.9029 347.955)" fill="#231F20" font-family="'ArialNarrow-Bold'" font-size="6.6427">A</text>
+		<text transform="matrix(0.8 0 0 -0.8 73.1482 347.955)" fill="#231F20" font-family="'ArialNarrow-Bold'" font-size="6.6427">S</text>
+		<text transform="matrix(0.8 0 0 -0.8 76.1029 347.955)" fill="#231F20" font-family="'ArialNarrow-Bold'" font-size="6.6427">O</text>
+		<text transform="matrix(0.8 0 0 -0.8 79.3513 347.955)" fill="#231F20" font-family="'ArialNarrow-Bold'" font-size="6.6427">N</text>
+		<text transform="matrix(0.8 0 0 -0.8 82.8951 347.955)" fill="#231F20" font-family="'ArialNarrow-Bold'" font-size="6.6427">S</text>
 	</g>
 	<g id="ice-cream-parlor">
-		<text transform="matrix(0.8 0 0 -0.8 56.1654 384.8261)" fill="#231F20" font-family="'ArialNarrow-Bold'" font-size="6.6427">I</text>
-		<text transform="matrix(0.8 0 0 -0.8 57.6427 384.8261)" fill="#231F20" font-family="'ArialNarrow-Bold'" font-size="6.6427">C</text>
-		<text transform="matrix(0.8 0 0 -0.8 60.5982 384.8261)" fill="#231F20" font-family="'ArialNarrow-Bold'" font-size="6.6427">E</text>
-		<text transform="matrix(0.8 0 0 -0.8 63.2544 384.8261)" fill="#231F20" font-family="'ArialNarrow-Bold'" font-size="6.6427"> </text>
-		<text transform="matrix(0.8 0 0 -0.8 64.4349 384.8261)" fill="#231F20" font-family="'ArialNarrow-Bold'" font-size="6.6427">C</text>
-		<text transform="matrix(0.8 0 0 -0.8 67.3888 384.8261)" fill="#231F20" font-family="'ArialNarrow-Bold'" font-size="6.6427">R</text>
-		<text transform="matrix(0.8 0 0 -0.8 70.3435 384.8261)" fill="#231F20" font-family="'ArialNarrow-Bold'" font-size="6.6427">E</text>
-		<text transform="matrix(0.8 0 0 -0.8 73.0013 384.8261)" fill="#231F20" font-family="'ArialNarrow-Bold'" font-size="6.6427">A</text>
-		<text transform="matrix(0.8 0 0 -0.8 76.2529 384.8261)" fill="#231F20" font-family="'ArialNarrow-Bold'" font-size="6.6427">M</text>
+		<text transform="matrix(0.8 0 0 -0.8 56.1654 384.8254)" fill="#231F20" font-family="'ArialNarrow-Bold'" font-size="6.6427">I</text>
+		<text transform="matrix(0.8 0 0 -0.8 57.6419 384.8254)" fill="#231F20" font-family="'ArialNarrow-Bold'" font-size="6.6427">C</text>
+		<text transform="matrix(0.8 0 0 -0.8 60.5982 384.8254)" fill="#231F20" font-family="'ArialNarrow-Bold'" font-size="6.6427">E</text>
+		<text transform="matrix(0.8 0 0 -0.8 63.2544 384.8254)" fill="#231F20" font-family="'ArialNarrow-Bold'" font-size="6.6427"> </text>
+		<text transform="matrix(0.8 0 0 -0.8 64.4341 384.8254)" fill="#231F20" font-family="'ArialNarrow-Bold'" font-size="6.6427">C</text>
+		<text transform="matrix(0.8 0 0 -0.8 67.3888 384.8254)" fill="#231F20" font-family="'ArialNarrow-Bold'" font-size="6.6427">R</text>
+		<text transform="matrix(0.8 0 0 -0.8 70.3435 384.8254)" fill="#231F20" font-family="'ArialNarrow-Bold'" font-size="6.6427">E</text>
+		<text transform="matrix(0.8 0 0 -0.8 73.0013 384.8254)" fill="#231F20" font-family="'ArialNarrow-Bold'" font-size="6.6427">A</text>
+		<text transform="matrix(0.8 0 0 -0.8 76.2529 384.8254)" fill="#231F20" font-family="'ArialNarrow-Bold'" font-size="6.6427">M</text>
 		<text transform="matrix(0.8 0 0 -0.8 59.5607 379.4074)" fill="#231F20" font-family="'ArialNarrow-Bold'" font-size="6.6427">P</text>
 		<text transform="matrix(0.8 0 0 -0.8 62.5154 379.4074)" fill="#231F20" font-family="'ArialNarrow-Bold'" font-size="6.6427">A</text>
 		<text transform="matrix(0.8 0 0 -0.8 65.7622 379.4074)" fill="#231F20" font-family="'ArialNarrow-Bold'" font-size="6.6427">R</text>
@@ -901,7 +901,7 @@
 			<g id="g15564" transform="translate(547.48 172.83)">
 				<path id="path15566" fill="#231F20" d="M-465.47,74.815h0.502l-0.502,1.508h-0.566c0.296,0.123,0.502,0.412,0.502,0.752
 					c0,0.45-0.365,0.817-0.816,0.817c-0.45,0-0.816-0.367-0.816-0.817c0-0.339,0.205-0.627,0.502-0.752h-0.566l-0.502-1.508h0.502
-					l-0.502-2.008h0.703l0.27-2.573h0.816l0.269,2.573h0.705l-0.491,2.008H-465.47z"/>
+					l-0.502-2.008h0.702l0.27-2.573h0.816l0.269,2.573h0.705l-0.491,2.008H-465.47z"/>
 			</g>
 			<g id="g15568" transform="translate(494.07 509.6)">
 				<path id="path15570" fill="#231F20" d="M-465.47,74.816h-0.305c0.293,0.122,0.498,0.411,0.498,0.752
@@ -912,7 +912,7 @@
 			<g id="g15572" transform="translate(547.7 508.24)">
 				<path id="path15574" fill="#231F20" d="M-465.47,74.815h0.502l-0.502,1.508h-0.566c0.296,0.121,0.502,0.411,0.502,0.752
 					c0,0.452-0.364,0.817-0.816,0.817c-0.451,0-0.815-0.366-0.815-0.817c0-0.341,0.207-0.631,0.5-0.752h-0.565l-0.502-1.508h0.502
-					l-0.502-2.008h0.702l0.271-2.576h0.817l0.27,2.576h0.703l-0.49,2.008H-465.47z"/>
+					l-0.502-2.008h0.702l0.271-2.576h0.816l0.27,2.576h0.703l-0.49,2.008H-465.47z"/>
 			</g>
 		</g>
 	</g>
@@ -976,7 +976,7 @@
 		<text transform="matrix(0 0.8 0.8 0 85.663 305.8074)" fill="#231F20" font-family="'ArialNarrow-Bold'" font-size="6.6427">S</text>
 	</g>
 	<g id="cupcake-cupboard">
-		<text transform="matrix(0.8 0 0 -0.8 60.7036 368.3371)" fill="#231F20" font-family="'ArialNarrow-Bold'" font-size="6.6427">C</text>
+		<text transform="matrix(0.8 0 0 -0.8 60.7029 368.3371)" fill="#231F20" font-family="'ArialNarrow-Bold'" font-size="6.6427">C</text>
 		<text transform="matrix(0.8 0 0 -0.8 63.6591 368.3371)" fill="#231F20" font-family="'ArialNarrow-Bold'" font-size="6.6427">U</text>
 		<text transform="matrix(0.8 0 0 -0.8 66.906 368.3371)" fill="#231F20" font-family="'ArialNarrow-Bold'" font-size="6.6427">P</text>
 		<text transform="matrix(0.8 0 0 -0.8 69.8607 368.3371)" fill="#231F20" font-family="'ArialNarrow-Bold'" font-size="6.6427">C</text>
