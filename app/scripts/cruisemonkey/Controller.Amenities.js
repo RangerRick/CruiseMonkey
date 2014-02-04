@@ -16,6 +16,7 @@
 	.controller('CMAmenitiesCtrl', ['storage', '$rootScope', '$scope', '$location', 'DeckService', 'LoggingService', function(storage, $rootScope, $scope, $location, DeckService, log) {
 		log.info('Initializing CMAmenitiesCtrl');
 		$rootScope.title = 'Amenities';
+		$rootScope.leftButtons = [];
 		$rootScope.rightButtons = [];
 
 		$scope.amenities = DeckService.getAmenities();

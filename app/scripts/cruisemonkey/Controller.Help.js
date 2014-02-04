@@ -5,6 +5,7 @@
 	.controller('CMHelpCtrl', ['$rootScope', 'LoggingService', function($rootScope, log) {
 		log.info('Initializing CMHelpCtrl');
 		$rootScope.title = 'Help';
+		$rootScope.leftButtons = [];
 		$rootScope.rightButtons = [];
 	}]);
 }());

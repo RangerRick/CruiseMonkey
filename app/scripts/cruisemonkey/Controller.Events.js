@@ -121,6 +121,7 @@
 
 		$scope.eventType = $stateParams.eventType;
 		$rootScope.title = $scope.eventType.capitalize() + ' Events';
+		$rootScope.leftButtons = [];
 
 		var message = 'Updating ' + $scope.eventType.capitalize() + ' events...';
 

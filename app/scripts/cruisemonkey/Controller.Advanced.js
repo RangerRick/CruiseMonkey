@@ -5,6 +5,7 @@
 	.controller('CMAdvancedCtrl', ['$scope', '$rootScope', 'Database', 'LoggingService', 'config.app.version', 'SettingsService', function($scope, $rootScope, Database, log, version, SettingsService) {
 		log.info('Initializing CMAdvancedCtrl');
 		$rootScope.title = 'Advanced Options';
+		$rootScope.leftButtons = [];
 		$rootScope.rightButtons = [];
 
 		$scope.settings = SettingsService.getSettings();

@@ -113,11 +113,9 @@ if (typeof String.prototype.contains !== 'function') {
 		<pane side-menu-content>
 			<header class="bar bar-header bar-dark">
 				<button class="button button-icon" ng-click="openLeft()"><i class="icon ion-navicon"></i></button>
+				<button ng-repeat="button in leftButtons" class="button button-clear no-animation" ng-class="button.type" ng-click="button.tap($event, $index)" ng-bind-html="button.content"></button>
 				<h1 class="title">{{title}}</h1>
-				<div class="buttons">
-					<button ng-repeat="button in rightButtons" class="button button-clear no-animation" ng-class="button.type" ng-click="button.tap($event, $index)" ng-bind-html="button.content">
-					</button>
-				</div>
+				<button ng-repeat="button in rightButtons" class="button button-clear no-animation" ng-class="button.type" ng-click="button.tap($event, $index)" ng-bind-html="button.content"></button>
 			</header>
 			<nav-view></nav-view>
 		</pane>
@@ -135,6 +133,7 @@ if (typeof String.prototype.contains !== 'function') {
 					<!-- <li class="item item-divider">Ship Information</li> -->
 					<li class="item item-complex"><a href="#/deck-plans/">Deck Plans</a></li>
 					<li class="item item-complex"><a href="#/amenities">Amenities</a></li>
+					<li class="item item-complex"><a href="#/karaoke/list">Karaoke</a></li>
 
 					<!-- <li class="item item-divider">Twit-Arr</li> -->
 					<li class="item item-complex"><a href="#/photos">Twit-Arr Pics</a></li>
@@ -175,11 +174,13 @@ if (typeof String.prototype.contains !== 'function') {
 	<script src="bower_components/angular-resource/angular-resource.js"></script>
 	<script src="bower_components/angular-bindonce/bindonce.js"></script>
 	<script src="bower_components/angular-ui-router/release/angular-ui-router.js"></script>
+	<script src="bower_components/quick-ng-repeat/quick-ng-repeat.js"></script>
 	<script src="scripts/angular-3rdparty/ionic-angular.js"></script>
 	<script src="bower_components/angularLocalStorage/src/angularLocalStorage.js"></script>
 	<!-- endbuild -->
 
 	<!-- build:js scripts/cm.js -->
+	<script src="scripts/cruisemonkey/karaoke-list.js"></script>
 	<script src="scripts/cruisemonkey/Config.js"></script>
 	<script src="scripts/cruisemonkey/Controller.About.js"></script>
 	<script src="scripts/cruisemonkey/Controller.Advanced.js"></script>
@@ -187,6 +188,7 @@ if (typeof String.prototype.contains !== 'function') {
 	<script src="scripts/cruisemonkey/Controller.DeckList.js"></script>
 	<script src="scripts/cruisemonkey/Controller.Events.js"></script>
 	<script src="scripts/cruisemonkey/Controller.Help.js"></script>
+	<script src="scripts/cruisemonkey/Controller.Karaoke.js"></script>
 	<script src="scripts/cruisemonkey/Controller.Login.js"></script>
 	<script src="scripts/cruisemonkey/Controller.Logout.js"></script>
 	<script src="scripts/cruisemonkey/Controller.Navigation.js"></script>

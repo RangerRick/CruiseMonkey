@@ -163,26 +163,15 @@ a:hover {
 }
 
 header.bar.bar-header {
-	.buttons {
-		/*
-		background-color: transparent;
-		border-color: transparent;
-
-		button {
-			background-color: transparent;
-			border-color: transparent;
+	.icon {
+		background-position: center center;
+		background-repeat: no-repeat;
+		background-size: 26px 26px;
+		width: 32px;
+		height: 32px;
 		}
-		*/
-
-		.icon {
-			background-position: center center;
-			background-repeat: no-repeat;
-			background-size: 26px 26px;
-			width: 32px;
-			height: 32px;
-		}
-	}
 }
+
 .add-event-form span.invalid {
 	float: right;
 	color: red;

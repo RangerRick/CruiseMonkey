@@ -17,6 +17,7 @@
 		'cruisemonkey.controllers.DeckList',
 		'cruisemonkey.controllers.Events',
 		'cruisemonkey.controllers.Help',
+		'cruisemonkey.controllers.Karaoke',
 		'cruisemonkey.controllers.Login',
 		'cruisemonkey.controllers.Logout',
 		'cruisemonkey.controllers.Navigation',
@@ -69,6 +70,21 @@
 				url: '/help',
 				templateUrl: 'template/help.html',
 				controller: 'CMHelpCtrl'
+			})
+			.state('karaoke', {
+				abstract: true,
+				url: '/karaoke',
+				template: '<ui-view/>'
+			})
+			.state('karaoke.list', {
+				url: '/list',
+				templateUrl: 'template/karaoke.list.html',
+				controller: 'CMKaraokeListCtrl'
+			})
+			.state('karaoke.artist', {
+				url: '/:artist',
+				templateUrl: 'template/karaoke.artist.html',
+				controller: 'CMKaraokeArtistCtrl'
 			})
 			.state('about', {
 				url: '/about',
@@ -129,6 +145,7 @@
 			if (UserService.loggedIn()) {
 				$urlRouter.sync();
 				angular.noop();
+				//console.log('new url = ' + newUrl);
 				storage.set('cm.lasturl', newUrl);
 				return;
 			}
@@ -164,7 +181,7 @@
 			var index = savedUrl.indexOf('#');
 			if (index > -1) {
 				savedUrl = savedUrl.substring(savedUrl.indexOf('#') + 1);
-				$location.path(savedUrl);
+				$location.path(decodeURIComponent(savedUrl));
 			}
 		}
 

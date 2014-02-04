@@ -9,9 +9,10 @@
 	.controller('CMDeckListCtrl', ['storage', '$scope', '$rootScope', '$timeout', '$state', '$stateParams', '$location', '$document', 'LoggingService', function(storage, $scope, $rootScope, $timeout, $state, $stateParams, $location, $document, log) {
 		log.info('Initializing CMDeckListCtrl');
 		$rootScope.title = "Deck Plans";
+		$rootScope.leftButtons = [];
 
 		storage.bind($scope, 'deck', {
-			'defaultValue': 2,
+			'defaultValue': 1,
 			'storeName': 'cm.deck'
 		});
 
@@ -33,7 +34,7 @@
 				$scope.deck = passedDeck;
 			}
 		}
-		$scope.currentSlide = $scope.deck - 2;
+		$scope.currentSlide = $scope.deck - 1;
 
 		var previous = function() {
 			$scope.$broadcast('slideBox.prevSlide');
@@ -60,7 +61,11 @@
 		};
 
 		var updateUI = function() {
-			$rootScope.title = "Deck " + $scope.deck;
+			if ($scope.deck === 1) {
+				$rootScope.title = "Getting Around";
+			} else {
+				$rootScope.title = "Deck " + $scope.deck;
+			}
 			var newButtons = [
 				{
 					'type': 'button-clear',
@@ -80,7 +85,7 @@
 				}
 			];
 			
-			if ($scope.deck === 2) {
+			if ($scope.deck === 1) {
 				newButtons[0] = {
 					'type': 'button-clear',
 					'content': '<i class="icon icon-blank"></i>',
@@ -97,8 +102,6 @@
 		};
 
 		$scope.$watch('deck', function(newValue, oldValue) {
-			$rootScope.title = 'Deck ' + $scope.deck;
-			/*
 			$state.transitionTo('deck-plans', {
 				deck: $scope.deck
 			}, {
@@ -107,13 +110,12 @@
 				notify: false,
 				reload: false
 			});
-			*/
 			updateUI();
 		});
 
 		$scope.slideChanged = function(index) {
 			log.info('slideBox.slideChanged: ' + index);
-			$scope.deck = index + 2;
+			$scope.deck = index + 1;
 		};
 
 		updateUI();

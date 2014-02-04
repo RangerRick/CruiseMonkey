@@ -1,0 +1,11 @@
+<content has-header="true" overflow-scroll="true" scroll="true">
+	<header class="bar bar-header item-input-inset">
+		<label class="item-input-wrapper">
+			<i class="icon ion-ios7-search placeholder-icon"></i>
+			<input type="search" placeholder="Search Artists and Songs" ng-model="searchString" ng-change="searchUpdated(searchString)" />
+		</label>
+	</header>
+	<list>
+		<a class="item" quick-ng-repeat="entry in entries" quick-repeat-list="entries" ng-href="#/karaoke/{{entry}}">{{entry}}</a>
+	</list>
+</content>

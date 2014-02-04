@@ -114,6 +114,7 @@
 	.controller('CMPhotoCtrl', ['$rootScope', '$scope', '$ionicSlideBoxDelegate', 'LoggingService', 'PhotoService', function($rootScope, $scope, $ionicSlideBoxDelegate, log, photos) {
 		log.info('Initializing CMPhotoCtrl');
 		$rootScope.title = "Twit-Arr Pics";
+		$rootScope.leftButtons = [];
 		$rootScope.rightButtons = [];
 
 		$scope.finished = false;

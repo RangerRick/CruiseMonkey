@@ -105,7 +105,7 @@
 								deferred.reject(err);
 								return;
 							} else {
-								log.info('Database.initializeFromRemote(): ' + response);
+								log.debug('Database.initializeFromRemote(): ' + response);
 								deferred.resolve(response);
 							}
 
