@@ -6,6 +6,6 @@
 		</label>
 	</header>
 	<list>
-		<div class="item" quick-ng-repeat="song in songs" quick-repeat-list="songs">{{song}}</div>
+		<div bindonce class="item" ng-repeat="song in entries"><span bo-text="song" class="item-text-wrap"></span></div>
 	</list>
 </content>

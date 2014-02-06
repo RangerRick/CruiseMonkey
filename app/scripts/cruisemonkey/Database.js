@@ -94,7 +94,7 @@
 						include_docs: true
 					}, function(err, response) {
 						if (err) {
-							log.error('Database.initializeFromRemote(): ' + err);
+							console.log('Database.initializeFromRemote(): error:',err);
 							deferred.reject(err);
 							return;
 						}
@@ -114,11 +114,11 @@
 							new_edits: false
 						}, function(err, response) {
 							if (err) {
-								log.error('Database.initializeFromRemote(): ' + err);
+								console.log('Database.initializeFromRemote(): error:',err);
 								deferred.reject(err);
 								return;
 							} else {
-								log.debug('Database.initializeFromRemote(): ' + response);
+								console.log('Database.initializeFromRemote(): response=',response);
 								deferred.resolve(response);
 							}
 
@@ -232,11 +232,15 @@
 								if (resetting) {
 									return;
 								}
-								log.error('Stopped replication from remote DB: ' + err);
-								log.error('Details: ' + details);
-								if (db) {
-									replicationFrom.cancel();
-									replicationFrom = null;
+								if (err) {
+									log.error('Replication from remote DB ended: ' + err);
+									console.log('Details:',details);
+									if (db && replicationFrom) {
+										replicationFrom.cancel();
+										replicationFrom = null;
+									}
+								} else {
+									console.log('Replication from remote DB complete:',details);
 								}
 							});
 						}
@@ -259,11 +263,15 @@
 								if (resetting) {
 									return;
 								}
-								log.error('Stopped replication to remote DB: ' + err);
-								log.error('Details: ' + details);
-								if (db) {
-									replicationTo.cancel();
-									replicationTo = null;
+								if (err) {
+									log.error('Replication to remote DB ended: ' + err);
+									console.log('Details:',details);
+									if (db && replicationTo) {
+										replicationTo.cancel();
+										replicationTo = null;
+									}
+								} else {
+									console.log('Replication to remote DB complete:',details);
 								}
 							});
 						}

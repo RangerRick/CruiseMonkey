@@ -71,19 +71,19 @@
 				templateUrl: 'template/help.html',
 				controller: 'CMHelpCtrl'
 			})
-			.state('karaoke', {
-				abstract: true,
-				url: '/karaoke',
-				template: '<ui-view/>'
-			})
-			.state('karaoke.list', {
-				url: '/list',
+			.state('karaoke-list', {
+				url: '/karaoke/list?search',
 				templateUrl: 'template/karaoke.list.html',
-				controller: 'CMKaraokeListCtrl'
+				controller: 'CMKaraokePrefixListCtrl'
 			})
-			.state('karaoke.artist', {
-				url: '/:artist',
-				templateUrl: 'template/karaoke.artist.html',
+			.state('karaoke-by-prefix', {
+				url: '/karaoke/by-prefix/:prefix?search&prefixSearch',
+				templateUrl: 'template/karaoke.by-prefix.html',
+				controller: 'CMKaraokeArtistListCtrl'
+			})
+			.state('karaoke-by-artist', {
+				url: '/karaoke/by-artist/:artist?search&prefixSearch&artistSearch',
+				templateUrl: 'template/karaoke.by-artist.html',
 				controller: 'CMKaraokeArtistCtrl'
 			})
 			.state('about', {
@@ -182,10 +182,12 @@
 
 		var savedUrl = storage.get('cm.lasturl');
 		if (savedUrl) {
+			log.info('main: lasturl = ' + savedUrl);
 			var index = savedUrl.indexOf('#');
 			if (index > -1) {
-				savedUrl = savedUrl.substring(savedUrl.indexOf('#') + 1);
-				$location.path(decodeURIComponent(savedUrl));
+				savedUrl = decodeURIComponent(savedUrl.substring(savedUrl.indexOf('#') + 1));
+				log.info('main: setting path to: ' + savedUrl);
+				$location.url(savedUrl);
 			}
 		}
 

@@ -1,11 +1,4 @@
 <content has-header="true" overflow-scroll="true" scroll="true">
-	<style>
-		.artist {
-			padding-left: 5px;
-			padding-right: 5px;
-			color: #666;
-		}
-	</style>
 	<header class="bar bar-header item-input-inset">
 		<label class="item-input-wrapper">
 			<i class="icon ion-ios7-search placeholder-icon"></i>
@@ -13,9 +6,8 @@
 		</label>
 	</header>
 	<list>
-		<a class="item" bindonce ng-repeat="entry in entries" bo-href="getHref(entry)">
-			<div bo-text="entry.prefix"></div>
-			<div bo-html="entry.artists" class="artist item-text-wrap"></div>
+		<a class="item" bindonce ng-repeat="entry in entries" ng-click="go(entry)">
+			<div bo-text="entry.artist" class="item-text-wrap"></div>
 		</a>
 	</list>
 </content>
