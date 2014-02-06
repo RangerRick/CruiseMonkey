@@ -47,9 +47,17 @@
 		var getHost = function() {
 			var host = SettingsService.getDatabaseHost();
 			if (!host) {
-				host = $location.host();
+				host = 'http://' + $location.host();
 			}
-			return 'http://' + SettingsService.getDatabaseHost() + ':5984/' + SettingsService.getDatabaseName();
+
+			if (!host.endsWith('/')) {
+				host += '/';
+			}
+			if (!host.startsWith('http')) {
+				host = 'http://' + host;
+			}
+
+			return host + SettingsService.getDatabaseName();
 		};
 
 		var db = null,

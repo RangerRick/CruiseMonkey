@@ -3,8 +3,8 @@
 
 	angular.module('cruisemonkey.Config', [])
 	.value('config.logging.useStringAppender', false)
-	.value('config.database.host', 'cm.raccoonfink.com')
-	.value('config.database.name', 'cmtest')
+	.value('config.database.host', 'https://twitarr.rylath.net/')
+	.value('config.database.name', 'cruisemonkey')
 	.value('config.database.replicate', true)
 	.value('config.database.refresh', 20000)
 	.value('config.notifications.timeout', 5000)
@@ -41,7 +41,7 @@
 			'storeName': 'cm.settings'
 		});
 
-		upgrades.register('3.9.3', 'Database and Twit-Arr Settings Reset', function() {
+		upgrades.register('3.9.5', 'Database and Twit-Arr Settings Reset', function() {
 			$rootScope._settings = getDefaults();
 		});
 
