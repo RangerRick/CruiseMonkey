@@ -248,6 +248,12 @@
 				return;
 			}
 			log.debug('foreground status is now ' + $rootScope.foreground);
+
+			// just came back, close the drawer if it's open
+			if (newValue && $rootScope.sideMenuController) {
+				$rootScope.sideMenuController.close();
+			}
+
 			handleStateChange();
 		});
 		$rootScope.$watch('online', function(newValue, oldValue) {
