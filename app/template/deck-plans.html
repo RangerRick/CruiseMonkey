@@ -1,19 +1,5 @@
 <content has-header="true" overflow-scroll="true" scroll="true">
 <slide-box show-pager="false" active-slide="currentSlide" on-slide-changed="slideChanged(index)">
-	<slide>
-		<div class="box deck-plans" style="padding: 20px">
-			<p>There are interactive maps near all of the elevators. However, interactive maps are slow, so if you can learn some basics of ship navigation, you will be much faster.</p>
-			<ul style="list-style: disc; padding-left: 10px">
-				<li>Facing Fore, Port is Left. Starboard is Right. Port has the same number of letters as Left. Right and Starboard have more letters than Left and Port.</li>
-				<li>Look at the hundreds place of room numbers. If it’s 4 or lower, you are in a Starboard corridor. If it’s 5 or higher, you are in a Port corridor.</li>
-				<li>In some cases, you might be in an aft-most area, or an offshoot hallway. You’ll probably know if you’re in one of these places or not.</li>
-				<li>Room numbers get larger the farther Aft you are, smaller the farther Fore you are.</li>
-				<li>Even number rooms are exterior. Odd number rooms are interior.</li>
-				<li>Pay attention to the art in the stairwells, and note which are fore and which are aft.</li>
-				<li>Maps in the hallways are always oriented to the direction of the ship.</li>
-			</ul>
-		</div>
-	</slide>
 	<slide ng-repeat="deck in [2,3,4,5,6,7,8,9,10,11,12,13,14,15]">
 		<div class="box deck-plans" ng-switch="shouldBeVisible(deck)">
 			<img ng-switch-when="true" ng-src="images/decks/deck{{deck}}.png" id="deck{{deck}}"></img>

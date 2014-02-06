@@ -13,7 +13,7 @@
 		$rootScope.leftButtons = [];
 
 		storage.bind($scope, 'deck', {
-			'defaultValue': 1,
+			'defaultValue': 2,
 			'storeName': 'cm.deck'
 		});
 
@@ -35,7 +35,7 @@
 				$scope.deck = passedDeck;
 			}
 		}
-		$scope.currentSlide = $scope.deck - 1;
+		$scope.currentSlide = $scope.deck - 2;
 
 		var previous = function() {
 			$scope.$broadcast('slideBox.prevSlide');
@@ -62,11 +62,7 @@
 		};
 
 		var updateUI = function() {
-			if ($scope.deck === 1) {
-				$rootScope.title = "Getting Around";
-			} else {
-				$rootScope.title = "Deck " + $scope.deck;
-			}
+			$rootScope.title = "Deck " + $scope.deck;
 			
 			cor.ifCordova(function() {
 			}).otherwise(function() {
@@ -89,7 +85,7 @@
 					}
 				];
 
-				if ($scope.deck === 1) {
+				if ($scope.deck === 2) {
 					newButtons[0] = {
 						'type': 'button-clear',
 						'content': '<i class="icon icon-blank"></i>',
@@ -120,7 +116,7 @@
 
 		$scope.slideChanged = function(index) {
 			log.info('slideBox.slideChanged: ' + index);
-			$scope.deck = index + 1;
+			$scope.deck = index + 2;
 		};
 
 		updateUI();
