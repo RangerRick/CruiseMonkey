@@ -68,7 +68,7 @@ fi
 
 DATESTAMP=`date '+%Y%m%d%H%M%S'`
 VERSION=`grep '"version":' package.json | sed -e 's,  "version": ",,' -e 's/", *$//'`
-SHORTVERSION=`echo $VERSION | sed -e 's,\+.*$,,'`
+SHORTVERSION=4.0
 sed -e "s/'config.app.version', '[^']*/'config.app.version', '$VERSION/" app/scripts/cruisemonkey/Config.js > app/scripts/cruisemonkey/Config.js.bak
 mv app/scripts/cruisemonkey/Config.js.bak app/scripts/cruisemonkey/Config.js
 
@@ -151,11 +151,15 @@ if $ANDROID; then
 	fi
 fi
 if $IOS; then
+	/usr/libexec/PlistBuddy -c "Set :CFBundleVersion $VERSION" platforms/ios/CruiseMonkey/CruiseMonkey-Info.plist
+	/usr/libexec/PlistBuddy -c "Set :CFBundleShortVersionString $SHORTVERSION" platforms/ios/CruiseMonkey/CruiseMonkey-Info.plist
 	if $SIGN; then
 		cordova $BUILDCMD --release ios
 	else
 		cordova $BUILDCMD ios
 	fi
+	/usr/libexec/PlistBuddy -c "Set :CFBundleVersion $VERSION" platforms/ios/CruiseMonkey/CruiseMonkey-Info.plist
+	/usr/libexec/PlistBuddy -c "Set :CFBundleShortVersionString $SHORTVERSION" platforms/ios/CruiseMonkey/CruiseMonkey-Info.plist
 fi
 if $BLACKBERRY; then
 	if $SIGN; then

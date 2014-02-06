@@ -137,7 +137,7 @@
 			var oic = SettingsService.getOpenInChrome();
 			if (oic) {
 				if (url.startsWith('http')) {
-					url.replace(/^http/, 'googlechrome');
+					url = url.replace(/^http/, 'googlechrome');
 				}
 			}
 			$window.open(url, target);

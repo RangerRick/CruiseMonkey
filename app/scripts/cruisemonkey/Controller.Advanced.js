@@ -1,8 +1,13 @@
 (function() {
 	'use strict';
 
-	angular.module('cruisemonkey.controllers.Advanced', ['cruisemonkey.Logging', 'cruisemonkey.Config', 'cruisemonkey.Settings'])
-	.controller('CMAdvancedCtrl', ['$scope', '$rootScope', 'Database', 'LoggingService', 'config.app.version', 'SettingsService', function($scope, $rootScope, Database, log, version, SettingsService) {
+	angular.module('cruisemonkey.controllers.Advanced', [
+		'cruisemonkey.Logging',
+		'cruisemonkey.Config',
+		'cruisemonkey.Cordova',
+		'cruisemonkey.Settings'
+	])
+	.controller('CMAdvancedCtrl', ['$scope', '$rootScope', '$window', 'Database', 'LoggingService', 'CordovaService', 'config.app.version', 'SettingsService', function($scope, $rootScope, $window, Database, log, cor, version, SettingsService) {
 		log.info('Initializing CMAdvancedCtrl');
 		$rootScope.title = 'Advanced Options';
 		$rootScope.leftButtons = [];
@@ -47,5 +52,11 @@
 		$scope.resetDatabase = function() {
 			Database.reset();
 		};
+		
+		cor.ifCordova(function() {
+			$scope.isIos = true;
+		}).otherwise(function() {
+			$scope.isIos = false;
+		});
 	}]);
 }());
