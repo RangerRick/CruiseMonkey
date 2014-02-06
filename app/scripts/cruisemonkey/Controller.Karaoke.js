@@ -121,7 +121,11 @@
 						prefix: e[i].prefix
 					};
 					if (e[i].artists.length > 0) {
-						entry.artists = '<ul><li>' + e[i].artists.join('</li><li>') + '</li></ul>';
+						if (e[i].artists.length > 1) {
+							entry.artists = '<span class="artist">' + e[i].artists.slice(0,2).join('</span>, <span class="artist">') + '</span> &hellip;';
+						} else {
+							entry.artists = '<span class="artist">' + e[i].artists[0] + '</span>';
+						}
 					}
 					ret.push(entry);
 				}

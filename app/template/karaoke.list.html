@@ -4,6 +4,7 @@
 			padding-left: 5px;
 			padding-right: 5px;
 			color: #666;
+			background-color: #f2f2f2;
 		}
 	</style>
 	<header class="bar bar-header item-input-inset">
@@ -14,8 +15,8 @@
 	</header>
 	<list>
 		<a class="item" bindonce ng-repeat="entry in entries" bo-href="getHref(entry)">
-			<div bo-text="entry.prefix"></div>
-			<div bo-html="entry.artists" class="artist item-text-wrap"></div>
+			<span bo-text="entry.prefix"></span>
+			<span bo-html="entry.artists"></span>
 		</a>
 	</list>
 </content>
