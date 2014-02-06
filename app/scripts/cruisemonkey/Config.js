@@ -7,6 +7,7 @@
 	.value('config.database.name', 'cruisemonkey')
 	.value('config.database.replicate', true)
 	.value('config.database.refresh', 20000)
+	.value('config.urls.openinchrome', false)
 	.value('config.notifications.timeout', 5000)
 	.value('config.twitarr.root', 'https://twitarr.rylath.net/')
 	.value('config.app.version', '3.9.5')
@@ -17,11 +18,12 @@
 		'cruisemonkey.Config',
 		'cruisemonkey.Upgrades'
 	])
-	.factory('SettingsService', ['storage', '$rootScope', 'config.database.host', 'config.database.name', 'config.database.refresh', 'config.twitarr.root', 'UpgradeService', function(storage, $rootScope, databaseHost, databaseName, databaseRefresh, twitarrRoot, upgrades) {
+	.factory('SettingsService', ['storage', '$rootScope', 'config.database.host', 'config.database.name', 'config.database.refresh', 'config.urls.openinchrome', 'config.twitarr.root', 'UpgradeService', function(storage, $rootScope, databaseHost, databaseName, databaseRefresh, openInChrome, twitarrRoot, upgrades) {
 		var defaultValue = {
 			'database.host': databaseHost,
 			'database.name': databaseName,
 			'database.refresh': databaseRefresh,
+			'urls.openinchrome': openInChrome,
 			'twitarr.root': twitarrRoot
 		};
 
@@ -50,15 +52,17 @@
 				databaseHost: databaseHost,
 				databaseName: databaseName,
 				databaseRefresh: databaseRefresh,
+				openInChrome: openInChrome,
 				twitarrRoot: twitarrRoot
 			});
 		};
 
 		var getSettings = function() {
-			var dbHost    = $rootScope._settings['database.host']    || databaseHost;
-			var dbName    = $rootScope._settings['database.name']    || databaseName;
-			var dbRefresh = $rootScope._settings['database.refresh'] || databaseRefresh;
-			var twRoot    = $rootScope._settings['twitarr.root']     || twitarrRoot;
+			var dbHost       = $rootScope._settings['database.host']     || databaseHost;
+			var dbName       = $rootScope._settings['database.name']     || databaseName;
+			var dbRefresh    = $rootScope._settings['database.refresh']  || databaseRefresh;
+			var openInChrome = $rootScope._settings['urls.openinchrome'] || openInChrome;
+			var twRoot       = $rootScope._settings['twitarr.root']      || twitarrRoot;
 
 			if (dbHost === dbName) {
 				console.log('Database host invalid!');
@@ -76,10 +80,15 @@
 				twRoot += '/';
 			}
 
+			if (!openInChrome) {
+				openInChrome = false;
+			}
+
 			return angular.copy({
 				databaseHost: dbHost,
 				databaseName: dbName,
 				databaseRefresh: dbRefresh,
+				openInChrome: openInChrome,
 				twitarrRoot: twRoot
 			});
 		};
@@ -108,6 +117,15 @@
 				} else {
 					console.log('setDatabaseRefresh failed, refresh is less than 10000.');
 				}
+			},
+			'getOpenInChrome': function() {
+				return getSettings().openInChrome;
+			},
+			'setOpenInChrome': function(oic) {
+				if (!oic) {
+					oic = false;
+				}
+				$rootScope._settings['urls.openinchrome'] = oic;
 			},
 			'getTwitarrRoot': function() {
 				return getSettings().twitarrRoot;

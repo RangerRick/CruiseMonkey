@@ -11,7 +11,7 @@
 		$scope.settings = SettingsService.getSettings();
 
 		$scope.openCertificate = function() {
-			window.open('http://ranger.befunk.com/misc/twitarr.rylath.net.cer', '_system');
+			$rootScope.openUrl('http://ranger.befunk.com/misc/twitarr.rylath.net.cer', '_system');
 		};
 
 		$scope.isUnchanged = function() {
@@ -22,6 +22,7 @@
 				existing.databaseHost    === updated.databaseHost &&
 				existing.databaseName    === updated.databaseName &&
 				existing.databaseRefresh === updated.databaseRefresh &&
+				existing.openInChrome    === updated.openInChrome &&
 				existing.twitarrRoot     === updated.twitarrRoot
 			);
 		};
@@ -38,6 +39,7 @@
 			SettingsService.setDatabaseHost($scope.settings.databaseHost);
 			SettingsService.setDatabaseName($scope.settings.databaseName);
 			SettingsService.setDatabaseRefresh($scope.settings.databaseRefresh);
+			SettingsService.setOpenInChrome($scope.settings.openInChrome);
 			SettingsService.setTwitarrRoot($scope.settings.twitarrRoot);
 			$rootScope.$broadcast('cm.settingsChanged');
 		};

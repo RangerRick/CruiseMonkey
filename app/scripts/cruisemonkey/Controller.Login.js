@@ -18,7 +18,7 @@
 
 		$scope.goToTwitarr = function() {
 			var twitarrRoot = SettingsService.getTwitarrRoot();
-			window.open(twitarrRoot, '_system');
+			$rootScope.openUrl(twitarrRoot, '_system');
 		};
 
 		$scope.isUnchanged = function(newUser) {

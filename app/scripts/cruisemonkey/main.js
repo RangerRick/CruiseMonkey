@@ -133,8 +133,18 @@
 			$rootScope.sideMenuController.close();
 		};
 
+		$rootScope.openUrl = function(url, target) {
+			var oic = SettingsService.getOpenInChrome();
+			if (oic) {
+				if (url.startsWith('http')) {
+					url.replace(/^http/, 'googlechrome');
+				}
+			}
+			$window.open(url, target);
+		};
+
 		$rootScope.openSeamail = function() {
-			$window.open(SettingsService.getTwitarrRoot() + '#/seamail/inbox', '_blank');
+			$rootScope.openUrl(SettingsService.getTwitarrRoot() + '#/seamail/inbox', '_system');
 		};
 
 		$rootScope.$on('$locationChangeSuccess', function(evt, newUrl, oldUrl) {

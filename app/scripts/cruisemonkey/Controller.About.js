@@ -14,7 +14,7 @@
 		$scope.version = version;
 		
 		$scope.goToSite = function(site) {
-			window.open(site, '_system');
+			$rootScope.openUrl(site, '_system');
 		};
 	}]);
 }());

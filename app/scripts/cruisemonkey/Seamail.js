@@ -43,7 +43,7 @@
 				log.debug('SeamailService: Success!');
 				if (data.status === 'ok') {
 					if (data.email_count > $rootScope.seamailCount) {
-						notifications.status('You have ' + data.email_count + ' new messages!  [<a href="' + twitarrRoot + '#/seamail/inbox" target="_system">view inbox</a>]', 5000);
+						notifications.status('You have ' + data.email_count + ' new messages in your Seamail inbox!', 5000);
 					}
 					$rootScope.seamailCount = data.email_count;
 				}
