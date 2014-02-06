@@ -112,10 +112,14 @@ if (typeof String.prototype.contains !== 'function') {
 		<!-- animation="slide-left-right-ios7" -->
 		<pane side-menu-content>
 			<header class="bar bar-header bar-dark">
-				<button class="button button-icon" ng-click="openLeft()"><i class="icon ion-navicon"></i></button>
-				<button ng-repeat="button in leftButtons" class="button button-clear no-animation" ng-class="button.type" ng-click="button.tap($event, $index)" ng-bind-html="button.content"></button>
+				<div class="buttons">
+					<button class="button button-icon" ng-click="openLeft()"><i class="icon ion-navicon"></i></button>
+					<button ng-repeat="button in leftButtons" class="button button-clear no-animation" ng-class="button.type" ng-click="button.tap($event, $index)" ng-bind-html="button.content"></button>
+				</div>
 				<h1 class="title">{{title}}</h1>
-				<button ng-repeat="button in rightButtons" class="button button-clear no-animation" ng-class="button.type" ng-click="button.tap($event, $index)" ng-bind-html="button.content"></button>
+				<div class="buttons">
+					<button ng-repeat="button in rightButtons" class="button button-clear no-animation" ng-class="button.type" ng-click="button.tap($event, $index)" ng-bind-html="button.content"></button>
+				</div>
 			</header>
 			<nav-view></nav-view>
 		</pane>

@@ -4,9 +4,10 @@
 	angular.module('cruisemonkey.controllers.DeckList', [
 		'ui.router',
 		'angularLocalStorage',
+		'cruisemonkey.Cordova',
 		'cruisemonkey.Logging'
 	])
-	.controller('CMDeckListCtrl', ['storage', '$scope', '$rootScope', '$timeout', '$state', '$stateParams', '$location', '$document', 'LoggingService', function(storage, $scope, $rootScope, $timeout, $state, $stateParams, $location, $document, log) {
+	.controller('CMDeckListCtrl', ['storage', '$scope', '$rootScope', '$timeout', '$state', '$stateParams', '$location', '$document', 'CordovaService', 'LoggingService', function(storage, $scope, $rootScope, $timeout, $state, $stateParams, $location, $document, cor, log) {
 		log.info('Initializing CMDeckListCtrl');
 		$rootScope.title = "Deck Plans";
 		$rootScope.leftButtons = [];
@@ -66,39 +67,43 @@
 			} else {
 				$rootScope.title = "Deck " + $scope.deck;
 			}
-			var newButtons = [
-				{
-					'type': 'button-clear',
-					'content': '<i class="icon icon-cm ion-arrow-left-b"></i>',
-					tap: function(e) {
-						previous();
-						return false;
-					}
-				},
-				{
-					'type': 'button-clear',
-					'content': '<i class="icon icon-cm ion-arrow-right-b"></i>',
-					tap: function(e) {
-						next();
-						return false;
-					}
-				}
-			];
 			
-			if ($scope.deck === 1) {
-				newButtons[0] = {
-					'type': 'button-clear',
-					'content': '<i class="icon icon-blank"></i>',
-					tap: function() {}
-				};
-			} else if ($scope.deck === 15) {
-				newButtons[1] = {
-					'type': 'button-clear',
-					'content': '<i class="icon icon-blank"></i>',
-					tap: function() {}
-				};
-			}
-			$rootScope.rightButtons = newButtons;
+			cor.ifCordova(function() {
+			}).otherwise(function() {
+				var newButtons = [
+					{
+						'type': 'button-clear',
+						'content': '<i class="icon icon-cm ion-arrow-left-b"></i>',
+						tap: function(e) {
+							previous();
+							return false;
+						}
+					},
+					{
+						'type': 'button-clear',
+						'content': '<i class="icon icon-cm ion-arrow-right-b"></i>',
+						tap: function(e) {
+							next();
+							return false;
+						}
+					}
+				];
+
+				if ($scope.deck === 1) {
+					newButtons[0] = {
+						'type': 'button-clear',
+						'content': '<i class="icon icon-blank"></i>',
+						tap: function() {}
+					};
+				} else if ($scope.deck === 15) {
+					newButtons[1] = {
+						'type': 'button-clear',
+						'content': '<i class="icon icon-blank"></i>',
+						tap: function() {}
+					};
+				}
+				$rootScope.rightButtons = newButtons;
+			});
 		};
 
 		$scope.$watch('deck', function(newValue, oldValue) {
