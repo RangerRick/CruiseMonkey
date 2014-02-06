@@ -101,17 +101,6 @@
 				log.debug('headers:',headers);
 				log.debug('config:',config);
 
-				/*
-				cor.ifCordova(function() {
-					// on cordova, it should be a hard failure
-				}).otherwise(function() {
-					// when testing in the browser, save the user anyways as if login succeeded
-					$scope.saveUser(user);
-					$rootScope.$broadcast('cm.loggedIn', user);
-					$location.path('/events/my');
-				});
-				*/
-
 				notifications.alert('Failed to log in to twit-arr! You may need to import the twit-arr certificate in "Advanced" before login will work.');
 			});
 

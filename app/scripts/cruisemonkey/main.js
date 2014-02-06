@@ -147,6 +147,7 @@
 				angular.noop();
 				//console.log('new url = ' + newUrl);
 				storage.set('cm.lasturl', newUrl);
+				$rootScope.sideMenuController.close();
 				return;
 			}
 
@@ -154,6 +155,7 @@
 				$location.path('/events/official');
 				angular.noop();
 				storage.set('cm.lasturl', newUrl);
+				$rootScope.sideMenuController.close();
 				return;
 			}
 
@@ -161,12 +163,14 @@
 				$location.path('/login');
 				angular.noop();
 				storage.set('cm.lasturl', newUrl);
+				$rootScope.sideMenuController.close();
 				return;
 			}
 
 			$urlRouter.sync();
 			storage.set('cm.lasturl', newUrl);
 			angular.noop();
+			$rootScope.sideMenuController.close();
 
 			return;
 		});

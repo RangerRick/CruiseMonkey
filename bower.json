@@ -1,6 +1,6 @@
 {
   "name": "CruiseMonkey",
-  "version": "3.9.1",
+  "version": "3.9.5",
   "homepage": "https://github.com/RangerRick/CruiseMonkey",
   "authors": [
     "Benjamin Reed <rangerrick@befunk.com>"
@@ -17,27 +17,27 @@
   ],
   "dependencies": {
     "log4javascript": "~1.4.5",
-    "angular": "1.2.10",
-    "angular-cookies": "1.2.10",
-    "angular-loader": "1.2.10",
-    "angular-route": "1.2.10",
-    "angular-resource": "1.2.10",
+    "angular": "1.2.11",
+    "angular-cookies": "1.2.11",
+    "angular-loader": "1.2.11",
+    "angular-route": "1.2.11",
+    "angular-resource": "1.2.11",
     "angular-datepicker": "~1.0.0",
     "fastclick": "~0.6.10",
     "html5shiv": "~3.7.0",
     "momentjs": "2.5.1",
     "angularLocalStorage": "~0.1.7",
-    "angular-animate": "1.2.10",
-    "angular-touch": "1.2.10",
-    "angular-sanitize": "1.2.10",
+    "angular-animate": "1.2.11",
+    "angular-touch": "1.2.11",
+    "angular-sanitize": "1.2.11",
     "angular-ui-router": "0.2.7",
-    "angular-mocks": "1.2.10",
+    "angular-mocks": "1.2.11",
     "classlist": "*",
     "angular-bindonce": "~0.3.0",
     "quick-ng-repeat": "~0.0.1"
   },
   "devDependencies": {
     "jasmine.async": "~0.1.0",
-    "angular-mocks": "1.2.10"
+    "angular-mocks": "1.2.11"
   }
 }
