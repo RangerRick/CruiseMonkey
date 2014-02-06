@@ -170,7 +170,9 @@
 			$urlRouter.sync();
 			storage.set('cm.lasturl', newUrl);
 			angular.noop();
-			$rootScope.sideMenuController.close();
+			if ($rootScope.sideMenuController) {
+				$rootScope.sideMenuController.close();
+			}
 
 			return;
 		});
