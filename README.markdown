@@ -67,6 +67,17 @@ CruiseMonkey by Benjamin Reed is licensed under the [Creative Commons Attributio
 Release Notes
 =============
 
+3.9.5
+-----
+
+* Update to Ionic 0.9.23
+* Update to AngularJS 1.2.11
+* Change deck images to png for performance reasons
+* Remove extraneous nav-buttons on deck plans
+* Add karaoke list (testers, please let me know about performance!)
+* Reset configuration to point to production CruiseMonkey database
+* Add some ship navigation tips to the "Help" screen
+
 3.9.4
 -----
 
