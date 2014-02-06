@@ -24,15 +24,20 @@
 
 		log.info('Initializing CruiseMonkey database: ' + getDatabaseName());
 
-		upgrades.register('3.9.3', 'Reset Event Cache', function() {
-			var dbname = getDatabaseName();
+		upgrades.register('3.9.5', 'Reset Event Cache', function() {
 			var deferred = $q.defer();
-			PouchDB.destroy(dbname, function(err) {
+			PouchDB.destroy('cruisemonkey', function(err) {
 				$rootScope.safeApply(function() {
 					if (err) {
-						deferred.reject('Failed to destroy ' + dbname + ': ' + err);
+						deferred.reject('Failed to destroy cruisemonkey: ' + err);
 					} else {
-						deferred.resolve(true);
+						PouchDB.destroy('cmtest', function(err) {
+							if (err) {
+								deferred.reject('Failed to destroy cmtest: ' + err);
+							} else {
+								deferred.resolve(true);
+							}
+						});
 					}
 				});
 			});
