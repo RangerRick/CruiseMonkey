@@ -5,6 +5,7 @@
 	};
 	objectVersion = 46;
 	objects = {
+
 /* Begin PBXBuildFile section */
 		1D3623260D0F684500981E51 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 1D3623250D0F684500981E51 /* AppDelegate.m */; };
 		1D60589B0D05DD56006BFB54 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 29B97316FDCFA39411CA2CEA /* main.m */; };
@@ -586,7 +587,6 @@
 				3265357C85E54BA6B0946711 /* CDVVibration.m in Sources */,
 				8E8FC55C51B3484686E268ED /* CDVInAppBrowser.m in Sources */,
 				92BC353CC5C842338B2FAD1D /* CDVStatusBar.m in Sources */,
-				6E13587304504F8AB3AB3001 /* libTestFlight.a in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -653,9 +653,7 @@
 				GCC_VERSION = "";
 				INFOPLIST_FILE = "CruiseMonkey/CruiseMonkey-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
-				LIBRARY_SEARCH_PATHS = (
-					"$(inherited)",
-				);
+				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				OTHER_CFLAGS = "";
 				OTHER_LDFLAGS = (
 					"-weak_framework",
@@ -672,7 +670,7 @@
 					"-ObjC",
 				);
 				PRODUCT_NAME = CruiseMonkey;
-				PROVISIONING_PROFILE = "BF7D100C-6EB3-43C7-8BDF-5ECA7FA7B465";
+				PROVISIONING_PROFILE = "44BECA84-F117-4E8F-BA84-9599B901C84C";
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
@@ -693,9 +691,7 @@
 				GCC_VERSION = "";
 				INFOPLIST_FILE = "CruiseMonkey/CruiseMonkey-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
-				LIBRARY_SEARCH_PATHS = (
-					"$(inherited)",
-				);
+				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				OTHER_CFLAGS = "";
 				OTHER_LDFLAGS = (
 					"-weak_framework",
@@ -712,7 +708,7 @@
 					"-ObjC",
 				);
 				PRODUCT_NAME = CruiseMonkey;
-				PROVISIONING_PROFILE = "BF7D100C-6EB3-43C7-8BDF-5ECA7FA7B465";
+				PROVISIONING_PROFILE = "44BECA84-F117-4E8F-BA84-9599B901C84C";
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;
