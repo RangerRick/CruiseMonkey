@@ -67,6 +67,14 @@ CruiseMonkey by Benjamin Reed is licensed under the [Creative Commons Attributio
 Release Notes
 =============
 
+3.9.6
+-----
+
+* Fixed database bug (re)introduced on some Samsung Android devices that would cause a blank screen on loading
+* Open Seamail link in an external browser, rather than the in-app browser
+* Add an option under "Advanced" to open in Chrome, rather than Safari, on iOS
+* Fix a couple of other small UI bugs
+
 3.9.5
 -----
 
