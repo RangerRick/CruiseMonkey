@@ -14,24 +14,27 @@
 		'cruisemonkey.User'
 	])
 	.factory('Database', ['$q', '$location', '$interval', '$timeout', '$rootScope', '$window', '$http', 'LoggingService', 'UpgradeService', 'storage', 'config.database.replicate', 'SettingsService', 'CordovaService', 'NotificationService', 'UserService', function($q, $location, $interval, $timeout, $rootScope, $window, $http, log, upgrades, storage, replicate, SettingsService, cor, notifications, UserService) {
-		var getDatabaseName = function() {
-			if ($window.navigator && $window.navigator.userAgent && $window.navigator.userAgent.indexOf('Android') >= 0) {
-				return 'websql://' + SettingsService.getDatabaseName();
-			} else {
-				return SettingsService.getDatabaseName();
+		var isAndroid = function() {
+			return $window.navigator && $window.navigator.userAgent && $window.navigator.userAgent.indexOf('Android') >= 0;
+		};
+
+		var getDatabaseName = function(dbname) {
+			if (!dbname) {
+				dbname = SettingsService.getDatabaseName();
 			}
+			return (isAndroid()? 'websql://':'') + dbname;
 		};
 
 		log.info('Initializing CruiseMonkey database: ' + getDatabaseName());
 
 		upgrades.register('3.9.5', 'Reset Event Cache', function() {
 			var deferred = $q.defer();
-			PouchDB.destroy('cruisemonkey', function(err) {
+			PouchDB.destroy(getDatabaseName('cruisemonkey'), function(err) {
 				$rootScope.safeApply(function() {
 					if (err) {
 						deferred.reject('Failed to destroy cruisemonkey: ' + err);
 					} else {
-						PouchDB.destroy('cmtest', function(err) {
+						PouchDB.destroy(getDatabaseName('cmtest'), function(err) {
 							if (err) {
 								deferred.reject('Failed to destroy cmtest: ' + err);
 							} else {
