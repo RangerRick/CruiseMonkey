@@ -126,11 +126,13 @@
 		$rootScope.openLeft = function() {
 			log.info('Opening Sidebar.');
 			$rootScope.sideMenuController.toggleLeft();
+			return false;
 		};
 
 		$rootScope.closeLeft = function() {
 			log.info('Closing Sidebar.');
 			$rootScope.sideMenuController.close();
+			return false;
 		};
 
 		$rootScope.openUrl = function(url, target) {

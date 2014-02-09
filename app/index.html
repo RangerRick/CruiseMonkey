@@ -110,7 +110,7 @@ if (typeof String.prototype.contains !== 'function') {
 <body class="antialiased off-canvas hide-extras" ng-cloak>
 	<side-menus>
 		<!-- animation="slide-left-right-ios7" -->
-		<pane side-menu-content>
+		<pane side-menu-content drag-content="false">
 			<header class="bar bar-header bar-dark">
 				<div class="buttons">
 					<button class="button button-icon" ng-click="openLeft()"><i class="icon ion-navicon"></i></button>
@@ -123,11 +123,11 @@ if (typeof String.prototype.contains !== 'function') {
 			</header>
 			<nav-view></nav-view>
 		</pane>
-		<side-menu side="left">
-			<header class="bar bar-header bar-dark" ng-click="closeLeft()">
+		<side-menu side="left" ng-click="closeLeft()">
+			<header class="bar bar-header bar-dark">
 				<h1 class="title bar-bold">CruiseMonkey</h1>
 			</header>
-			<content has-header="true" class="nav" overflow-scroll="true" scroll="true" ng-click="closeLeft()">
+			<content has-header="true" class="nav" overflow-scroll="true" scroll="true">
 				<ul id="nav">
 					<!-- <li class="item item-divider">JoCo Events</li> -->
 					<li class="item item-complex"><a href="#/events/official">Official Events</a></li>

@@ -53,7 +53,7 @@
 		<span bindonce ng-repeat="event in events | orderByEvent:searchString">
 			<div ng-if="event.isNewDay()" class="item item-divider header">{{prettyDate(event.getStart())}}</div>
 
-			<div class="list-entry item item-text-wrap" ng-class-even="'even'" ng-class-odd="'odd'">
+			<div class="list-entry item item-text-wrap" ng-class-even="'even'" ng-class-odd="'odd'" id="{{event.getId()}}">
 				<span class="item-note favorite" ng-show="(user.username && user.username != event.getUsername())">
 					<button id="{{event.getId()}}-favorite" ng-click="onFavoriteChanged(event)" class="button button-cm button-icon icon" ng-class="event.isFavorite()? 'active ion-ios7-heart':'ion-ios7-heart-outline'"></button>
 				</span>
@@ -74,4 +74,5 @@
 			</div>
 		</span>
 	</div>
+	<div id="the-end" />
 </content>

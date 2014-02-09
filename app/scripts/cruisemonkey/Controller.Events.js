@@ -111,7 +111,7 @@
 			}
 		};
 	}])
-	.controller('CMEventCtrl', ['storage', '$scope', '$rootScope', '$interval', '$timeout', '$stateParams', '$location', '$q', '$ionicModal', '$templateCache', 'UserService', 'EventService', 'EventCache', 'LoggingService', 'NotificationService', function(storage, $scope, $rootScope, $interval, $timeout, $stateParams, $location, $q, $ionicModal, $templateCache, UserService, EventService, EventCache, log, notifications) {
+	.controller('CMEventCtrl', ['storage', '$scope', '$rootScope', '$interval', '$timeout', '$stateParams', '$location', '$anchorScroll', '$q', '$ionicModal', '$templateCache', 'UserService', 'EventService', 'EventCache', 'LoggingService', 'NotificationService', 'orderByEventFilter', function(storage, $scope, $rootScope, $interval, $timeout, $stateParams, $location, $anchorScroll, $q, $ionicModal, $templateCache, UserService, EventService, EventCache, log, notifications, orderByEventFilter) {
 		if (!$stateParams.eventType) {
 			$location.path('/events/official');
 			return;
@@ -124,6 +124,7 @@
 		$rootScope.leftButtons = [];
 
 		var message = 'Updating ' + $scope.eventType.capitalize() + ' events...';
+		var scrolled = false;
 
 		storage.bind($scope, 'searchString', {
 			'storeName': 'cm.event.' + $scope.eventType
@@ -170,6 +171,7 @@
 			});
 
 			refreshing['finally'](function() {
+				$anchorScroll();
 				refreshing = null;
 			});
 
@@ -255,6 +257,31 @@
 
 		$scope.justTime = function(date) {
 			return date? date.format('hh:mma') : undefined;
+		};
+
+		$scope.goToNow = function() {
+			log.debug('Go To Now!');
+			var now = moment(),
+				matched = false,
+				i,
+				ev;
+			if ($scope.events && $scope.events.length > 0) {
+				var sorted = orderByEventFilter($scope.events, $scope.searchString);
+				for (i=0; i < sorted.length; i++) {
+					ev = sorted[i];
+					log.info('start: ' + ev.getStart() + ', now: ' + now + ', ' + ev.getSummary());
+					if (now.isBefore(ev.getStart())) {
+						log.info('matched! ' + ev.getId());
+						$location.hash(ev.getId());
+						matched = true;
+						break;
+					}
+				}
+				if (!matched) {
+					$location.hash('the-end');
+				}
+				$anchorScroll();
+			}
 		};
 
 		$scope.trash = function(ev) {
@@ -373,27 +400,33 @@
 		};
 
 		var newButtons = [];
+
+		newButtons.push({
+			type: 'button-positive',
+			content: '<i class="icon icon-cm active ion-clock"></i>',
+			tap: $scope.goToNow
+		});
+
 		if (UserService.getUsername() && UserService.getUsername() !== '') {
-			newButtons = [
-				{
-					type: 'button-positive',
-					content: '<i class="icon icon-cm active ion-ios7-plus"></i>',
-					tap: function(e) {
-						var ev = new CMEvent();
-						ev.setStart(moment());
-						ev.setEnd(ev.getStart().clone());
-						ev.setEnd(ev.getEnd().add('hours', 1));
-						ev.setUsername(UserService.getUsername());
-						ev.setPublic(true);
+			newButtons.push({
+				type: 'button-positive',
+				content: '<i class="icon icon-cm active ion-ios7-plus"></i>',
+				tap: function(e) {
+					var ev = new CMEvent();
+					ev.setStart(moment());
+					ev.setEnd(ev.getStart().clone());
+					ev.setEnd(ev.getEnd().add('hours', 1));
+					ev.setUsername(UserService.getUsername());
+					ev.setPublic(true);
 
-						$scope.event = ev;
-						$scope.eventData = ev.toEditableBean();
+					$scope.event = ev;
+					$scope.eventData = ev.toEditableBean();
 
-						$scope.modal.show();
-					}
+					$scope.modal.show();
 				}
-			];
+			});
 		}
+
 		$rootScope.rightButtons = newButtons;
 	}]);
 }());
