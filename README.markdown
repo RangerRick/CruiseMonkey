@@ -67,6 +67,13 @@ CruiseMonkey by Benjamin Reed is licensed under the [Creative Commons Attributio
 Release Notes
 =============
 
+3.9.7
+-----
+* don't allow sliding to open the menu, since it interferes with sliding in the deck plans and twit-arr pics
+* you can now scroll to the next upcoming entry in the event list with a button
+* the menu now fits without scrolling on low-res devices even when logged in
+* remove the confusing "example" artists in the artist-first-letter karaoke list
+
 3.9.6
 -----
 

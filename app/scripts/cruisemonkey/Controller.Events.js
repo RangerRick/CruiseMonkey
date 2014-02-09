@@ -171,7 +171,10 @@
 			});
 
 			refreshing['finally'](function() {
-				$anchorScroll();
+				if (!scrolled) {
+					scrolled = true;
+					$anchorScroll();
+				}
 				refreshing = null;
 			});
 
