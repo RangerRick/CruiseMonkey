@@ -111,7 +111,40 @@
 			}
 		};
 	}])
-	.controller('CMEventCtrl', ['storage', '$scope', '$rootScope', '$interval', '$timeout', '$stateParams', '$location', '$anchorScroll', '$q', '$ionicModal', '$templateCache', 'UserService', 'EventService', 'EventCache', 'LoggingService', 'NotificationService', 'orderByEventFilter', function(storage, $scope, $rootScope, $interval, $timeout, $stateParams, $location, $anchorScroll, $q, $ionicModal, $templateCache, UserService, EventService, EventCache, log, notifications, orderByEventFilter) {
+	.controller('CMEventCtrl', [
+		'storage',
+		'$scope',
+		'$rootScope',
+		'$interval',
+		'$timeout',
+		'$stateParams',
+		'$location',
+		'$q',
+		'$ionicModal',
+		'$templateCache',
+		'UserService',
+		'EventService',
+		'EventCache',
+		'LoggingService',
+		'NotificationService',
+		'orderByEventFilter',
+		function(
+			storage,
+			$scope,
+			$rootScope,
+			$interval,
+			$timeout,
+			$stateParams,
+			$location,
+			$q,
+			$ionicModal,
+			$templateCache,
+			UserService,
+			EventService,
+			EventCache, log,
+			notifications,
+			orderByEventFilter
+	) {
 		if (!$stateParams.eventType) {
 			$location.path('/events/official');
 			return;
@@ -147,6 +180,17 @@
 
 		var timeout = null;
 
+		var goToHash = function(hash) {
+			if (!hash) {
+				$window.scrollTo(0,0);
+			}
+			var elem = document.getElementById(hash);
+			if (!elem) {
+				$window.scrollTo(0,0);
+			}
+			elem.scrollIntoView();
+		};
+
 		var refreshing = null;
 		var doRefresh = function() {
 			if (refreshing) {
@@ -171,10 +215,15 @@
 			});
 
 			refreshing['finally'](function() {
+				/*
 				if (!scrolled) {
 					scrolled = true;
-					$anchorScroll();
+					var hash = $location.hash();
+					if (hash) {
+						goToHash(hash);
+					}
 				}
+				*/
 				refreshing = null;
 			});
 
@@ -275,15 +324,14 @@
 					log.info('start: ' + ev.getStart() + ', now: ' + now + ', ' + ev.getSummary());
 					if (now.isBefore(ev.getStart())) {
 						log.info('matched! ' + ev.getId());
-						$location.hash(ev.getId());
+						goToHash(ev.getId());
 						matched = true;
 						break;
 					}
 				}
 				if (!matched) {
-					$location.hash('the-end');
+					goToHash('the-end');
 				}
-				$anchorScroll();
 			}
 		};
 
