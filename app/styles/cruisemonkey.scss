@@ -157,9 +157,13 @@ a:hover {
 
 .bar-header {
 	h1.title {
-		font-size: 24px;
+		/* font-size: 24px; */
 		font-weight: bolder;
 	}
+}
+
+.bar .button.button-clear .icon:before, .bar .button.button-clear.icon:before, .bar .button.button-clear.icon-left:before, .bar .button.button-clear.icon-right:before {
+	font-size: 28px;
 }
 
 .add-event-form span.invalid {

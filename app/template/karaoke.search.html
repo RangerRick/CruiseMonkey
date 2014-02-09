@@ -6,6 +6,9 @@
 		</label>
 	</header>
 	<list>
-		<div bindonce class="item" ng-repeat="song in entries"><span bo-text="artist + ' - ' + song" class="item-text-wrap"></span></div>
+		<div bindonce class="item" ng-repeat="entry in entries">
+			<span bo-if="entry.artist" bo-text="entry.artist + ' - ' + entry.song" class="item-text-wrap"></span>
+			<span bo-if="!entry.artist" class="disabled" bo-text="entry + ' more matches...'"></span>
+		</div>
 	</list>
 </content>

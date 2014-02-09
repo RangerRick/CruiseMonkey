@@ -71,18 +71,32 @@
 				templateUrl: 'template/help.html',
 				controller: 'CMHelpCtrl'
 			})
+			.state('karaoke', {
+				url: '/karaoke',
+				templateUrl: 'template/karaoke.html',
+				controller: ['$rootScope', function($rootScope) {
+					$rootScope.title = 'Karaoke';
+					$rootScope.leftButtons = [];
+					$rootScope.rightButtons = [];
+				}]
+			})
+			.state('karaoke-search', {
+				url: '/karaoke/search',
+				templateUrl: 'template/karaoke.search.html',
+				controller: 'CMKaraokeSearchCtrl'
+			})
 			.state('karaoke-list', {
-				url: '/karaoke/list?search',
+				url: '/karaoke/list',
 				templateUrl: 'template/karaoke.list.html',
 				controller: 'CMKaraokePrefixListCtrl'
 			})
 			.state('karaoke-by-prefix', {
-				url: '/karaoke/by-prefix/:prefix?search&prefixSearch',
+				url: '/karaoke/by-prefix/:prefix',
 				templateUrl: 'template/karaoke.by-prefix.html',
 				controller: 'CMKaraokeArtistListCtrl'
 			})
 			.state('karaoke-by-artist', {
-				url: '/karaoke/by-artist/:artist?search&prefixSearch&artistSearch',
+				url: '/karaoke/by-artist/:artist',
 				templateUrl: 'template/karaoke.by-artist.html',
 				controller: 'CMKaraokeArtistCtrl'
 			})
@@ -221,12 +235,12 @@
 					log.debug('handleStateChange: setting online');
 					if ($rootScope.firstInitialization) {
 						var message = 'Synchronizing events from CruiseMonkey database...';
-						notifications.status(message);
+						//notifications.status(message);
 						Database.syncRemote()['finally'](function() {
 							$rootScope.firstInitialization = false;
 							Database.online();
 							SeamailService.online();
-							notifications.removeStatus(message);
+							//notifications.removeStatus(message);
 							$rootScope.$broadcast('cm.main.refreshEvents');
 						});
 					} else {

@@ -30,6 +30,7 @@ module.exports = function(config) {
 		'app/scripts/angular-3rdparty/ionic-angular.js',
       'app/bower_components/angularLocalStorage/src/angularLocalStorage.js',
       'app/bower_components/angular-bindonce/bindonce.js',
+      'app/scripts/cruisemonkey/karaoke-list.js',
       'app/scripts/cruisemonkey/*.js',
       'test/mock/**/*.js',
       'test/spec/**/*.js'
