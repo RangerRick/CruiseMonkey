@@ -77,6 +77,15 @@ $gutterMonkey: url(../images/cruise-monkey-transparent-bg.png);
 
 @import "ionic";
 
+.cm-dice {
+	@extend .ion;
+	font-family: sans-serif;
+}
+
+.cm-dice:before {
+	content: "\2685";
+}
+
 .icon {
 	&.icon-cm {
 		/* color: black; */

@@ -111,40 +111,7 @@
 			}
 		};
 	}])
-	.controller('CMEventCtrl', [
-		'storage',
-		'$scope',
-		'$rootScope',
-		'$interval',
-		'$timeout',
-		'$stateParams',
-		'$location',
-		'$q',
-		'$ionicModal',
-		'$templateCache',
-		'UserService',
-		'EventService',
-		'EventCache',
-		'LoggingService',
-		'NotificationService',
-		'orderByEventFilter',
-		function(
-			storage,
-			$scope,
-			$rootScope,
-			$interval,
-			$timeout,
-			$stateParams,
-			$location,
-			$q,
-			$ionicModal,
-			$templateCache,
-			UserService,
-			EventService,
-			EventCache, log,
-			notifications,
-			orderByEventFilter
-	) {
+	.controller('CMEventCtrl', [ 'storage', '$scope', '$rootScope', '$interval', '$timeout', '$stateParams', '$location', '$q', '$ionicModal', '$ionicScrollDelegate', '$window', 'UserService', 'EventService', 'EventCache', 'LoggingService', 'NotificationService', 'orderByEventFilter', function(storage, $scope, $rootScope, $interval, $timeout, $stateParams, $location, $q, $ionicModal, $ionicScrollDelegate, $window, UserService, EventService, EventCache, log, notifications, orderByEventFilter) {
 		if (!$stateParams.eventType) {
 			$location.path('/events/official');
 			return;
@@ -184,6 +151,15 @@
 			if (!hash) {
 				$window.scrollTo(0,0);
 			}
+			/*
+			$location.hash(hash);
+		    $ionicScrollDelegate.anchorScroll();
+		    setTimeout(function() {
+		      document.querySelector('.scroll-content').scrollTop = 0;
+		    }, 0);
+		*/
+			// $rootScope.$broadcast('scroll.anchorScroll');
+
 			var elem = document.getElementById(hash);
 			if (!elem) {
 				$window.scrollTo(0,0);
@@ -452,11 +428,13 @@
 
 		var newButtons = [];
 
+		/*
 		newButtons.push({
 			type: 'button-positive',
 			content: '<i class="icon icon-cm active ion-clock"></i>',
 			tap: $scope.goToNow
 		});
+		*/
 
 		if (UserService.getUsername() && UserService.getUsername() !== '') {
 			newButtons.push({

@@ -109,7 +109,7 @@ function CMAmenity(id, summary, icon, category, description) {
 		]),
 		3: new CMDeck(3, [
 			new CMAmenity('alhambra-theatre', 'Alhambra Theatre', 'ion-music-note', 'Entertainment', 'Spanning three decks, the Alhambra Theatre holds 1,320 people.'),
-			new CMAmenity('centrum', 'Centrum', undefined, undefined, 'A seven-story atrium surrounded by bars, lounges, and unique shops. Best compared to the lobby of a grand hotel.'),
+			new CMAmenity('centrum', 'Centrum', 'ion-help-buoy', 'Ship Services', 'A seven-story atrium surrounded by bars, lounges, and unique shops. Best compared to the lobby of a grand hotel.'),
 			new CMAmenity('studio-b', 'Studio B and Ice Rink (Entrance on Deck 3)', 'ion-music-note', 'Entertainment', 'Features open skating for guests throughout each cruise, plus excellent ice shows featuring professional skaters from all over the world.'),
 			new CMAmenity('on-air-club', 'On Air Club', 'ion-mic-b', 'Entertainment', 'Just outside of the Studio B ice rink complex is the On the Air Club. Equipped with television screens, this venue shows sports games and events.'),
 			new CMAmenity('rctv', 'RCTV', 'ion-ios7-videocam', 'Entertainment', "RCTV is the ship's television production operation. The television control can be seen outside of Studio B. The entertainment staff make use of the television facilities producing shows and recording events that are seen on the in-cabin television."),
@@ -122,7 +122,7 @@ function CMAmenity(id, summary, icon, category, description) {
 			new CMAmenity('alhambra-theatre', 'Alhambra Theatre', 'ion-music-note', 'Entertainment', 'Spanning three decks, the Alhambra Theatre holds 1,320 people.'),
 			new CMAmenity('schooner-bar', 'Schooner Bar', 'ion-wineglass', 'Bar', 'During the day and early evening, it is the scene for trivia contests and similar activities.  In the evenings, it becomes a piano bar.'),
 			new CMAmenity('the-raven', 'The Labyrinth (a.k.a The Raven)', 'ion-mic-c', 'Dancing', 'The Labyrinth is a Gothic inspired disco.  It occupies portions of decks three and four and has a bar on each level.  Guests on Deck Four can look down to see the dance floor on Deck Three. At the door, guests are greeted by two stained glass works by Harry Cardcross, "The Raven of the Tower" and "The Raven of the Battle" (left).  Carrying on the Tower of London theme,by the dance floor, there are nearly life size figures of a Beefeater (by Orest Kormashov) and of a mod Beefeaterette.'),
-			new CMAmenity('casino-royale', 'Casino Royale', undefined, 'Casino', 'Casino Royale can accommodate about 450 people and is equipped with gaming tables, slot machines, electronic gaming and its own bar.  Named after the Ian Fleming novel that began the James Bond series, two murals of the stars of the James Bond movies in character flank  the main entrance to the casino.'),
+			new CMAmenity('casino-royale', 'Casino Royale', 'cm-dice', 'Casino', 'Casino Royale can accommodate about 450 people and is equipped with gaming tables, slot machines, electronic gaming and its own bar.  Named after the Ian Fleming novel that began the James Bond series, two murals of the stars of the James Bond movies in character flank  the main entrance to the casino.'),
 			new CMAmenity('photo-gallery-and-shop', 'Photo Gallery and Shop', 'ion-images', 'Shopping', 'The Photo Gallery and Shop on deck 4 by the atrium is where guests can visit to view professional photographs of their experiences onboard. In addition the latest cameras and accessories are available to purchase along with a digital studio allowing passengers to download and print images from their digital cameras.'),
 			new CMAmenity('boleros-lounge', 'Boleros Lounge', 'ion-wineglass', 'Bar', 'The 77-seat Boleros Lounge on deck 4 is situated around the atrium and is Independence’s Latin Bar. With windows overlooking the promenade deck and its own stage and dance floor, entertainment ranges from live bands playing salsa music making it the ideal night time hotspot to dance the night away in with a refreshing mango mojito or caipirinha.  Classical music is also played at this venue and it is ideally situated for pre dinner drinks before heading off to the main dining rooms.'),
 			new CMAmenity('macbeth-dining-room', 'Macbeth Dining Room', 'ion-fork', 'Dining', 'The main dining room.')
@@ -137,7 +137,7 @@ function CMAmenity(id, summary, icon, category, description) {
 			new CMAmenity('ice-cream-parlor', 'Ice Cream Parlor', 'ion-icecream', 'Dining', 'Stop by Ben & Jerry\'s Ice Cream Parlor for cool treats in a rotating selection of fabulous flavors.'),
 			new CMAmenity('cupcake-cupboard', 'Cupcake Cupboard', 'ion-icecream', 'Dining', 'Sprinkle some sweetness into your cruise at this adorable 1940s style shop featuring fresh-baked gourmet cupcakes.'),
 			new CMAmenity('cafe-promenade', 'Café Promenade', 'ion-coffee', 'Dining', 'Café Promenade perhaps not surprisingly is on the Royal Promenade and is open 24 hours for snacks including sandwiches and cookies.'),
-			new CMAmenity('seasons', 'Seasons'),
+			//new CMAmenity('seasons', 'Seasons'),
 			new CMAmenity('next-cruise', 'Next Cruise', 'ion-help-buoy', 'Ship Services'),
 			new CMAmenity('shore-excursions', 'Shore Excursions', 'ion-help-buoy', 'Ship Services'),
 			new CMAmenity('guest-services', 'Guest Services', 'ion-help-buoy', 'Ship Services'),
@@ -160,7 +160,7 @@ function CMAmenity(id, summary, icon, category, description) {
 			new CMAmenity('concierge-club', 'Concierge Club', 'ion-help-buoy', 'Ship Services')
 		]),
 		11: new CMDeck(11, [
-			new CMAmenity('vitality-at-sea', 'Vitality at Sea Spa and Fitness Center', undefined, 'Fitness', 'Seaside fitness center featuring modern exercise equipment. The full-service spa offers a beauty salon and spa treatments, including massage, manicures and seaweed body wraps.'),
+			new CMAmenity('vitality-at-sea', 'Vitality at Sea Spa and Fitness Center', 'ion-leaf', 'Fitness', 'Seaside fitness center featuring modern exercise equipment. The full-service spa offers a beauty salon and spa treatments, including massage, manicures and seaweed body wraps.'),
 			new CMAmenity('solarium', 'Solarium', 'ion-waterdrop', 'Pool', 'This is an adults-only area with a serene atmosphere.  In addition to the pool, it features better quality loungers and furniture.'),
 			new CMAmenity('whirlpool-fore', 'Whirlpools (Fore)', 'ion-waterdrop', 'Pool', 'Two large whirlpools that are cantelevered over the sides of the ship.'),
 			new CMAmenity('pool-bar', 'Pool Bar', 'ion-wineglass', 'Bar'),
@@ -178,15 +178,15 @@ function CMAmenity(id, summary, icon, category, description) {
 			new CMAmenity('windjammer-cafe', 'Windjammer Café', 'ion-fork', 'Dining', 'The Windjammer Café buffet is located on deck eleven to the aft of the ship and offers panoramic views over the ships stern. This is also where you can find Jade, an Asian-inspired buffet venue.')
 		]),
 		12: new CMDeck(12, [
-			new CMAmenity('vitality-at-sea', 'Vitality at Sea Spa and Fitness Center', undefined, 'Fitness', 'Seaside fitness center featuring modern exercise equipment. The full-service spa offers a beauty salon and spa treatments, including massage, manicures and seaweed body wraps.'),
+			new CMAmenity('vitality-at-sea', 'Vitality at Sea Spa and Fitness Center', 'ion-leaf', 'Fitness', 'Seaside fitness center featuring modern exercise equipment. The full-service spa offers a beauty salon and spa treatments, including massage, manicures and seaweed body wraps.'),
 			new CMAmenity('bar', 'Bar', 'ion-wineglass', 'Bar'),
 			new CMAmenity('jogging-track', 'Jogging Track', undefined, 'Fitness', 'A jogging track winds its way around Deck 12, overlooking the pool areas.'),
-			new CMAmenity('nursery', 'Nursery', undefined, 'Ship Services'),
-			new CMAmenity('the-living-room', 'The Living Room', undefined, 'Ship Services', 'A laid-back place for teens to hang out with new friends.'),
+			new CMAmenity('nursery', 'Nursery', 'ion-android-contacts', 'Ship Services'),
+			new CMAmenity('the-living-room', 'The Living Room', 'ion-android-contacts', 'Ship Services', 'A laid-back place for teens to hang out with new friends.'),
 			new CMAmenity('video-arcade', 'Video Arcade', 'ion-game-controller-b', 'Entertainment', 'Filled with video games for kids and adults.'),
-			new CMAmenity('adventure-ocean', 'Adventure Ocean', undefined, 'Ship Services', 'Adventure Ocean is a play area with specially designed activities for kids ages 3-17. It is run by exceptional, energetic, college-educated staff.'),
+			new CMAmenity('adventure-ocean', 'Adventure Ocean', 'ion-android-contacts', 'Ship Services', 'Adventure Ocean is a play area with specially designed activities for kids ages 3-17. It is run by exceptional, energetic, college-educated staff.'),
 			new CMAmenity('johnny-rockets', 'Johnny Rockets', 'ion-fork', 'Dining', 'Johnny Rockets has become famous for its simple menu of burgers, fries and milk shakes combined with a 1950s décor and for many years now, Royal Caribbean has offered passengers the chance to experience Johnny Rockets at sea aboard a few of their cruise ships.'),
-			new CMAmenity('fuel-teen-club', 'Fuel Teen Club', undefined, 'Entertainment', 'A teens-only club where they can hang out, make new friends, and dance to the latest music.')
+			new CMAmenity('fuel-teen-club', 'Fuel Teen Club', 'ion-android-contacts', 'Entertainment', 'A teens-only club where they can hang out, make new friends, and dance to the latest music.')
 		]),
 		13: new CMDeck(13, [
 			new CMAmenity('rock-climbing-wall', 'Rock Climbing Wall', undefined, 'Fitness', 'This is the largest of the Royal Caribbean rock-climbing walls: a 43-foot-tall by 44-foot-wide freestanding wall with a central spire. Plus, with eleven different routes to choose from, this rock-climbing wall offers skill combinations for all levels.'),

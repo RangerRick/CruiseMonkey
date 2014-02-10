@@ -114,11 +114,11 @@ if (typeof String.prototype.contains !== 'function') {
 			<header class="bar bar-header bar-dark">
 				<div class="buttons">
 					<button class="button button-icon" ng-click="openLeft()"><i class="icon ion-navicon"></i></button>
-					<button ng-repeat="button in leftButtons" class="button button-clear no-animation" ng-class="button.type" ng-click="button.tap($event, $index)" ng-bind-html="button.content"></button>
+					<button ng-repeat="button in leftButtons" class="button button-clear no-animation" ng-class="button.type" ng-click="button.tap($event, $index)" bind-html-unsafe="button.content"></button>
 				</div>
 				<h1 class="title">{{title}}</h1>
 				<div class="buttons">
-					<button ng-repeat="button in rightButtons" class="button button-clear no-animation" ng-class="button.type" ng-click="button.tap($event, $index)" ng-bind-html="button.content"></button>
+					<button ng-repeat="button in rightButtons" class="button button-clear no-animation" ng-class="button.type" ng-click="button.tap($event, $index)" bind-html-unsafe="button.content"></button>
 				</div>
 			</header>
 			<span ng-click="closeLeft()">
@@ -161,7 +161,7 @@ if (typeof String.prototype.contains !== 'function') {
 		</side-menu>
 	</side-menus>
 	<div class="cm-notification" ng-if="statusNotification">
-		<div id="notification" class="cm-notification-inner" ng-bind-html="statusNotification"></div>
+		<div id="notification" class="cm-notification-inner" bind-html-unsafe="statusNotification"></div>
 		<div class="cm-notification-spinner"><i class="icon ion-loading-a icon-refreshing"></i></div>
 	</div>
 
