@@ -98,9 +98,15 @@ $gutterMonkey: url(../images/cruise-monkey-transparent-bg.png);
 }
 
 .cm-slider.bar {
-	height: 22px;
+	height: 18px;
 	.slider-pager {
+		height: 18px;
 		bottom: 0;
+		.slider-pager-page {
+			line-height: 14px;
+			padding-top: 2px;
+			padding-bottom: 2px;
+		}
 	}
 	background-color: #f4f4f4;
 }

@@ -56,9 +56,9 @@
 		};
 
 		$scope.shouldBeVisible = function(deck) {
-			//return $scope.deck === deck;
+			return $scope.deck === deck;
 			/* pre-cache the one before and after */
-			return (deck >= ($scope.deck - 1) && deck <= ($scope.deck + 1));
+			//return (deck >= ($scope.deck - 1) && deck <= ($scope.deck + 1));
 		};
 
 		var updateUI = function() {
