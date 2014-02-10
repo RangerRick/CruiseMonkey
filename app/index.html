@@ -121,7 +121,9 @@ if (typeof String.prototype.contains !== 'function') {
 					<button ng-repeat="button in rightButtons" class="button button-clear no-animation" ng-class="button.type" ng-click="button.tap($event, $index)" ng-bind-html="button.content"></button>
 				</div>
 			</header>
+			<span ng-click="closeLeft()">
 			<nav-view></nav-view>
+			</span>
 		</pane>
 		<side-menu side="left" ng-click="closeLeft()">
 			<header class="bar bar-header bar-dark">
