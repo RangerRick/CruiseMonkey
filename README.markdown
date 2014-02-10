@@ -67,6 +67,12 @@ CruiseMonkey by Benjamin Reed is licensed under the [Creative Commons Attributio
 Release Notes
 =============
 
+3.9.8
+-----
+* fix scrolling sticking if you hit the "now" button
+* rework the karaoke list to be 2 different paths, a (much simpler) "by artist" browser, and a search screen
+* close the menu if you click the main pane
+
 3.9.7
 -----
 * don't allow sliding to open the menu, since it interferes with sliding in the deck plans and twit-arr pics
