@@ -97,6 +97,14 @@ $gutterMonkey: url(../images/cruise-monkey-transparent-bg.png);
 	}
 }
 
+.cm-slider.bar {
+	height: 22px;
+	.slider-pager {
+		bottom: 0;
+	}
+	background-color: #f4f4f4;
+}
+
 .button {
 	&.button-cm {
 		color: $controlYellow;
