@@ -10,7 +10,7 @@
 	.value('config.urls.openinchrome', false)
 	.value('config.notifications.timeout', 5000)
 	.value('config.twitarr.root', 'https://twitarr.rylath.net/')
-	.value('config.app.version', '3.9.7')
+	.value('config.app.version', '3.9.9')
 	.value('config.upgrade', true);
 	
 	angular.module('cruisemonkey.Settings', [
