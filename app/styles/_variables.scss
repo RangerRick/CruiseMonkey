@@ -285,6 +285,8 @@ $item-font-size:                   16px;
 $item-border-width:                1px !default;
 $item-padding:                     15px !default;
 
+$item-button-font-size:            18px !default;
+$item-button-line-height:          32px !default;
 $item-icon-font-size:              32px !default;
 $item-icon-fill-font-size:         28px !default;
 
@@ -559,7 +561,7 @@ $z-index-item-drag:          0;
 $z-index-item-edit:          0;
 $z-index-item-options:       1;
 $z-index-item-radio:         3;
-$z-index-item-reordering:    20;
+$z-index-item-reordering:    9;
 $z-index-item-toggle:        3;
 $z-index-menu:               0;
 $z-index-modal:              10;
