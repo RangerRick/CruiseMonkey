@@ -79,21 +79,7 @@
 			'doUpdateDelayed': doUpdateDelayed
 		};
 	}])
-	.controller('CMKaraokeSearchCtrl', [
-		'storage',
-		'$rootScope',
-		'$scope',
-		'$state',
-		'KaraokeService',
-		'LoggingService',
-		function(
-			storage,
-			$rootScope,
-			$scope,
-			$state,
-			KaraokeService,
-			log
-	) {
+	.controller('CMKaraokeSearchCtrl', ['storage', '$rootScope', '$scope', '$state', 'KaraokeService', 'LoggingService', function(storage, $rootScope, $scope, $state, KaraokeService, log) {
 		log.info('Initializing CMKaraokeSearchCtrl');
 		$rootScope.title = 'Karaoke Search';
 		$rootScope.leftButtons = [
@@ -114,16 +100,25 @@
 		KaraokeService.setSortFunction(sortByArtist);
 		KaraokeService.setUpdateFunction(function() {
 			var entries = [],
-				artist, song,
-				i, j;
+				artist, song, matched,
+				i, j, s;
 
 			if ($scope.searchString === undefined || !$scope.searchString) {
 				return entries;
 			}
 
+			var searchFor = $scope.searchString.split(/\s+/);
+
 			for (i=0; i < karaokeList.length; i++) {
 				artist = karaokeList[i].artist;
-				if (artist.contains($scope.searchString)) {
+				matched = true;
+				for (s=0; s < searchFor.length; s++) {
+					if (!artist.contains(searchFor[s])) {
+						matched = false;
+						break;
+					}
+				}
+				if (matched) {
 					for (j=0; j < karaokeList[i].songs.length; j++) {
 						entries.push({
 							'artist': artist,
@@ -132,8 +127,15 @@
 					}
 				} else {
 					for (j=0; j < karaokeList[i].songs.length; j++) {
+						matched = true;
 						song = karaokeList[i].songs[j];
-						if (song.contains($scope.searchString)) {
+						for (s=0; s < searchFor.length; s++) {
+							if (!song.contains(searchFor[s])) {
+								matched = false;
+								break;
+							}
+						}
+						if (matched) {
 							entries.push({
 								'artist': artist,
 								'song': song
@@ -164,19 +166,7 @@
 
 		KaraokeService.initialize();
 	}])
-	.controller('CMKaraokePrefixListCtrl', [
-		'$rootScope',
-		'$scope',
-		'$state',
-		'KaraokeService',
-		'LoggingService',
-	function(
-		$rootScope,
-		$scope,
-		$state,
-		KaraokeService,
-		log
-	) {
+	.controller('CMKaraokePrefixListCtrl', ['$rootScope', '$scope', '$state', 'KaraokeService', 'LoggingService', function($rootScope, $scope, $state, KaraokeService, log) {
 		log.info('Initializing CMKaraokePrefixListCtrl');
 		$rootScope.title = 'Artists';
 		$rootScope.leftButtons = [
@@ -202,6 +192,7 @@
 				i, j, obj;
 
 			addEntry = function(entry) {
+				/*jshint camelcase: false */
 				firstChar = entry.artist.charAt(0).toUpperCase();
 				if (firstChar !== previousChar) {
 					//log.info('updateList: new prefix: ' + entry.artist);
@@ -223,25 +214,7 @@
 
 		KaraokeService.initialize();
 	}])
-	.controller('CMKaraokeArtistListCtrl', [
-		'storage',
-		'$rootScope',
-		'$scope',
-		'$stateParams',
-		'$state',
-		'$location',
-		'KaraokeService',
-		'LoggingService',
-		function(
-			storage,
-			$rootScope,
-			$scope,
-			$stateParams,
-			$state,
-			$location,
-			KaraokeService,
-			log
-	) {
+	.controller('CMKaraokeArtistListCtrl', ['storage', '$rootScope', '$scope', '$stateParams', '$state', '$location', 'KaraokeService', 'LoggingService', function(storage, $rootScope, $scope, $stateParams, $state, $location, KaraokeService, log) {
 		log.info('Initializing CMKaraokeArtistListCtrl');
 		
 		var prefix = $stateParams.prefix;
