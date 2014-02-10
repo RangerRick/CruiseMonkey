@@ -67,6 +67,13 @@ CruiseMonkey by Benjamin Reed is licensed under the [Creative Commons Attributio
 Release Notes
 =============
 
+3.9.9
+-----
+* temporarily remove problematic "now" code, it's broken in upstream Ionic
+* change deck list to show a "page" indicator
+* karaoke search will now search by individual keywords, so a search for "billy joel" will match "joel, billy"
+* clean up the amenities list a bit
+
 3.9.8
 -----
 * fix scrolling sticking if you hit the "now" button
