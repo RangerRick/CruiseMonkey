@@ -44,6 +44,16 @@
 	</div>
 
 	<div class="card">
+		<div class="item item-divider">Force Database Sync</div>
+		<div class="item item-text-wrap">
+			The shipboard network can be pretty flaky, especially with hundreds of geeks hitting it at once.
+			CruiseMonkey will attempt to force a sync every 15 minutes, but if you'd like to force one now,
+			click this.
+		</div>
+		<a class="button button-full button-assertive" ng-click="forceSync()">Force Sync</a>
+	</div>
+
+	<div class="card">
 		<div class="item item-divider">Reset Your Cache</div>
 		<div class="item item-text-wrap">
 			This will clear your local client cache and re-sync from the CruiseMonkey server.  Any events

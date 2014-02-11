@@ -57,7 +57,11 @@
 		$scope.resetDatabase = function() {
 			Database.reset();
 		};
-		
+
+		$scope.forceSync = function() {
+			Database.restartReplication();
+		};
+
 		cor.ifCordova(function() {
 			$scope.isIos = true;
 		}).otherwise(function() {

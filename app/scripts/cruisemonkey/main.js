@@ -315,7 +315,11 @@
 		handleStateChange();
 
 		$timeout(function() {
-			handleStateChange();
+			databaseInitialized.promise.then(function() {
+				if ($rootScope.foreground && $rootScope.online) {
+					Database.restartReplication();
+				}
+			});
 		}, 10 * 60 * 1000); // do it manually every 10 minutes, just to be sure
 
 		$rootScope.$watch('foreground', function(newValue, oldValue) {

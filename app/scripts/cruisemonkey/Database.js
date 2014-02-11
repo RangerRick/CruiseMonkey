@@ -378,7 +378,11 @@
 			'getDatabase': getDatabase,
 			'syncRemote': initializeFromRemote,
 			'online': startReplication,
-			'offline': stopReplication
+			'offline': stopReplication,
+			'restartReplication': function() {
+				stopReplication();
+				startReplication();
+			}
 		};
 
 		return api;
