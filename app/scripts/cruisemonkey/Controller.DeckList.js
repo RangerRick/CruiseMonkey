@@ -11,6 +11,7 @@
 		log.info('Initializing CMDeckListCtrl');
 		$rootScope.title = "Deck Plans";
 		$rootScope.leftButtons = [];
+		$rootScope.rightButtons = [];
 
 		storage.bind($scope, 'deck', {
 			'defaultValue': 2,

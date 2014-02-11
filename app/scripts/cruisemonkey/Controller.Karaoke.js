@@ -164,6 +164,19 @@
 			KaraokeService.doUpdateDelayed();
 		};
 
+		$scope.clearSearchString = function() {
+			log.info('clear search string');
+			var element = document.getElementById('search');
+			element.value = '';
+			if ("createEvent" in document) {
+				var evt = document.createEvent('HTMLEvents');
+				evt.initEvent('change', false, true);
+				element.dispatchEvent(evt);
+			} else {
+				element.fireEvent('change');
+			}
+		};
+
 		KaraokeService.initialize();
 	}])
 	.controller('CMKaraokePrefixListCtrl', ['$rootScope', '$scope', '$state', 'KaraokeService', 'LoggingService', function($rootScope, $scope, $state, KaraokeService, log) {
@@ -276,6 +289,20 @@
 			$scope.searchString = searchString;
 			KaraokeService.doUpdateDelayed();
 		};
+
+		$scope.clearSearchString = function() {
+			log.info('clear search string');
+			var element = document.getElementById('search');
+			element.value = '';
+			if ("createEvent" in document) {
+				var evt = document.createEvent('HTMLEvents');
+				evt.initEvent('change', false, true);
+				element.dispatchEvent(evt);
+			} else {
+				element.fireEvent('change');
+			}
+		};
+
 		KaraokeService.initialize();
 	}])
 	.controller('CMKaraokeArtistCtrl', ['storage', '$rootScope', '$scope', '$stateParams', '$state', 'KaraokeService', 'LoggingService', function(storage, $rootScope, $scope, $stateParams, $state, KaraokeService, log) {
@@ -335,6 +362,20 @@
 			$scope.searchString = searchString;
 			KaraokeService.doUpdateDelayed();
 		};
+
+		$scope.clearSearchString = function() {
+			log.info('clear search string');
+			var element = document.getElementById('search');
+			element.value = '';
+			if ("createEvent" in document) {
+				var evt = document.createEvent('HTMLEvents');
+				evt.initEvent('change', false, true);
+				element.dispatchEvent(evt);
+			} else {
+				element.fireEvent('change');
+			}
+		};
+
 		KaraokeService.initialize();
 	}]);
 }());

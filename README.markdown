@@ -67,6 +67,14 @@ CruiseMonkey by Benjamin Reed is licensed under the [Creative Commons Attributio
 Release Notes
 =============
 
+4.0.0
+-----
+* remove the click-anywhere-to-close, it was causing the menu to bounce open and closed
+* tweak the buttons a bit
+* fix a bug where if a button is on the right of the title, it would stick around when switching views
+* remove online/offline detection, it is likely to cause issues on the ship
+* add "x" icons to clear search inputs
+
 3.9.9
 -----
 * temporarily remove problematic "now" code, it's broken in upstream Ionic

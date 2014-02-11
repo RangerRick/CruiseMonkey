@@ -44,5 +44,18 @@
 			'storeName': 'cm.amenities'
 		});
 		log.debug('$scope.searchString: ' + $scope.searchString);
+
+		$scope.clearSearchString = function() {
+			log.info('clear search string');
+			var element = document.getElementById('search');
+			element.value = '';
+			if ("createEvent" in document) {
+				var evt = document.createEvent('HTMLEvents');
+				evt.initEvent('change', false, true);
+				element.dispatchEvent(evt);
+			} else {
+				element.fireEvent('change');
+			}
+		};
 	}]);
 }());

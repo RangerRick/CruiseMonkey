@@ -2,8 +2,11 @@
 	<header class="bar bar-header item-input-inset">
 		<label class="item-input-wrapper">
 			<i class="icon ion-ios7-search placeholder-icon"></i>
-			<input type="search" placeholder="Search Songs" ng-model="searchString" ng-change="searchUpdated(searchString)" />
+			<input id="search" type="search" placeholder="Search Songs" ng-model="searchString" ng-change="searchUpdated(searchString)" />
 		</label>
+		<button class="button button-clear" ng-if="searchString">
+			<i class="icon ion-close-circled" ng-click="clearSearchString()"></i>
+		</button>
 	</header>
 	<list>
 		<div bindonce class="item" ng-repeat="song in entries"><span bo-text="artist + ' - ' + song" class="item-text-wrap"></span></div>

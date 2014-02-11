@@ -186,7 +186,16 @@ a:hover {
 }
 
 .bar .button.button-clear .icon:before, .bar .button.button-clear.icon:before, .bar .button.button-clear.icon-left:before, .bar .button.button-clear.icon-right:before {
-	font-size: 28px;
+	font-size: 24px;
+}
+
+.bar .title + .buttons {
+	/* min-width: 65px; */
+	overflow: visible;
+	max-height: 33px;
+	top: 4px;
+	bottom: 4px;
+	right: 4px;
 }
 
 .add-event-form span.invalid {

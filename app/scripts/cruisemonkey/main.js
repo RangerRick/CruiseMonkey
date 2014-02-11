@@ -1,6 +1,7 @@
 (function () {
 	'use strict';
 
+	/*global Connection: true*/
 	/*global isMobile: true*/
 
 	angular.module('cruisemonkey',
@@ -222,12 +223,14 @@
 		var databaseInitialized = $q.defer();
 		$rootScope.foreground = true;
 		// if we're not mobile, we don't know if we're online or not, so set it online
+		$rootScope.online = true;
+		/* I'm really afraid this is gonna go bad on the ship.  Let's just pretend we're always online.
 		$rootScope.online = !isMobile;
 		if (navigator && navigator.network && navigator.network.connection) {
-			/*global Connection: true*/
 			$rootScope.online = navigator.network.connection.type !== Connection.NONE;
 			log.info('navigator support found, setting to online');
 		}
+		*/
 
 		var handleStateChange = function() {
 			databaseInitialized.promise.then(function() {
@@ -295,6 +298,7 @@
 			});
 		}, false);
 
+		/*
 		document.addEventListener('offline', function() {
 			$rootScope.safeApply(function() {
 				$rootScope.online = false;
@@ -305,6 +309,7 @@
 				$rootScope.online = true;
 			});
 		}, false);
+		*/
 
 		$q.when(upgrades.upgrade()).then(function() {
 			Database.initialize().then(function(db) {

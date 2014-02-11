@@ -121,7 +121,6 @@
 
 		$scope.eventType = $stateParams.eventType;
 		$rootScope.title = $scope.eventType.capitalize() + ' Events';
-		$rootScope.leftButtons = [];
 
 		var message = 'Updating ' + $scope.eventType.capitalize() + ' events...';
 		var scrolled = false;
@@ -131,8 +130,8 @@
 		});
 		log.debug('$scope.searchString: ' + $scope.searchString);
 
-		$scope.events = EventCache.get($scope.eventType) || [];
-		if ($scope.events.length === 0) {
+		$scope.entries = EventCache.get($scope.eventType) || [];
+		if ($scope.entries.length === 0) {
 			notifications.status(message);
 		}
 
@@ -148,23 +147,12 @@
 		var timeout = null;
 
 		var goToHash = function(hash) {
-			if (!hash) {
-				$window.scrollTo(0,0);
+			if (hash) {
+				$location.hash(hash);
+			} else {
+				$location.hash(undefined);
 			}
-			/*
-			$location.hash(hash);
 		    $ionicScrollDelegate.anchorScroll();
-		    setTimeout(function() {
-		      document.querySelector('.scroll-content').scrollTop = 0;
-		    }, 0);
-		*/
-			// $rootScope.$broadcast('scroll.anchorScroll');
-
-			var elem = document.getElementById(hash);
-			if (!elem) {
-				$window.scrollTo(0,0);
-			}
-			elem.scrollIntoView();
 		};
 
 		var refreshing = null;
@@ -180,7 +168,7 @@
 			$q.when(eventMethod()).then(function(e) {
 				log.debug('CMEventCtrl: got ' + e.length + ' ' + $scope.eventType + ' events');
 				deferred.resolve(true);
-				$scope.events = e;
+				$scope.entries = e;
 				EventCache.put($scope.eventType, e);
 				notifications.removeStatus(message);
 				$scope.$broadcast('scroll.resize');
@@ -191,15 +179,6 @@
 			});
 
 			refreshing['finally'](function() {
-				/*
-				if (!scrolled) {
-					scrolled = true;
-					var hash = $location.hash();
-					if (hash) {
-						goToHash(hash);
-					}
-				}
-				*/
 				refreshing = null;
 			});
 
@@ -272,7 +251,16 @@
 		});
 
 		$scope.clearSearchString = function() {
-			$scope.searchString = undefined;
+			log.info('clear search string');
+			var element = document.getElementById('search');
+			element.value = '';
+			if ("createEvent" in document) {
+				var evt = document.createEvent('HTMLEvents');
+				evt.initEvent('change', false, true);
+				element.dispatchEvent(evt);
+			} else {
+				element.fireEvent('change');
+			}
 		};
 
 		$scope.prettyDate = function(date) {
@@ -288,13 +276,13 @@
 		};
 
 		$scope.goToNow = function() {
-			log.debug('Go To Now!');
 			var now = moment(),
 				matched = false,
 				i,
 				ev;
-			if ($scope.events && $scope.events.length > 0) {
-				var sorted = orderByEventFilter($scope.events, $scope.searchString);
+
+			if ($scope.entries && $scope.entries.length > 0) {
+				var sorted = orderByEventFilter($scope.entries, $scope.searchString);
 				for (i=0; i < sorted.length; i++) {
 					ev = sorted[i];
 					log.info('start: ' + ev.getStart() + ', now: ' + now + ', ' + ev.getSummary());
@@ -313,9 +301,9 @@
 
 		$scope.trash = function(ev) {
 			var eventId = ev.getId();
-			for (var i=0; i < $scope.events.length; i++) {
-				if ($scope.events[i].getId() === eventId) {
-					$scope.events.splice(i, 1);
+			for (var i=0; i < $scope.entries.length; i++) {
+				if ($scope.entries[i].getId() === eventId) {
+					$scope.entries.splice(i, 1);
 					$scope.$broadcast('scroll.resize');
 					break;
 				}
@@ -343,9 +331,9 @@
 
 					// If we're in the 'my' browser, it should disappear from the list
 					if ($scope.eventType === 'my') {
-						for (i = 0; i < $scope.events.length; i++) {
-							if ($scope.events[i].getId() === eventId) {
-								$scope.events.splice(i, 1);
+						for (i = 0; i < $scope.entries.length; i++) {
+							if ($scope.entries[i].getId() === eventId) {
+								$scope.entries.splice(i, 1);
 								$scope.$broadcast('scroll.resize');
 								break;
 							}
@@ -356,9 +344,9 @@
 					EventService.removeFavorite(eventId);
 				} else {
 					var existing;
-					for (i = 0; i < $scope.events.length; i++) {
-						if ($scope.events[i].getId() === eventId) {
-							existing = $scope.events[i];
+					for (i = 0; i < $scope.entries.length; i++) {
+						if ($scope.entries[i].getId() === eventId) {
+							existing = $scope.entries[i];
 							break;
 						}
 					}
@@ -408,12 +396,12 @@
 
 			console.log('saving=', ev.toEditableBean());
 
-			if (ev.getRevision() && $scope.events) {
+			if (ev.getRevision() && $scope.entries) {
 				// update the existing event in the UI
-				for (var i = 0; i < $scope.events.length; i++) {
-					var existing = $scope.events[i];
+				for (var i = 0; i < $scope.entries.length; i++) {
+					var existing = $scope.entries[i];
 					if (existing.getId() === ev.getId()) {
-						$scope.events[i] = ev;
+						$scope.entries[i] = ev;
 						$scope.$broadcast('scroll.resize');
 						break;
 					}
@@ -426,18 +414,19 @@
 			});
 		};
 
-		var newButtons = [];
-
-		/*
-		newButtons.push({
-			type: 'button-positive',
-			content: '<i class="icon icon-cm active ion-clock"></i>',
-			tap: $scope.goToNow
-		});
-		*/
+		$rootScope.leftButtons = [
+			/*
+			{
+				type: 'button-positive',
+				content: '<i class="icon icon-cm active ion-clock"></i>',
+				tap: $scope.goToNow
+			}
+			*/
+		];
+		$rootScope.rightButtons = [];
 
 		if (UserService.getUsername() && UserService.getUsername() !== '') {
-			newButtons.push({
+			$rootScope.rightButtons.push({
 				type: 'button-positive',
 				content: '<i class="icon icon-cm active ion-ios7-plus"></i>',
 				tap: function(e) {
@@ -455,7 +444,5 @@
 				}
 			});
 		}
-
-		$rootScope.rightButtons = newButtons;
 	}]);
 }());

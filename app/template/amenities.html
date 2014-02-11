@@ -2,8 +2,11 @@
 	<header class="bar bar-header item-input-inset">
 		<label class="item-input-wrapper">
 			<i class="icon ion-ios7-search placeholder-icon"></i>
-			<input type="search" placeholder="Search" ng-model="searchString" />
+			<input id="search" type="search" placeholder="Search" ng-model="searchString" />
 		</label>
+		<button class="button button-clear" ng-if="searchString">
+			<i class="icon ion-close-circled" ng-click="clearSearchString()"></i>
+		</button>
 	</header>
 	<div class="event-list list">
 		<span bindonce ng-repeat="amenity in amenities | amenityFilter:searchString">
