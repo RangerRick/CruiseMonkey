@@ -253,7 +253,7 @@
 					}
 				} else {
 					log.debug('handleStateChange: setting offline');
-					notifications.status('Offline.  Unable to sync events.', 5000);
+					// notifications.status('Offline.  Unable to sync events.', 5000);
 					Database.offline();
 					SeamailService.offline();
 				}
