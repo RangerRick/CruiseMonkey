@@ -1,5 +1,11 @@
 <content has-header="true" overflow-scroll="true" scroll="true">
-	<div class="item item-text-wrap">CruiseMonkey, version {{version}}.</div>
+	<div class="item item-text-wrap">
+		<h2>CruiseMonkey, version {{version}}.</h2>
+		<p>
+			Last replication update: {{(lastModified &amp;&amp; !lastModified.isSame(0))? lastModified.fromNow() : 'N/A'}}<br/>
+			Last event update: {{(lastUpdatedEvent &amp;&amp; !lastUpdatedEvent.isSame(0))? lastUpdatedEvent.fromNow() : 'N/A'}}
+		</p>
+	</div>
 	<div class="item item-text-wrap">
 		<p>CruiseMonkey is built on the following tools:</p>
 

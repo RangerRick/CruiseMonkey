@@ -28,7 +28,7 @@ function CMEvent(rawdata) {
 	self.initialize = function(data) {
 		self._rawdata  = data || {};
 		self._favorite = undefined;
-		self._newDay   = false;
+		self._day      = undefined;
 		self._start    = undefined;
 		self._end      = undefined;
 
@@ -40,9 +40,22 @@ function CMEvent(rawdata) {
 		if (self._rawdata.end === 'Invalid date') {
 			self._rawdata.end = undefined;
 		}
+		if (self._rawdata.lastUpdated === 'Invalid date') {
+			self._rawdata.lastUpdated = undefined;
+		}
+		if (self._rawdata.lastUpdated === undefined) {
+			self.refreshLastUpdated();
+		}
 
 		delete self._rawdata.isFavorite;
 		delete self._rawdata.isNewDay;
+	};
+
+	self.isEven = function() {
+		return self._even || false;
+	};
+	self.setEven = function(bool) {
+		self._even = bool;
 	};
 
 	/**
@@ -78,6 +91,13 @@ function CMEvent(rawdata) {
 		self._rawdata.description = description;
 	};
 
+	self.getDay = function() {
+		if (self._day === undefined && self._rawdata.start !== undefined) {
+			self._day = moment(self._rawdata.start).startOf('day');
+		}
+		return self._day;
+	};
+
 	/**
 	  * Get the start date as a Moment.js object.
 	  *
@@ -102,6 +122,7 @@ function CMEvent(rawdata) {
 			self._rawdata.start = stringifyDate(start);
 		}
 		self._start = undefined;
+		self._day = undefined;
 	};
 
 	self.getStartString = function() {
@@ -111,6 +132,7 @@ function CMEvent(rawdata) {
 	self.setStartString = function(start) {
 		self._rawdata.start = start;
 		self._start = undefined;
+		self._day = undefined;
 	};
 
 	/**
@@ -148,6 +170,13 @@ function CMEvent(rawdata) {
 		self._end = undefined;
 	};
 
+	self.getLastUpdated = function() {
+		return moment(self._rawdata.lastUpdated);
+	};
+	self.refreshLastUpdated = function() {
+		self._rawdata.lastUpdated = stringifyDate(moment(0));
+	};
+
 	self.getUsername = function() {
 		if (self._rawdata.username && self._rawdata.username !== '') {
 			return self._rawdata.username;
@@ -170,13 +199,6 @@ function CMEvent(rawdata) {
 	};
 	self.setPublic = function(pub) {
 		self._rawdata.isPublic = pub;
-	};
-
-	self.isNewDay = function() {
-		return self._newDay;
-	};
-	self.setNewDay = function(newDay) {
-		self._newDay = newDay;
 	};
 
 	self.isFavorite = function() {
@@ -267,11 +289,20 @@ function CMEvent(rawdata) {
 function CMFavorite(rawdata) {
 	'use strict';
 
-	var self       = this;
+	var self = this;
 
-	self._rawdata  = rawdata || {};
-	self._rawdata.type = 'favorite';
-	self._event = undefined;
+	self.initialize = function(data) {
+		self._rawdata  = data || {};
+		self._rawdata.type = 'favorite';
+		self._event = undefined;
+
+		if (self._rawdata.lastUpdated === 'Invalid date') {
+			self._rawdata.lastUpdated = undefined;
+		}
+		if (self._rawdata.lastUpdated === undefined) {
+			self.refreshLastUpdated();
+		}
+	};
 
 	self.getId = function() {
 		return self._rawdata._id;
@@ -299,6 +330,13 @@ function CMFavorite(rawdata) {
 		self._event = ev;
 	};
 
+	self.getLastUpdated = function() {
+		return moment(self._rawdata.lastUpdated);
+	};
+	self.refreshLastUpdated = function() {
+		self._rawdata.lastUpdated = stringifyDate(moment(0));
+	};
+
 	self.toString = function() {
 		return 'CMFavorite[id=' + self.getId() + ',username=' + self.getUsername() + ',eventId=' + self.getEventId() + ']';
 	};
@@ -306,6 +344,8 @@ function CMFavorite(rawdata) {
 	self.getRawData = function() {
 		return self._rawdata;
 	};
+
+	self.initialize(rawdata);
 }
 
 
@@ -360,6 +400,21 @@ function CMFavorite(rawdata) {
 			return deferred.promise;
 		};
 
+		var reconcileEvents = function(events, favorites) {
+			var _favs = {}, fav;
+			angular.forEach(favorites, function(fav) {
+				_favs[fav.getEventId()] = fav;
+			});
+			angular.forEach(events, function(ev) {
+				fav = _favs[ev.getId()];
+				if (fav) {
+					fav.setEvent(ev);
+					ev.setFavorite(fav);
+				}
+			});
+			return events;
+		};
+
 		var doEventQuery = function(username, mapFunc, matchFunc) {
 			if (!mapFunc || !matchFunc) {
 				return rejectedResult('EventService.doEventQuery(): you must specify a map function and a match function!');
@@ -381,7 +436,8 @@ function CMFavorite(rawdata) {
 							log.error(err);
 							deferred.reject(err);
 						} else {
-							var ret = [];
+							var events = [];
+							var favorites = [];
 							var lastEvent;
 							var doc;
 							angular.forEach(res.rows, function(row, index) {
@@ -392,28 +448,18 @@ function CMFavorite(rawdata) {
 								doc = row.doc;
 								if (doc.type === 'event') {
 									if (matchFunc(doc)) {
-										lastEvent = new CMEvent(doc);
-										ret.push(lastEvent);
+										events.push(new CMEvent(doc));
 									} else {
 										log.debug('EventService.doEventQuery(): event (' + doc._id + ') did not match matchFunc()!  Skipping.');
 										lastEvent = undefined;
 									}
 								} else if (doc.type === 'favorite') {
-									if (lastEvent === undefined) {
-										log.debug('EventService.doEventQuery(): favorite matched, but no event scanned!');
-									} else if (lastEvent.getId() !== doc.eventId) {
-										log.debug('EventService.doEventQuery(): favorite matched, but eventId (' + doc.eventId + ') does not match last event (' + lastEvent.getId() + ')');
-									} else {
-										var fav = new CMFavorite(row.doc);
-										fav.setEvent(lastEvent);
-										lastEvent.setFavorite(fav);
-										log.debug('EventService.doEventQuery(): found favorite: ' + fav.toString());
-									}
+									favorites.push(new CMFavorite(doc));
 								} else {
 									log.warn('EventService.doEventQuery(): unknown document type (' + doc.type + ') matched for id: ' + doc._id);
 								}
 							});
-							deferred.resolve(ret);
+							deferred.resolve(reconcileEvents(events, favorites));
 						}
 					});
 				});
@@ -438,6 +484,7 @@ function CMFavorite(rawdata) {
 					deferred.reject('no username specified');
 				} else {
 					log.debug('EventService.addEvent(): posting event "' + eventToAdd.getSummary() + '" for user "' + eventToAdd.getUsername() + '"');
+					eventToAdd.refreshLastModified();
 					database.post(eventToAdd.getRawData(), function(err, response) {
 						$rootScope.$apply(function() {
 							if (err) {
@@ -474,6 +521,7 @@ function CMFavorite(rawdata) {
 			}
 
 			$q.when(db.getDatabase()).then(function(database) {
+				ev.refreshLastModified();
 				database.put(ev.getRawData(), function(err, response) {
 					$rootScope.$apply(function() {
 						if (err) {
@@ -588,39 +636,26 @@ function CMFavorite(rawdata) {
 						} else {
 							var username = UserService.getUsername();
 
-							var ret = [];
-							var lastEvent;
-							var doc;
+							var events = [],
+								favorites = [],
+								doc;
 							angular.forEach(res.rows, function(row, index) {
 								doc = row.doc;
 								if (doc.type === 'event') {
 									if (doc.username === 'official') {
-										lastEvent = new CMEvent(doc);
-										ret.push(lastEvent);
+										events.push(new CMEvent(doc));
 									} else {
 										log.debug('EventService.getOfficialEvents(): event (' + doc._id + ') did not match matchFunc()!  Skipping.');
-										lastEvent = undefined;
 									}
 								} else if (doc.type === 'favorite') {
-									if (username) {
-										if (lastEvent === undefined) {
-											// log.debug('EventService.getOfficialEvents(): favorite matched, but no event scanned!');
-										} else if (lastEvent.getId() !== doc.eventId) {
-											log.debug('EventService.getOfficialEvents(): favorite matched, but eventId (' + doc.eventId + ') does not match last event (' + lastEvent.getId() + ')');
-										} else if (doc.username !== username) {
-											log.debug('EventService.getOfficialEvents(): favorite matched, but username (' + doc.username + ') does not match logged-in user (' + username + ')');
-										} else {
-											var fav = new CMFavorite(row.doc);
-											fav.setEvent(lastEvent);
-											lastEvent.setFavorite(fav);
-											log.debug('EventService.getOfficialEvents(): found favorite: ' + fav.toString());
-										}
+									if (username && doc.username === username) {
+										favorites.push(new CMFavorite(doc));
 									}
 								} else {
 									log.warn('EventService.getOfficialEvents(): unknown document type (' + doc.type + ') matched for id: ' + doc._id);
 								}
 							});
-							deferred.resolve(ret);
+							deferred.resolve(reconcileEvents(events, favorites));
 						}
 					});
 				});
@@ -666,39 +701,27 @@ function CMFavorite(rawdata) {
 							deferred.reject(err);
 						} else {
 							var username = UserService.getUsername();
-							var ret = [];
-							var lastEvent;
-							var doc;
+
+							var events = [],
+								favorites = [],
+								doc;
 							angular.forEach(res.rows, function(row, index) {
 								doc = row.doc;
 								if (doc.type === 'event') {
 									if (doc.isPublic) {
-										lastEvent = new CMEvent(doc);
-										ret.push(lastEvent);
+										events.push(new CMEvent(doc));
 									} else {
 										log.debug('EventService.getUnofficialEvents(): event (' + doc._id + ') did not match matchFunc()!  Skipping.');
-										lastEvent = undefined;
 									}
 								} else if (doc.type === 'favorite') {
-									if (username) {
-										if (lastEvent === undefined) {
-											log.debug('EventService.getUnofficialEvents(): favorite matched, but no event scanned!');
-										} else if (lastEvent.getId() !== doc.eventId) {
-											log.debug('EventService.getUnofficialEvents(): favorite matched, but eventId (' + doc.eventId + ') does not match last event (' + lastEvent.getId() + ')');
-										} else if (doc.username !== username) {
-											log.debug('EventService.getUnofficialEvents(): favorite matched, but username (' + doc.username + ') does not match logged-in user (' + username + ')');
-										} else {
-											var fav = new CMFavorite(row.doc);
-											fav.setEvent(lastEvent);
-											lastEvent.setFavorite(fav);
-											log.debug('EventService.getUnofficialEvents(): found favorite: ' + fav.toString());
-										}
+									if (username && doc.username === username) {
+										favorites.push(new CMFavorite(doc));
 									}
 								} else {
 									log.warn('EventService.getUnofficialEvents(): unknown document type (' + doc.type + ') matched for id: ' + doc._id);
 								}
 							});
-							deferred.resolve(ret);
+							deferred.resolve(reconcileEvents(events, favorites));
 						}
 					});
 				});
@@ -803,37 +826,22 @@ function CMFavorite(rawdata) {
 							log.error(err);
 							deferred.reject(err);
 						} else {
-							var ret = [];
-							var lastEvent;
-							var doc;
+							var events = [],
+								favorites = [],
+								doc;
 							angular.forEach(res.rows, function(row, index) {
 								doc = row.doc;
 								if (doc.type === 'event') {
-									if (doc.username === username) {
-										lastEvent = new CMEvent(doc);
-										ret.push(lastEvent);
-									} else if (doc.isPublic) {
-										lastEvent = new CMEvent(doc);
-										ret.push(lastEvent);
-									} else {
-										log.debug('EventService.getMyFavorites(): event (' + doc._id + ') found that is not owned by ' + username + ', but it is not public!  Skipping.');
-										lastEvent = undefined;
+									if (doc.username === username || doc.isPublic) {
+										events.push(new CMEvent(doc));
 									}
 								} else if (doc.type === 'favorite') {
-									if (lastEvent === undefined) {
-										log.debug('EventService.getMyFavorites(): favorite matched, but no event scanned!');
-									} else if (lastEvent.getId() !== doc.eventId) {
-										log.debug('EventService.getMyFavorites(): favorite matched, but eventId (' + doc.eventId + ') does not match last event (' + lastEvent.getId() + ')');
-									} else {
-										var fav = new CMFavorite(row.doc);
-										fav.setEvent(lastEvent);
-										lastEvent.setFavorite(fav);
-									}
+									favorites.push(new CMFavorite(doc));
 								} else {
 									log.warn('EventService.getMyFavorites(): unknown document type (' + doc.type + ') matched for id: ' + doc._id);
 								}
 							});
-							deferred.resolve(ret);
+							deferred.resolve(reconcileEvents(events, favorites));
 						}
 					});
 				});
@@ -906,7 +914,8 @@ function CMFavorite(rawdata) {
 				var fav = {
 					'type': 'favorite',
 					'username': username,
-					'eventId': eventId
+					'eventId': eventId,
+					'lastModified': stringifyDate(moment())
 				};
 
 				database.post(fav, function(err, res) {

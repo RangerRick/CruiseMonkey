@@ -67,6 +67,12 @@ CruiseMonkey by Benjamin Reed is licensed under the [Creative Commons Attributio
 Release Notes
 =============
 
+3.9.11
+------
+* "About" page now lists the last time the database synced, as well as the last time an event was modified
+* events views refactored to refresh faster and have cleaner data in the backend; search responds better now
+* build system tweaks
+
 3.9.10
 ------
 * fix quick taps causing the menu to close when it shouldn't

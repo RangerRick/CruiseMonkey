@@ -45,35 +45,37 @@
 	<div class="bar item-input-inset">
 		<label class="item-input-wrapper">
 			<i class="icon ion-ios7-search placeholder-icon"></i>
-			<input id="search" type="search" placeholder="Search" ng-model="searchString" />
+			<input id="search" type="search" placeholder="Search" ng-model="searchString" ng-change="searchChanged(searchString)" />
 		</label>
 		<button class="button button-clear" ng-if="searchString">
 			<i class="icon ion-close-circled" ng-click="clearSearchString()"></i>
 		</button>
 	</div>
 	<div class="event-list list">
-		<span bindonce ng-repeat="entry in entries | orderByEvent:searchString">
-			<div ng-if="entry.isNewDay()" class="item item-divider header">{{prettyDate(entry.getStart())}}</div>
+		<span ng-repeat="day in entries">
+			<div class="item item-divider header">{{prettyDate(day.date)}}</div>
 
-			<div class="list-entry item item-text-wrap" ng-class-even="'even'" ng-class-odd="'odd'" id="{{entry.getId()}}">
-				<span class="item-note favorite" ng-show="(user.username &amp;&amp; user.username != entry.getUsername())">
-					<button id="{{entry.getId()}}-favorite" ng-click="onFavoriteChanged(entry)" class="button button-cm button-icon icon" ng-class="entry.isFavorite()? 'active ion-ios7-heart':'ion-ios7-heart-outline'"></button>
-				</span>
-				<span class="item-note trash" ng-show="(user.username &amp;&amp; user.username == entry.getUsername())">
-					<button id="{{entry.getId()}}-trash" ng-click="trash(entry)" class="button button-cm button-icon icon active ion-ios7-trash"></button>
-				</span>
-				<span class="item-note public" ng-show="(user.username &amp;&amp; user.username == entry.getUsername())">
-					<button id="{{entry.getId()}}-public" ng-click="onPublicChanged(entry)" class="button button-cm button-icon icon active" ng-class="entry.isPublic()? 'ion-ios7-eye':'ion-ios7-eye-outline'"></button>
-				</span>
-				<span class="item-note edit" ng-show="(user.username &amp;&amp; user.username == entry.getUsername())">
-					<button id="{{entry.getId()}}-edit" ng-click="edit(entry)" class="button button-cm button-icon icon active ion-gear-a"></button>
-				</span>
-				<div class="summary" bo-text="entry.getSummary()"></div>
-				<div class="time" bo-text="'Time: ' + entry.getDisplayTime()"></div>
-				<div class="createdBy" bo-show="entry.getUsername() != 'official'" bo-text="'Created By: ' + entry.getUsername()"></div>
-				<div class="location" bo-show="entry.getLocation()" bo-text="'Location: ' + entry.getLocation()"></div>
-				<div class="description" bo-show="entry.getDescription()" bo-text="entry.getDescription()"></div>
-			</div>
+			<span bindonce ng-repeat="entry in day.entries">
+				<div id="{{entry.getId()}}" class="list-entry item item-text-wrap" ng-class="entry.isEven()? 'even':'odd'">
+					<span class="item-note favorite" ng-show="(user.username &amp;&amp; user.username != entry.getUsername())">
+						<button id="{{entry.getId()}}-favorite" ng-click="onFavoriteChanged(entry)" class="button button-cm button-icon icon" ng-class="entry.isFavorite()? 'active ion-ios7-heart':'ion-ios7-heart-outline'"></button>
+					</span>
+					<span class="item-note trash" ng-show="(user.username &amp;&amp; user.username == entry.getUsername())">
+						<button id="{{entry.getId()}}-trash" ng-click="trash(entry)" class="button button-cm button-icon icon active ion-ios7-trash"></button>
+					</span>
+					<span class="item-note public" ng-show="(user.username &amp;&amp; user.username == entry.getUsername())">
+						<button id="{{entry.getId()}}-public" ng-click="onPublicChanged(entry)" class="button button-cm button-icon icon active" ng-class="entry.isPublic()? 'ion-ios7-eye':'ion-ios7-eye-outline'"></button>
+					</span>
+					<span class="item-note edit" ng-show="(user.username &amp;&amp; user.username == entry.getUsername())">
+						<button id="{{entry.getId()}}-edit" ng-click="edit(entry)" class="button button-cm button-icon icon active ion-gear-a"></button>
+					</span>
+					<div class="summary" bo-text="entry.getSummary()"></div>
+					<div class="time" bo-text="'Time: ' + entry.getDisplayTime()"></div>
+					<div class="createdBy" bo-show="entry.getUsername() != 'official'" bo-text="'Created By: ' + entry.getUsername()"></div>
+					<div class="location" bo-show="entry.getLocation()" bo-text="'Location: ' + entry.getLocation()"></div>
+					<div class="description" bo-show="entry.getDescription()" bo-text="entry.getDescription()"></div>
+				</div>
+			</span>
 		</span>
 	</div>
 	<div id="the-end" />

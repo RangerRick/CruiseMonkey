@@ -5,6 +5,46 @@
 	/*global Modernizr: true*/
 	/*global CMEvent: true*/
 	/*global CMFavorite: true*/
+
+	var attrA, attrB;
+	var sortEvent = function(a,b) {
+		attrA = a.getStart();
+		attrB = b.getStart();
+
+		if (attrA.isBefore(attrB)) {
+			return -1;
+		}
+		if (attrA.isAfter(attrB)) {
+			return 1;
+		}
+
+		attrA = a.getSummary().toLowerCase();
+		attrB = b.getSummary().toLowerCase();
+
+		if (attrA > attrB) { return 1; }
+		if (attrA < attrB) { return -1; }
+
+		attrA = a.getEnd();
+		attrB = b.getEnd();
+
+		if (attrA.isBefore(attrB)) { return -1; }
+		if (attrA.isAfter(attrB)) { return 1; }
+
+		return 0;
+	};
+	var sortDay = function(a,b) {
+		attrA = a.date;
+		attrB = b.date;
+		
+		if (attrA.isBefore(attrB)) {
+			return -1;
+		}
+		if (attrA.isAfter(attrB)) {
+			return 1;
+		}
+		return 0;
+	};
+
 	angular.module('cruisemonkey.controllers.Events', [
 		'ui.router',
 		'ionic',
@@ -15,69 +55,6 @@
 		'cruisemonkey.Logging',
 		'cruisemonkey.Notifications'
 	])
-	.filter('orderByEvent', function() {
-		return function(input, searchString) {
-			if (!angular.isObject(input)) { return input; }
-
-			var array = [];
-			angular.forEach(input, function(obj, index) {
-				obj.setNewDay(false);
-				if (obj.matches(searchString)) {
-					array.push(obj);
-				}
-			});
-
-			var attrA, attrB;
-
-			array.sort(function(a,b) {
-				attrA = a.getStart();
-				attrB = b.getStart();
-
-				if (attrA.isBefore(attrB)) {
-					return -1;
-				}
-				if (attrA.isAfter(attrB)) {
-					return 1;
-				}
-
-				attrA = a.getSummary().toLowerCase();
-				attrB = b.getSummary().toLowerCase();
-
-				if (attrA > attrB) { return 1; }
-				if (attrA < attrB) { return -1; }
-
-				attrA = a.getEnd();
-				attrB = b.getEnd();
-
-				if (attrA.isBefore(attrB)) { return -1; }
-				if (attrA.isAfter(attrB)) { return 1; }
-
-				return 0;
-			});
-
-			var lastStart, start;
-			angular.forEach(array, function(value, index) {
-				value.setNewDay(false);
-				start = value.getStart();
-
-				if (index === 0) {
-					value.setNewDay(true);
-				} else {
-					if (start.isAfter(lastStart, 'day')) {
-						value.setNewDay(true);
-					}
-				}
-
-				lastStart = start;
-			});
-
-			if (array.length > 0) {
-				array[0].setNewDay(true);
-			}
-
-			return array;
-		};
-	})
 	.controller('CMEditEventCtrl', ['$q', '$scope', '$rootScope', 'UserService', 'LoggingService', function($q, $scope, $rootScope, UserService, log) {
 		log.info('Initializing CMEditEventCtrl');
 
@@ -102,16 +79,58 @@
 	.factory('EventCache', [function() {
 		var cache = {};
 		
-		return {
-			get: function(name) {
+		var getCacheEntry = function(name) {
+			if (cache[name]) {
 				return cache[name];
+			}
+			return [];
+		};
+
+		return {
+			get: function(name, searchString) {
+				var even = false,
+					ret = [],
+					i, j, day,
+					entry,
+					matches;
+				var cacheEntry = getCacheEntry(name);
+				if (!searchString) {
+					for (i=0; i < cacheEntry.length; i++) {
+						day = cacheEntry[i];
+						for (j=0; j < day.entries.length; j++) {
+							day.entries[j].setEven(even);
+							even = !even;
+						}
+					}
+					return cacheEntry;
+				}
+
+				for (i=0; i < cacheEntry.length; i++) {
+					day = cacheEntry[i];
+					matches = [];
+					for (j=0; j < day.entries.length; j++) {
+						entry = day.entries[j];
+						if (entry.matches(searchString)) {
+							entry.setEven(even);
+							even = !even;
+							matches.push(entry);
+						}
+					}
+					if (matches.length > 0) {
+						ret.push({
+							date: day.date,
+							entries: matches
+						});
+					}
+				}
+				return ret;
 			},
 			put: function(name, data) {
 				cache[name] = data;
 			}
 		};
 	}])
-	.controller('CMEventCtrl', [ 'storage', '$scope', '$rootScope', '$interval', '$timeout', '$stateParams', '$location', '$q', '$ionicModal', '$ionicScrollDelegate', '$window', 'UserService', 'EventService', 'EventCache', 'LoggingService', 'NotificationService', 'orderByEventFilter', function(storage, $scope, $rootScope, $interval, $timeout, $stateParams, $location, $q, $ionicModal, $ionicScrollDelegate, $window, UserService, EventService, EventCache, log, notifications, orderByEventFilter) {
+	.controller('CMEventCtrl', [ 'storage', '$scope', '$rootScope', '$interval', '$timeout', '$stateParams', '$location', '$q', '$ionicModal', '$ionicScrollDelegate', '$window', 'UserService', 'EventService', 'EventCache', 'LoggingService', 'NotificationService', function(storage, $scope, $rootScope, $interval, $timeout, $stateParams, $location, $q, $ionicModal, $ionicScrollDelegate, $window, UserService, EventService, EventCache, log, notifications) {
 		if (!$stateParams.eventType) {
 			$location.path('/events/official');
 			return;
@@ -135,7 +154,7 @@
 		});
 		log.debug('$scope.searchString: ' + $scope.searchString);
 
-		$scope.entries = EventCache.get($scope.eventType) || [];
+		$scope.entries = EventCache.get($scope.eventType, $scope.searchString) || [];
 		if ($scope.entries.length === 0) {
 			notifications.status(message);
 		}
@@ -160,6 +179,28 @@
 			$ionicScrollDelegate.anchorScroll();
 		};
 
+		var updateEntries = function() {
+			$scope.entries = EventCache.get($scope.eventType, $scope.searchString);
+			$scope.$broadcast('scroll.resize');
+		};
+
+		var delayTimeout = null;
+		var updateDelayed = function(delay) {
+			if (delayTimeout) {
+				$timeout.cancel(delayTimeout);
+			}
+			delayTimeout = $timeout(function() {
+				log.debug('CMEventCtrl.doUpdateDelayed()');
+				delayTimeout = null;
+				updateEntries();
+			}, delay || 300);
+		};
+
+		$scope.searchChanged = function(newSearchString) {
+			$scope.searchString = newSearchString;
+			updateDelayed();
+		};
+
 		var refreshing = null;
 		var doRefresh = function() {
 			if (refreshing) {
@@ -172,11 +213,24 @@
 			log.debug('CMEventCtrl.doRefresh(): refreshing.');
 			$q.when(eventMethod()).then(function(e) {
 				log.debug('CMEventCtrl: got ' + e.length + ' ' + $scope.eventType + ' events');
-				deferred.resolve(true);
-				$scope.entries = e;
-				EventCache.put($scope.eventType, e);
 				notifications.removeStatus(message);
-				$scope.$broadcast('scroll.resize');
+				deferred.resolve(true);
+
+				e = e.sort(sortEvent);
+				var entries = [], lastDay = null;
+				angular.forEach(e, function(entry, index) {
+					if (entry.getDay() !== lastDay) {
+						lastDay = entry.getDay();
+						entries.push({
+							date: lastDay,
+							entries: []
+						});
+					}
+					entries[entries.length - 1].entries.push(entry);
+				});
+				//console.log('doRefresh:',entries);
+				EventCache.put($scope.eventType, entries);
+				updateEntries();
 			}, function() {
 				log.warn('CMEventCtrl: failed to get ' + $scope.eventType + ' events');
 				notifications.removeStatus(message);
@@ -283,19 +337,22 @@
 		$scope.goToNow = function() {
 			var now = moment(),
 				matched = false,
-				i,
+				i, j, day,
 				ev;
 
 			if ($scope.entries && $scope.entries.length > 0) {
-				var sorted = orderByEventFilter($scope.entries, $scope.searchString);
-				for (i=0; i < sorted.length; i++) {
-					ev = sorted[i];
-					log.info('start: ' + ev.getStart() + ', now: ' + now + ', ' + ev.getSummary());
-					if (now.isBefore(ev.getStart())) {
-						log.info('matched! ' + ev.getId());
-						goToHash(ev.getId());
-						matched = true;
-						break;
+				dayloop:
+				for (i=0; i < $scope.entries.length; i++) {
+					day = $scope.entries[i];
+					for (j=0; j < day.entries.length; j++) {
+						ev = day.entries[j];
+						log.info('start: ' + ev.getStart() + ', now: ' + now + ', ' + ev.getSummary());
+						if (now.isBefore(ev.getStart())) {
+							log.info('matched! ' + ev.getId());
+							goToHash(ev.getId());
+							matched = true;
+							break dayloop;
+						}
 					}
 				}
 				if (!matched) {
@@ -306,12 +363,22 @@
 
 		$scope.trash = function(ev) {
 			if (window.confirm('Are you sure you want to delete "' + ev.getSummary() + '"?')) {
-				var eventId = ev.getId();
-				for (var i=0; i < $scope.entries.length; i++) {
-					if ($scope.entries[i].getId() === eventId) {
-						$scope.entries.splice(i, 1);
-						$scope.$broadcast('scroll.resize');
-						break;
+				var eventId = ev.getId(),
+					i, j, day;
+				dayloop:
+				for (i=0; i < $scope.entries.length; i++) {
+					day = $scope.entries[i];
+					for (j=0; j < day.entries.length; j++) {
+						if (day.entries[j].getId() === eventId) {
+							// remove the event from the day list
+							day.entries.splice(j, 1);
+							if (day.entries.length === 0) {
+								// if there are no events left in the day, remove the day too
+								$scope.entries.splice(i, 1);
+							}
+							$scope.$broadcast('scroll.resize');
+							break dayloop;
+						}
 					}
 				}
 				EventService.removeEvent(ev);
@@ -329,7 +396,7 @@
 
 		$scope.onFavoriteChanged = function(ev) {
 			$scope.safeApply(function() {
-				var i, eventId = ev.getId();
+				var i, j, day, eventId = ev.getId();
 				log.debug('CMEventCtrl.onFavoriteChanged(' + eventId + ')');
 
 				if (ev.isFavorite()) {
@@ -338,11 +405,18 @@
 
 					// If we're in the 'my' browser, it should disappear from the list
 					if ($scope.eventType === 'my') {
-						for (i = 0; i < $scope.entries.length; i++) {
-							if ($scope.entries[i].getId() === eventId) {
-								$scope.entries.splice(i, 1);
-								$scope.$broadcast('scroll.resize');
-								break;
+						favdayloop:
+						for (i=0; i < $scope.entries.length; i++) {
+							day = $scope.entries[i];
+							for (j=0; j < day.entries.length; j++) {
+								if (day.entries[j].getId() === eventId) {
+									day.entries.splice(j, 1);
+									if (day.entries.length === 0) {
+										$scope.entries.splice(i, 1);
+									}
+									$scope.$broadcast('scroll.resize');
+									break favdayloop;
+								}
 							}
 						}
 					}
@@ -351,10 +425,14 @@
 					EventService.removeFavorite(eventId);
 				} else {
 					var existing;
+					nofavdayloop:
 					for (i = 0; i < $scope.entries.length; i++) {
-						if ($scope.entries[i].getId() === eventId) {
-							existing = $scope.entries[i];
-							break;
+						day = $scope.entries[i];
+						for (j=0; j < day.entries.length; j++) {
+							if (day.entries[j].getId() === eventId) {
+								existing = day.entries[j];
+								break nofavdayloop;
+							}
 						}
 					}
 
@@ -408,12 +486,17 @@
 
 			if (ev.getRevision() && $scope.entries) {
 				// update the existing event in the UI
-				for (var i = 0; i < $scope.entries.length; i++) {
-					var existing = $scope.entries[i];
-					if (existing.getId() === ev.getId()) {
-						$scope.entries[i] = ev;
-						$scope.$broadcast('scroll.resize');
-						break;
+				var i, j, day;
+				dayloop:
+				for (i=0; i < $scope.entries.length; i++) {
+					day = $scope.entries[i];
+					for (j=0; j < day.entries.length; j++) {
+						var existing = day.entries[j];
+						if (existing.getId() === ev.getId()) {
+							day.entries[j] = ev;
+							$scope.$broadcast('scroll.resize');
+							break dayloop;
+						}
 					}
 				}
 			}

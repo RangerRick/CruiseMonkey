@@ -168,6 +168,7 @@
 							since: $rootScope.lastSequence,
 							onChange: function(change) {
 								$rootScope.safeApply(function() {
+									$rootScope.lastUpdated = moment();
 									$rootScope.lastSequence = change.seq;
 									$timeout(function() {
 										$rootScope.$broadcast('cm.database.documentchanged', change);
