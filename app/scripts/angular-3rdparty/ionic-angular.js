@@ -2,7 +2,7 @@
  * Copyright 2014 Drifty Co.
  * http://drifty.com/
  *
- * Ionic, v0.9.24-alpha
+ * Ionic, v0.9.24-alpha-7322-13809-13288-6754-12323-4765
  * A powerful HTML5 mobile app framework.
  * http://ionicframework.com/
  *
@@ -10,7 +10,8 @@
  *
  * Licensed under the MIT license. Please see LICENSE for more information.
  *
- */;
+ */
+;
 /**
  * Create a wrapping module to ease having to include too many
  * modules.
@@ -63,7 +64,7 @@ angular.module('ionic', [
 
 angular.element.prototype.addClass = function(cssClasses) {
   var x, y, cssClass, el, splitClasses, existingClasses;
-  if (cssClasses) {
+  if (cssClasses && cssClasses != 'ng-scope' && cssClasses != 'ng-isolate-scope') {
     for(x=0; x<this.length; x++) {
       el = this[x];
       if(el.setAttribute) {
@@ -1859,7 +1860,7 @@ angular.module('ionic.ui.radio', [])
       if(!ngModel || !radioButtons) { return; }
 
       var setIt = function() {
-        
+        console.log('SET');
         $element.addClass('active');
         ngModel.$setViewValue($scope.$eval($attr.ngValue));
 
@@ -1867,7 +1868,7 @@ angular.module('ionic.ui.radio', [])
       };
 
       var clickHandler = function(e) {
-        
+        console.log('CLICK');
         setIt();
       };
 
@@ -2664,7 +2665,7 @@ angular.module('ionic.ui.toggle', [])
       //   });
 
       //   ionic.on('drag', function(e) {
-      //     
+      //     console.log('drag');
       //     $scope.toggle.drag(e);
       //   }, handle);
 
@@ -2825,7 +2826,7 @@ angular.module('ionic.ui.viewState', ['ionic.service.view', 'ionic.service.gestu
       if(tAttrs.type) tElement.addClass(tAttrs.type);
 
       return function link($scope, $element, $attr) {
-        var canHaveBackButton = !(!tAttrs.backButtonType && !tAttrs.backButtonLabel);
+        var canHaveBackButton = !(!tAttrs.backButtonType && !tAttrs.backButtonLabel && !tAttrs.backButtonIcon);
         $scope.enableBackButton = canHaveBackButton;
 
         $rootScope.$on('viewState.showNavBar', function(e, showNavBar) {
