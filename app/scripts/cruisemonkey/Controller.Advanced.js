@@ -41,12 +41,17 @@
 		
 		$scope.saveSettings = function() {
 			console.log('saving=', $scope.settings);
+			var before = angular.copy(SettingsService.getSettings());
+			var after = angular.copy($scope.settings);
 			SettingsService.setDatabaseHost($scope.settings.databaseHost);
 			SettingsService.setDatabaseName($scope.settings.databaseName);
 			SettingsService.setDatabaseRefresh($scope.settings.databaseRefresh);
 			SettingsService.setOpenInChrome($scope.settings.openInChrome);
 			SettingsService.setTwitarrRoot($scope.settings.twitarrRoot);
-			$rootScope.$broadcast('cm.settingsChanged');
+			$rootScope.$broadcast('cm.settingsChanged', {
+				'before': before,
+				'after': after
+			});
 		};
 
 		$scope.resetDatabase = function() {

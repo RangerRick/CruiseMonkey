@@ -87,6 +87,7 @@
 				'type': 'button-clear',
 				'content': '<i class="icon icon-cm ion-arrow-left-b"></i>',
 				tap: function(e) {
+					e.preventDefault();
 					$state.go('karaoke');
 					return false;
 				}
@@ -187,6 +188,7 @@
 				'type': 'button-clear',
 				'content': '<i class="icon icon-cm ion-arrow-left-b"></i>',
 				tap: function(e) {
+					e.preventDefault();
 					$state.go('karaoke');
 					return false;
 				}
@@ -241,6 +243,7 @@
 				'type': 'button-clear',
 				'content': '<i class="icon icon-cm ion-arrow-left-b"></i>',
 				tap: function(e) {
+					e.preventDefault();
 					$state.go('karaoke-list');
 					return false;
 				}
@@ -318,6 +321,7 @@
 				'type': 'button-clear',
 				'content': '<i class="icon icon-cm ion-arrow-left-b"></i>',
 				tap: function(e) {
+					e.preventDefault();
 					$state.go('karaoke-by-prefix', {
 						prefix: $stateParams.artist.charAt(0).toUpperCase()
 					});

@@ -112,6 +112,57 @@
 				controller: 'CMAdvancedCtrl'
 			});
 	}])
+	.directive('closeMenu', function($ionicGesture, $rootScope) {
+		return {
+			restrict: 'A',
+			link: function ($scope, $element, $attrs) {
+				var handleTap = function (e) {
+					e.preventDefault();
+					$rootScope.sideMenuController.close();
+				};
+				var tapGesture = $ionicGesture.on('tap', handleTap, $element);
+				$scope.$on('$destroy', function () {
+					// Clean up - unbind drag gesture handler
+					$ionicGesture.off(tapGesture, 'tap', handleTap);
+				});
+			}
+		}
+	})
+	.directive('openMenu', function($ionicGesture, $rootScope) {
+		return {
+			restrict: 'A',
+			link: function ($scope, $element, $attrs) {
+				var handleTap = function (e) {
+					e.preventDefault();
+					$rootScope.sideMenuController.toggleLeft();
+				};
+				var tapGesture = $ionicGesture.on('tap', handleTap, $element);
+				$scope.$on('$destroy', function () {
+					// Clean up - unbind drag gesture handler
+					$ionicGesture.off(tapGesture, 'tap', handleTap);
+				});
+			}
+		}
+	})
+	.directive('goTo', function($ionicGesture, $location) {
+		return {
+			restrict: 'A',
+			link: function ($scope, $element, $attrs) {
+				var handleTap = function (e) {
+					console.log('goTo: ' + $attrs.goTo);
+					console.log($attrs);
+					e.preventDefault();
+					$location.path($attrs.goTo);
+					//$rootScope.sideMenuController.toggleLeft();
+				};
+				var tapGesture = $ionicGesture.on('tap', handleTap, $element);
+				$scope.$on('$destroy', function () {
+					// Clean up - unbind drag gesture handler
+					$ionicGesture.off(tapGesture, 'tap', handleTap);
+				});
+			}
+		}
+	})
 	.run(['$q', '$rootScope', '$window', '$location', '$timeout', '$interval', '$urlRouter', '$http', 'UserService', 'storage', 'CordovaService', 'UpgradeService', 'Database', 'LoggingService', 'NotificationService', 'SettingsService', 'SeamailService', function($q, $rootScope, $window, $location, $timeout, $interval, $urlRouter, $http, UserService, storage, cor, upgrades, Database, log, notifications, SettingsService, SeamailService) {
 		log.debug('CruiseMonkey run() called.');
 
@@ -138,14 +189,16 @@
 			});
 		};
 
-		$rootScope.openLeft = function() {
+		$rootScope.openLeft = function(evt) {
 			log.info('Opening Sidebar.');
+			console.log('evt=',evt);
 			$rootScope.sideMenuController.toggleLeft();
 			return false;
 		};
 
-		$rootScope.closeLeft = function() {
+		$rootScope.closeLeft = function(evt) {
 			log.info('Closing Sidebar.');
+			console.log('evt=',evt);
 			$rootScope.sideMenuController.close();
 			return false;
 		};
@@ -260,6 +313,10 @@
 			});
 		};
 		handleStateChange();
+
+		$timeout(function() {
+			handleStateChange();
+		}, 60 * 30 * 1000);
 
 		$rootScope.$watch('foreground', function(newValue, oldValue) {
 			if (newValue === oldValue) {

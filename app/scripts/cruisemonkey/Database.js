@@ -239,7 +239,11 @@
 									log.error('Replication from remote DB ended: ' + err);
 									console.log('Details:',details);
 									if (db && replicationFrom) {
-										replicationFrom.cancel();
+										try {
+											replicationFrom.cancel();
+										} catch (err) {
+											console.log('Cancel failed.');
+										}
 										replicationFrom = null;
 									}
 								} else {
@@ -270,7 +274,11 @@
 									log.error('Replication to remote DB ended: ' + err);
 									console.log('Details:',details);
 									if (db && replicationTo) {
-										replicationTo.cancel();
+										try {
+											replicationTo.cancel();
+										} catch (err) {
+											console.log('Cancel failed.');
+										}
 										replicationTo = null;
 									}
 								} else {
@@ -289,12 +297,14 @@
 			if (replicationFrom) {
 				log.info('Database.stopReplication(): Stopping replication from the remote DB...');
 				replicationFrom.cancel();
+				replicationFrom = null;
 			} else {
 				log.warn('Database.stopReplication(): Replication from the remote DB has already been stopped!');
 			}
 			if (replicationTo) {
 				log.info('Database.stopReplication(): Stopping replication to the remote DB...');
 				replicationTo.cancel();
+				replicationTo = null;
 			} else {
 				log.warn('Database.stopReplication(): Replication to the remote DB has already been stopped!');
 			}
@@ -347,6 +357,20 @@
 				});
 			});
 		};
+		
+		$rootScope.$on('cm.settingsChanged', function(evt, settings) {
+			var reset = false;
+			if (settings.before.databaseHost != settings.after.databaseHost) {
+				log.debug('Database host has changed!  Resetting database!');
+				reset = true;
+			} else if (settings.before.databaseName != settings.after.databaseName) {
+				log.debug('Database name has changed!  Resetting database!');
+				reset = true;
+			}
+			if (reset) {
+				resetDatabase();
+			}
+		});
 
 		api = {
 			'reset': resetDatabase,

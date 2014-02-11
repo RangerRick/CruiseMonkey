@@ -57,9 +57,9 @@
 		};
 
 		$scope.shouldBeVisible = function(deck) {
-			return $scope.deck === deck;
+			//return $scope.deck === deck;
 			/* pre-cache the one before and after */
-			//return (deck >= ($scope.deck - 1) && deck <= ($scope.deck + 1));
+			return (deck >= ($scope.deck - 1) && deck <= ($scope.deck + 1));
 		};
 
 		var updateUI = function() {
@@ -72,6 +72,7 @@
 						'type': 'button-clear',
 						'content': '<i class="icon icon-cm ion-arrow-left-b"></i>',
 						tap: function(e) {
+							e.preventDefault();
 							previous();
 							return false;
 						}
@@ -80,6 +81,7 @@
 						'type': 'button-clear',
 						'content': '<i class="icon icon-cm ion-arrow-right-b"></i>',
 						tap: function(e) {
+							e.preventDefault();
 							next();
 							return false;
 						}

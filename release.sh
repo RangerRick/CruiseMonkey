@@ -99,21 +99,21 @@ rm -rf platforms/ios/www/cruisemonkey*.png
 mv platforms/ios/www/_cordova.js platforms/ios/www/cordova.js
 mv platforms/ios/www/_cordova_plugins.js platforms/ios/www/cordova_plugins.js
 perl -pi.bak -e 's,var isMobile = false,var isMobile = true,g' platforms/ios/www/index.html
-perl -pi.bak -e 's,overflow-scroll="true",overflow-scroll="false",g' platforms/ios/www/template/*.html
+#perl -pi.bak -e 's,overflow-scroll="true",overflow-scroll="false",g' platforms/ios/www/template/*.html
 
 # WP7
 rm -rf platforms/wp7/www/cruisemonkey*.png
 mv platforms/wp7/www/_cordova.js platforms/wp7/www/cordova.js
 mv platforms/wp7/www/_cordova_plugins.js platforms/wp7/www/cordova_plugins.js
 perl -pi.bak -e 's,var isMobile = false,var isMobile = true,g' platforms/wp7/www/index.html
-perl -pi.bak -e 's,overflow-scroll="true",overflow-scroll="false",g' platforms/wp7/www/template/*.html
+#perl -pi.bak -e 's,overflow-scroll="true",overflow-scroll="false",g' platforms/wp7/www/template/*.html
 
 # Blackberry 10
 rm -rf platforms/blackberry10/www/cruisemonkey*.png
 mv platforms/blackberry10/www/_cordova.js platforms/blackberry10/www/cordova.js
 mv platforms/blackberry10/www/_cordova_plugins.js platforms/blackberry10/www/cordova_plugins.js
 perl -pi.bak -e 's,var isMobile = false,var isMobile = true,g' platforms/blackberry10/www/index.html
-perl -pi.bak -e 's,overflow-scroll="true",overflow-scroll="false",g' platforms/blackberry10/www/template/*.html
+#perl -pi.bak -e 's,overflow-scroll="true",overflow-scroll="false",g' platforms/blackberry10/www/template/*.html
 
 # Android
 rm -rf platforms/android/assets/www/cruisemonkey*.png
@@ -127,7 +127,7 @@ rm -rf www/cruisemonkey*.png
 mv www/_cordova.js www/cordova.js
 mv www/_cordova_plugins.js www/cordova_plugins.js
 perl -pi.bak -e 's,var isMobile = false,var isMobile = true,g' www/index.html
-perl -pi.bak -e 's,overflow-scroll="true",overflow-scroll="false",g' www/template/*.html
+#perl -pi.bak -e 's,overflow-scroll="true",overflow-scroll="false",g' www/template/*.html
 
 find * -name \*.bak -exec rm -rf {} \;
 

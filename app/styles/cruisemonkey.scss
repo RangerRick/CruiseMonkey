@@ -208,13 +208,13 @@ a:hover {
 	padding: 10px;
 }
 
-#nav li.item a {
+#nav li.item > * {
 	display: inline-block;
 	width: 100%;
 	padding: 8px;
 }
 
-#nav li.item a.active {
+#nav li.item > *.active {
 	background-color: $cmBabyBlue;
 }
 

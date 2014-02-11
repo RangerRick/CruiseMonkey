@@ -134,7 +134,7 @@
 		if ($scope.entries.length === 0) {
 			notifications.status(message);
 		}
-
+		
 		var eventMethod = EventService.getOfficialEvents;
 		if ($scope.eventType === 'official') {
 			eventMethod = EventService.getOfficialEvents;
@@ -300,15 +300,17 @@
 		};
 
 		$scope.trash = function(ev) {
-			var eventId = ev.getId();
-			for (var i=0; i < $scope.entries.length; i++) {
-				if ($scope.entries[i].getId() === eventId) {
-					$scope.entries.splice(i, 1);
-					$scope.$broadcast('scroll.resize');
-					break;
+			if (window.confirm('Are you sure you want to delete "' + ev.getSummary() + '"?')) {
+				var eventId = ev.getId();
+				for (var i=0; i < $scope.entries.length; i++) {
+					if ($scope.entries[i].getId() === eventId) {
+						$scope.entries.splice(i, 1);
+						$scope.$broadcast('scroll.resize');
+						break;
+					}
 				}
+				EventService.removeEvent(ev);
 			}
-			EventService.removeEvent(ev);
 		};
 
 		$scope.edit = function(ev) {
@@ -430,6 +432,7 @@
 				type: 'button-positive',
 				content: '<i class="icon icon-cm active ion-ios7-plus"></i>',
 				tap: function(e) {
+					e.preventDefault();
 					var ev = new CMEvent();
 					ev.setStart(moment());
 					ev.setEnd(ev.getStart().clone());

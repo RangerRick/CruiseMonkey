@@ -45,6 +45,7 @@
 				type: 'button-positive',
 				content: 'Cancel',
 				tap: function(e) {
+					e.preventDefault();
 					$scope.cancel();
 				}
 			}

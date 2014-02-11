@@ -201,7 +201,7 @@ function CMAmenity(id, summary, icon, category, description) {
 			new CMAmenity('cloud-nine', 'Cloud Nine', undefined, undefined, 'Port side forward are the 24 guest capacity Cloud Nine, which is a multi function private meeting or party room.'),
 			new CMAmenity('diamond-club', 'Diamond Club', undefined, undefined, 'A private concierge lounge only accessible by key card.'),
 			new CMAmenity('viking-crown-lounge', 'Viking Crown Lounge', undefined, undefined, 'The Viking Crown Lounge made its debut in 1970 on Royal Caribbean\'s first new ship, Song of Norway, dramatically clinging to the exterior of the smokestack.  To this day, the Viking Crown Lounge still occupies one of the topmost decks of Royal Caribbean ships and continues to be one of many trademarks.'),
-			new CMAmenity('seven-hearts', 'Seven Hearts', undefined, undefined, 'a 33-guest capacity card room.')
+			new CMAmenity('seven-hearts', 'Seven Hearts', undefined, undefined, 'A 33-guest capacity card room.')
 		]),
 		15: new CMDeck(15, [
 			new CMAmenity('skylight-chapel', 'Skylight Chapel', undefined, undefined, 'The wedding chapel, which can accommodate 40 people, is located on top of the Viking Crown Lounge® (the highest point on the ship) and is the perfect place to say "I do."')
