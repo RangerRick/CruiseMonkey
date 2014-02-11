@@ -67,8 +67,8 @@ CruiseMonkey by Benjamin Reed is licensed under the [Creative Commons Attributio
 Release Notes
 =============
 
-4.0.0
------
+3.9.10
+------
 * fix quick taps causing the menu to close when it shouldn't
 * ask "Are you sure?" before deleting an event
 * remove online/offline detection, it is likely to cause issues on the ship
