@@ -131,15 +131,15 @@ if (typeof String.prototype.contains !== 'function') {
 			</header>
 			<content has-header="true" class="nav" overflow-scroll="true" scroll="true">
 				<ul id="nav">
-					<li class="item item-complex"><a go-to="/events/official">Official Events</a></li>
-					<li class="item item-complex"><a go-to="/events/unofficial">Unofficial Events</a></li>
-					<li class="item item-complex" ng-if="user.loggedIn"><a go-to="/events/my">My Events</a></li>
+					<li class="item item-complex" go-to="/events/official"><a>Official Events</a></li>
+					<li class="item item-complex" go-to="/events/unofficial"><a>Unofficial Events</a></li>
+					<li class="item item-complex" ng-if="user.loggedIn" go-to="/events/my"><a>My Events</a></li>
 
-					<li class="item item-complex"><a go-to="/deck-plans/">Deck Plans</a></li>
-					<li class="item item-complex"><a go-to="/amenities">Amenities</a></li>
-					<li class="item item-complex"><a go-to="/karaoke">Karaoke</a></li>
+					<li class="item item-complex" go-to="/deck-plans/"><a>Deck Plans</a></li>
+					<li class="item item-complex" go-to="/amenities"><a>Amenities</a></li>
+					<li class="item item-complex" go-to="/karaoke"><a>Karaoke</a></li>
 
-					<li class="item item-complex"><a go-to="/photos">Twit-Arr Pics</a></li>
+					<li class="item item-complex" go-to="/photos"><a>Twit-Arr Pics</a></li>
 					<li class="item item-complex item-icon-left" ng-if="user.loggedIn">
 						<a ng-click="openSeamail()">
 							SeaMail
@@ -147,11 +147,11 @@ if (typeof String.prototype.contains !== 'function') {
 						</a>
 					</li>
 
-					<li class="item item-complex" ng-if="user.loggedIn"><a go-to="/logout">Log Out</a></li>
-					<li class="item item-complex" ng-if="!user.loggedIn"><a go-to="/login">Log In</a></li>
-					<li class="item item-complex bottom"><a go-to="/advanced">Advanced</a></li>
-					<li class="item item-complex"><a go-to="/help">Help</a></li>
-					<li class="item item-complex"><a go-to="/about">About</a></li>
+					<li class="item item-complex" ng-if="user.loggedIn" go-to="/logout"><a>Log Out</a></li>
+					<li class="item item-complex" ng-if="!user.loggedIn" go-to="/login"><a>Log In</a></li>
+					<li class="item item-complex bottom" go-to="/advanced"><a>Advanced</a></li>
+					<li class="item item-complex" go-to="/help"><a>Help</a></li>
+					<li class="item item-complex" go-to="/about"><a>About</a></li>
 				</ul>
 			</content>
 		</side-menu>

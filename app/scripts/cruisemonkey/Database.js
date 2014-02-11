@@ -360,10 +360,10 @@
 		
 		$rootScope.$on('cm.settingsChanged', function(evt, settings) {
 			var reset = false;
-			if (settings.before.databaseHost != settings.after.databaseHost) {
+			if (settings.before.databaseHost !== settings.after.databaseHost) {
 				log.debug('Database host has changed!  Resetting database!');
 				reset = true;
-			} else if (settings.before.databaseName != settings.after.databaseName) {
+			} else if (settings.before.databaseName !== settings.after.databaseName) {
 				log.debug('Database name has changed!  Resetting database!');
 				reset = true;
 			}

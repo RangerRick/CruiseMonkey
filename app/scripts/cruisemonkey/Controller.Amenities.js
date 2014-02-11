@@ -13,7 +13,7 @@
 			return array;
 		};
 	})
-	.controller('CMAmenitiesCtrl', ['storage', '$rootScope', '$scope', '$location', 'DeckService', 'LoggingService', function(storage, $rootScope, $scope, $location, DeckService, log) {
+	.controller('CMAmenitiesCtrl', ['storage', '$rootScope', '$scope', '$timeout', '$location', 'DeckService', 'LoggingService', function(storage, $rootScope, $scope, $timeout, $location, DeckService, log) {
 		log.info('Initializing CMAmenitiesCtrl');
 		$rootScope.title = 'Amenities';
 		$rootScope.leftButtons = [];
@@ -30,7 +30,7 @@
 			lastDeck = amenity.getDeck();
 		});
 
-		$scope.openAmenity = function(amenity) {
+		$scope.openAmenity = function(ev, amenity) {
 			if (amenity.getId()) {
 				var uniqueId = amenity.getUniqueId();
 				log.info('open amenity: ' + uniqueId);

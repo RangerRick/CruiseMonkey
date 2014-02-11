@@ -112,13 +112,16 @@
 				controller: 'CMAdvancedCtrl'
 			});
 	}])
-	.directive('closeMenu', function($ionicGesture, $rootScope) {
+	.directive('closeMenu', ['$ionicGesture', '$rootScope', function($ionicGesture, $rootScope) {
 		return {
 			restrict: 'A',
 			link: function ($scope, $element, $attrs) {
 				var handleTap = function (e) {
+					//console.log('closeMenu');
 					e.preventDefault();
-					$rootScope.sideMenuController.close();
+					if ($rootScope.sideMenuController) {
+						$rootScope.sideMenuController.close();
+					}
 				};
 				var tapGesture = $ionicGesture.on('tap', handleTap, $element);
 				$scope.$on('$destroy', function () {
@@ -126,15 +129,18 @@
 					$ionicGesture.off(tapGesture, 'tap', handleTap);
 				});
 			}
-		}
-	})
-	.directive('openMenu', function($ionicGesture, $rootScope) {
+		};
+	}])
+	.directive('openMenu', ['$ionicGesture', '$rootScope', function($ionicGesture, $rootScope) {
 		return {
 			restrict: 'A',
 			link: function ($scope, $element, $attrs) {
 				var handleTap = function (e) {
+					//console.log('openMenu');
 					e.preventDefault();
-					$rootScope.sideMenuController.toggleLeft();
+					if ($rootScope.sideMenuController) {
+						$rootScope.sideMenuController.toggleLeft();
+					}
 				};
 				var tapGesture = $ionicGesture.on('tap', handleTap, $element);
 				$scope.$on('$destroy', function () {
@@ -142,18 +148,16 @@
 					$ionicGesture.off(tapGesture, 'tap', handleTap);
 				});
 			}
-		}
-	})
-	.directive('goTo', function($ionicGesture, $location) {
+		};
+	}])
+	.directive('goTo', ['$ionicGesture', '$location', function($ionicGesture, $location) {
 		return {
 			restrict: 'A',
 			link: function ($scope, $element, $attrs) {
 				var handleTap = function (e) {
-					console.log('goTo: ' + $attrs.goTo);
-					console.log($attrs);
-					e.preventDefault();
+					//console.log('goTo: ' + $attrs.goTo);
 					$location.path($attrs.goTo);
-					//$rootScope.sideMenuController.toggleLeft();
+					e.preventDefault();
 				};
 				var tapGesture = $ionicGesture.on('tap', handleTap, $element);
 				$scope.$on('$destroy', function () {
@@ -161,8 +165,8 @@
 					$ionicGesture.off(tapGesture, 'tap', handleTap);
 				});
 			}
-		}
-	})
+		};
+	}])
 	.run(['$q', '$rootScope', '$window', '$location', '$timeout', '$interval', '$urlRouter', '$http', 'UserService', 'storage', 'CordovaService', 'UpgradeService', 'Database', 'LoggingService', 'NotificationService', 'SettingsService', 'SeamailService', function($q, $rootScope, $window, $location, $timeout, $interval, $urlRouter, $http, UserService, storage, cor, upgrades, Database, log, notifications, SettingsService, SeamailService) {
 		log.debug('CruiseMonkey run() called.');
 

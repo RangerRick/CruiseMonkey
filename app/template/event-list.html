@@ -2,7 +2,7 @@
 	<div class="modal">
 		<header class="bar bar-header bar-dark">
 			<h1 class="title">{{eventData.id? 'Edit':'Add an'}} Event</h1>
-			<button class="button button-clear button-positive" ng-click="cancelModal()">Cancel</button>
+			<button class="button button-clear button-positive" ng-click="cancelModal($event)" ng-disabled="isDisabled">Cancel</button>
 		</header>
 
 		<content has-header="true" scroll="true" overflow-scroll="true" padded="false">

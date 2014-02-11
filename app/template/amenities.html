@@ -11,7 +11,7 @@
 	<div class="event-list list">
 		<span bindonce ng-repeat="amenity in amenities | amenityFilter:searchString">
 			<div class="item item-divider header" bo-if="headerAmenities[amenity.getUniqueId()]" bo-text="'Deck ' + amenity.getDeck().getFloor()"></div>
-			<a class="item item-icon-right item-text-wrap" ng-click="openAmenity(amenity)">
+			<a class="item item-icon-right item-text-wrap" ng-click="openAmenity($event, amenity)">
 				<div class="summary" bo-text="amenity.getSummary()"></div>
 				<div class="description" bo-show="amenity.getDescription()" bo-text="amenity.getDescription()"></div>
 				<i bo-if="amenity.getIcon()" class="icon {{amenity.getIcon()}}"></i>

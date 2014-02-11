@@ -122,6 +122,11 @@
 		$scope.eventType = $stateParams.eventType;
 		$rootScope.title = $scope.eventType.capitalize() + ' Events';
 
+		$scope.isDisabled = true;
+		$timeout(function() {
+			$scope.isDisabled = false;
+		}, 500);
+
 		var message = 'Updating ' + $scope.eventType.capitalize() + ' events...';
 		var scrolled = false;
 
@@ -152,7 +157,7 @@
 			} else {
 				$location.hash(undefined);
 			}
-		    $ionicScrollDelegate.anchorScroll();
+			$ionicScrollDelegate.anchorScroll();
 		};
 
 		var refreshing = null;
@@ -383,7 +388,10 @@
 			});
 		};
 
-		$scope.cancelModal = function() {
+		$scope.cancelModal = function(e) {
+			e.preventDefault();
+			e.stopPropagation();
+
 			log.debug('closing modal (cancel)');
 			$scope.event = undefined;
 			$scope.eventData = undefined;
@@ -433,6 +441,8 @@
 				content: '<i class="icon icon-cm active ion-ios7-plus"></i>',
 				tap: function(e) {
 					e.preventDefault();
+					e.stopPropagation();
+
 					var ev = new CMEvent();
 					ev.setStart(moment());
 					ev.setEnd(ev.getStart().clone());
