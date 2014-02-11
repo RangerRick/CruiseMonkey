@@ -316,7 +316,7 @@
 
 		$timeout(function() {
 			handleStateChange();
-		}, 60 * 30 * 1000);
+		}, 10 * 60 * 1000); // do it manually every 10 minutes, just to be sure
 
 		$rootScope.$watch('foreground', function(newValue, oldValue) {
 			if (newValue === oldValue) {
