@@ -86,6 +86,7 @@
   }
 }
 
+
 // Item Mixins
 // --------------------------------------------------
 
@@ -96,11 +97,8 @@
 }
 
 @mixin item-active-style($active-bg-color, $active-border-color) {
-  &.active, 
-  .ionic-pseudo &:active {
-    background-color: $active-bg-color;
-    border-color: $active-border-color;
-  }
+  background-color: $active-bg-color;
+  border-color: $active-border-color;
 }
 
 
@@ -588,4 +586,23 @@
   -webkit-justify-content: $value;
   -moz-justify-content: $value;
   justify-content: $value;
+}
+
+@mixin responsive-grid-break($selector, $max-width) {
+  @media (max-width: $max-width) {
+    #{$selector} {
+      -webkit-box-direction: normal;
+      -moz-box-direction: normal;
+      -webkit-box-orient: vertical;
+      -moz-box-orient: vertical;
+      -webkit-flex-direction: column;
+      -ms-flex-direction: column;
+      flex-direction: column;
+
+      .col {
+        width: 100%;
+        margin-bottom: ($grid-padding-width * 3) / 2;
+      }
+    }
+  }
 }
