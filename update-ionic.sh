@@ -24,6 +24,7 @@ pushd "${CMDIR}/ionic"
 popd
 
 pushd "${CMDIR}"
+	CURRENT_BRANCH=`git branch | grep -E '^\*' | awk '{ print $2 }'`
 	git stash
 	git checkout ionic-pristine
 	rsync -avr ionic/dist/js/ionic* app/scripts/angular-3rdparty/
@@ -31,7 +32,7 @@ pushd "${CMDIR}"
 	rsync -avr ionic/scss/ app/styles/
 	git add app/scripts/angular-3rdparty/ionic* app/fonts app/styles/_* app/styles/ionic* app/styles/themes
 	git commit -m "pristine ionic $COMMIT"
-	git checkout master
+	git checkout "$CURRENT_BRANCH"
 	git merge ionic-pristine
 	git stash pop
 popd
