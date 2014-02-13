@@ -2,101 +2,114 @@ function CMDeck(floor, amenities) {
 	'use strict';
 	var self = this;
 
-	var _floor = floor;
-	var _amenities = [];
-
-	self.getFloor = function() {
-		return _floor;
-	};
-	
-	self.getAmenities = function() {
-		return _amenities;
-	};
-
-	self.toString = function() {
-		var ret = 'CMDeck[floor=' + _floor + ',amenities=[';
-		angular.forEach(_amenities, function(amenity, index) {
-			ret += amenity.toString();
-			if (index+1 !== _amenities.length) {
-				ret += ',';
-			}
-		});
-		ret += ']]';
-		return ret;
-	};
+	self._floor = floor;
+	self._amenities = [];
 
 	angular.forEach(amenities, function(amenity, index) {
 		amenity.setDeck(self);
-		_amenities.push(amenity);
+		self._amenities.push(amenity);
 	});
 
 }
+
+CMDeck.prototype.getFloor = function() {
+	'use strict';
+	return this._floor;
+};
+
+CMDeck.prototype.getAmenities = function() {
+	'use strict';
+	return this._amenities;
+};
+
+CMDeck.prototype.toString = function() {
+	'use strict';
+	var ret = 'CMDeck[floor=' + this._floor + ',amenities=[';
+	angular.forEach(this._amenities, function(amenity, index) {
+		ret += amenity.toString();
+		if (index+1 !== this._amenities.length) {
+			ret += ',';
+		}
+	});
+	ret += ']]';
+	return ret;
+};
 
 function CMAmenity(id, summary, icon, category, description) {
 	'use strict';
 	var self = this;
 
-	var _id = id;
-	var _summary = summary;
-	var _icon = icon;
-	var _category = category;
-	var _description = description;
-	var _deck;
-
-	self.getDeck = function() {
-		return _deck;
-	};
-	self.setDeck = function(deck) {
-		_deck = deck;
-	};
-
-	self.getUniqueId = function() {
-		return _deck.getFloor() + '-' + _id;
-	};
-
-	self.getId = function() {
-		return _id;
-	};
-
-	self.getSummary = function() {
-		return _summary;
-	};
-
-	self.getIcon = function() {
-		return _icon;
-	};
-
-	self.getCategory = function() {
-		return _category;
-	};
-
-	self.getDescription = function() {
-		return _description;
-	};
-
-	self.matches = function(searchString) {
-		if (searchString === undefined || searchString === '') {
-			return true;
-		}
-
-		if (self.getSummary() !== undefined && self.getSummary().contains(searchString)) {
-			return true;
-		} else if (self.getDescription() !== undefined && self.getDescription().contains(searchString)) {
-			return true;
-		} else {
-			var asNumber = parseInt(searchString, 10);
-			if (asNumber === self.getDeck().getFloor()) {
-				return true;
-			}
-		}
-
-		return false;
-	};
-
-	self.toString = function() {
-		return 'CMAmenity[deck=' + _deck.getFloor() + ',id=' + _id + ',summary=' + _summary + ']';
-	};
+	self._id = id;
+	self._summary = summary;
+	self._icon = icon;
+	self._category = category;
+	self._description = description;
+	self._deck = undefined;
 }
+
+CMAmenity.prototype.getDeck = function() {
+	'use strict';
+	return this._deck;
+};
+CMAmenity.prototype.setDeck = function(deck) {
+	'use strict';
+	this._deck = deck;
+};
+
+CMAmenity.prototype.getUniqueId = function() {
+	'use strict';
+	return this._deck.getFloor() + '-' + this._id;
+};
+
+CMAmenity.prototype.getId = function() {
+	'use strict';
+	return this._id;
+};
+
+CMAmenity.prototype.getSummary = function() {
+	'use strict';
+	return this._summary;
+};
+
+CMAmenity.prototype.getIcon = function() {
+	'use strict';
+	return this._icon;
+};
+
+CMAmenity.prototype.getCategory = function() {
+	'use strict';
+	return this._category;
+};
+
+CMAmenity.prototype.getDescription = function() {
+	'use strict';
+	return this._description;
+};
+
+CMAmenity.prototype.matches = function(searchString) {
+	'use strict';
+	if (searchString === undefined || searchString === '') {
+		return true;
+	}
+
+	if (this.getSummary() !== undefined && this.getSummary().contains(searchString)) {
+		return true;
+	} else if (this.getDescription() !== undefined && this.getDescription().contains(searchString)) {
+		return true;
+	} else {
+		var asNumber = parseInt(searchString, 10);
+		if (asNumber === this.getDeck().getFloor()) {
+			return true;
+		}
+	}
+
+	return false;
+};
+
+CMAmenity.prototype.toString = function() {
+	'use strict';
+	return 'CMAmenity[deck=' + this._deck.getFloor() + ',id=' + this._id + ',summary=' + this._summary + ']';
+};
 
 (function() {
 	'use strict';

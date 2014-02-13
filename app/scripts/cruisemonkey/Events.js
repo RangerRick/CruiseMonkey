@@ -16,338 +16,377 @@ if (Modernizr.inputtypes["datetime-local"]) {
 	dateStringFormat="YYYY-MM-DDTHH:mm";
 }
 
+var epochZero = stringifyDate(moment(0));
+
 /**
   * Represents a CruiseMonkey event.  Stores "raw" javascript data for communcation
   * with the backend, and then provides memoizing/caching functions for accessors.
   */
-function CMEvent(rawdata) {
+function CMEvent(data) {
 	'use strict';
 
 	var self = this;
 
-	self.initialize = function(data) {
-		self._rawdata  = data || {};
-		self._favorite = undefined;
-		self._day      = undefined;
-		self._start    = undefined;
-		self._end      = undefined;
+	self._rawdata  = data || {};
+	self._favorite = undefined;
+	self._day      = undefined;
+	self._start    = undefined;
+	self._end      = undefined;
 
-		self._rawdata.type = 'event';
+	self._rawdata.type = 'event';
 
-		if (self._rawdata.start === 'Invalid date') {
-			self._rawdata.start = undefined;
-		}
-		if (self._rawdata.end === 'Invalid date') {
-			self._rawdata.end = undefined;
-		}
-		if (self._rawdata.lastUpdated === 'Invalid date') {
-			self._rawdata.lastUpdated = undefined;
-		}
-		if (self._rawdata.lastUpdated === undefined) {
-			self.refreshLastUpdated();
-		}
+	if (self._rawdata.start === 'Invalid date') {
+		self._rawdata.start = undefined;
+	}
+	if (self._rawdata.end === 'Invalid date') {
+		self._rawdata.end = undefined;
+	}
+	if (self._rawdata.lastUpdated === 'Invalid date') {
+		self._rawdata.lastUpdated = undefined;
+	}
+	if (self._rawdata.lastUpdated === undefined) {
+		self._rawdata.lastUpdated = moment(epochZero);
+	}
 
-		delete self._rawdata.isFavorite;
-		delete self._rawdata.isNewDay;
-	};
-
-	self.isEven = function() {
-		return self._even || false;
-	};
-	self.setEven = function(bool) {
-		self._even = bool;
-	};
-
-	/**
-	  * Get the event's ID.
-	  *
-	  * @return {String} the event ID.
-	  */
-	self.getId = function() {
-		return self._rawdata._id;
-	};
-	self.setId = function(id) {
-		self._rawdata._id = id;
-	};
-
-	self.getRevision = function() {
-		return self._rawdata._rev;
-	};
-	self.setRevision = function(rev) {
-		self._rawdata._rev = rev;
-	};
-
-	self.getSummary = function() {
-		return self._rawdata.summary;
-	};
-	self.setSummary = function(summary) {
-		self._rawdata.summary = summary;
-	};
-	
-	self.getDescription = function() {
-		return self._rawdata.description;
-	};
-	self.setDescription = function(description) {
-		self._rawdata.description = description;
-	};
-
-	self.getDay = function() {
-		if (self._day === undefined && self._rawdata.start !== undefined) {
-			self._day = moment(self._rawdata.start).startOf('day');
-		}
-		return self._day;
-	};
-
-	/**
-	  * Get the start date as a Moment.js object.
-	  *
-	  * @return {Moment} the start date.
-	  */
-	self.getStart = function() {
-		if (self._start === undefined && self._rawdata.start !== undefined) {
-			self._start = moment(self._rawdata.start);
-		}
-		return self._start;
-	};
-
-	/**
-	  * Set the start date.  Accepts a moment, a Date, or a pre-formatted string.
-	  *
-	  * @param {start} The date to set.
-	  */
-	self.setStart = function(start) {
-		if (typeof start === 'string' || start instanceof String) {
-			self._rawdata.start = start;
-		} else {
-			self._rawdata.start = stringifyDate(start);
-		}
-		self._start = undefined;
-		self._day = undefined;
-	};
-
-	self.getStartString = function() {
-		return self._rawdata.start;
-	};
-
-	self.setStartString = function(start) {
-		self._rawdata.start = start;
-		self._start = undefined;
-		self._day = undefined;
-	};
-
-	/**
-	  * Get the end date as a Moment.js object.
-	  *
-	  * @return {Moment} the end date.
-	  */
-	self.getEnd = function() {
-		if (self._end === undefined && self._rawdata.end !== undefined) {
-			self._end = moment(self._rawdata.end);
-		}
-		return self._end;
-	};
-
-	/**
-	  * Set the end date.  Accepts a moment, a Date, or a pre-formatted string.
-	  *
-	  * @param {end} The date to set.
-	  */
-	self.setEnd = function(end) {
-		if (typeof end === 'string' || end instanceof String) {
-			self._rawdata.end = end;
-		} else {
-			self._rawdata.end = stringifyDate(end);
-		}
-		self._end = undefined;
-	};
-
-	self.getEndString = function() {
-		return self._rawdata.end;
-	};
-	
-	self.setEndString = function(end) {
-		self._rawdata.end = end;
-		self._end = undefined;
-	};
-
-	self.getLastUpdated = function() {
-		return moment(self._rawdata.lastUpdated);
-	};
-	self.refreshLastUpdated = function() {
-		self._rawdata.lastUpdated = stringifyDate(moment(0));
-	};
-
-	self.getUsername = function() {
-		if (self._rawdata.username && self._rawdata.username !== '') {
-			return self._rawdata.username;
-		}
-		return undefined;
-	};
-	self.setUsername = function(username) {
-		self._rawdata.username = username;
-	};
-
-	self.getLocation = function() {
-		return self._rawdata.location;
-	};
-	self.setLocation = function(loc) {
-		self._rawdata.location = loc;
-	};
-
-	self.isPublic = function() {
-		return self._rawdata.isPublic;
-	};
-	self.setPublic = function(pub) {
-		self._rawdata.isPublic = pub;
-	};
-
-	self.isFavorite = function() {
-		return self._favorite !== undefined;
-	};
-	self.getFavorite = function() {
-		return self._favorite;
-	};
-	self.setFavorite = function(fav) {
-		self._favorite = fav;
-	};
-
-	self.getDisplayTime = function() {
-		if (self.getStart()) {
-			var ret = self.getStart().format('hh:mma');
-			if (self.getEnd()) {
-				ret += '-' + self.getEnd().format('hh:mma');
-			}
-			return ret;
-		}
-		return undefined;
-	};
-
-	self.toEditableBean = function() {
-		var bean = {
-			id: self.getId(),
-			revision: self.getRevision(),
-			startDate: self.getStart().format(dateStringFormat),
-			endDate: self.getEnd()? self.getEnd().format(dateStringFormat) : undefined,
-			summary: self.getSummary(),
-			description: self.getDescription(),
-			location: self.getLocation(),
-			isPublic: self.isPublic()
-		};
-
-		bean.isValid = function() {
-			if (bean.summary === undefined || bean.summary === '') { return false; }
-			if (bean.startDate === undefined || bean.startDate === '') { return false; }
-
-			if (bean.endDate && moment(bean.endDate).isBefore(moment(bean.startDate))) {
-				return false;
-			}
-
-			return true;
-		};
-
-		return bean;
-	};
-
-	self.fromEditableBean = function(bean) {
-		self.setId(bean.id);
-		self.setRevision(bean.revision);
-		self.setStart(moment(bean.startDate));
-		self.setEnd(moment(bean.endDate));
-		self.setSummary(bean.summary);
-		self.setDescription(bean.description);
-		self.setLocation(bean.location);
-		self.setPublic(bean.isPublic);
-	};
-
-	self.toString = function() {
-		return 'CMEvent[id=' + self._rawdata._id + ',summary=' + self._rawdata.summary + ',favorite=' + self.isFavorite() + ',public=' + self.isPublic() + ']';
-	};
-
-	self.getRawData = function() {
-		return self._rawdata;
-	};
-
-	self.matches = function(searchString) {
-		if (searchString === undefined || searchString === '') {
-			return true;
-		}
-
-		if (self.getSummary() !== undefined && self.getSummary().contains(searchString)) {
-			return true;
-		} else if (self.getDescription() !== undefined && self.getDescription().contains(searchString)) {
-			return true;
-		} else if (self.getLocation() !== undefined && self.getLocation().contains(searchString)) {
-			return true;
-		}
-
-		return false;
-	};
-
-	self.initialize(rawdata);
+	delete self._rawdata.isFavorite;
+	delete self._rawdata.isNewDay;
 }
 
-function CMFavorite(rawdata) {
+CMEvent.prototype.isEven = function() {
+	'use strict';
+	return this._even || false;
+};
+CMEvent.prototype.setEven = function(bool) {
+	'use strict';
+	this._even = bool;
+};
+
+CMEvent.prototype.getId = function() {
+	'use strict';
+	return this._rawdata._id;
+};
+CMEvent.prototype.setId = function(id) {
+	'use strict';
+	this._rawdata._id = id;
+};
+
+CMEvent.prototype.getRevision = function() {
+	'use strict';
+	return this._rawdata._rev;
+};
+CMEvent.prototype.setRevision = function(rev) {
+	'use strict';
+	this._rawdata._rev = rev;
+};
+
+CMEvent.prototype.getSummary = function() {
+	'use strict';
+	return this._rawdata.summary;
+};
+CMEvent.prototype.setSummary = function(summary) {
+	'use strict';
+	this._rawdata.summary = summary;
+};
+
+CMEvent.prototype.getDescription = function() {
+	'use strict';
+	return this._rawdata.description;
+};
+CMEvent.prototype.setDescription = function(description) {
+	'use strict';
+	this._rawdata.description = description;
+};
+
+CMEvent.prototype.getDay = function() {
+	'use strict';
+	if (this._day === undefined && this._rawdata.start !== undefined) {
+		this._day = moment(this._rawdata.start).startOf('day');
+	}
+	return this._day;
+};
+
+/**
+  * Get the start date as a Moment.js object.
+  *
+  * @return {Moment} the start date.
+  */
+CMEvent.prototype.getStart = function() {
+	'use strict';
+	if (this._start === undefined && this._rawdata.start !== undefined) {
+		this._start = moment(this._rawdata.start);
+	}
+	return this._start;
+};
+
+/**
+  * Set the start date.  Accepts a moment, a Date, or a pre-formatted string.
+  *
+  * @param {start} The date to set.
+  */
+CMEvent.prototype.setStart = function(start) {
+	'use strict';
+	if (typeof start === 'string' || start instanceof String) {
+		this._rawdata.start = start;
+	} else {
+		this._rawdata.start = stringifyDate(start);
+	}
+	this._start = undefined;
+	this._day = undefined;
+};
+
+CMEvent.prototype.getStartString = function() {
+	'use strict';
+	return this._rawdata.start;
+};
+
+CMEvent.prototype.setStartString = function(start) {
+	'use strict';
+	this._rawdata.start = start;
+	this._start = undefined;
+	this._day = undefined;
+};
+
+/**
+  * Get the end date as a Moment.js object.
+  *
+  * @return {Moment} the end date.
+  */
+CMEvent.prototype.getEnd = function() {
+	'use strict';
+	if (this._end === undefined && this._rawdata.end !== undefined) {
+		this._end = moment(this._rawdata.end);
+	}
+	return this._end;
+};
+
+/**
+  * Set the end date.  Accepts a moment, a Date, or a pre-formatted string.
+  *
+  * @param {end} The date to set.
+  */
+CMEvent.prototype.setEnd = function(end) {
+	'use strict';
+	if (typeof end === 'string' || end instanceof String) {
+		this._rawdata.end = end;
+	} else {
+		this._rawdata.end = stringifyDate(end);
+	}
+	this._end = undefined;
+};
+
+CMEvent.prototype.getEndString = function() {
+	'use strict';
+	return this._rawdata.end;
+};
+CMEvent.prototype.setEndString = function(end) {
+	'use strict';
+	this._rawdata.end = end;
+	this._end = undefined;
+};
+
+CMEvent.prototype.getLastUpdated = function() {
+	'use strict';
+	return moment(this._rawdata.lastUpdated);
+};
+CMEvent.prototype.refreshLastUpdated = function() {
+	'use strict';
+	this._rawdata.lastUpdated = stringifyDate(moment());
+};
+
+CMEvent.prototype.getUsername = function() {
+	'use strict';
+	if (this._rawdata.username && this._rawdata.username !== '') {
+		return this._rawdata.username;
+	}
+	return undefined;
+};
+CMEvent.prototype.setUsername = function(username) {
+	'use strict';
+	this._rawdata.username = username;
+};
+
+CMEvent.prototype.getLocation = function() {
+	'use strict';
+	return this._rawdata.location;
+};
+CMEvent.prototype.setLocation = function(loc) {
+	'use strict';
+	this._rawdata.location = loc;
+};
+
+CMEvent.prototype.isPublic = function() {
+	'use strict';
+	return this._rawdata.isPublic;
+};
+CMEvent.prototype.setPublic = function(pub) {
+	'use strict';
+	this._rawdata.isPublic = pub;
+};
+
+CMEvent.prototype.isFavorite = function() {
+	'use strict';
+	return this._favorite !== undefined;
+};
+CMEvent.prototype.getFavorite = function() {
+	'use strict';
+	return this._favorite;
+};
+CMEvent.prototype.setFavorite = function(fav) {
+	'use strict';
+	this._favorite = fav;
+};
+
+CMEvent.prototype.getDisplayTime = function() {
+	'use strict';
+	var start = this.getStart(), end, ret;
+	if (start) {
+		ret = start.format('hh:mma');
+		end = this.getEnd();
+		if (end) {
+			ret += '-' + end.format('hh:mma');
+		}
+		return ret;
+	}
+	return undefined;
+};
+
+CMEvent.prototype.toEditableBean = function() {
+	'use strict';
+	var end = this.getEnd();
+
+	var bean = {
+		id: this.getId(),
+		revision: this.getRevision(),
+		startDate: this.getStart().format(dateStringFormat),
+		endDate: end? end.format(dateStringFormat) : undefined,
+		summary: this.getSummary(),
+		description: this.getDescription(),
+		location: this.getLocation(),
+		isPublic: this.isPublic()
+	};
+
+	bean.isValid = function() {
+		if (bean.summary === undefined || bean.summary === '') { return false; }
+		if (bean.startDate === undefined || bean.startDate === '') { return false; }
+
+		if (bean.endDate && moment(bean.endDate).isBefore(moment(bean.startDate))) {
+			return false;
+		}
+
+		return true;
+	};
+
+	return bean;
+};
+
+CMEvent.prototype.fromEditableBean = function(bean) {
+	'use strict';
+	this.setId(bean.id);
+	this.setRevision(bean.revision);
+	this.setStart(moment(bean.startDate));
+	this.setEnd(moment(bean.endDate));
+	this.setSummary(bean.summary);
+	this.setDescription(bean.description);
+	this.setLocation(bean.location);
+	this.setPublic(bean.isPublic);
+};
+
+CMEvent.prototype.toString = function() {
+	'use strict';
+	return 'CMEvent[id=' + this._rawdata._id + ',summary=' + this._rawdata.summary + ',favorite=' + this.isFavorite() + ',public=' + this.isPublic() + ']';
+};
+
+CMEvent.prototype.getRawData = function() {
+	'use strict';
+	return this._rawdata;
+};
+
+CMEvent.prototype.matches = function(searchString) {
+	'use strict';
+	if (searchString === undefined || searchString === '') {
+		return true;
+	}
+
+	if (this.getSummary() !== undefined && this.getSummary().contains(searchString)) {
+		return true;
+	} else if (this.getDescription() !== undefined && this.getDescription().contains(searchString)) {
+		return true;
+	} else if (this.getLocation() !== undefined && this.getLocation().contains(searchString)) {
+		return true;
+	}
+
+	return false;
+};
+
+function CMFavorite(data) {
 	'use strict';
 
 	var self = this;
 
-	self.initialize = function(data) {
-		self._rawdata  = data || {};
-		self._rawdata.type = 'favorite';
-		self._event = undefined;
+	self._rawdata  = data || {};
+	self._rawdata.type = 'favorite';
+	self._event = undefined;
 
-		if (self._rawdata.lastUpdated === 'Invalid date') {
-			self._rawdata.lastUpdated = undefined;
-		}
-		if (self._rawdata.lastUpdated === undefined) {
-			self.refreshLastUpdated();
-		}
-	};
-
-	self.getId = function() {
-		return self._rawdata._id;
-	};
-	self.setId = function(id) {
-		self._rawdata._id = id;
-	};
-	self.getEventId = function() {
-		return self._rawdata.eventId;
-	};
-	self.setEventId = function(eventId) {
-		self._rawdata.eventId = eventId;
-	};
-	self.getUsername = function() {
-		return self._rawdata.username;
-	};
-	self.setUsername = function(username) {
-		self._rawdata.username = username;
-	};
-
-	self.getEvent = function() {
-		return self._event;
-	};
-	self.setEvent = function(ev) {
-		self._event = ev;
-	};
-
-	self.getLastUpdated = function() {
-		return moment(self._rawdata.lastUpdated);
-	};
-	self.refreshLastUpdated = function() {
-		self._rawdata.lastUpdated = stringifyDate(moment(0));
-	};
-
-	self.toString = function() {
-		return 'CMFavorite[id=' + self.getId() + ',username=' + self.getUsername() + ',eventId=' + self.getEventId() + ']';
-	};
-
-	self.getRawData = function() {
-		return self._rawdata;
-	};
-
-	self.initialize(rawdata);
+	if (self._rawdata.lastUpdated === 'Invalid date') {
+		self._rawdata.lastUpdated = undefined;
+	}
+	if (self._rawdata.lastUpdated === undefined) {
+		self._rawdata.lastUpdated = moment(epochZero);
+	}
 }
 
+CMFavorite.prototype.getId = function() {
+	'use strict';
+	return this._rawdata._id;
+};
+CMFavorite.prototype.setId = function(id) {
+	'use strict';
+	this._rawdata._id = id;
+};
+CMFavorite.prototype.getEventId = function() {
+	'use strict';
+	return this._rawdata.eventId;
+};
+CMFavorite.prototype.setEventId = function(eventId) {
+	'use strict';
+	this._rawdata.eventId = eventId;
+};
+CMFavorite.prototype.getUsername = function() {
+	'use strict';
+	return this._rawdata.username;
+};
+CMFavorite.prototype.setUsername = function(username) {
+	'use strict';
+	this._rawdata.username = username;
+};
+
+CMFavorite.prototype.getEvent = function() {
+	'use strict';
+	return this._event;
+};
+CMFavorite.prototype.setEvent = function(ev) {
+	'use strict';
+	this._event = ev;
+};
+
+CMFavorite.prototype.getLastUpdated = function() {
+	'use strict';
+	return moment(this._rawdata.lastUpdated);
+};
+CMFavorite.prototype.refreshLastUpdated = function() {
+	'use strict';
+	this._rawdata.lastUpdated = stringifyDate(moment());
+};
+
+CMFavorite.prototype.toString = function() {
+	'use strict';
+	return 'CMFavorite[id=' + this.getId() + ',username=' + this.getUsername() + ',eventId=' + this.getEventId() + ']';
+};
+
+CMFavorite.prototype.getRawData = function() {
+	'use strict';
+	return this._rawdata;
+};
 
 (function() {
 	'use strict';

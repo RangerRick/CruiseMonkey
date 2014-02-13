@@ -17,9 +17,11 @@
 			$rootScope.openUrl(site, '_system');
 		};
 
+		/*global moment: true*/
 		var newest = moment(0),
 			currentEvent = null,
 			currentFavorite = null;
+
 		EventService.getAllEvents().then(function(events) {
 			angular.forEach(events, function(ev) {
 				currentEvent = ev.getLastUpdated();

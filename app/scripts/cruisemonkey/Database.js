@@ -3,6 +3,8 @@
 
 	/*global PouchDB: true*/
 	/*global Connection: true*/
+	/*global moment: true*/
+
 	angular.module('cruisemonkey.Database', [
 		'angularLocalStorage',
 		'cruisemonkey.Config',

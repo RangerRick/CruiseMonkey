@@ -508,13 +508,11 @@
 		};
 
 		$rootScope.leftButtons = [
-			/*
 			{
 				type: 'button-positive',
 				content: '<i class="icon icon-cm active ion-clock"></i>',
 				tap: $scope.goToNow
 			}
-			*/
 		];
 		$rootScope.rightButtons = [];
 
