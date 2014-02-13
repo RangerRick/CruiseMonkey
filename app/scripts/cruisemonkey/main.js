@@ -180,7 +180,7 @@
 			// update deck to be a number, if it isn't
 			var deck = storage.get('cm.deck');
 			if (deck !== undefined && (typeof deck === 'string' || deck instanceof String)) {
-				storage.put('cm.deck', parseInt(deck, 10));
+				storage.set('cm.deck', parseInt(deck, 10));
 			}
 		});
 

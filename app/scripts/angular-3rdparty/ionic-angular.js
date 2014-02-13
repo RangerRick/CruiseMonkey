@@ -1298,7 +1298,7 @@ angular.module('ionic.ui.header', ['ngAnimate'])
     restrict: 'C',
     link: function($scope, $element, $attr) {
       // We want to scroll to top when the top of this element is clicked
-      $ionicScrollDelegate.tapScrollToTop($element);
+      //$ionicScrollDelegate.tapScrollToTop($element);
     }
   };
 }])

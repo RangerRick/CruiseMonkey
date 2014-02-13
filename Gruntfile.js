@@ -343,48 +343,6 @@ module.exports = function (grunt) {
           ]
         }
       } */
-    },
-    manifest: {
-      dist: {
-        options: {
-          basePath: 'www',
-          preferOnline: true,
-          timestamp: false,
-          hash: true,
-          master: [
-            'index.html',
-            'template/about.html',
-            'template/advanced.html',
-            'template/amenities.html',
-            'template/deck-plans.html',
-            'template/event-list.html',
-            'template/help.html',
-            'template/logout.html',
-            'template/login.html',
-            'bower_components/html5shiv/dist/html5shiv.js'
-          ],
-          exclude: [
-            '404.html',
-            '.git',
-            '.gitignore',
-            'robots.txt',
-            'bower_components/{,**/}*',
-            '_cordova.js',
-            '_cordova_plugins.js'
-          ]
-        },
-        dest: 'www/cruisemonkey.manifest',
-        src: [
-          '*.{png,ico}',
-          'fonts/*',
-          'images/{,**/}*.{gif,png,svg}',
-          '*.html',
-          '*.js',
-          'scripts/{,**/}*.js',
-          'styles/*.css',
-          'template/{,**/}*.html'
-        ]
-      }
     }
   });
 
@@ -422,8 +380,7 @@ module.exports = function (grunt) {
     'cssmin',
     'uglify',
     'rev',
-    'usemin',
-    'manifest'
+    'usemin'
   ]);
 
   grunt.registerTask('default', [

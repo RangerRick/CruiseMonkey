@@ -217,9 +217,12 @@
 				deferred.resolve(true);
 
 				e = e.sort(sortEvent);
-				var entries = [], lastDay = null;
-				angular.forEach(e, function(entry, index) {
+				var entries = [], lastDay = null, i, entry;
+				for (i=0; i < e.length; i++) {
+					entry = e[i];
+					log.debug(entry.getSummary() + ' ' + entry.getDay());
 					if (entry.getDay() !== lastDay) {
+						log.debug(entry.getDay() + ' !== ' + lastDay);
 						lastDay = entry.getDay();
 						entries.push({
 							date: lastDay,
@@ -227,7 +230,8 @@
 						});
 					}
 					entries[entries.length - 1].entries.push(entry);
-				});
+				}
+
 				//console.log('doRefresh:',entries);
 				EventCache.put($scope.eventType, entries);
 				updateEntries();
@@ -322,6 +326,10 @@
 			}
 		};
 
+		$scope.getDateId = function(date) {
+			return 'date-' + date.unix();
+		};
+
 		$scope.prettyDate = function(date) {
 			return date? date.format('dddd, MMMM Do') : undefined;
 		};
@@ -349,7 +357,12 @@
 						log.info('start: ' + ev.getStart() + ', now: ' + now + ', ' + ev.getSummary());
 						if (now.isBefore(ev.getStart())) {
 							log.info('matched! ' + ev.getId());
-							goToHash(ev.getId());
+							if (j === 0) {
+								// first entry in the day, go to the header instead
+								goToHash($scope.getDateId(ev.getDay()));
+							} else {
+								goToHash(ev.getId());
+							}
 							matched = true;
 							break dayloop;
 						}

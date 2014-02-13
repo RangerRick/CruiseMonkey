@@ -205,7 +205,9 @@ a:hover {
 
 .list-entry {
 	border-bottom: $simpleBorder;
+	/*
 	padding: 10px;
+	*/
 }
 
 #nav li.item > * {
@@ -236,12 +238,21 @@ a:hover {
 		background-color: $alternateBG;
 	}
 
-	.header {
+	.event-header {
 		font-family: $headerFont;
 		font-size: 20px;
-		padding: 5px;
+		padding: 0;
 		color: $headerColor;
 		background-color: $headerBG;
+		.item-content {
+			background-color: transparent;
+		}
+	}
+	
+	.item {
+		.item-content {
+			padding: 5px;
+		}
 	}
 }
 
