@@ -2023,7 +2023,6 @@ window.ionic = {
 
     if(ele.tagName === 'INPUT' || ele.tagName === 'TEXTAREA' || ele.tagName === 'SELECT') {
       ele.focus();
-      e.preventDefault();
     } else {
       ele.blur();
     }
@@ -2048,14 +2047,14 @@ window.ionic = {
     if( isRecentTap(e) ) {
       // if a tap in the same area just happened, don't continue
       console.debug('tapPolyfill', 'isRecentTap', ele.tagName);
-      return;
+      return stopEvent(e);
     }
 
     if(ele.lastClick && ele.lastClick + CLICK_PREVENT_DURATION > Date.now()) {
       // if a click recently happend on this element, don't continue
       // (yes on some devices it's possible for a click to happen before a touchend)
       console.debug('tapPolyfill', 'recent lastClick', ele.tagName);
-      return;
+      return stopEvent(e);
     }
 
     while(ele) {
@@ -2096,9 +2095,7 @@ window.ionic = {
         // Android will fire a click for the label, and a click for the input which it is associated to
         // this stops the second ghost click from the label from continuing
         console.debug('preventGhostClick', 'labelLastTap');
-        e.stopPropagation();
-        e.preventDefault();
-        return false;
+        return stopEvent(e);
       }
 
       // remember the last time this label was clicked to it can prevent a second label ghostclick
@@ -2106,7 +2103,7 @@ window.ionic = {
 
       // The input's click event will propagate so don't bother letting this label's click 
       // propagate cuz it causes double clicks. However, do NOT e.preventDefault(), because 
-      // the label still needs to click the input
+      // the native layer still needs to click the input which the label controls
       console.debug('preventGhostClick', 'label stopPropagation');
       e.stopPropagation();
       return;
@@ -2115,17 +2112,13 @@ window.ionic = {
     if( isRecentTap(e) ) {
       // a tap has already happened at these coordinates recently, ignore this event
       console.debug('preventGhostClick', 'isRecentTap', e.target.tagName);
-      e.stopPropagation();
-      e.preventDefault();
-      return false;
+      return stopEvent(e);
     }
 
     if(e.target.lastTap && e.target.lastTap + CLICK_PREVENT_DURATION > Date.now()) {
       // this element has already had the tap poly fill run on it recently, ignore this event
       console.debug('preventGhostClick', 'e.target.lastTap', e.target.tagName);
-      e.stopPropagation();
-      e.preventDefault();
-      return false;
+      return stopEvent(e);
     }
 
     // remember the last time this element was clicked
@@ -2134,6 +2127,12 @@ window.ionic = {
     // remember the coordinates of this click so if a tap or click in the 
     // same area quickly happened again we can ignore it
     recordCoordinates(e);
+  }
+
+  function stopEvent(e){
+    e.stopPropagation();
+    e.preventDefault();
+    return false;
   }
 
   function isRecentTap(event) {
@@ -4365,12 +4364,13 @@ ionic.views.Scroll = ionic.views.View.inherit({
     };
 
     // How much velocity is required to keep the deceleration running
-    var minVelocityToKeepDecelerating = self.options.snapping ? 4 : 0.1;
+    self.__minVelocityToKeepDecelerating = self.options.snapping ? 4 : 0.1;
 
     // Detect whether it's still worth to continue animating steps
     // If we are already slow enough to not being user perceivable anymore, we stop the whole process here.
     var verify = function() {
-      var shouldContinue = Math.abs(self.__decelerationVelocityX) >= minVelocityToKeepDecelerating || Math.abs(self.__decelerationVelocityY) >= minVelocityToKeepDecelerating;
+      var shouldContinue = Math.abs(self.__decelerationVelocityX) >= self.__minVelocityToKeepDecelerating ||
+        Math.abs(self.__decelerationVelocityY) >= self.__minVelocityToKeepDecelerating;
       if (!shouldContinue) {
         self.__didDecelerationComplete = true;
       }
@@ -4501,7 +4501,7 @@ ionic.views.Scroll = ionic.views.View.inherit({
         if (isHeadingOutwardsX) {
           self.__decelerationVelocityX += scrollOutsideX * penetrationDeceleration;
         }
-        var isStoppedX = Math.abs(self.__decelerationVelocityX) <= self.__minDecelerationScrollLeft;
+        var isStoppedX = Math.abs(self.__decelerationVelocityX) <= self.__minVelocityToKeepDecelerating;
         //If we're not heading outwards, or if the above statement got us below minDeceleration, go back towards bounds
         if (!isHeadingOutwardsX || isStoppedX) {
           self.__decelerationVelocityX = scrollOutsideX * penetrationAcceleration;
@@ -4513,7 +4513,7 @@ ionic.views.Scroll = ionic.views.View.inherit({
         if (isHeadingOutwardsY) {
           self.__decelerationVelocityY += scrollOutsideY * penetrationDeceleration;
         }
-        var isStoppedY = Math.abs(self.__decelerationVelocityY) <= self.__minDecelerationScrollTop;
+        var isStoppedY = Math.abs(self.__decelerationVelocityY) <= self.__minVelocityToKeepDecelerating;
         //If we're not heading outwards, or if the above statement got us below minDeceleration, go back towards bounds
         if (!isHeadingOutwardsY || isStoppedY) {
           self.__decelerationVelocityY = scrollOutsideY * penetrationAcceleration;
