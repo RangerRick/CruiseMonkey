@@ -31,8 +31,14 @@ pushd "${CMDIR}"
 	rsync -avr ionic/dist/fonts/ app/fonts/
 	rsync -avr ionic/scss/ app/styles/
 	git add app/scripts/angular-3rdparty/ionic* app/fonts app/styles/_* app/styles/ionic* app/styles/themes
-	git commit -m "pristine ionic $COMMIT"
-	git checkout "$CURRENT_BRANCH"
-	git merge ionic-pristine
+	git diff HEAD --quiet
+	if [ $? -eq 0 ]; then
+		echo "No changes."
+		git checkout "$CURRENT_BRANCH"
+	else
+		git commit -m "pristine ionic $COMMIT"
+		git checkout "$CURRENT_BRANCH"
+		git merge ionic-pristine
+	fi
 	git stash pop
 popd
