@@ -171,12 +171,25 @@
 		var timeout = null;
 
 		var goToHash = function(hash) {
+			/*
 			if (hash) {
 				$location.hash(hash);
 			} else {
 				$location.hash(undefined);
 			}
 			$ionicScrollDelegate.anchorScroll();
+			$timeout(function() {
+				$location.hash(undefined);
+			}, 200);
+			*/
+			$scope.$broadcast('scroll.resize');
+			$timeout(function() {
+				var elm, scrollEl;
+				elm = document.getElementById(hash);
+				if (elm) {
+					elm.scrollIntoView();
+				}
+			});
 		};
 
 		var updateEntries = function() {

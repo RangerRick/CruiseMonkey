@@ -1,5 +1,5 @@
 <!-- on-infinite-scroll="loadMore" -->
-<content has-header="true" overflow-scroll="true" scroll="true" on-refresh="reload()">
+<content has-header="true" overflow-scroll="false" scroll="true" on-refresh="reload()">
 	<refresher></refresher>
 	<slide-box show-pager="false" active-slide="currentSlide" on-slide-changed="slideChanged(index)">
 		<slide bindonce ng-repeat="entry in entries">
