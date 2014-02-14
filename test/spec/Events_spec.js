@@ -89,6 +89,11 @@ describe('cruisemonkey.Events', function() {
 				{
 					'type': 'favorite',
 					'username': 'ranger',
+					'eventId': '1'
+				},
+				{
+					'type': 'favorite',
+					'username': 'ranger',
 					'eventId': '3'
 				},
 				{
@@ -151,7 +156,7 @@ describe('cruisemonkey.Events', function() {
 				var items = getEvents(result);
 				expect(items['1']).not.toBeNull();
 				expect(items['1'].getSummary()).toBe('Murder');
-				expect(items['1'].isFavorite()).not.toBeTruthy();
+				expect(items['1'].isFavorite()).toBeTruthy();
 				done();
 			});
 			$rootScope.$apply();
@@ -212,8 +217,10 @@ describe('cruisemonkey.Events', function() {
 			expect(db).not.toBeNull();
 			expect(service.getMyEvents).not.toBeUndefined();
 			service.getMyEvents().then(function(result) {
-				expect(result.length).toEqual(3);
+				expect(result.length).toEqual(4);
 				var items = getEvents(result);
+				expect(items['1']).not.toBeNull();
+				expect(items['1'].isFavorite()).toBeTruthy();
 				expect(items['2']).not.toBeNull();
 				expect(items['2'].isFavorite()).not.toBeTruthy();
 				expect(items['3']).not.toBeNull();
@@ -244,8 +251,9 @@ describe('cruisemonkey.Events', function() {
 			expect(db).not.toBeNull();
 			expect(service.getMyFavorites).not.toBeUndefined();
 			service.getMyFavorites().then(function(result) {
-				expect(result.length).toEqual(1);
+				expect(result.length).toEqual(2);
 				var items = getEvents(result);
+				expect(items['1']).not.toBeNull();
 				expect(items['3']).not.toBeNull();
 				done();
 			});

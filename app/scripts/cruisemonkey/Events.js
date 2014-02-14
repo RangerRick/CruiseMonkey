@@ -440,18 +440,25 @@ CMFavorite.prototype.getRawData = function() {
 		};
 
 		var reconcileEvents = function(events, favorites) {
-			var _favs = {}, fav;
-			angular.forEach(favorites, function(fav) {
+			var _events = {}, _favs = {}, fav, i, ret = [];
+			for (i=0; i < events.length; i++) {
+				_events[events[i]._rawdata._id] = events[i];
+			}
+			for (i=0; i < favorites.length; i++) {
+				fav = favorites[i];
 				_favs[fav.getEventId()] = fav;
-			});
-			angular.forEach(events, function(ev) {
+			}
+
+			angular.forEach(_events, function(ev) {
 				fav = _favs[ev.getId()];
 				if (fav) {
 					fav.setEvent(ev);
 					ev.setFavorite(fav);
 				}
+				ret.push(ev);
 			});
-			return events;
+
+			return ret;
 		};
 
 		var doEventQuery = function(username, mapFunc, matchFunc) {

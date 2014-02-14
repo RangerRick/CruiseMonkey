@@ -229,23 +229,23 @@
 				notifications.removeStatus(message);
 				deferred.resolve(true);
 
-				e = e.sort(sortEvent);
-				var entries = [], lastDay = null, i, entry;
+				e.sort(sortEvent);
+				var entries = [], lastDay = null, i, entry, entryDay;
 				for (i=0; i < e.length; i++) {
 					entry = e[i];
-					log.debug(entry.getSummary() + ' ' + entry.getDay());
-					if (entry.getDay() !== lastDay) {
-						log.debug(entry.getDay() + ' !== ' + lastDay);
-						lastDay = entry.getDay();
+					entryDay = entry.getDay();
+					//log.debug(entry.getSummary() + ' ' + entryDay);
+					if (!entryDay.isSame(lastDay)) {
+						//log.debug(entryDay + ' !== ' + lastDay);
+						lastDay = entryDay;
 						entries.push({
-							date: lastDay,
+							date: entryDay,
 							entries: []
 						});
 					}
 					entries[entries.length - 1].entries.push(entry);
 				}
 
-				//console.log('doRefresh:',entries);
 				EventCache.put(eventType, entries);
 				updateEntries();
 			}, function() {
