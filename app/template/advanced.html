@@ -48,7 +48,8 @@
 		<div class="item item-text-wrap">
 			The shipboard network can be pretty flaky, especially with hundreds of geeks hitting it at once.
 			CruiseMonkey will attempt to force a sync every 15 minutes, but if you'd like to force one now,
-			click this.
+			click this.<br />
+			Last replication update: {{(lastModified &amp;&amp; !lastModified.isSame(0))? lastModified.fromNow() : 'N/A'}}
 		</div>
 		<a class="button button-full button-assertive" ng-click="forceSync()">Force Sync</a>
 	</div>

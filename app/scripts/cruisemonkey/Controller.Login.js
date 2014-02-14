@@ -73,6 +73,17 @@
 
 			notifications.status('Logging in...');
 
+			if ($location.host() === '0.0.0.0' || $location.host() === '127.0.0.1') {
+				// special case, let Ben log in regardless  ;)
+				notifications.removeStatus('Logging in...');
+				notifications.status('YOU ARE SUPER USER', 5000);
+				user.key = data.key;
+				$scope.saveUser(user);
+				$rootScope.$broadcast('cm.loggedIn', user);
+				$location.path('/events/my');
+				return;
+			}
+
 			$http({
 				method: 'POST',
 				url: twitarrRoot + 'api/v2/user/auth',
@@ -97,11 +108,6 @@
 			.error(function(data, status, headers, config) {
 				log.warn('failure!');
 				notifications.removeStatus('Logging in...');
-				log.debug('data:', data);
-				log.debug('status:',status);
-				log.debug('headers:',headers);
-				log.debug('config:',config);
-
 				notifications.alert('Failed to log in to twit-arr! You may need to import the twit-arr certificate in "Advanced" before login will work.');
 			});
 

@@ -20,11 +20,65 @@
 			return $window.navigator && $window.navigator.userAgent && $window.navigator.userAgent.indexOf('Android') >= 0;
 		};
 
+		var onaboat = $q.defer();
+		var isonaboat = function() {
+			if (storage.get('cm.onaboat')) {
+				$timeout(function() {
+					onaboat.resolve(true);
+				});
+			} else {
+				$http({
+					method: 'GET',
+					url: 'http://jccc4.rccl.com/cruisemonkey-jccc4',
+					cache: false,
+					timeout: 5000,
+					headers: {
+						Accept: 'application/json'
+					}
+				})
+				.success(function(data, status, headers, config) {
+					log.info('We are on a boat for the first time!  Setting database to jccc4.rccl.com.');
+					SettingsService.setDatabaseHost('http://jccc4.rccl.com');
+					SettingsService.setDatabaseName('cruisemonkey-jccc4');
+					SettingsService.setTwitarrRoot('http://jccc4.rccl.com');
+
+					storage.set('cm.onaboat', true);
+					onaboat.resolve(true);
+				})
+				.error(function(data, status, headers, config) {
+					onaboat.resolve(false);
+				});
+			}
+			return onaboat.promise;
+		};
+
+		storage.bind($rootScope, 'onaboat', {
+			'defaultValue': false,
+			'storeName': 'cm.onaboat'
+		});
+
 		var getDatabaseName = function(dbname) {
+			var deferred = $q.defer();
 			if (!dbname) {
 				dbname = SettingsService.getDatabaseName();
 			}
 			return (isAndroid()? 'websql://':'') + dbname;
+		};
+
+		var getHost = function() {
+			var host = SettingsService.getDatabaseHost();
+			if (!host) {
+				host = 'http://' + $location.host();
+			}
+
+			if (!host.endsWith('/')) {
+				host += '/';
+			}
+			if (!host.startsWith('http')) {
+				host = 'http://' + host;
+			}
+
+			return host + SettingsService.getDatabaseName();
 		};
 
 		log.info('Initializing CruiseMonkey database: ' + getDatabaseName());
@@ -53,22 +107,6 @@
 			'defaultValue': 0,
 			'storeName': 'cm.lastSequence'
 		});
-
-		var getHost = function() {
-			var host = SettingsService.getDatabaseHost();
-			if (!host) {
-				host = 'http://' + $location.host();
-			}
-
-			if (!host.endsWith('/')) {
-				host += '/';
-			}
-			if (!host.startsWith('http')) {
-				host = 'http://' + host;
-			}
-
-			return host + SettingsService.getDatabaseName();
-		};
 
 		var db = null,
 			remoteDb = null,
@@ -144,7 +182,6 @@
 			log.info('Database.initialize(): Initializing database.');
 
 			var deferred = $q.defer();
-
 			if (resetting) {
 				$timeout(function() {
 					deferred.reject(false);
@@ -152,45 +189,46 @@
 				return deferred.promise;
 			}
 
-			db = new PouchDB(getDatabaseName());
-			if (replicate) {
-				log.debug('Database.initialize(): Replication enabled, initializing remoteDb.');
-				remoteDb = new PouchDB(getHost());
-			}
+			isonaboat().then(function() {
+				db = new PouchDB(getDatabaseName());
+				if (replicate) {
+					log.debug('Database.initialize(): Replication enabled, initializing remoteDb.');
+					remoteDb = new PouchDB(getHost());
+				}
 
-			$timeout(function() {
-				log.debug('Database.initialize(): Compacting database.');
-				db.compact(function() {
-					$rootScope.safeApply(function() {
-						log.info('Database.initializeDatabase(): Compaction complete.');
+				$timeout(function() {
+					log.debug('Database.initialize(): Compacting database.');
+					db.compact(function() {
+						$rootScope.safeApply(function() {
+							log.info('Database.initializeDatabase(): Compaction complete.');
 
-						/*jshint camelcase: false */
-						log.info('Database.initializeDatabase(): Watching for document changes.');
-						db.changes({
-							since: $rootScope.lastSequence,
-							onChange: function(change) {
-								$rootScope.safeApply(function() {
-									$rootScope.lastUpdated = moment();
-									$rootScope.lastSequence = change.seq;
-									$timeout(function() {
-										$rootScope.$broadcast('cm.database.documentchanged', change);
+							/*jshint camelcase: false */
+							log.info('Database.initializeDatabase(): Watching for document changes.');
+							db.changes({
+								since: $rootScope.lastSequence,
+								onChange: function(change) {
+									$rootScope.safeApply(function() {
+										$rootScope.lastSequence = change.seq;
+										$timeout(function() {
+											$rootScope.$broadcast('cm.database.documentchanged', change);
+										});
 									});
-								});
-							},
-							complete: function() {
-								$rootScope.safeApply(function() {
-									$timeout(function() {
-										$rootScope.$broadcast('cm.database.changesprocessed');
+								},
+								complete: function() {
+									$rootScope.safeApply(function() {
+										$timeout(function() {
+											$rootScope.$broadcast('cm.database.changesprocessed');
+										});
 									});
-								});
-							},
-							continuous: true,
-							conflicts: true,
-							include_docs: true
+								},
+								continuous: true,
+								conflicts: true,
+								include_docs: true
+							});
+
+							ready.resolve(api);
+							deferred.resolve(api);
 						});
-
-						ready.resolve(api);
-						deferred.resolve(api);
 					});
 				});
 			});
@@ -228,11 +266,11 @@
 					log.info('Database.startReplication(): Starting replication from the remote DB...');
 					replicationFrom = db.replicate.from(remoteDb, {
 						'continuous': true,
-						/*
 						'onChange': function(change) {
-							console.log('db.replicate.from.onChange:',change);
+							$rootScope.safeApply(function() {
+								$rootScope.lastUpdated = moment();
+							});
 						},
-						*/
 						'complete': function(err, details) {
 							$rootScope.safeApply(function() {
 								if (resetting) {
@@ -251,6 +289,7 @@
 									}
 								} else {
 									console.log('Replication from remote DB complete:',details);
+									$rootScope.lastUpdated = moment();
 								}
 							});
 						}
@@ -263,11 +302,11 @@
 					log.info('Database.startReplication(): Starting replication to the remote DB...');
 					replicationTo = db.replicate.to(remoteDb, {
 						'continuous': true,
-						/*
 						'onChange': function(change) {
-							console.log('db.replicate.to.onChange:',change);
+							$rootScope.safeApply(function() {
+								$rootScope.lastUpdated = moment();
+							});
 						},
-						*/
 						'complete': function(err, details) {
 							$rootScope.safeApply(function() {
 								if (resetting) {
@@ -286,6 +325,7 @@
 									}
 								} else {
 									console.log('Replication to remote DB complete:',details);
+									$rootScope.lastUpdated = moment();
 								}
 							});
 						}
@@ -322,7 +362,7 @@
 			var deferred = $q.defer();
 			_getDatabase = deferred.promise;
 
-			$q.when(ready).then(function() {
+			$q.all([isonaboat.promise, ready.promise]).then(function() {
 				deferred.resolve(db);
 			});
 
