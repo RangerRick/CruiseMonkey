@@ -1,11 +1,12 @@
 describe('cruisemonkey.Events', function() {
-	var log         = null;
-	var service     = null;
-	var userService = null;
-	var db          = null;
-	var $q          = null;
-	var $timeout    = null;
-	var $rootScope  = null;
+	var log          = null;
+	var service      = null;
+	var userService  = null;
+	var db           = null;
+	var $q           = null;
+	var $timeout     = null;
+	var $rootScope   = null;
+	var $httpBackend = null;
 
 	var dbName      = 'cmunittest';
 	var async       = new AsyncSpec(this);
@@ -33,18 +34,21 @@ describe('cruisemonkey.Events', function() {
 			$provide.value('config.twitarr.root', 'https://twitarr.rylath.net/');
 			$provide.value('config.upgrade', false);
 		});
-		inject(['LoggingService', 'EventService', 'UserService', 'Database', '$q', '$timeout', '$rootScope', function(LoggingService, EventService, UserService, Database, q, timeout, scope) {
-			log         = LoggingService;
-			service     = EventService;
-			userService = UserService;
-			db          = Database;
-			$q          = q;
-			$timeout    = timeout;
-			$rootScope  = scope;
+		inject(['LoggingService', 'EventService', 'UserService', 'Database', '$q', '$timeout', '$rootScope', '$httpBackend', function(LoggingService, EventService, UserService, Database, q, timeout, scope, backend) {
+			log          = LoggingService;
+			service      = EventService;
+			userService  = UserService;
+			db           = Database;
+			$q           = q;
+			$timeout     = timeout;
+			$rootScope   = scope;
+			$httpBackend = backend;
 
+			backend.when('GET', 'http://jccc4.rccl.com/cruisemonkey-jccc4').respond(500, '');
 			db.initialize().then(function() {
 				done();
 			});
+			$httpBackend.flush();
 			$timeout.flush();
 		}]);
 	});
