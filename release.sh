@@ -144,12 +144,14 @@ if $ANDROID; then
 	NEWVERSIONCODE="$(($VERSIONCODE + 1))"
 	perl -pi.bak -e "s,android:versionCode=\"$VERSIONCODE\",android:versionCode=\"$NEWVERSIONCODE\"," platforms/android/AndroidManifest.xml
 	if $SIGN; then
+		perl -pi.bak -e 's,android:debuggable="true",android:debuggable="false",g' platforms/android/AndroidManifest.xml
 		cordova $BUILDCMD --release android
 		if [ $BUILDCMD = "build" ]; then
 			jarsigner -storepass "$SIGNING_PASS" -keystore ~/share/android/android-release-key.keystore -digestalg SHA1 -sigalg MD5withRSA platforms/android/bin/CruiseMonkey-release-unsigned.apk ranger
 			zipalign -v 4 platforms/android/bin/CruiseMonkey-release-unsigned.apk platforms/android/bin/CruiseMonkey-release-signed.apk
 		fi
 	else
+		perl -pi.bak -e 's,android:debuggable="false",android:debuggable="true",g' platforms/android/AndroidManifest.xml
 		cordova $BUILDCMD android
 	fi
 fi
