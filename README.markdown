@@ -67,6 +67,23 @@ CruiseMonkey by Benjamin Reed is licensed under the [Creative Commons Attributio
 Release Notes
 =============
 
+4.0.1
+-----
+
+* fixed and reinstated the "go to next event" button
+* updated to the latest Ionic (bug fixes)
+* more cleanup to the event update code
+* attempt to detect if we're on the ship and auto-configure if the right URL is found
+* fix a race condition in database initialization that could cause the first event update to occasionally fail
+* reworked event, favorite, and deck model to reduce memory usage
+* improve database sync tracking to include the last time replication *to* the backend happened, in addition to *from*
+* simplify the event-list template, this should reduce memory usage a little bit as well
+
+4.0.0
+-----
+
+* 3.9.11 was uploaded to the App Store as 4.0.0.
+
 3.9.11
 ------
 * "About" page now lists the last time the database synced, as well as the last time an event was modified
