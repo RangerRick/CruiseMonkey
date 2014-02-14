@@ -284,7 +284,7 @@ CMEvent.prototype.fromEditableBean = function(bean) {
 	this.setId(bean.id);
 	this.setRevision(bean.revision);
 	this.setStart(moment(bean.startDate));
-	this.setEnd(moment(bean.endDate));
+	this.setEnd(bean.endDate? moment(bean.endDate) : undefined);
 	this.setSummary(bean.summary);
 	this.setDescription(bean.description);
 	this.setLocation(bean.location);
@@ -523,7 +523,7 @@ CMFavorite.prototype.getRawData = function() {
 					deferred.reject('no username specified');
 				} else {
 					log.debug('EventService.addEvent(): posting event "' + eventToAdd.getSummary() + '" for user "' + eventToAdd.getUsername() + '"');
-					eventToAdd.refreshLastModified();
+					eventToAdd.refreshLastUpdated();
 					database.post(eventToAdd.getRawData(), function(err, response) {
 						$rootScope.$apply(function() {
 							if (err) {
@@ -560,7 +560,7 @@ CMFavorite.prototype.getRawData = function() {
 			}
 
 			$q.when(db.getDatabase()).then(function(database) {
-				ev.refreshLastModified();
+				ev.refreshLastUpdated();
 				database.put(ev.getRawData(), function(err, response) {
 					$rootScope.$apply(function() {
 						if (err) {

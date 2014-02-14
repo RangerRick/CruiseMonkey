@@ -451,7 +451,6 @@ describe('cruisemonkey.Events', function() {
 			ev.setUsername('ranger');
 			ev.setLocation('here');
 			ev.setPublic(false);
-			ev.setNewDay(false);
 
 			var bean = ev.toEditableBean();
 			expect(bean.id).toBe('1');
@@ -486,7 +485,6 @@ describe('cruisemonkey.Events', function() {
 			ev.setUsername('ranger');
 			ev.setLocation('there');
 			ev.setPublic(true);
-			ev.setNewDay(true);
 			
 			ev.fromEditableBean({
 				id: '1',
@@ -508,7 +506,6 @@ describe('cruisemonkey.Events', function() {
 			expect(ev.getUsername()).toBe('ranger');
 			expect(ev.getLocation()).toBe('here');
 			expect(ev.isPublic()).toBe(false);
-			expect(ev.isNewDay()).toBe(true);
 
 			done();
 		});
