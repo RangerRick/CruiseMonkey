@@ -105,7 +105,7 @@ if (typeof String.prototype.contains !== 'function') {
 }
 </script>
 
-<title ng-bind="'CruiseMonkey - ' + $root.title">CruiseMonkey</title>
+<title ng-bind="'CruiseMonkey - ' + $root.headerTitle">CruiseMonkey</title>
 </head>
 <body class="antialiased off-canvas hide-extras" ng-cloak>
 	<side-menus>
@@ -116,7 +116,7 @@ if (typeof String.prototype.contains !== 'function') {
 					<button class="button button-icon" open-menu><i class="icon ion-navicon"></i></button>
 					<button ng-repeat="button in leftButtons" class="button button-clear no-animation" ng-class="button.type" ng-click="button.tap($event, $index)" bind-html-unsafe="button.content"></button>
 				</div>
-				<h1 class="title">{{title}}</h1>
+				<h1 class="title">{{headerTitle}}</h1>
 				<div class="buttons">
 					<button ng-repeat="button in rightButtons" class="button button-clear no-animation" ng-class="button.type" ng-click="button.tap($event, $index)" bind-html-unsafe="button.content"></button>
 				</div>

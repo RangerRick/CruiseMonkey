@@ -136,35 +136,35 @@
 			return;
 		}
 
+		var eventType = $stateParams.eventType;
 		log.info('Initializing CMEventCtrl');
 
-		$scope.eventType = $stateParams.eventType;
-		$rootScope.title = $scope.eventType.capitalize() + ' Events';
+		$rootScope.headerTitle = eventType.capitalize() + ' Events';
 
 		$scope.isDisabled = true;
 		$timeout(function() {
 			$scope.isDisabled = false;
 		}, 500);
 
-		var message = 'Updating ' + $scope.eventType.capitalize() + ' events...';
+		var message = 'Updating ' + eventType.capitalize() + ' events...';
 		var scrolled = false;
 
 		storage.bind($scope, 'searchString', {
-			'storeName': 'cm.event.' + $scope.eventType
+			'storeName': 'cm.event.' + eventType
 		});
 		log.debug('$scope.searchString: ' + $scope.searchString);
 
-		$scope.entries = EventCache.get($scope.eventType, $scope.searchString) || [];
+		$scope.entries = EventCache.get(eventType, $scope.searchString) || [];
 		if ($scope.entries.length === 0) {
 			notifications.status(message);
 		}
 		
 		var eventMethod = EventService.getOfficialEvents;
-		if ($scope.eventType === 'official') {
+		if (eventType === 'official') {
 			eventMethod = EventService.getOfficialEvents;
-		} else if ($scope.eventType === 'unofficial') {
+		} else if (eventType === 'unofficial') {
 			eventMethod = EventService.getUnofficialEvents;
-		} else if ($scope.eventType === 'my') {
+		} else if (eventType === 'my') {
 			eventMethod = EventService.getMyEvents;
 		}
 
@@ -180,7 +180,7 @@
 		};
 
 		var updateEntries = function() {
-			$scope.entries = EventCache.get($scope.eventType, $scope.searchString);
+			$scope.entries = EventCache.get(eventType, $scope.searchString);
 			$scope.$broadcast('scroll.resize');
 		};
 
@@ -212,7 +212,7 @@
 
 			log.debug('CMEventCtrl.doRefresh(): refreshing.');
 			$q.when(eventMethod()).then(function(e) {
-				log.debug('CMEventCtrl: got ' + e.length + ' ' + $scope.eventType + ' events');
+				log.debug('CMEventCtrl: got ' + e.length + ' ' + eventType + ' events');
 				notifications.removeStatus(message);
 				deferred.resolve(true);
 
@@ -233,10 +233,10 @@
 				}
 
 				//console.log('doRefresh:',entries);
-				EventCache.put($scope.eventType, entries);
+				EventCache.put(eventType, entries);
 				updateEntries();
 			}, function() {
-				log.warn('CMEventCtrl: failed to get ' + $scope.eventType + ' events');
+				log.warn('CMEventCtrl: failed to get ' + eventType + ' events');
 				notifications.removeStatus(message);
 				deferred.resolve(false);
 			});
@@ -417,7 +417,7 @@
 					ev.setFavorite(undefined);
 
 					// If we're in the 'my' browser, it should disappear from the list
-					if ($scope.eventType === 'my') {
+					if (eventType === 'my') {
 						favdayloop:
 						for (i=0; i < $scope.entries.length; i++) {
 							day = $scope.entries[i];

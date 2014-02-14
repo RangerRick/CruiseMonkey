@@ -76,7 +76,7 @@
 				url: '/karaoke',
 				templateUrl: 'template/karaoke.html',
 				controller: ['$rootScope', function($rootScope) {
-					$rootScope.title = 'Karaoke';
+					$rootScope.headerTitle = 'Karaoke';
 					$rootScope.leftButtons = [];
 					$rootScope.rightButtons = [];
 				}]
@@ -232,7 +232,6 @@
 			if (UserService.loggedIn()) {
 				$urlRouter.sync();
 				angular.noop();
-				//console.log('new url = ' + newUrl);
 				storage.set('cm.lasturl', newUrl);
 				$rootScope.sideMenuController.close();
 				return;
@@ -275,6 +274,11 @@
 			var index = savedUrl.indexOf('#');
 			if (index > -1) {
 				savedUrl = decodeURIComponent(savedUrl.substring(savedUrl.indexOf('#') + 1));
+
+				// remove the goToHash hash from event URLs
+				if (savedUrl.contains('/events/') || savedUrl.indexOf('#') > -1) {
+					savedUrl = savedUrl.substring(0,savedUrl.indexOf('#'));
+				}
 				log.info('main: setting path to: ' + savedUrl);
 				$location.url(savedUrl);
 			}

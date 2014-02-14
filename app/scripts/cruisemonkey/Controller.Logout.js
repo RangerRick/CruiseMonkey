@@ -4,7 +4,7 @@
 	angular.module('cruisemonkey.controllers.Logout', ['cruisemonkey.Logging', 'cruisemonkey.User'])
 	.controller('CMLogoutCtrl', ['$rootScope', '$location', 'UserService', 'LoggingService', function($rootScope, $location, UserService, log) {
 		log.info('Initializing CMLogoutCtrl');
-		$rootScope.title = "Logging Out";
+		$rootScope.headerTitle = "Logging Out";
 		var oldUser = $rootScope.user;
 		$rootScope.user = UserService.reset();
 		$rootScope.$broadcast('cm.loggedOut', oldUser);

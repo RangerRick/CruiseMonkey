@@ -9,7 +9,7 @@
 	])
 	.controller('CMAdvancedCtrl', ['$scope', '$rootScope', '$window', 'Database', 'LoggingService', 'CordovaService', 'config.app.version', 'SettingsService', function($scope, $rootScope, $window, Database, log, cor, version, SettingsService) {
 		log.info('Initializing CMAdvancedCtrl');
-		$rootScope.title = 'Advanced Options';
+		$rootScope.headerTitle = 'Advanced Options';
 		$rootScope.leftButtons = [];
 		$rootScope.rightButtons = [];
 

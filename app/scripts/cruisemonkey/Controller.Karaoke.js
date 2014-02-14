@@ -81,7 +81,7 @@
 	}])
 	.controller('CMKaraokeSearchCtrl', ['storage', '$rootScope', '$scope', '$state', 'KaraokeService', 'LoggingService', function(storage, $rootScope, $scope, $state, KaraokeService, log) {
 		log.info('Initializing CMKaraokeSearchCtrl');
-		$rootScope.title = 'Karaoke Search';
+		$rootScope.headerTitle = 'Karaoke Search';
 		$rootScope.leftButtons = [
 			{
 				'type': 'button-clear',
@@ -182,7 +182,7 @@
 	}])
 	.controller('CMKaraokePrefixListCtrl', ['$rootScope', '$scope', '$state', 'KaraokeService', 'LoggingService', function($rootScope, $scope, $state, KaraokeService, log) {
 		log.info('Initializing CMKaraokePrefixListCtrl');
-		$rootScope.title = 'Artists';
+		$rootScope.headerTitle = 'Artists';
 		$rootScope.leftButtons = [
 			{
 				'type': 'button-clear',
@@ -237,7 +237,7 @@
 			prefix = prefix.toUpperCase();
 		}
 
-		$rootScope.title = 'Artists: ' + prefix;
+		$rootScope.headerTitle = 'Artists: ' + prefix;
 		$rootScope.leftButtons = [
 			{
 				'type': 'button-clear',
@@ -310,10 +310,10 @@
 	}])
 	.controller('CMKaraokeArtistCtrl', ['storage', '$rootScope', '$scope', '$stateParams', '$state', 'KaraokeService', 'LoggingService', function(storage, $rootScope, $scope, $stateParams, $state, KaraokeService, log) {
 		log.info('Initializing CMKaraokeArtistCtrl (' + $stateParams.artist + ')');
-		$rootScope.title = $stateParams.artist;
+		$rootScope.headerTitle = $stateParams.artist;
 		$scope.artist = $stateParams.artist;
 		if ($stateParams.artist.length > 12) {
-			$rootScope.title = $stateParams.artist.substring(0,12) + '...';
+			$rootScope.headerTitle = $stateParams.artist.substring(0,12) + '...';
 		}
 
 		$rootScope.leftButtons = [

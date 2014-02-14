@@ -4,7 +4,7 @@
 	angular.module('cruisemonkey.controllers.Help', ['cruisemonkey.Logging'])
 	.controller('CMHelpCtrl', ['$rootScope', 'LoggingService', function($rootScope, log) {
 		log.info('Initializing CMHelpCtrl');
-		$rootScope.title = 'Help';
+		$rootScope.headerTitle = 'Help';
 		$rootScope.leftButtons = [];
 		$rootScope.rightButtons = [];
 	}]);

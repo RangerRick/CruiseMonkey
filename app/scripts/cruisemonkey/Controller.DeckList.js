@@ -9,7 +9,7 @@
 	])
 	.controller('CMDeckListCtrl', ['storage', '$scope', '$rootScope', '$timeout', '$state', '$stateParams', '$location', '$document', 'CordovaService', 'LoggingService', function(storage, $scope, $rootScope, $timeout, $state, $stateParams, $location, $document, cor, log) {
 		log.info('Initializing CMDeckListCtrl');
-		$rootScope.title = "Deck Plans";
+		$rootScope.headerTitle = "Deck Plans";
 		$rootScope.leftButtons = [];
 		$rootScope.rightButtons = [];
 
@@ -63,7 +63,7 @@
 		};
 
 		var updateUI = function() {
-			$rootScope.title = "Deck " + $scope.deck;
+			$rootScope.headerTitle = "Deck " + $scope.deck;
 			
 			cor.ifCordova(function() {
 			}).otherwise(function() {

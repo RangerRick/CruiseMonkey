@@ -1,12 +1,11 @@
 #!/bin/sh -ev
 
-cp "$0" /tmp/ || :
-
 pushd `dirname $0`
 MYPATH=`pwd`
 MYNAME=`basename $0`
 
 if [ "$MYPATH" != "/tmp" ]; then
+	cp "$0" /tmp/ || :
 	echo "Restarting myself as '/tmp/$MYNAME'."
 	exec "/tmp/$MYNAME" "$MYPATH"
 fi
@@ -31,8 +30,7 @@ pushd "${CMDIR}"
 	rsync -avr ionic/dist/fonts/ app/fonts/
 	rsync -avr ionic/scss/ app/styles/
 	git add app/scripts/angular-3rdparty/ionic* app/fonts app/styles/_* app/styles/ionic* app/styles/themes
-	git diff HEAD --quiet
-	if [ $? -eq 0 ]; then
+	if git diff HEAD --quiet; then
 		echo "No changes."
 		git checkout "$CURRENT_BRANCH"
 	else
