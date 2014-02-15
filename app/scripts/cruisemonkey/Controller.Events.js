@@ -1,3 +1,14 @@
+function CMDay(d) {
+	'use strict';
+	this.day = d;
+	this.getId = function() {
+		return 'day-' + this.day.unix();
+	};
+	this.clone = function() {
+		return new CMDay(this.day);
+	};
+}
+
 (function() {
 	'use strict';
 
@@ -90,37 +101,41 @@
 			get: function(name, searchString) {
 				var even = false,
 					ret = [],
-					i, j, day,
-					entry,
-					matches;
+					i, j, day = null,
+					entry = null,
+					matches = [];
 				var cacheEntry = getCacheEntry(name);
 				if (!searchString) {
 					for (i=0; i < cacheEntry.length; i++) {
-						day = cacheEntry[i];
-						for (j=0; j < day.entries.length; j++) {
-							day.entries[j].setEven(even);
+						entry = cacheEntry[i].clone();
+						if (entry instanceof CMEvent) {
+							entry.setEven(even);
 							even = !even;
 						}
+						ret.push(entry);
 					}
-					return cacheEntry;
+					return ret;
 				}
 
 				for (i=0; i < cacheEntry.length; i++) {
-					day = cacheEntry[i];
-					matches = [];
-					for (j=0; j < day.entries.length; j++) {
-						entry = day.entries[j];
-						if (entry.matches(searchString)) {
-							entry.setEven(even);
-							even = !even;
-							matches.push(entry);
+					entry = cacheEntry[i].clone();
+					if (entry.getId().indexOf('day-') === 0) {
+						if (day === null || entry.day !== day.day) {
+							// new day
+							if (matches.length > 0) {
+								ret.push(day);
+								ret = ret.concat(matches);
+								matches = [];
+							}
+							day = entry;
 						}
+					} else {
+						matches.push(entry);
 					}
-					if (matches.length > 0) {
-						ret.push({
-							date: day.date,
-							entries: matches
-						});
+
+					if (matches.length > 0 && day !== null) {
+						ret.push(day);
+						ret = ret.concat(matches);
 					}
 				}
 				return ret;
@@ -138,6 +153,7 @@
 
 		var eventType = $stateParams.eventType;
 		log.info('Initializing CMEventCtrl');
+		var refreshInterval = 2; // seconds
 
 		$rootScope.headerTitle = eventType.capitalize() + ' Events';
 
@@ -193,7 +209,9 @@
 		};
 
 		var updateEntries = function() {
-			$scope.entries = EventCache.get(eventType, $scope.searchString);
+			var cached = EventCache.get(eventType, $scope.searchString);
+			console.log('cached events:',cached);
+			$scope.entries = cached;
 			$scope.$broadcast('scroll.resize');
 		};
 
@@ -230,23 +248,19 @@
 				deferred.resolve(true);
 
 				e.sort(sortEvent);
-				var entries = [], lastDay = null, i, entry, entryDay;
+				var evs = [], lastDay = null, i, ev, evDay;
 				for (i=0; i < e.length; i++) {
-					entry = e[i];
-					entryDay = entry.getDay();
-					//log.debug(entry.getSummary() + ' ' + entryDay);
-					if (!entryDay.isSame(lastDay)) {
-						//log.debug(entryDay + ' !== ' + lastDay);
-						lastDay = entryDay;
-						entries.push({
-							date: entryDay,
-							entries: []
-						});
+					ev = e[i];
+					evDay = ev.getDay();
+					//log.debug(ev.getSummary() + ' ' + evDay);
+					if (!evDay.isSame(lastDay)) {
+						evs.push(new CMDay(evDay));
+						lastDay = evDay;
 					}
-					entries[entries.length - 1].entries.push(entry);
+					evs.push(ev);
 				}
 
-				EventCache.put(eventType, entries);
+				EventCache.put(eventType, evs);
 				updateEntries();
 			}, function() {
 				log.warn('CMEventCtrl: failed to get ' + eventType + ' events');
@@ -263,7 +277,6 @@
 
 		doRefresh();
 
-		var refreshInterval = 5;
 		var refreshEvents = function(immediately) {
 			if (timeout) {
 				log.trace('CMEventCtrl.refreshEvents(): Refresh already in-flight.  Skipping.');
@@ -277,6 +290,40 @@
 					timeout = null;
 					doRefresh();
 				}, refreshInterval * 1000);
+			}
+		};
+
+		var removeEventFromDisplay = function(ev) {
+			var eventId = ev.getId(),
+				i, entry, removeDay = false, previousEntry, nextEntry;
+			for (i=0; i < $scope.entries.length; i++) {
+				entry = $scope.entries[i];
+				if (entry.getId() === eventId) {
+					// remove the event from the list
+					$scope.entries.splice(i,1);
+
+					previousEntry = $scope.entries[i-1];
+					nextEntry     = $scope.entries[i+1];
+					console.log('previousEntry=',previousEntry);
+					console.log('nextEntry=',nextEntry);
+					console.log('i=',i);
+					console.log('length=',$scope.entries.length);
+					// if this is the first entry of the day...
+					if (previousEntry && previousEntry.getId().indexOf('day-') === 0) {
+						if ((i+1) === $scope.entries.length) {
+							// ...and it's the last entry in the list, remove the day
+							removeDay = true;
+						} else if (nextEntry && nextEntry.getId().indexOf('day-') === 0) {
+							// ...and the next entry is a new day, remove the day
+							removeDay = true;
+						}
+
+						if (removeDay) {
+							$scope.entries.splice(i-1, 1);
+						}
+					}
+					break;
+				}
 			}
 		};
 
@@ -343,6 +390,10 @@
 			return 'date-' + date.unix();
 		};
 
+		$scope.isDay = function(entry) {
+			return entry.day !== undefined;
+		};
+
 		$scope.prettyDate = function(date) {
 			return date? date.format('dddd, MMMM Do') : undefined;
 		};
@@ -358,26 +409,25 @@
 		$scope.goToNow = function() {
 			var now = moment(),
 				matched = false,
-				i, j, day,
-				ev;
+				i, entry;
 
 			if ($scope.entries && $scope.entries.length > 0) {
 				dayloop:
 				for (i=0; i < $scope.entries.length; i++) {
-					day = $scope.entries[i];
-					for (j=0; j < day.entries.length; j++) {
-						ev = day.entries[j];
-						log.info('start: ' + ev.getStart() + ', now: ' + now + ', ' + ev.getSummary());
-						if (now.isBefore(ev.getStart())) {
-							log.info('matched! ' + ev.getId());
-							if (j === 0) {
-								// first entry in the day, go to the header instead
-								goToHash($scope.getDateId(ev.getDay()));
-							} else {
-								goToHash(ev.getId());
-							}
+					entry = $scope.entries[i];
+					if (entry.getId().indexOf('day-') === 0) {
+						if (now.isBefore(entry.day)) {
+							log.info('matched! ' + entry.getId());
+							goToHash(entry.getId());
 							matched = true;
-							break dayloop;
+							break;
+						}
+					} else {
+						if (now.isBefore(entry.getStart())) {
+							log.info('matched! ' + entry.getId());
+							goToHash(entry.getId());
+							matched = true;
+							break;
 						}
 					}
 				}
@@ -389,40 +439,16 @@
 
 		$scope.trash = function(ev) {
 			if (window.confirm('Are you sure you want to delete "' + ev.getSummary() + '"?')) {
-				var eventId = ev.getId(),
-					i, j, day;
-				dayloop:
-				for (i=0; i < $scope.entries.length; i++) {
-					day = $scope.entries[i];
-					for (j=0; j < day.entries.length; j++) {
-						if (day.entries[j].getId() === eventId) {
-							// remove the event from the day list
-							day.entries.splice(j, 1);
-							if (day.entries.length === 0) {
-								// if there are no events left in the day, remove the day too
-								$scope.entries.splice(i, 1);
-							}
-							$scope.$broadcast('scroll.resize');
-							break dayloop;
-						}
-					}
-				}
-				EventService.removeEvent(ev);
+				removeEventFromDisplay(ev);
+				EventService.removeEvent(ev).then(function() {
+					refreshEvents(true);
+				});
 			}
-		};
-
-		$scope.edit = function(ev) {
-			$scope.safeApply(function() {
-				$scope.event = ev;
-				$scope.eventData = ev.toEditableBean();
-
-				$scope.modal.show();
-			});
 		};
 
 		$scope.onFavoriteChanged = function(ev) {
 			$scope.safeApply(function() {
-				var i, j, day, eventId = ev.getId();
+				var i, entry, eventId = ev.getId();
 				log.debug('CMEventCtrl.onFavoriteChanged(' + eventId + ')');
 
 				if (ev.isFavorite()) {
@@ -431,34 +457,19 @@
 
 					// If we're in the 'my' browser, it should disappear from the list
 					if (eventType === 'my') {
-						favdayloop:
-						for (i=0; i < $scope.entries.length; i++) {
-							day = $scope.entries[i];
-							for (j=0; j < day.entries.length; j++) {
-								if (day.entries[j].getId() === eventId) {
-									day.entries.splice(j, 1);
-									if (day.entries.length === 0) {
-										$scope.entries.splice(i, 1);
-									}
-									$scope.$broadcast('scroll.resize');
-									break favdayloop;
-								}
-							}
-						}
+						removeEventFromDisplay(ev);
 					}
 
-					// Remove from the database
-					EventService.removeFavorite(eventId);
+					EventService.removeFavorite(eventId).then(function() {
+						refreshEvents(true);
+					});
 				} else {
 					var existing;
-					nofavdayloop:
-					for (i = 0; i < $scope.entries.length; i++) {
-						day = $scope.entries[i];
-						for (j=0; j < day.entries.length; j++) {
-							if (day.entries[j].getId() === eventId) {
-								existing = day.entries[j];
-								break nofavdayloop;
-							}
+					for (i=0; i < $scope.entries.length; i++) {
+						entry = $scope.entries[i];
+						if (entry.getId() === eventId) {
+							existing = entry;
+							break;
 						}
 					}
 
@@ -471,11 +482,17 @@
 					existing.setFavorite(new CMFavorite());
 
 					EventService.addFavorite(eventId).then(function(fav) {
+						refreshEvents(true);
+						/*
 						fav.setEvent(existing);
 						existing.setFavorite(fav);
+						*/
 					}, function() {
 						notifications.alert('Failed to favorite ' + ev.getSummary() + '!');
+						refreshEvents(true);
+						/*
 						existing.setFavorite(undefined);
+						*/
 					});
 				}
 			});
@@ -486,9 +503,17 @@
 			$scope.safeApply(function() {
 				ev.setPublic(!ev.isPublic());
 				$scope.$broadcast('scroll.resize');
-				EventService.updateEvent(ev).then(function() {
-					refreshEvents(true);
-				});
+				refreshEvents(true);
+				EventService.updateEvent(ev);
+			});
+		};
+
+		$scope.edit = function(ev) {
+			$scope.safeApply(function() {
+				$scope.event = ev;
+				$scope.eventData = ev.toEditableBean();
+
+				$scope.modal.show();
 			});
 		};
 
@@ -504,28 +529,34 @@
 
 		$scope.saveModal = function(data) {
 			log.debug('closing modal (save)');
-			
+
+			var username = UserService.getUsername();
+
+			if (!username) {
+				log.error('No username!');
+				$scope.modal.hide();
+				return;
+			}
+
 			var ev = $scope.event;
 			ev.fromEditableBean(data);
+			ev.setUsername(username);
 
-			console.log('saving=', ev.toEditableBean());
+			console.log('saving=', ev.getRawData());
 
 			if (ev.getRevision() && $scope.entries) {
 				// update the existing event in the UI
-				var i, j, day;
-				dayloop:
+				var eventId = ev.getId(), i, existing;
 				for (i=0; i < $scope.entries.length; i++) {
-					day = $scope.entries[i];
-					for (j=0; j < day.entries.length; j++) {
-						var existing = day.entries[j];
-						if (existing.getId() === ev.getId()) {
-							day.entries[j] = ev;
-							$scope.$broadcast('scroll.resize');
-							break dayloop;
-						}
+					existing = $scope.entries[i];
+					if (existing.getId() === eventId) {
+						$scope.entries[i] = ev;
+						$scope.$broadcast('scroll.resize');
+						break;
 					}
 				}
 			}
+
 			$q.when(EventService.addEvent(ev)).then(function(res) {
 				console.log('event added:', res);
 				$scope.modal.hide();

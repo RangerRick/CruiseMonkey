@@ -73,24 +73,21 @@
 
 			notifications.status('Logging in...');
 
-			if ($location.host() === '0.0.0.0' || $location.host() === '127.0.0.1') {
+			var host = $location.host();
+			if (host === '0.0.0.0' || host === '127.0.0.1' || host === 'localhost') {
 				// special case, let Ben log in regardless  ;)
 				notifications.removeStatus('Logging in...');
-				notifications.status('YOU ARE SUPER USER', 5000);
-				user.key = data.key;
+				notifications.status('YOU ARE MAGIC ADMIN', 5000);
 				$scope.saveUser(user);
 				$rootScope.$broadcast('cm.loggedIn', user);
 				$location.path('/events/my');
 				return;
 			}
 
-			$http({
-				method: 'POST',
-				url: twitarrRoot + 'api/v2/user/auth',
-				params: {
-					username: user.username,
-					password: user.password
-				},
+			$http.post(twitarrRoot + 'api/v2/user/auth', {
+				username: user.username,
+				password: user.password
+			}, {
 				cache: false,
 				timeout: 5000,
 				headers: {

@@ -20,41 +20,8 @@
 			return $window.navigator && $window.navigator.userAgent && $window.navigator.userAgent.indexOf('Android') >= 0;
 		};
 
-		var onaboat = $q.defer();
-		var isonaboat = function() {
-			if (storage.get('cm.onaboat')) {
-				$timeout(function() {
-					onaboat.resolve(true);
-				});
-			} else {
-				$http({
-					method: 'GET',
-					url: 'http://jccc4.rccl.com/cruisemonkey-jccc4',
-					cache: false,
-					timeout: 5000,
-					headers: {
-						Accept: 'application/json'
-					}
-				})
-				.success(function(data, status, headers, config) {
-					log.info('We are on a boat for the first time!  Setting database to jccc4.rccl.com.');
-					SettingsService.setDatabaseHost('http://jccc4.rccl.com');
-					SettingsService.setDatabaseName('cruisemonkey-jccc4');
-					SettingsService.setTwitarrRoot('http://jccc4.rccl.com');
-
-					storage.set('cm.onaboat', true);
-					onaboat.resolve(true);
-				})
-				.error(function(data, status, headers, config) {
-					onaboat.resolve(false);
-				});
-			}
-			return onaboat.promise;
-		};
-
-		storage.bind($rootScope, 'onaboat', {
-			'defaultValue': false,
-			'storeName': 'cm.onaboat'
+		storage.bind($rootScope, 'lastSent', {
+			'storeName': 'cm.lastSent'
 		});
 
 		var getDatabaseName = function(dbname) {
@@ -189,46 +156,45 @@
 				return deferred.promise;
 			}
 
-			isonaboat().then(function() {
-				db = new PouchDB(getDatabaseName());
-				if (replicate) {
-					log.debug('Database.initialize(): Replication enabled, initializing remoteDb.');
-					remoteDb = new PouchDB(getHost());
-				}
+			db = new PouchDB(getDatabaseName());
+			if (replicate) {
+				log.debug('Database.initialize(): Replication enabled, initializing remoteDb.');
+				remoteDb = new PouchDB(getHost());
+			}
 
-				$timeout(function() {
-					log.debug('Database.initialize(): Compacting database.');
-					db.compact(function() {
-						$rootScope.safeApply(function() {
-							log.info('Database.initializeDatabase(): Compaction complete.');
+			$timeout(function() {
+				log.debug('Database.initialize(): Compacting database.');
+				db.compact(function() {
+					$rootScope.safeApply(function() {
+						log.info('Database.initializeDatabase(): Compaction complete.');
 
-							/*jshint camelcase: false */
-							log.info('Database.initializeDatabase(): Watching for document changes.');
-							db.changes({
-								since: $rootScope.lastSequence,
-								onChange: function(change) {
-									$rootScope.safeApply(function() {
-										$rootScope.lastSequence = change.seq;
-										$timeout(function() {
-											$rootScope.$broadcast('cm.database.documentchanged', change);
-										});
+						/*jshint camelcase: false */
+						log.info('Database.initializeDatabase(): Watching for document changes.');
+						db.changes({
+							since: $rootScope.lastSequence,
+							onChange: function(change) {
+								console.log('local change:',change);
+								$rootScope.safeApply(function() {
+									$rootScope.lastSequence = change.seq;
+									$timeout(function() {
+										$rootScope.$broadcast('cm.database.documentchanged', change);
 									});
-								},
-								complete: function() {
-									$rootScope.safeApply(function() {
-										$timeout(function() {
-											$rootScope.$broadcast('cm.database.changesprocessed');
-										});
+								});
+							},
+							complete: function() {
+								$rootScope.safeApply(function() {
+									$timeout(function() {
+										$rootScope.$broadcast('cm.database.changesprocessed');
 									});
-								},
-								continuous: true,
-								conflicts: true,
-								include_docs: true
-							});
-
-							ready.resolve(api);
-							deferred.resolve(api);
+								});
+							},
+							continuous: true,
+							conflicts: true,
+							include_docs: true
 						});
+
+						ready.resolve(api);
+						deferred.resolve(api);
 					});
 				});
 			});
@@ -236,17 +202,42 @@
 			return deferred.promise;
 		};
 
-		var replicationFilter = function(doc, req) {
+		var loggedInFilter = function(doc, req) {
+			// logged in, get events
 			if (doc.type === 'event') {
-				return true;
-			}
-			if (doc.type === 'favorite') {
-				if (req.query.username && doc.username !== req.query.username) {
-					return false;
-				} else {
+				if (req.query.username && doc.username === req.query.username) {
+					// if it's our own event, sync it
+					return true;
+				} else if (doc.isPublic) {
+					// if it's a public event, sync it
 					return true;
 				}
+				// otherwise, skip it
+				return false;
 			}
+			if (doc.type === 'favorite') {
+				if (req.query.username && doc.username === req.query.username) {
+					// if it's our own favorite, sync it
+					return true;
+				} else {
+					// otherwise, skip it
+					return false;
+				}
+			}
+
+			return true;
+		};
+
+		var loggedOutFilter = function(doc, req) {
+			// logged out, only get public events
+			if (doc.type === 'event') {
+				return doc.isPublic;
+			} else if (doc.type === 'favorite') {
+				// don't need to sync favorites
+				return false;
+			}
+
+			// dunno what this is, get it just in case
 			return true;
 		};
 
@@ -260,17 +251,33 @@
 			}
 
 			$q.when(ready).then(function() {
+				var filter, params;
+
 				if (replicationFrom) {
 					log.warn('Database.startReplication(): Replication from the remote DB has already been started!');
 				} else {
 					log.info('Database.startReplication(): Starting replication from the remote DB...');
+
+					if (UserService.loggedIn()) {
+						filter = loggedInFilter;
+						params = {
+							username: UserService.getUsername()
+						};
+					} else {
+						filter = loggedOutFilter;
+						params = {};
+					}
+
 					replicationFrom = db.replicate.from(remoteDb, {
 						'continuous': true,
 						'onChange': function(change) {
 							$rootScope.safeApply(function() {
+								console.log('remote change to local:',change);
 								$rootScope.lastUpdated = moment();
 							});
 						},
+						//filter: filter,
+						//query_params: params,
 						'complete': function(err, details) {
 							$rootScope.safeApply(function() {
 								if (resetting) {
@@ -300,13 +307,48 @@
 					log.warn('Database.startReplication(): Replication to the remote DB has already been started!');
 				} else {
 					log.info('Database.startReplication(): Starting replication to the remote DB...');
+
+					if (UserService.loggedIn()) {
+						filter = function(doc, req) {
+							/*
+							console.log('replicationTo filter: doc=',doc);
+							console.log('replicationTo filter: req=',req);
+							*/
+							var ret=false;
+							if (doc.username === req.query.username) {
+								// if it's ours, sync it back
+								ret=true;
+							} else if (doc._deleted === true) {
+								// or if we've deleted it
+								ret=true;
+							} else {
+								// otherwise, don't
+								ret=false;
+							}
+							//console.log('replicationTo filter: ret=',ret);
+							return ret;
+						};
+						params = {
+							username: UserService.getUsername()
+						};
+					} else {
+						filter = function() {
+							return true;
+						};
+						params = {};
+					}
+
+					/*jshint camelcase: false */
 					replicationTo = db.replicate.to(remoteDb, {
 						'continuous': true,
 						'onChange': function(change) {
 							$rootScope.safeApply(function() {
+								console.log('local change to remote:',change);
 								$rootScope.lastUpdated = moment();
 							});
 						},
+						filter: filter,
+						query_params: params,
 						'complete': function(err, details) {
 							$rootScope.safeApply(function() {
 								if (resetting) {
@@ -362,7 +404,7 @@
 			var deferred = $q.defer();
 			_getDatabase = deferred.promise;
 
-			$q.all([isonaboat.promise, ready.promise]).then(function() {
+			$q.when(ready.promise).then(function() {
 				deferred.resolve(db);
 			});
 
@@ -401,6 +443,16 @@
 			});
 		};
 		
+		$rootScope.$on('cm.loggedIn', function(evt) {
+			stopReplication();
+			startReplication();
+		});
+
+		$rootScope.$on('cm.loggedOut', function(evt) {
+			stopReplication();
+			startReplication();
+		});
+
 		$rootScope.$on('cm.settingsChanged', function(evt, settings) {
 			var reset = false;
 			if (settings.before.databaseHost !== settings.after.databaseHost) {

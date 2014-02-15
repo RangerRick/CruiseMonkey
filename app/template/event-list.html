@@ -52,26 +52,28 @@
 		</button>
 	</div>
 	<list class="event-list">
-		<item class="item-divider event-header" ng-repeat-start="day in entries" id="{{getDateId(day.date)}}">{{prettyDate(day.date)}}</item>
-		<item bindonce ng-repeat="entry in day.entries" id="{{entry.getId()}}" ng-class="'list-entry item-text-wrap ' + (entry.isEven()? 'even':'odd')">
-			<span class="item-note favorite" ng-show="(user.username &amp;&amp; user.username != entry.getUsername())">
-				<button id="{{entry.getId()}}-favorite" ng-click="onFavoriteChanged(entry)" class="button button-cm button-icon icon" ng-class="entry.isFavorite()? 'active ion-ios7-heart':'ion-ios7-heart-outline'"></button>
-			</span>
-			<span class="item-note trash" ng-show="(user.username &amp;&amp; user.username == entry.getUsername())">
-				<button id="{{entry.getId()}}-trash" ng-click="trash(entry)" class="button button-cm button-icon icon active ion-ios7-trash"></button>
-			</span>
-			<span class="item-note public" ng-show="(user.username &amp;&amp; user.username == entry.getUsername())">
-				<button id="{{entry.getId()}}-public" ng-click="onPublicChanged(entry)" class="button button-cm button-icon icon active" ng-class="entry.isPublic()? 'ion-ios7-eye':'ion-ios7-eye-outline'"></button>
-			</span>
-			<span class="item-note edit" ng-show="(user.username &amp;&amp; user.username == entry.getUsername())">
-				<button id="{{entry.getId()}}-edit" ng-click="edit(entry)" class="button button-cm button-icon icon active ion-gear-a"></button>
-			</span>
-			<div class="summary" bo-text="entry.getSummary()"></div>
-			<div class="time" bo-text="'Time: ' + entry.getDisplayTime()"></div>
-			<div class="createdBy" bo-show="entry.getUsername() != 'official'" bo-text="'Created By: ' + entry.getUsername()"></div>
-			<div class="location" bo-show="entry.getLocation()" bo-text="'Location: ' + entry.getLocation()"></div>
-			<div class="description" bo-show="entry.getDescription()" bo-text="entry.getDescription()"></div>
-		</item>
-		<div id="the-end" ng-repeat-end></div>
+		<span bindonce ng-repeat="entry in entries">
+			<item ng-if="isDay(entry)" class="item-divider event-header" id="{{entry.getId()}}">{{prettyDate(entry.day)}}</item>
+			<item ng-if="!isDay(entry)" ng-class="'list-entry item-text-wrap ' + (entry.isEven()? 'even':'odd')">
+				<span class="item-note favorite" bo-show="(user.username &amp;&amp; user.username != entry.getUsername())">
+					<button id="{{entry.getId()}}-favorite" ng-click="onFavoriteChanged(entry)" class="button button-cm button-icon icon" ng-class="entry.isFavorite()? 'active ion-ios7-heart':'ion-ios7-heart-outline'"></button>
+				</span>
+				<span class="item-note trash" bo-show="(user.username &amp;&amp; user.username == entry.getUsername())">
+					<button id="{{entry.getId()}}-trash" ng-click="trash(entry)" class="button button-cm button-icon icon active ion-ios7-trash"></button>
+				</span>
+				<span class="item-note public" bo-show="(user.username &amp;&amp; user.username == entry.getUsername())">
+					<button id="{{entry.getId()}}-public" ng-click="onPublicChanged(entry)" class="button button-cm button-icon icon active" ng-class="entry.isPublic()? 'ion-ios7-eye':'ion-ios7-eye-outline'"></button>
+				</span>
+				<span class="item-note edit" bo-show="(user.username &amp;&amp; user.username == entry.getUsername())">
+					<button id="{{entry.getId()}}-edit" ng-click="edit(entry)" class="button button-cm button-icon icon active ion-gear-a"></button>
+				</span>
+				<div class="summary" bo-text="entry.getSummary()"></div>
+				<div class="time" bo-text="'Time: ' + entry.getDisplayTime()"></div>
+				<div class="createdBy" bo-show="entry.getUsername() != 'official'" bo-text="'Created By: ' + entry.getUsername()"></div>
+				<div class="location" bo-show="entry.getLocation()" bo-text="'Location: ' + entry.getLocation()"></div>
+				<div class="description" bo-show="entry.getDescription()" bo-text="entry.getDescription()"></div>
+			</item>
+		</span>
+		<div id="the-end"></div>
 	</list>
 </content>

@@ -1,49 +1,6 @@
 <content has-header="true" overflow-scroll="true" scroll="true" padded="false">
 <div class="list">
 	<div class="card">
-		<div class="item item-divider">Network Configuration</div>
-		<form name="networkForm" class="network-form" novalidate>
-			<div class="item item-text-wrap">
-				Configure various advanced network options, including which servers to use.
-			</div>
-			<label class="item item-input item-stacked-label">
-				<span class="input-label">Database Host</span>
-				<input type="text" name="databaseHost" ng-model="settings.databaseHost" />
-			</label>
-			<label class="item item-input item-stacked-label">
-				<span class="input-label">Database Name</span>
-				<input type="text" name="databaseName" ng-model="settings.databaseName" />
-			</label>
-			<label class="item item-input item-stacked-label">
-				<span class="input-label">Replication Refresh Time (ms)</span> <span class="error" ng-show="myForm.input.$error">Must be at least 10000!</span>
-				<input type="number" name="databaseRefresh" ng-model="settings.databaseRefresh" min="10000" required />
-			</label>
-			<label class="item item-input item-stacked-label">
-				<span class="input-label">Twit-Arr URL</span>
-				<input type="url" name="twitarrRoot" ng-model="settings.twitarrRoot" />
-			</label>
-			<div class="item item-checkbox" style="height: 50px" ng-if="isIos">
-				<label class="checkbox" style="padding-top: 10px; padding-bottom: 10px; height: 50px">
-					<input type="checkbox" name="openInChrome" ng-model="settings.openInChrome" />
-					<span style="padding: 10px">Open URLs in Chrome?</span>
-				</label>
-			</div>
-			<button class="button button-full button-assertive" ng-click="resetSettings()" ng-disabled="form.$invalid">Reset to Defaults</button>
-			<button class="button button-full button-positive" ng-click="saveSettings()" ng-disabled="form.$invalid || isUnchanged()">Save</button>
-		</form>
-	</div>
-
-	<div class="card">
-		<div class="item item-divider">Import Twit-Arr Certificate</div>
-		<div class="item item-text-wrap">
-			The Twit-Arr server is running using a self-signed SSL certificate.  If you encounter
-			problems logging in using your Twit-Arr account, you may have to import the certificate
-			by clicking this button.
-		</div>
-		<a class="button button-full button-assertive" ng-click="openCertificate()">Import</a>
-	</div>
-
-	<div class="card">
 		<div class="item item-divider">Force Database Sync</div>
 		<div class="item item-text-wrap">
 			The shipboard network can be pretty flaky, especially with hundreds of geeks hitting it at once.
@@ -63,6 +20,45 @@
 			empty CruiseMonkey!
 		</div>
 		<button class="button button-full button-positive" ng-click="resetDatabase()">Reset Cache</button>
+	</div>
+
+	<div class="card">
+		<div class="item item-divider">Network Configuration</div>
+		<form name="networkForm" class="network-form" novalidate>
+			<div class="item item-text-wrap">
+				Configure various advanced network options, including which servers to use.
+			</div>
+			<label class="item item-input item-stacked-label">
+				<span class="input-label">Database Host</span>
+				<input type="text" name="databaseHost" ng-model="settings.databaseHost" />
+			</label>
+			<label class="item item-input item-stacked-label">
+				<span class="input-label">Database Name</span>
+				<input type="text" name="databaseName" ng-model="settings.databaseName" />
+			</label>
+			<label class="item item-input item-stacked-label">
+				<span class="input-label">Twit-Arr URL</span>
+				<input type="url" name="twitarrRoot" ng-model="settings.twitarrRoot" />
+			</label>
+			<div class="item item-checkbox" style="height: 50px" ng-if="isIos">
+				<label class="checkbox" style="padding-top: 10px; padding-bottom: 10px; height: 50px">
+					<input type="checkbox" name="openInChrome" ng-model="settings.openInChrome" />
+					<span style="padding: 10px">Open URLs in Chrome?</span>
+				</label>
+			</div>
+			<button class="button button-full button-positive" ng-click="saveSettings()" ng-disabled="form.$invalid || isUnchanged()">Save</button>
+			<button class="button button-full button-assertive" ng-click="resetSettings()" ng-disabled="form.$invalid">Reset to Defaults</button>
+		</form>
+	</div>
+
+	<div class="card">
+		<div class="item item-divider">Import Twit-Arr Certificate</div>
+		<div class="item item-text-wrap">
+			The Twit-Arr server is running using a self-signed SSL certificate.  If you encounter
+			problems logging in using your Twit-Arr account, you may have to import the certificate
+			by clicking this button.
+		</div>
+		<a class="button button-full button-assertive" ng-click="openCertificate()">Import</a>
 	</div>
 </div>
 </content>

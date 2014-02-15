@@ -6,7 +6,6 @@
 	.value('config.database.host', 'https://twitarr.rylath.net/')
 	.value('config.database.name', 'cruisemonkey')
 	.value('config.database.replicate', true)
-	.value('config.database.refresh', 20000)
 	.value('config.urls.openinchrome', false)
 	.value('config.notifications.timeout', 5000)
 	.value('config.twitarr.root', 'https://twitarr.rylath.net/')
@@ -18,14 +17,26 @@
 		'cruisemonkey.Config',
 		'cruisemonkey.Upgrades'
 	])
-	.factory('SettingsService', ['storage', '$rootScope', 'config.database.host', 'config.database.name', 'config.database.refresh', 'config.urls.openinchrome', 'config.twitarr.root', 'UpgradeService', function(storage, $rootScope, databaseHost, databaseName, databaseRefresh, openInChrome, twitarrRoot, upgrades) {
+	.factory('SettingsService', ['storage', '$rootScope', 'config.database.host', 'config.database.name', 'config.urls.openinchrome', 'config.twitarr.root', 'UpgradeService', function(storage, $rootScope, databaseHost, databaseName, openInChrome, twitarrRoot, upgrades) {
 		var defaultValue = {
 			'database.host': databaseHost,
 			'database.name': databaseName,
-			'database.refresh': databaseRefresh,
 			'urls.openinchrome': openInChrome,
 			'twitarr.root': twitarrRoot
 		};
+
+		storage.bind($rootScope, 'onaboat', {
+			'defaultValue': false,
+			'storeName': 'cm.settings.onaboat'
+		});
+
+		var startCruise = moment('2014-02-23 00:00');
+		var now = moment();
+		if (now.isAfter(startCruise)) {
+			defaultValue['database.host'] = 'http://jccc4.rccl.com/';
+			defaultValue['database.name'] = 'cruisemonkey-jccc4';
+			defaultValue['twitarr.root']  = 'http://jccc4.rccl.com/';
+		}
 
 		$rootScope.safeApply = function(fn) {
 			var phase = this.$root.$$phase;
@@ -48,32 +59,26 @@
 		});
 
 		var getDefaults = function() {
-			return angular.copy({
-				databaseHost: databaseHost,
-				databaseName: databaseName,
-				databaseRefresh: databaseRefresh,
-				openInChrome: openInChrome,
-				twitarrRoot: twitarrRoot
-			});
+			return angular.copy(defaultValue);
+		};
+
+		if (now.isAfter(startCruise) && !$rootScope.onaboat) {
+			$rootScope.onaboat = true;
+			var defaults = getDefaults();
+			$rootScope._settings['database.host'] = defaults['database.host'];
+			$rootScope._settings['database.name'] = defaults['database.name'];
+			$rootScope._settings['twitarr.root']  = defaults['twitarr.root'];
 		};
 
 		var getSettings = function() {
 			var dbHost       = $rootScope._settings['database.host']     || databaseHost;
 			var dbName       = $rootScope._settings['database.name']     || databaseName;
-			var dbRefresh    = $rootScope._settings['database.refresh']  || databaseRefresh;
 			var openInChrome = $rootScope._settings['urls.openinchrome'] || openInChrome;
 			var twRoot       = $rootScope._settings['twitarr.root']      || twitarrRoot;
 
 			if (dbHost === dbName) {
 				console.log('Database host invalid!');
 				dbHost = databaseHost;
-			}
-
-			if (typeof dbRefresh === 'string' || dbRefresh instanceof String) {
-				dbRefresh = parseInt(dbRefresh, 10);
-			}
-			if (dbRefresh < 10000) {
-				dbRefresh = 10000;
 			}
 
 			if (!twRoot.endsWith('/')) {
@@ -87,7 +92,6 @@
 			return angular.copy({
 				databaseHost: dbHost,
 				databaseName: dbName,
-				databaseRefresh: dbRefresh,
 				openInChrome: openInChrome,
 				twitarrRoot: twRoot
 			});
@@ -107,16 +111,6 @@
 			},
 			'setDatabaseName': function(name) {
 				$rootScope._settings['database.name'] = angular.copy(name);
-			},
-			'getDatabaseRefresh': function() {
-				return getSettings().databaseRefresh;
-			},
-			'setDatabaseRefresh': function(refresh) {
-				if (refresh >= 10000) {
-					$rootScope._settings['database.refresh'] = angular.copy(refresh);
-				} else {
-					console.log('setDatabaseRefresh failed, refresh is less than 10000.');
-				}
 			},
 			'getOpenInChrome': function() {
 				return getSettings().openInChrome;

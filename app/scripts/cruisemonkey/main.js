@@ -298,28 +298,16 @@
 
 		var handleStateChange = function() {
 			databaseInitialized.promise.then(function() {
-				if ($rootScope.foreground && $rootScope.online) {
-					log.debug('handleStateChange: setting online');
-					if ($rootScope.firstInitialization) {
-						var message = 'Synchronizing events from CruiseMonkey database...';
-						//notifications.status(message);
-						Database.syncRemote()['finally'](function() {
-							$rootScope.firstInitialization = false;
-							Database.online();
-							SeamailService.online();
-							//notifications.removeStatus(message);
-							$rootScope.$broadcast('cm.main.refreshEvents');
-						});
-					} else {
-						Database.online();
-						SeamailService.online();
-						$rootScope.$broadcast('cm.main.refreshEvents');
-					}
+				if ($rootScope.foreground) {
+					log.debug('handleStateChange: setting foreground');
+					Database.online();
+					SeamailService.online();
+					$rootScope.$broadcast('cm.main.refreshEvents');
 				} else {
-					log.debug('handleStateChange: setting offline');
-					// notifications.status('Offline.  Unable to sync events.', 5000);
+					log.debug('handleStateChange: setting background');
 					Database.offline();
-					SeamailService.offline();
+					// we leave seamail service going so it can send notifications in the background
+					SeamailService.online();
 				}
 			});
 		};
@@ -327,7 +315,7 @@
 
 		$timeout(function() {
 			databaseInitialized.promise.then(function() {
-				if ($rootScope.foreground && $rootScope.online) {
+				if ($rootScope.foreground) {
 					Database.restartReplication();
 				}
 			});

@@ -18,16 +18,12 @@ if (Modernizr.inputtypes["datetime-local"]) {
 
 var epochZero = stringifyDate(moment(0));
 
-/**
-  * Represents a CruiseMonkey event.  Stores "raw" javascript data for communcation
-  * with the backend, and then provides memoizing/caching functions for accessors.
-  */
 function CMEvent(data) {
 	'use strict';
 
 	var self = this;
 
-	self._rawdata  = data || {};
+	self._rawdata  = angular.copy(data) || {};
 	self._favorite = undefined;
 	self._day      = undefined;
 	self._start    = undefined;
@@ -51,6 +47,38 @@ function CMEvent(data) {
 	delete self._rawdata.isFavorite;
 	delete self._rawdata.isNewDay;
 }
+
+function CMFavorite(data) {
+	'use strict';
+
+	var self = this;
+
+	self._rawdata  = angular.copy(data) || {};
+	self._rawdata.type = 'favorite';
+	self._event = undefined;
+
+	if (self._rawdata.lastUpdated === 'Invalid date') {
+		self._rawdata.lastUpdated = undefined;
+	}
+	if (self._rawdata.lastUpdated === undefined) {
+		self._rawdata.lastUpdated = moment(epochZero);
+	}
+}
+
+CMEvent.prototype.clone = function() {
+	'use strict';
+	var newobj = new CMEvent(this._rawdata);
+	if (this._favorite !== undefined) {
+		newobj.setFavorite(new CMFavorite(this._favorite.getRawData()));
+		newobj.getFavorite().setEvent(newobj);
+	}
+	newobj._day   = angular.copy(this._day);
+	newobj._start = angular.copy(this._start);
+	newobj._end   = angular.copy(this._end);
+	newobj._even  = angular.copy(this._even);
+
+	return newobj;
+};
 
 CMEvent.prototype.isEven = function() {
 	'use strict';
@@ -195,7 +223,7 @@ CMEvent.prototype.refreshLastUpdated = function() {
 
 CMEvent.prototype.getUsername = function() {
 	'use strict';
-	if (this._rawdata.username && this._rawdata.username !== '') {
+	if (this._rawdata.username !== undefined && this._rawdata.username !== '') {
 		return this._rawdata.username;
 	}
 	return undefined;
@@ -317,23 +345,6 @@ CMEvent.prototype.matches = function(searchString) {
 
 	return false;
 };
-
-function CMFavorite(data) {
-	'use strict';
-
-	var self = this;
-
-	self._rawdata  = data || {};
-	self._rawdata.type = 'favorite';
-	self._event = undefined;
-
-	if (self._rawdata.lastUpdated === 'Invalid date') {
-		self._rawdata.lastUpdated = undefined;
-	}
-	if (self._rawdata.lastUpdated === undefined) {
-		self._rawdata.lastUpdated = moment(epochZero);
-	}
-}
 
 CMFavorite.prototype.getId = function() {
 	'use strict';
@@ -525,7 +536,7 @@ CMFavorite.prototype.getRawData = function() {
 			var deferred = $q.defer();
 
 			$q.when(db.getDatabase()).then(function(database) {
-				if (!eventToAdd.getUsername()) {
+				if (eventToAdd.getUsername() === undefined) {
 					log.warn('EventService.addEvent(): no username in the event!');
 					deferred.reject('no username specified');
 				} else {
@@ -954,27 +965,57 @@ CMFavorite.prototype.getRawData = function() {
 				return rejectedResult('EventService.addFavorite(): user not logged in, or no eventId passed');
 			}
 
-			var deferred = $q.defer();
+			var deferred = $q.defer(),
+				favId = 'favorite-' + username + '-' + eventId;
 
 			$q.when(db.getDatabase()).then(function(database) {
 				var fav = {
+					'_id': favId,
 					'type': 'favorite',
 					'username': username,
 					'eventId': eventId,
 					'lastModified': stringifyDate(moment())
 				};
 
-				database.post(fav, function(err, res) {
+				var checkExisting = $q.defer();
+
+				/*jshint camelcase: false */
+				database.get(favId, {
+					revs: true,
+					open_revs: 'all',
+					conflicts: true
+				}, function(err, res) {
 					$rootScope.$apply(function() {
 						if (err) {
-							log.error(err);
-							deferred.reject(err);
+							log.error('Error getting existing (deleted) favorite.');
+							console.log(err);
+							checkExisting.resolve(false);
+						} else if (res && res.length > 0) {
+							var obj = res[0];
+							if (obj && obj.ok && obj.ok._id === favId) {
+								fav._rev = obj.ok._rev;
+								checkExisting.resolve(true);
+							} else {
+								checkExisting.resolve(false);
+							}
 						} else {
-							log.debug('EventService.addFavorite(): favorite added.');
-							fav._id = res.id;
-							fav._rev = res.rev;
-							deferred.resolve(new CMFavorite(fav));
+							checkExisting.resolve(false);
 						}
+					});
+				});
+
+				checkExisting.promise.then(function() {
+					database.post(fav, function(err, res) {
+						$rootScope.$apply(function() {
+							if (err) {
+								log.error(err);
+								deferred.reject(err);
+							} else {
+								log.debug('EventService.addFavorite(): favorite added.');
+								fav._rev = res.rev;
+								deferred.resolve(new CMFavorite(fav));
+							}
+						});
 					});
 				});
 			});

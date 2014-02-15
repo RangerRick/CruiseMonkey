@@ -26,7 +26,6 @@
 			return (
 				existing.databaseHost    === updated.databaseHost &&
 				existing.databaseName    === updated.databaseName &&
-				existing.databaseRefresh === updated.databaseRefresh &&
 				existing.openInChrome    === updated.openInChrome &&
 				existing.twitarrRoot     === updated.twitarrRoot
 			);
@@ -45,7 +44,6 @@
 			var after = angular.copy($scope.settings);
 			SettingsService.setDatabaseHost($scope.settings.databaseHost);
 			SettingsService.setDatabaseName($scope.settings.databaseName);
-			SettingsService.setDatabaseRefresh($scope.settings.databaseRefresh);
 			SettingsService.setOpenInChrome($scope.settings.openInChrome);
 			SettingsService.setTwitarrRoot($scope.settings.twitarrRoot);
 			$rootScope.$broadcast('cm.settingsChanged', {
