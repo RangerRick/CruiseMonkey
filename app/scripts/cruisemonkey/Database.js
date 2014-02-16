@@ -100,43 +100,58 @@
 				if (host && replicate) {
 					/*jshint camelcase: false */
 					log.debug('Database.initializeFromRemote(): Getting all docs.');
-					remoteDb.allDocs({
-						include_docs: true
-					}, function(err, response) {
-						if (err) {
-							console.log('Database.initializeFromRemote(): error:',err);
-							deferred.reject(err);
-							return;
-						}
+					db.info(function(err, info) {
+						$rootScope.safeApply(function() {
+							if (err || !info || info.doc_count === 0) {
+								log.info('Database.initializeFromRemote(): found nothing in the database, requesting a full dump.');
 
-						var newDocs = [];
-						angular.forEach(response.rows, function(doc) {
-							while (doc.doc) {
-								doc = doc.doc;
-							}
-							if (doc.type === 'event') {
-								newDocs.push(doc);
-							}
-							if (doc.type === 'favorite' && doc._id.indexOf('favorite-') === 0) {
-								newDocs.push(doc);
-							}
-						});
+								remoteDb.allDocs({
+									include_docs: true
+								}, function(err, response) {
+									$rootScope.safeApply(function() {
+										if (err) {
+											console.log('Database.initializeFromRemote(): error:',err);
+											deferred.reject(err);
+											return;
+										}
 
-						console.log('newDocs=',newDocs);
-						deferred.reject(err);
-						db.bulkDocs({
-							docs: newDocs,
-							new_edits: false
-						}, function(err, response) {
-							if (err) {
-								console.log('Database.initializeFromRemote(): error:',err);
-								deferred.reject(err);
-								return;
+										var newDocs = [];
+										angular.forEach(response.rows, function(doc) {
+											while (doc.doc) {
+												doc = doc.doc;
+											}
+											if (doc.type === 'event') {
+												newDocs.push(doc);
+											}
+											if (doc.type === 'favorite' && doc._id.indexOf('favorite-') === 0) {
+												newDocs.push(doc);
+											}
+										});
+
+										console.log('newDocs=',newDocs);
+										deferred.reject(err);
+										db.bulkDocs({
+											docs: newDocs,
+											new_edits: false
+										}, function(err, response) {
+											if (err) {
+												console.log('Database.initializeFromRemote(): error:',err);
+												deferred.reject(err);
+												return;
+											} else {
+												console.log('Database.initializeFromRemote(): response=',response);
+												deferred.resolve(response);
+											}
+
+										});
+									});
+								});
 							} else {
-								console.log('Database.initializeFromRemote(): response=',response);
-								deferred.resolve(response);
+								$rootScope.safeApply(function() {
+									log.debug('Database.initializeFromRemote(): initialize from remote unnecessary.');
+									deferred.resolve({});
+								});
 							}
-
 						});
 					});
 				} else {
@@ -441,6 +456,7 @@
 				remoteDb = null;
 				storage.set('cm.lasturl', '/events/official');
 				storage.set('cm.lastSequence', 0);
+				storage.set('cm.seamail.count', 0);
 				storage.set('cm.firstInitialization', true);
 
 				PouchDB.destroy(getDatabaseName(), function(err) {

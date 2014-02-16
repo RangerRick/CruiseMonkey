@@ -172,7 +172,7 @@ function CMDay(d) {
 
 		$scope.entries = EventCache.get(eventType, $scope.searchString) || [];
 		if ($scope.entries.length === 0) {
-			notifications.status(message);
+			notifications.status(message, 2000);
 		}
 		
 		var eventMethod = EventService.getOfficialEvents;

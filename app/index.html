@@ -147,7 +147,7 @@ if (typeof String.prototype.contains !== 'function') {
 						</a>
 					</li>
 
-					<li class="item item-complex" ng-if="user.loggedIn" go-to="/logout"><a>Log Out {{user.username}}</a></li>
+					<li class="item item-complex" ng-if="user.loggedIn" go-to="/logout"><a>Log Out ({{user.username}})</a></li>
 					<li class="item item-complex" ng-if="!user.loggedIn" go-to="/login"><a>Log In</a></li>
 					<li class="item item-complex bottom" go-to="/advanced"><a>Advanced</a></li>
 					<li class="item item-complex" go-to="/help"><a>Help</a></li>
@@ -168,6 +168,7 @@ if (typeof String.prototype.contains !== 'function') {
 	<script src="scripts/3rdparty/pouchdb-nightly.js"></script>
 	<script src="bower_components/momentjs/moment.js"></script>
 	<script src="bower_components/log4javascript/log4javascript_uncompressed.js"></script>
+	<script src="bower_components/base64/base64.js"></script>
 	<script src="scripts/angular-3rdparty/ionic.js"></script>
 	<script src="bower_components/angular/angular.js"></script>
 	<script src="bower_components/angular-animate/angular-animate.js"></script>

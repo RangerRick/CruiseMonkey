@@ -184,25 +184,6 @@
 			});
 		};
 
-		$scope.$watch('currentEntry', function(newValue) {
-			if (newValue === undefined) {
-				return;
-			}
-			if (newValue.photoData === undefined) {
-				$http({
-					method: 'GET',
-					url: newValue.url,
-					cache: true
-				})
-				.success(function(data, status, headers, config) {
-					log.info('Content-type: ' + headers('content-type'));
-				})
-				.error(function(data, status, headers, config) {
-					log.error('error ' + status + ':' + data);
-				});
-			}
-		});
-
 		$scope.slideChanged = function(index) {
 			$scope.currentSlide = index;
 			$scope.currentEntry = $scope.entries[index];

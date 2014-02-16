@@ -65,13 +65,16 @@
 		$scope.update = function(user) {
 			var twitarrRoot = SettingsService.getTwitarrRoot();
 
+			document.getElementById('loginPassword').blur();
+			document.getElementById('loginUsername').blur();
+
 			if (!user.username) {
 				notifications.alert('No username! Something went wrong.');
 				return;
 			}
 			user.username = user.username.toLowerCase();
 
-			notifications.status('Logging in...', 20000);
+			notifications.status('Logging in...', 10000);
 
 			var host = $location.host();
 			if (host === '0.0.0.0' || host === '127.0.0.1' || host === 'localhost') {

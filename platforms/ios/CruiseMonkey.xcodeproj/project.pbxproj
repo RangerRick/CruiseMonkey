@@ -5,6 +5,7 @@
 	};
 	objectVersion = 46;
 	objects = {
+
 /* Begin PBXBuildFile section */
 		1D3623260D0F684500981E51 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 1D3623250D0F684500981E51 /* AppDelegate.m */; };
 		1D60589B0D05DD56006BFB54 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 29B97316FDCFA39411CA2CEA /* main.m */; };
@@ -669,7 +670,7 @@
 					"-ObjC",
 				);
 				PRODUCT_NAME = CruiseMonkey;
-				PROVISIONING_PROFILE = "B4D280FD-24FC-45DA-A219-6EB30B1F0BDB";
+				PROVISIONING_PROFILE = "FBA0FA4D-604C-4AE2-BEBF-9AC09A66C611";
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
@@ -707,7 +708,7 @@
 					"-ObjC",
 				);
 				PRODUCT_NAME = CruiseMonkey;
-				PROVISIONING_PROFILE = "B4D280FD-24FC-45DA-A219-6EB30B1F0BDB";
+				PROVISIONING_PROFILE = "FBA0FA4D-604C-4AE2-BEBF-9AC09A66C611";
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;

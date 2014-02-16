@@ -170,7 +170,7 @@
 			}
 		};
 	}])
-	.run(['$q', '$rootScope', '$window', '$location', '$timeout', '$interval', '$urlRouter', '$http', 'UserService', 'storage', 'CordovaService', 'UpgradeService', 'Database', 'LoggingService', 'NotificationService', 'SettingsService', 'SeamailService', function($q, $rootScope, $window, $location, $timeout, $interval, $urlRouter, $http, UserService, storage, cor, upgrades, Database, log, notifications, SettingsService, SeamailService) {
+	.run(['$q', '$rootScope', '$window', '$location', '$timeout', '$interval', '$urlRouter', 'UserService', 'storage', 'CordovaService', 'UpgradeService', 'Database', 'LoggingService', 'NotificationService', 'SettingsService', 'SeamailService', function($q, $rootScope, $window, $location, $timeout, $interval, $urlRouter, UserService, storage, cor, upgrades, Database, log, notifications, SettingsService, SeamailService) {
 		log.debug('CruiseMonkey run() called.');
 
 		/*global moment: true*/
@@ -307,7 +307,6 @@
 					if ($rootScope.firstInitialization) {
 						$rootScope.firstInitialization = false;
 						Database.syncRemote().then(function() {
-							$rootScope.firstInitialization = true;
 							Database.online();
 							SeamailService.online();
 							$rootScope.$broadcast('cm.main.refreshEvents');

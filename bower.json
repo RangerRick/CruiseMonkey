@@ -34,7 +34,8 @@
     "angular-mocks": "1.2.13",
     "classlist": "*",
     "angular-bindonce": "~0.3.1",
-    "es5-shim": "~2.3.0"
+    "es5-shim": "~2.3.0",
+    "base64": "~0.2.0"
   },
   "devDependencies": {
     "jasmine.async": "~0.1.0",

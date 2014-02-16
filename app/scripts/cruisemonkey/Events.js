@@ -403,7 +403,7 @@ CMFavorite.prototype.getRawData = function() {
 	'use strict';
 
 	angular.module('cruisemonkey.Events', ['cruisemonkey.Config', 'cruisemonkey.Database', 'cruisemonkey.User', 'cruisemonkey.Logging'])
-	.factory('EventService', ['$q', '$rootScope', '$timeout', '$http', '$location', 'Database', 'UserService', 'LoggingService', 'config.database.host', 'config.database.name', 'config.database.replicate', function($q, $rootScope, $timeout, $http, $location, db, UserService, log, databaseHost, databaseName, replicate) {
+	.factory('EventService', ['$q', '$rootScope', '$timeout', '$location', 'Database', 'UserService', 'LoggingService', 'config.database.host', 'config.database.name', 'config.database.replicate', function($q, $rootScope, $timeout, $location, db, UserService, log, databaseHost, databaseName, replicate) {
 		log.info('EventService: Initializing EventService.');
 
 		var listeners = [],
@@ -1098,42 +1098,6 @@ CMFavorite.prototype.getRawData = function() {
 			});
 
 			return deferred.promise;
-		};
-
-		var _remoteDocs = null;
-		var getRemoteDocs = function() {
-			if (_remoteDocs) {
-				return _remoteDocs;
-			}
-
-			if (!databaseHost) {
-				databaseHost = $location.host();
-			}
-			var host = 'http://' + databaseHost + ':5984/' + databaseName;
-			var deferred = $q.defer();
-			_remoteDocs = deferred.promise;
-
-			if (replicate) {
-				$http.get(host + '/_all_docs?include_docs=true', { 'headers': { 'Accept': 'application/json' } })
-					.success(function(data, status, headers, config) {
-						log.debug('EventService.getRemoteDocs(): finished.');
-						deferred.resolve(data);
-					})
-					.error(function(data, status, headers, config) {
-						log.error('EventService.getRemoteDocs(): failed to get all_docs from remote host = ', status);
-						deferred.reject(status);
-					});
-			} else {
-				$timeout(function() {
-					log.warn('EventService.getRemoteDocs(): replication disabled, resolving with empty object');
-					deferred.resolve({});
-				});
-			}
-			
-			_remoteDocs['finally'](function() {
-				_remoteDocs = null;
-			});
-			return _remoteDocs;
 		};
 
 		$rootScope.$on('$destroy', function() {
