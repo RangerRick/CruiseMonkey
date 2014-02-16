@@ -68,7 +68,7 @@ fi
 
 DATESTAMP=`date '+%Y%m%d%H%M%S'`
 VERSION=`grep '"version":' package.json | sed -e 's,  "version": ",,' -e 's/", *$//'`
-SHORTVERSION=4.0
+SHORTVERSION=$VERSION
 sed -e "s/'config.app.version', '[^']*/'config.app.version', '$VERSION/" app/scripts/cruisemonkey/Config.js > app/scripts/cruisemonkey/Config.js.bak
 mv app/scripts/cruisemonkey/Config.js.bak app/scripts/cruisemonkey/Config.js
 
