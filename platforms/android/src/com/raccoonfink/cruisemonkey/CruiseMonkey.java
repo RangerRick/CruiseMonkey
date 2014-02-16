@@ -19,8 +19,12 @@
 
 package com.raccoonfink.cruisemonkey;
 
+import org.apache.cordova.Config;
+import org.apache.cordova.CordovaActivity;
+
+import android.annotation.TargetApi;
 import android.os.Bundle;
-import org.apache.cordova.*;
+import android.webkit.WebView;
 
 public class CruiseMonkey extends CordovaActivity 
 {
@@ -29,9 +33,17 @@ public class CruiseMonkey extends CordovaActivity
     {
         super.onCreate(savedInstanceState);
         super.init();
+        initSoftwareRendering();
         // Set by <content src="index.html" /> in config.xml
         super.loadUrl(Config.getStartUrl());
         //super.loadUrl("file:///android_asset/www/index.html")
+    }
+
+    @TargetApi(value=11)
+    protected void initSoftwareRendering() {
+        if (android.os.Build.VERSION.SDK_INT < 14) {
+        	super.appView.setLayerType(WebView.LAYER_TYPE_SOFTWARE, null);
+        }
     }
 }
 

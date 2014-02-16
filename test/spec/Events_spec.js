@@ -48,7 +48,6 @@ describe('cruisemonkey.Events', function() {
 			db.initialize().then(function() {
 				done();
 			});
-			$httpBackend.flush();
 			$timeout.flush();
 		}]);
 	});
