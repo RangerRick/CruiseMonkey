@@ -5,7 +5,7 @@
 
 	angular.module('cruisemonkey.Config', [])
 	.value('config.logging.useStringAppender', false)
-	.value('config.database.host', 'https://twitarr.rylath.net/db/')
+	.value('config.database.host', 'http://remote.firstofmay.org/db/')
 	.value('config.database.name', 'cmtest')
 	.value('config.database.replicate', true)
 	.value('config.urls.openinchrome', false)
@@ -33,8 +33,9 @@
 		});
 
 		var startCruise = moment('2014-02-23 00:00');
+		var endCruise   = moment('2014-03-02 00:00');
 		var now = moment();
-		if (now.isAfter(startCruise)) {
+		if (now.isAfter(startCruise) && now.isBefore(endCruise)) {
 			defaultValue['database.host'] = 'http://jccc4.rccl.com/db/';
 			defaultValue['database.name'] = 'cruisemonkey-jccc4';
 			defaultValue['twitarr.root']  = 'http://jccc4.rccl.com/';
@@ -64,7 +65,7 @@
 			return angular.copy(defaultValue);
 		};
 
-		if (now.isAfter(startCruise) && !$rootScope.onaboat) {
+		if (now.isAfter(startCruise) && now.isBefore(endCruise) && !$rootScope.onaboat) {
 			$rootScope.onaboat = true;
 			var defaults = getDefaults();
 			$rootScope._settings['database.host'] = defaults['database.host'];
