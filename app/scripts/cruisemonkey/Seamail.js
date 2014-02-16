@@ -26,7 +26,9 @@
 			var twitarrRoot = SettingsService.getTwitarrRoot();
 			var user = UserService.get();
 
-			$http.get(twitarrRoot + 'api/v1/user/new_seamail', {
+			$http({
+				method: 'GET',
+				url: twitarrRoot + 'api/v1/user/new_seamail',
 				params: {
 					key: user.key
 				},

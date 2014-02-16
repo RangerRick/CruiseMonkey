@@ -276,6 +276,22 @@
 								$rootScope.lastUpdated = moment();
 							});
 						},
+						filter: function(doc, req) {
+							if (doc.type === 'event') {
+								return true;
+							}
+							
+							if (doc.type === 'favorite') {
+								if (doc._id && doc._id.indexOf('favorite-') === 0) {
+									return true;
+								} else {
+									return false;
+								}
+							}
+							
+							// anything else, sync
+							return true;
+						},
 						//filter: filter,
 						//query_params: params,
 						'complete': function(err, details) {
@@ -310,10 +326,6 @@
 
 					if (UserService.loggedIn()) {
 						filter = function(doc, req) {
-							/*
-							console.log('replicationTo filter: doc=',doc);
-							console.log('replicationTo filter: req=',req);
-							*/
 							var ret=false;
 							if (doc.username === req.query.username) {
 								// if it's ours, sync it back
@@ -325,15 +337,15 @@
 								// otherwise, don't
 								ret=false;
 							}
-							//console.log('replicationTo filter: ret=',ret);
 							return ret;
 						};
 						params = {
 							username: UserService.getUsername()
 						};
 					} else {
+						// if we're not logged in, there is nothing local to sync
 						filter = function() {
-							return true;
+							return false;
 						};
 						params = {};
 					}

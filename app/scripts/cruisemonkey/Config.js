@@ -1,6 +1,8 @@
 (function() {
 	'use strict';
 
+	/*global moment: true*/
+
 	angular.module('cruisemonkey.Config', [])
 	.value('config.logging.useStringAppender', false)
 	.value('config.database.host', 'https://twitarr.rylath.net/')
@@ -68,7 +70,7 @@
 			$rootScope._settings['database.host'] = defaults['database.host'];
 			$rootScope._settings['database.name'] = defaults['database.name'];
 			$rootScope._settings['twitarr.root']  = defaults['twitarr.root'];
-		};
+		}
 
 		var getSettings = function() {
 			var dbHost       = $rootScope._settings['database.host']     || databaseHost;

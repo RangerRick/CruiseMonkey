@@ -84,10 +84,13 @@
 				return;
 			}
 
-			$http.post(twitarrRoot + 'api/v2/user/auth', {
-				username: user.username,
-				password: user.password
-			}, {
+			$http({
+				method: 'POST',
+				url: twitarrRoot + 'api/v2/user/auth',
+				params: {
+					username: user.username,
+					password: user.password
+				},
 				cache: false,
 				timeout: 5000,
 				headers: {
@@ -104,7 +107,10 @@
 			})
 			.error(function(data, status, headers, config) {
 				log.warn('failure!');
-				notifications.removeStatus('Logging in...');
+				log.debug('data:', data);
+				log.debug('status:',status);
+				log.debug('headers:',headers);
+				log.debug('config:',config);
 				notifications.alert('Failed to log in to twit-arr! You may need to import the twit-arr certificate in "Advanced" before login will work.');
 			});
 

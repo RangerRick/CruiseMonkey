@@ -57,6 +57,7 @@
 			})
 			.error(function(data, status, headers, config) {
 				log.warn('Bad response: ' + data);
+				console.log('status=',status);
 				deferred.reject(data);
 			});
 			
