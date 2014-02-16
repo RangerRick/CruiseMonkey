@@ -5,11 +5,15 @@
 
 	angular.module('cruisemonkey.Cordova', [
 		'ng',
+		'ngAnimate',
 		'cruisemonkey.Logging'
 	])
-	.factory('CordovaService', ['$rootScope', '$document', '$window', '$q', '$timeout', 'LoggingService', function($rootScope, $document, $window, $q, $timeout, log) {
+	.factory('CordovaService', ['$rootScope', '$document', '$window', '$q', '$timeout', '$animate', 'LoggingService', function($rootScope, $document, $window, $q, $timeout, $animate, log) {
 		var isCordova = $q.defer();
 		var initWait = 5000;
+
+		var ua = navigator.userAgent;
+		var androidVersion = ua.indexOf('Android') >= 0? parseFloat(ua.slice(ua.indexOf("Android")+8)) : 0;
 
 		var onDeviceReady = function() {
 			log.info('CruiseMonkey Cordova Initialized.');
@@ -21,6 +25,11 @@
 				log.info('Platform: ' + $window.device.platform);
 				log.info('UUID:     ' + $window.device.uuid);
 				log.info('Version:  ' + $window.device.version);
+				
+				// if we're on older Android, disable animations
+				if (androidVersion < 4.3) {
+					$animate.enabled(false);
+				}
 			} else {
 				log.warn('Deviceready event fired, but window.device not found!');
 			}

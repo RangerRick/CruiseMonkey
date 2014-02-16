@@ -5,8 +5,8 @@
 
 	angular.module('cruisemonkey.Config', [])
 	.value('config.logging.useStringAppender', false)
-	.value('config.database.host', 'https://twitarr.rylath.net/')
-	.value('config.database.name', 'cruisemonkey')
+	.value('config.database.host', 'https://twitarr.rylath.net/db/')
+	.value('config.database.name', 'cmtest')
 	.value('config.database.replicate', true)
 	.value('config.urls.openinchrome', false)
 	.value('config.notifications.timeout', 5000)
@@ -35,7 +35,7 @@
 		var startCruise = moment('2014-02-23 00:00');
 		var now = moment();
 		if (now.isAfter(startCruise)) {
-			defaultValue['database.host'] = 'http://jccc4.rccl.com/';
+			defaultValue['database.host'] = 'http://jccc4.rccl.com/db/';
 			defaultValue['database.name'] = 'cruisemonkey-jccc4';
 			defaultValue['twitarr.root']  = 'http://jccc4.rccl.com/';
 		}
@@ -56,7 +56,7 @@
 			'storeName': 'cm.settings'
 		});
 
-		upgrades.register('3.9.5', 'Database and Twit-Arr Settings Reset', function() {
+		upgrades.register('4.0.2', 'Database and Twit-Arr Settings Reset', function() {
 			$rootScope._settings = getDefaults();
 		});
 

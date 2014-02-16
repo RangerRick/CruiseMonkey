@@ -10,6 +10,7 @@
 		'ui.router',
 		'angularLocalStorage',
 		'pasvaz.bindonce',
+		'chieffancypants.loadingBar',
 		'cruisemonkey.Config',
 		'cruisemonkey.Cordova',
 		'cruisemonkey.controllers.About',
@@ -30,9 +31,11 @@
 		'cruisemonkey.Upgrades',
 		'cruisemonkey.User'
 	])
-	.config(['$stateProvider', '$urlRouterProvider', '$compileProvider', function($stateProvider, $urlRouterProvider, $compileProvider) {
+	.config(['$stateProvider', '$urlRouterProvider', '$compileProvider', 'cfpLoadingBarProvider', function($stateProvider, $urlRouterProvider, $compileProvider, cfpLoadingBarProvider) {
 		$compileProvider.aHrefSanitizationWhitelist(/^\s*(https?|ftp|mailto|file|tel):/);
 		$compileProvider.imgSrcSanitizationWhitelist(/^\s*(https?|file):/);
+
+		cfpLoadingBarProvider.includeSpinner = false;
 
 		$urlRouterProvider.otherwise('/events/official');
 
@@ -300,9 +303,20 @@
 			databaseInitialized.promise.then(function() {
 				if ($rootScope.foreground) {
 					log.debug('handleStateChange: setting foreground');
-					Database.online();
-					SeamailService.online();
-					$rootScope.$broadcast('cm.main.refreshEvents');
+
+					if ($rootScope.firstInitialization) {
+						$rootScope.firstInitialization = false;
+						Database.syncRemote().then(function() {
+							$rootScope.firstInitialization = true;
+							Database.online();
+							SeamailService.online();
+							$rootScope.$broadcast('cm.main.refreshEvents');
+						});
+					} else {
+						Database.online();
+						SeamailService.online();
+						$rootScope.$broadcast('cm.main.refreshEvents');
+					}
 				} else {
 					log.debug('handleStateChange: setting background');
 					Database.offline();

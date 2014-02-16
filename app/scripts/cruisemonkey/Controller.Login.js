@@ -71,7 +71,7 @@
 			}
 			user.username = user.username.toLowerCase();
 
-			notifications.status('Logging in...');
+			notifications.status('Logging in...', 20000);
 
 			var host = $location.host();
 			if (host === '0.0.0.0' || host === '127.0.0.1' || host === 'localhost') {
@@ -83,10 +83,12 @@
 				$location.path('/events/my');
 				return;
 			}
+			var url = twitarrRoot + 'api/v2/user/auth';
+			log.debug('Logging in to ' + url);
 
 			$http({
 				method: 'POST',
-				url: twitarrRoot + 'api/v2/user/auth',
+				url: url,
 				params: {
 					username: user.username,
 					password: user.password
@@ -106,7 +108,9 @@
 				$location.path('/events/my');
 			})
 			.error(function(data, status, headers, config) {
+				notifications.removeStatus('Logging in...');
 				log.warn('failure!');
+				log.debug('url:',url);
 				log.debug('data:', data);
 				log.debug('status:',status);
 				log.debug('headers:',headers);

@@ -3,12 +3,14 @@
 
 	angular.module('cruisemonkey.User', ['angularLocalStorage'])
 	.factory('UserService', ['$rootScope', 'storage', function($rootScope, storage) {
+		var defaultValue = {
+			'loggedIn': false,
+			'username': '',
+			'password': ''
+		};
+
 		storage.bind($rootScope, '_user', {
-			'defaultValue': {
-				'loggedIn': false,
-				'username': '',
-				'password': ''
-			},
+			'defaultValue': defaultValue,
 			'storeName': 'cm.user'
 		});
 
@@ -41,11 +43,7 @@
 				$rootScope._user = angular.copy(newUser);
 			},
 			'reset': function() {
-				$rootScope._user = {
-					'loggedIn': false,
-					'username': '',
-					'password': ''
-				};
+				$rootScope._user = angular.copy(defaultValue);
 				return $rootScope._user;
 			}
 		};

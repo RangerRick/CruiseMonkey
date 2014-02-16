@@ -6,8 +6,8 @@
  */
 
 /* Make clicks pass-through */
-#loading-bar,
-#loading-bar-spinner {
+#angular-loading-bar,
+#angular-loading-bar-spinner {
   pointer-events: none;
   -webkit-pointer-events: none;
   -webkit-transition: 350ms linear all;
@@ -16,21 +16,21 @@
   transition: 350ms linear all;
 }
 
-#loading-bar.ng-enter,
-#loading-bar.ng-leave.ng-leave-active,
-#loading-bar-spinner.ng-enter,
-#loading-bar-spinner.ng-leave.ng-leave-active {
+#angular-loading-bar.ng-enter,
+#angular-loading-bar.ng-leave.ng-leave-active,
+#angular-loading-bar-spinner.ng-enter,
+#angular-loading-bar-spinner.ng-leave.ng-leave-active {
   opacity: 0;
 }
 
-#loading-bar.ng-enter.ng-enter-active,
-#loading-bar.ng-leave,
-#loading-bar-spinner.ng-enter.ng-enter-active,
-#loading-bar-spinner.ng-leave {
+#angular-loading-bar.ng-enter.ng-enter-active,
+#angular-loading-bar.ng-leave,
+#angular-loading-bar-spinner.ng-enter.ng-enter-active,
+#angular-loading-bar-spinner.ng-leave {
   opacity: 1;
 }
 
-#loading-bar .bar {
+#angular-loading-bar .angular-loading-bar-bar {
   -webkit-transition: width 350ms;
   -moz-transition: width 350ms;
   -o-transition: width 350ms;
@@ -46,7 +46,7 @@
 }
 
 /* Fancy blur effect */
-#loading-bar .peg {
+#angular-loading-bar .angular-loading-bar-peg {
   display: block;
   position: absolute;
   right: 0px;
@@ -62,7 +62,7 @@
   transform: rotate(3deg) translate(0px, -4px);
 }
 
-#loading-bar-spinner {
+#angular-loading-bar-spinner {
   display: block;
   position: fixed;
   z-index: 100;
@@ -70,7 +70,7 @@
   left: 10px;
 }
 
-#loading-bar-spinner .spinner-icon {
+#angular-loading-bar-spinner .angular-loading-bar-spinner-icon {
   width: 14px;
   height: 14px;
 
@@ -79,30 +79,30 @@
   border-left-color: #29d;
   border-radius: 10px;
 
-  -webkit-animation: loading-bar-spinner 400ms linear infinite;
-  -moz-animation:    loading-bar-spinner 400ms linear infinite;
-  -ms-animation:     loading-bar-spinner 400ms linear infinite;
-  -o-animation:      loading-bar-spinner 400ms linear infinite;
-  animation:         loading-bar-spinner 400ms linear infinite;
+  -webkit-animation: angular-loading-bar-spinner 400ms linear infinite;
+  -moz-animation:    angular-loading-bar-spinner 400ms linear infinite;
+  -ms-animation:     angular-loading-bar-spinner 400ms linear infinite;
+  -o-animation:      angular-loading-bar-spinner 400ms linear infinite;
+  animation:         angular-loading-bar-spinner 400ms linear infinite;
 }
 
-@-webkit-keyframes loading-bar-spinner {
+@-webkit-keyframes angular-loading-bar-spinner {
   0%   { -webkit-transform: rotate(0deg);   transform: rotate(0deg); }
   100% { -webkit-transform: rotate(360deg); transform: rotate(360deg); }
 }
-@-moz-keyframes loading-bar-spinner {
+@-moz-keyframes angular-loading-bar-spinner {
   0%   { -moz-transform: rotate(0deg);   transform: rotate(0deg); }
   100% { -moz-transform: rotate(360deg); transform: rotate(360deg); }
 }
-@-o-keyframes loading-bar-spinner {
+@-o-keyframes angular-loading-bar-spinner {
   0%   { -o-transform: rotate(0deg);   transform: rotate(0deg); }
   100% { -o-transform: rotate(360deg); transform: rotate(360deg); }
 }
-@-ms-keyframes loading-bar-spinner {
+@-ms-keyframes angular-loading-bar-spinner {
   0%   { -ms-transform: rotate(0deg);   transform: rotate(0deg); }
   100% { -ms-transform: rotate(360deg); transform: rotate(360deg); }
 }
-@keyframes loading-bar-spinner {
+@keyframes angular-loading-bar-spinner {
   0%   { transform: rotate(0deg);   transform: rotate(0deg); }
   100% { transform: rotate(360deg); transform: rotate(360deg); }
 }

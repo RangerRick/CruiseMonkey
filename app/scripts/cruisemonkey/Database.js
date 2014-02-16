@@ -114,10 +114,15 @@
 							while (doc.doc) {
 								doc = doc.doc;
 							}
-							newDocs.push(doc);
+							if (doc.type === 'event') {
+								newDocs.push(doc);
+							}
+							if (doc.type === 'favorite' && doc._id.indexOf('favorite-') === 0) {
+								newDocs.push(doc);
+							}
 						});
 
-						//console.log('newDocs=',newDocs);
+						console.log('newDocs=',newDocs);
 						deferred.reject(err);
 						db.bulkDocs({
 							docs: newDocs,

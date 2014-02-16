@@ -1,12 +1,6 @@
 $fontPath: "../fonts" !default;
 $imagePath: "../images" !default;
 
--webkit-backface-visibility: hidden;
--webkit-perspective: 1000;
-
-backface-visibility: hidden;
-perspective: 1000;
-
 $yellowSVG: "#{$imagePath}/entypo/yellow/SVG";
 $greySVG: "#{$imagePath}/entypo/grey/SVG";
 

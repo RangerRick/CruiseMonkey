@@ -112,7 +112,7 @@
 			getNextPhoto: getNextPhoto
 		};
 	}])
-	.controller('CMPhotoCtrl', ['$rootScope', '$scope', '$ionicSlideBoxDelegate', 'LoggingService', 'PhotoService', function($rootScope, $scope, $ionicSlideBoxDelegate, log, photos) {
+	.controller('CMPhotoCtrl', ['$rootScope', '$scope', '$ionicSlideBoxDelegate', '$http', 'LoggingService', 'PhotoService', function($rootScope, $scope, $ionicSlideBoxDelegate, $http, log, photos) {
 		log.info('Initializing CMPhotoCtrl');
 		$rootScope.headerTitle = "Twit-Arr Pics";
 		$rootScope.leftButtons = [];
@@ -183,6 +183,25 @@
 				done();
 			});
 		};
+
+		$scope.$watch('currentEntry', function(newValue) {
+			if (newValue === undefined) {
+				return;
+			}
+			if (newValue.photoData === undefined) {
+				$http({
+					method: 'GET',
+					url: newValue.url,
+					cache: true
+				})
+				.success(function(data, status, headers, config) {
+					log.info('Content-type: ' + headers('content-type'));
+				})
+				.error(function(data, status, headers, config) {
+					log.error('error ' + status + ':' + data);
+				});
+			}
+		});
 
 		$scope.slideChanged = function(index) {
 			$scope.currentSlide = index;
