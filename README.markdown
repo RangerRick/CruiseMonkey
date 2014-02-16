@@ -15,9 +15,9 @@ Download
 
 The latest release version of CruiseMonkey is available in the following app stores:
 
-[iOS App Store](https://itunes.apple.com/us/app/cruisemonkey/id597303284?mt=8)
-[Amazon Apps for Android](http://www.amazon.com/Benjamin-Reed-CruiseMonkey/dp/B00BBOMRDW)
-[Google Play Store](https://play.google.com/store/apps/details?id=com.raccoonfink.cruisemonkey&hl=en_GB)
+* [iOS App Store](https://itunes.apple.com/us/app/cruisemonkey/id597303284?mt=8)
+* [Amazon Apps for Android](http://www.amazon.com/Benjamin-Reed-CruiseMonkey/dp/B00BBOMRDW)
+* [Google Play Store](https://play.google.com/store/apps/details?id=com.raccoonfink.cruisemonkey&hl=en_GB)
 
 Twit-Arr Has Changed!
 =====================
