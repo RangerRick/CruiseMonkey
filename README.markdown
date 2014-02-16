@@ -69,7 +69,6 @@ Release Notes
 
 4.0.3
 -----
-* change event database to point to an HTTP URL
 * make the "on a boat" checker not trigger *after* the cruise ;)
 * fix seamail check
 

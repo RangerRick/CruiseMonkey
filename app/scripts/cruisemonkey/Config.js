@@ -5,7 +5,7 @@
 
 	angular.module('cruisemonkey.Config', [])
 	.value('config.logging.useStringAppender', false)
-	.value('config.database.host', 'http://remote.firstofmay.org/db/')
+	.value('config.database.host', 'https://twitarr.rylath.net/db/')
 	.value('config.database.name', 'cmtest')
 	.value('config.database.replicate', true)
 	.value('config.urls.openinchrome', false)
