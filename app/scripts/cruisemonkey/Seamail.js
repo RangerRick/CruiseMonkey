@@ -27,7 +27,7 @@
 			var user = UserService.get();
 
 			$http({
-				method: 'POST',
+				method: 'GET',
 				url: twitarrRoot + 'api/v2/user/new_seamail',
 				params: {
 					key: user.key
