@@ -3,12 +3,13 @@
 
 	angular.module('cruisemonkey.Seamail', [
 		'angularLocalStorage',
+		'cruisemonkey.Cordova',
 		'cruisemonkey.Logging',
 		'cruisemonkey.Notifications',
 		'cruisemonkey.Settings',
 		'cruisemonkey.User'
 	])
-	.factory('SeamailService', ['$q', '$rootScope', '$timeout', '$interval', '$http', 'SettingsService', 'NotificationService', 'UserService', 'LoggingService', 'storage', function($q, $rootScope, $timeout, $interval, $http, SettingsService, notifications, UserService, log, storage) {
+	.factory('SeamailService', ['$q', '$rootScope', '$timeout', '$interval', '$http', 'SettingsService', 'NotificationService', 'UserService', 'LoggingService', 'storage', 'CordovaService', function($q, $rootScope, $timeout, $interval, $http, SettingsService, notifications, UserService, log, storage, cor) {
 		var interval = null;
 
 		storage.bind($rootScope, 'seamailCount', {
@@ -43,7 +44,18 @@
 				log.debug('SeamailService: Success!');
 				if (data.status === 'ok') {
 					if (data.email_count > $rootScope.seamailCount) {
-						notifications.status('You have ' + data.email_count + ' new messages in your Seamail inbox!', 5000);
+						var message = 'You have ' + data.email_count + ' new messages in your Seamail inbox!';
+						if ($rootScope.foreground) {
+							notifications.status(message, 5000);
+						} else {
+							cor.ifCordova(function() {
+								notifications.alert(message, function() {
+									log.info('Acknowledged notification message: ' + message);
+								});
+							}).otherwise(function() {
+								notifications.status(message, 5000);
+							});
+						}
 					}
 					$rootScope.seamailCount = data.email_count;
 				}
