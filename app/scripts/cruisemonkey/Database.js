@@ -222,45 +222,6 @@
 			return deferred.promise;
 		};
 
-		var loggedInFilter = function(doc, req) {
-			// logged in, get events
-			if (doc.type === 'event') {
-				if (req.query.username && doc.username === req.query.username) {
-					// if it's our own event, sync it
-					return true;
-				} else if (doc.isPublic) {
-					// if it's a public event, sync it
-					return true;
-				}
-				// otherwise, skip it
-				return false;
-			}
-			if (doc.type === 'favorite') {
-				if (req.query.username && doc.username === req.query.username) {
-					// if it's our own favorite, sync it
-					return true;
-				} else {
-					// otherwise, skip it
-					return false;
-				}
-			}
-
-			return true;
-		};
-
-		var loggedOutFilter = function(doc, req) {
-			// logged out, only get public events
-			if (doc.type === 'event') {
-				return doc.isPublic;
-			} else if (doc.type === 'favorite') {
-				// don't need to sync favorites
-				return false;
-			}
-
-			// dunno what this is, get it just in case
-			return true;
-		};
-
 		var startReplication = function() {
 			if (resetting) {
 				return false;
@@ -277,17 +238,6 @@
 					log.warn('Database.startReplication(): Replication from the remote DB has already been started!');
 				} else {
 					log.info('Database.startReplication(): Starting replication from the remote DB...');
-
-					if (UserService.loggedIn()) {
-						filter = loggedInFilter;
-						params = {
-							username: UserService.getUsername()
-						};
-					} else {
-						filter = loggedOutFilter;
-						params = {};
-					}
-
 					replicationFrom = db.replicate.from(remoteDb, {
 						'continuous': true,
 						'onChange': function(change) {
@@ -312,8 +262,6 @@
 							// anything else, sync
 							return true;
 						},
-						//filter: filter,
-						//query_params: params,
 						'complete': function(err, details) {
 							$rootScope.safeApply(function() {
 								if (resetting) {

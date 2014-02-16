@@ -67,6 +67,22 @@ CruiseMonkey by Benjamin Reed is licensed under the [Creative Commons Attributio
 Release Notes
 =============
 
+4.0.2
+-----
+
+* fix scrolling on Android
+* build system cleanups
+* show the username in the log out menu entry
+* fix "on a boat" detection to be date-based rather than a shifty call to the official HTTP url
+* remove obsolete database refresh option since we do continuous sync
+* more event view refactoring to reduce complexity
+* modify favorites internal so that we don't keep creating and deleting new IDs in the remote DB for every change
+* disable animation on Android < 4.3, this should hopefully speed up navigation
+* smarter database sync filters to avoid extra data on round-trips
+* make sure replication updates when logging in/out
+* update everything to use twit-arr API version 2
+* UI and template cleanups
+
 4.0.1
 -----
 
