@@ -7,7 +7,7 @@ Requirements
 ============
 
 * iOS: Any device supporting iOS 6 or 7
-* Android: Any device supporting Android 4.0 or higher
+* Android: Any device supporting Android 2.3.3 or higher
 * Web: A browser capable of modern HTML5
 
 Twit-Arr Has Changed!
