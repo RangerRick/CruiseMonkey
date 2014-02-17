@@ -152,16 +152,10 @@ window.ionic = {
      * until we are at the direct child of parentEl
      * use-case: find scroll offset of any element within a scroll container
      */
-    getPositionInParent: function(el, parentEl) {
-      var left = 0, top = 0;
-      while (el && el !== parentEl) {
-        left += el.offsetLeft;
-        top += el.offsetTop;
-        el = el.parentNode;
-      }
+    getPositionInParent: function(el) {
       return {
-        left: left,
-        top: top
+        left: el.offsetLeft,
+        top: el.offsetTop
       };
     },
 
@@ -179,18 +173,19 @@ window.ionic = {
         range.selectNodeContents(textNode);
         if(range.getBoundingClientRect) {
           var rect = range.getBoundingClientRect();
+          if(rect) {
+            var sx = window.scrollX;
+            var sy = window.scrollY;
 
-          var sx = window.scrollX;
-          var sy = window.scrollY;
-
-          return {
-            top: rect.top + sy,
-            left: rect.left + sx,
-            right: rect.left + sx + rect.width,
-            bottom: rect.top + sy + rect.height,
-            width: rect.width,
-            height: rect.height
-          };
+            return {
+              top: rect.top + sy,
+              left: rect.left + sx,
+              right: rect.left + sx + rect.width,
+              bottom: rect.top + sy + rect.height,
+              width: rect.width,
+              height: rect.height
+            };
+          }
         }
       }
       return null;
@@ -2023,8 +2018,9 @@ window.ionic = {
 
     if(ele.tagName === 'INPUT' || ele.tagName === 'TEXTAREA' || ele.tagName === 'SELECT') {
       ele.focus();
+      e.preventDefault();
     } else {
-      ele.blur();
+      blurActive();
     }
 
     // remember the coordinates of this tap so if it happens again we can ignore it
@@ -2079,12 +2075,7 @@ window.ionic = {
     // they didn't tap one of the above elements
     // if the currently active element is an input, and they tapped outside
     // of the current input, then unset its focus (blur) so the keyboard goes away
-    ele = document.activeElement;
-    if(ele && (ele.tagName === "INPUT" || 
-               ele.tagName === "TEXTAREA" || 
-               ele.tagName === "SELECT")) {
-      ele.blur();
-    }
+    blurActive();
   }
 
   function preventGhostClick(e) {
@@ -2133,6 +2124,18 @@ window.ionic = {
     e.stopPropagation();
     e.preventDefault();
     return false;
+  }
+
+  function blurActive() {
+    var ele = document.activeElement;
+    if(ele && (ele.tagName === "INPUT" || 
+               ele.tagName === "TEXTAREA" || 
+               ele.tagName === "SELECT")) {
+      // using a timeout to prevent funky scrolling while a keyboard hides
+      setTimeout(function(){
+        ele.blur();
+      }, 400);
+    }
   }
 
   function isRecentTap(event) {
@@ -2450,6 +2453,7 @@ function androidKeyboardFix() {
 
 })(window.ionic);
 ;
+var IS_INPUT_LIKE_REGEX = /input|textarea|select/i;
 /*
  * Scroller
  * http://github.com/zynga/scroller
@@ -2743,8 +2747,6 @@ ionic.views.Scroll = ionic.views.View.inherit({
 
     this.__container = options.el;
     this.__content = options.el.firstElementChild;
-
-    var self = this;
 
     //Remove any scrollTop attached to these elements; they are virtual scroll now
     //This also stops on-load-scroll-to-window.location.hash that the browser does
@@ -3067,17 +3069,19 @@ ionic.views.Scroll = ionic.views.View.inherit({
       e.stopPropagation();
     });
 
+    function shouldIgnorePress(e) {
+      // Don't react if initial down happens on a form element
+      return e.target.tagName.match(IS_INPUT_LIKE_REGEX) ||
+        e.target.isContentEditable;
+    }
+
+
     if ('ontouchstart' in window) {
 
       container.addEventListener("touchstart", function(e) {
-        if (e.defaultPrevented) {
+        if (e.defaultPrevented || shouldIgnorePress(e)) {
           return;
         }
-        // Don't react if initial down happens on a form element
-        if (e.target.tagName.match(/input|textarea|select/i)) {
-          return;
-        }
-
         self.doTouchStart(e.touches, e.timeStamp);
         e.preventDefault();
       }, false);
@@ -3098,14 +3102,9 @@ ionic.views.Scroll = ionic.views.View.inherit({
       var mousedown = false;
 
       container.addEventListener("mousedown", function(e) {
-        if (e.defaultPrevented) {
+        if (e.defaultPrevented || shouldIgnorePress(e)) {
           return;
         }
-        // Don't react if initial down happens on a form element
-        if (e.target.tagName.match(/input|textarea|select/i)) {
-          return;
-        }
-
         self.doTouchStart([{
           pageX: e.pageX,
           pageY: e.pageY
@@ -4570,74 +4569,71 @@ ionic.views.Scroll = ionic.views.View.inherit({
      * so that the header text size is maximized and aligned
      * correctly as long as possible.
      */
-    align: function() {
+    align: function(titleSelector) {
       var _this = this;
 
       window.rAF(ionic.proxy(function() {
-        var i, c, childSize;
-        var childNodes = this.el.childNodes;
 
-        // Find the title element
-        var title = this.el.querySelector('.title');
-        if(!title) {
+        // Find the titleEl element
+        var titleEl = this.el.querySelector(titleSelector || '.title');
+        if(!titleEl) {
           return;
         }
-      
+
+        var i, c, childSize;
+        var childNodes = this.el.childNodes;
         var leftWidth = 0;
         var rightWidth = 0;
-        var titlePos = Array.prototype.indexOf.call(childNodes, title);
+        var isCountingRightWidth = true;
 
         // Compute how wide the left children are
-        for(i = 0; i < titlePos; i++) {
-          childSize = null;
+        // Skip all titles (there may still be two titles, one leaving the dom)
+        // Once we encounter a titleEl, realize we are now counting the right-buttons, not left
+        for(i = 0; i < childNodes.length; i++) {
           c = childNodes[i];
-          if(c.nodeType == 3) {
-            childSize = ionic.DomUtil.getTextBounds(c);
-          } else if(c.nodeType == 1) {
-            childSize = c.getBoundingClientRect();
+          if (c.tagName && c.tagName.toLowerCase() == 'h1') {
+            isCountingRightWidth = false;
+            continue;
           }
-          if(childSize) {
-            leftWidth += childSize.width;
-          }
-        }
 
-        // Compute how wide the right children are
-        for(i = titlePos + 1; i < childNodes.length; i++) {
           childSize = null;
-          c = childNodes[i];
           if(c.nodeType == 3) {
             childSize = ionic.DomUtil.getTextBounds(c);
           } else if(c.nodeType == 1) {
             childSize = c.getBoundingClientRect();
           }
           if(childSize) {
-            rightWidth += childSize.width;
+            if (isCountingRightWidth) {
+              rightWidth += childSize.width;
+            } else {
+              leftWidth += childSize.width;
+            }
           }
         }
 
         var margin = Math.max(leftWidth, rightWidth) + 10;
 
-        // Size and align the header title based on the sizes of the left and
+        // Size and align the header titleEl based on the sizes of the left and
         // right children, and the desired alignment mode
         if(this.alignTitle == 'center') {
           if(margin > 10) {
-            title.style.left = margin + 'px';
-            title.style.right = margin + 'px';
+            titleEl.style.left = margin + 'px';
+            titleEl.style.right = margin + 'px';
           }
-          if(title.offsetWidth < title.scrollWidth) {
+          if(titleEl.offsetWidth < titleEl.scrollWidth) {
             if(rightWidth > 0) {
-              title.style.right = (rightWidth + 5) + 'px';
+              titleEl.style.right = (rightWidth + 5) + 'px';
             }
           }
         } else if(this.alignTitle == 'left') {
-          title.classList.add('title-left');
+          titleEl.classList.add('titleEl-left');
           if(leftWidth > 0) {
-            title.style.left = (leftWidth + 15) + 'px';
+            titleEl.style.left = (leftWidth + 15) + 'px';
           }
         } else if(this.alignTitle == 'right') {
-          title.classList.add('title-right');
+          titleEl.classList.add('titleEl-right');
           if(rightWidth > 0) {
-            title.style.right = (rightWidth + 15) + 'px';
+            titleEl.style.right = (rightWidth + 15) + 'px';
           }
         }
       }, this));
@@ -5182,10 +5178,10 @@ ionic.views.Scroll = ionic.views.View.inherit({
 (function(ionic) {
 'use strict';
   /**
-   * An ActionSheet is the slide up menu popularized on iOS.
+   * Loading
    *
-   * You see it all over iOS apps, where it offers a set of options 
-   * triggered after an action.
+   * The Loading is an overlay that can be used to indicate
+   * activity while blocking user interaction.
    */
   ionic.views.Loading = ionic.views.View.inherit({
     initialize: function(opts) {
@@ -5194,6 +5190,8 @@ ionic.views.Scroll = ionic.views.View.inherit({
       this.el = opts.el;
 
       this.maxWidth = opts.maxWidth || 200;
+
+      this.showDelay = opts.showDelay || 0;
 
       this._loadingBox = this.el.querySelector('.loading');
     },
@@ -5210,12 +5208,18 @@ ionic.views.Scroll = ionic.views.View.inherit({
         lb.style.marginLeft = (-lb.offsetWidth) / 2 + 'px';
         lb.style.marginTop = (-lb.offsetHeight) / 2 + 'px';
 
-        _this.el.classList.add('active');
+        // Wait 'showDelay' ms before showing the loading screen
+        this._showDelayTimeout = window.setTimeout(function() {
+          _this.el.classList.add('active');
+        }, _this.showDelay);
       }
     },
     hide: function() {
       // Force a reflow so the animation will actually run
       this.el.offsetWidth;
+
+      // Prevent unnecessary 'show' after 'hide' has already been called
+      window.clearTimeout(this._showDelayTimeout);
 
       this.el.classList.remove('active');
     }
