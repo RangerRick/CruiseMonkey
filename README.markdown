@@ -1,7 +1,7 @@
 CruiseMonkey
 ============
 
-CruiseMonkey is an HTML5 app for use on [JoCo Cruise Crazy](http://jococruisecrazy.com/).  It was designed to be used while on the cruise for viewing and organizing events, getting information about the ship, and more.
+CruiseMonkey is an HTML5 app for use on [JoCo Cruise Crazy](http://jococruisecrazy.com/).  It is designed to be used while on the cruise for viewing and organizing events, getting information about the ship, and more.
 
 Requirements
 ============
