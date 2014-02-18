@@ -41,7 +41,7 @@
 		</content>
 	</div>
 </script>
-<content has-header="true" overflow-scroll="true" scroll="true" padding="false" id="event-content">
+<content has-header="true" overflow-scroll="false" scroll="true" padding="false" id="event-content">
 	<div class="bar item-input-inset">
 		<label class="item-input-wrapper">
 			<i class="icon ion-ios7-search placeholder-icon"></i>
@@ -52,8 +52,8 @@
 		</button>
 	</div>
 	<list class="event-list">
-		<span bindonce ng-repeat="entry in entries">
-			<item ng-if="isDay(entry)" class="item-divider event-header" id="{{entry.getId()}}">{{prettyDate(entry.day)}}</item>
+		<span bindonce ng-repeat="entry in entries" id="{{entry.getId()}}">
+			<item ng-if="isDay(entry)" class="item-divider event-header">{{prettyDate(entry.day)}}</item>
 			<item ng-if="!isDay(entry)" ng-class="'list-entry item-text-wrap ' + (entry.isEven()? 'even':'odd')">
 				<span class="item-note favorite" bo-show="(user.username &amp;&amp; user.username != entry.getUsername())">
 					<button id="{{entry.getId()}}-favorite" ng-click="onFavoriteChanged(entry)" class="button button-cm button-icon icon" ng-class="entry.isFavorite()? 'active ion-ios7-heart':'ion-ios7-heart-outline'"></button>

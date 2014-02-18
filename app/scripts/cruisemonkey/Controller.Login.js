@@ -67,6 +67,7 @@
 
 			document.getElementById('loginPassword').blur();
 			document.getElementById('loginUsername').blur();
+			document.activeElement.blur();
 
 			if (!user.username) {
 				notifications.alert('No username! Something went wrong.');

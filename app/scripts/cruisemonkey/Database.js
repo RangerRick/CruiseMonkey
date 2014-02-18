@@ -184,38 +184,49 @@
 
 			$timeout(function() {
 				log.debug('Database.initialize(): Compacting database.');
-				db.compact(function() {
-					$rootScope.safeApply(function() {
-						log.info('Database.initializeDatabase(): Compaction complete.');
-
-						/*jshint camelcase: false */
-						log.info('Database.initializeDatabase(): Watching for document changes.');
-						db.changes({
-							since: $rootScope.lastSequence,
-							onChange: function(change) {
-								console.log('local change:',change);
-								$rootScope.safeApply(function() {
-									$rootScope.lastSequence = change.seq;
-									$timeout(function() {
-										$rootScope.$broadcast('cm.database.documentchanged', change);
-									});
-								});
-							},
-							complete: function() {
-								$rootScope.safeApply(function() {
-									$timeout(function() {
-										$rootScope.$broadcast('cm.database.changesprocessed');
-									});
-								});
-							},
-							continuous: true,
-							conflicts: true,
-							include_docs: true
+				var compact = $q.defer();
+				$timeout(function() {
+					try {
+						db.compact(function() {
+							$rootScope.safeApply(function() {
+								log.info('Database.initializeDatabase(): Compaction complete.');
+								compact.resolve(true);
+							});
 						});
-
-						ready.resolve(api);
-						deferred.resolve(api);
+					} catch (ex) {
+						log.error('Failed to compact database!');
+						console.log(ex);
+						compact.reject(ex);
+					}
+				});
+				compact.promise.then(function() {
+					/*jshint camelcase: false */
+					log.info('Database.initializeDatabase(): Watching for document changes.');
+					db.changes({
+						since: $rootScope.lastSequence,
+						onChange: function(change) {
+							console.log('local change:',change);
+							$rootScope.safeApply(function() {
+								$rootScope.lastSequence = change.seq;
+								$timeout(function() {
+									$rootScope.$broadcast('cm.database.documentchanged', change);
+								});
+							});
+						},
+						complete: function() {
+							$rootScope.safeApply(function() {
+								$timeout(function() {
+									$rootScope.$broadcast('cm.database.changesprocessed');
+								});
+							});
+						},
+						continuous: true,
+						conflicts: true,
+						include_docs: true
 					});
+
+					ready.resolve(api);
+					deferred.resolve(api);
 				});
 			});
 

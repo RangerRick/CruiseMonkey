@@ -186,26 +186,40 @@ function CMDay(d) {
 
 		var timeout = null;
 
-		var goToHash = function(hash) {
-			/*
-			if (hash) {
-				$location.hash(hash);
-			} else {
-				$location.hash(undefined);
-			}
-			$ionicScrollDelegate.anchorScroll();
-			$timeout(function() {
-				$location.hash(undefined);
-			}, 200);
-			*/
-			$scope.$broadcast('scroll.resize');
-			$timeout(function() {
-				var elm, scrollEl;
-				elm = document.getElementById(hash);
-				if (elm) {
-					elm.scrollIntoView();
+		var getTextForElement = function(el) {
+			var ret = '<' + el.nodeName.toLowerCase(),
+				i, attr;
+			if (el.attributes.length > 0) {
+				for (i=0; i < el.attributes.length; i++) {
+					attr = el.attributes[i];
+					ret += ' ' + attr.name + '="' + attr.value + '"';
 				}
-			});
+			}
+			ret += '>';
+			return ret;
+		};
+
+		var goToHash = function(hash) {
+			var elm, scrollEl, position = 0;
+			elm = document.getElementById(hash);
+			if (elm) {
+				scrollEl = angular.element(elm);
+				while (scrollEl) {
+					if (scrollEl.hasClass('scroll-content')) {
+						break;
+					}
+					var offsetTop = scrollEl[0].offsetTop,
+						scrollTop = scrollEl[0].scrollTop,
+						clientTop = scrollEl[0].clientTop;
+					//console.log(offsetTop + ', ' + scrollTop + ', ' + clientTop + ': ' + getTextForElement(scrollEl[0]));
+					position += (offsetTop - scrollTop + clientTop);
+					scrollEl = scrollEl.parent();
+				}
+				console.log('offset='+position);
+				$scope.$broadcast('scroll.scrollTo', 0, position, true);
+			} else {
+				console.log("can't find element " + hash);
+			}
 		};
 
 		var updateEntries = function() {
@@ -407,33 +421,80 @@ function CMDay(d) {
 		};
 
 		$scope.goToNow = function() {
-			var now = moment(),
-				matched = false,
-				i, entry;
+			var now = moment().unix(),
+				matched = -1,
+				nextEntry,
+				i, entry,
+				start, end;
 
+			//log.debug('now = ' + now);
 			if ($scope.entries && $scope.entries.length > 0) {
-				dayloop:
 				for (i=0; i < $scope.entries.length; i++) {
 					entry = $scope.entries[i];
 					if (entry.getId().indexOf('day-') === 0) {
-						if (now.isBefore(entry.day)) {
-							log.info('matched! ' + entry.getId());
-							goToHash(entry.getId());
-							matched = true;
-							break;
-						}
+						// skip day markers, we'll fix them at the end anyways
+						continue;
 					} else {
-						if (now.isBefore(entry.getStart())) {
-							log.info('matched! ' + entry.getId());
-							goToHash(entry.getId());
-							matched = true;
+						// this is an event
+						start = entry.getStart().unix();
+						end   = entry.getEnd() === undefined? start : entry.getEnd().unix();
+
+						//log.debug('now=' + now + ',start=' + start + ',end=' + end + ': ' + entry.getSummary());
+						if (now < start) {
+							// we're still before the current event
+							//log.debug(i + ': now < start: inexact match');
+							matched = i;
 							break;
+						} else {
+							// we're after the start of the current event
+
+							if (now <= end) {
+								// we're in the event, match!
+								//log.debug(i + ': now <= end: exact match');
+								matched = i;
+								break;
+							} else {
+								var j = i+1;
+								while (nextEntry = $scope.entries[j++]) {
+									if (nextEntry.getId().indexOf('day-') === 0) {
+										// next entry is a day marker, skip it
+										continue;
+									} else {
+										//log.debug('nextEntry = ' + nextEntry.getSummary());
+										start = nextEntry.getStart().unix();
+										end   = nextEntry.getEnd() === undefined? start : nextEntry.getEnd().unix();
+										j = $scope.entries.length;
+									}
+
+									// the next entry is after now, we'll consider it the best match
+									if (now <= start) {
+										//log.debug(j + ': now > end: inexact match');
+										matched = j - 1;
+										break;
+									}
+								}
+							}
 						}
 					}
 				}
-				if (!matched) {
-					goToHash('the-end');
+
+				//log.debug('matched = ' + matched);
+				entry = undefined;
+				if (matched > -1) {
+					entry = $scope.entries[matched];
+					log.debug('matched ' + entry.getId());
 				}
+
+				if (matched === -1) {
+					goToHash('the-end');
+					return;
+				}
+
+				if (entry.day === undefined && matched > 0 && $scope.entries[matched - 1].day !== undefined) {
+					log.debug('entry ' + entry.getId() + ' was the first of the day, scrolling to the day marker instead.');
+					entry = $scope.entries[matched-1];
+				}
+				goToHash(entry.getId());
 			}
 		};
 

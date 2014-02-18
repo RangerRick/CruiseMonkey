@@ -76,6 +76,13 @@ CruiseMonkey by Benjamin Reed is licensed under the [Creative Commons Attributio
 Release Notes
 =============
 
+4.0.4
+-----
+* more cleanup of scrolling in the UI
+* fix "go to now" in the event list getting stuck
+* fix an initialization error on old Android that could cause an exception
+* fix event list date headers from disappearing when clicked
+
 4.0.3
 -----
 * make the "on a boat" checker not trigger *after* the cruise ;)

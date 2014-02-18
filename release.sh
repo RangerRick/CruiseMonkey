@@ -94,89 +94,108 @@ cp -R www platforms/web/
 
 chmod -R uga+rw www platforms/{ios,android/assets,blackberry10,wp7,web}/www
 
-# iOS
-rm -rf platforms/ios/www/cruisemonkey*.png
-mv platforms/ios/www/_cordova.js platforms/ios/www/cordova.js
-mv platforms/ios/www/_cordova_plugins.js platforms/ios/www/cordova_plugins.js
-perl -pi.bak -e 's,var isMobile = false,var isMobile = true,g' platforms/ios/www/index.html
-perl -pi.bak -e 's,overflow-scroll="true",overflow-scroll="false",g' platforms/ios/www/template/*.html
+prepare_ionic_scroll() {
+	local wwwdir="$1";
+	local ismobile=$2;
 
-# WP7
-rm -rf platforms/wp7/www/cruisemonkey*.png
-mv platforms/wp7/www/_cordova.js platforms/wp7/www/cordova.js
-mv platforms/wp7/www/_cordova_plugins.js platforms/wp7/www/cordova_plugins.js
-perl -pi.bak -e 's,var isMobile = false,var isMobile = true,g' platforms/wp7/www/index.html
-perl -pi.bak -e 's,overflow-scroll="true",overflow-scroll="false",g' platforms/wp7/www/template/*.html
+	echo "- preparing $wwwdir..."
+	rm -rf "$wwwdir"/cruisemonkey*.png
+	if $ismobile; then
+		perl -pi.bak -e 's,var isMobile = false,var isMobile = true,g' "$wwwdir"/index.html
+	else
+		perl -pi.bak -e 's,var isMobile = true,var isMobile = false,g' "$wwwdir"/index.html
+	fi
+	perl -pi.bak -e 's,overflow-scroll="true",overflow-scroll="false",g' "$wwwdir"/template/*.html
+	find * -name \*.bak -exec rm -rf {} \;
+	chmod -R uga+rw "$wwwdir"
+}
 
-# Blackberry 10
-rm -rf platforms/blackberry10/www/cruisemonkey*.png
-mv platforms/blackberry10/www/_cordova.js platforms/blackberry10/www/cordova.js
-mv platforms/blackberry10/www/_cordova_plugins.js platforms/blackberry10/www/cordova_plugins.js
-perl -pi.bak -e 's,var isMobile = false,var isMobile = true,g' platforms/blackberry10/www/index.html
-perl -pi.bak -e 's,overflow-scroll="true",overflow-scroll="false",g' platforms/blackberry10/www/template/*.html
+prepare_browser_scroll() {
+	local wwwdir="$1";
+	local ismobile=$2;
 
-# Android
-rm -rf platforms/android/assets/www/cruisemonkey*.png
-mv platforms/android/assets/www/_cordova.js platforms/android/assets/www/cordova.js
-mv platforms/android/assets/www/_cordova_plugins.js platforms/android/assets/www/cordova_plugins.js
-perl -pi.bak -e 's,var isMobile = false,var isMobile = true,g' platforms/android/assets/www/index.html
-perl -pi.bak -e 's,overflow-scroll="true",overflow-scroll="false",g' platforms/android/assets/www/template/*.html
+	echo "- preparing $wwwdir..."
+	rm -rf "$wwwdir"/cruisemonkey*.png
+	if $ismobile; then
+		perl -pi.bak -e 's,var isMobile = false,var isMobile = true,g' "$wwwdir"/index.html
+	else
+		perl -pi.bak -e 's,var isMobile = true,var isMobile = false,g' "$wwwdir"/index.html
+	fi
+	perl -pi.bak -e 's,overflow-scroll="false",overflow-scroll="true",g' "$wwwdir"/template/*.html
+	find * -name \*.bak -exec rm -rf {} \;
+}
 
-# Source WWW
-rm -rf www/cruisemonkey*.png
-mv www/_cordova.js www/cordova.js
-mv www/_cordova_plugins.js www/cordova_plugins.js
-perl -pi.bak -e 's,var isMobile = false,var isMobile = true,g' www/index.html
-perl -pi.bak -e 's,overflow-scroll="true",overflow-scroll="false",g' www/template/*.html
+chmod -R uga+rw www
 
-find * -name \*.bak -exec rm -rf {} \;
-
-chmod -R uga+rw www platforms/{ios,android/assets,blackberry10,wp7,web}
-
-BUILDCMD="build"
-if $PREPARE; then
-	BUILDCMD="prepare"
-fi
+# Web
+#prepare_browser_scroll "platforms/web/www" false
+prepare_ionic_scroll "platforms/web/www" false
 
 if $ANDROID; then
 	rm -rf platforms/android/bin
 	VERSIONCODE=`cat platforms/android/AndroidManifest.xml | grep android:versionCode | sed -e 's,^.*android:versionCode=",,' -e 's,".*$,,'`
 	NEWVERSIONCODE="$(($VERSIONCODE + 1))"
 	perl -pi.bak -e "s,android:versionCode=\"$VERSIONCODE\",android:versionCode=\"$NEWVERSIONCODE\"," platforms/android/AndroidManifest.xml
+	ARGS=""
+	APKIN="CruiseMonkey-debug.apk"
+	APKOUT="CruiseMonkey-install.apk"
+	# if $SIGN is set, we can't do a debug release
 	if $SIGN; then
-		perl -pi.bak -e 's,android:debuggable="true",android:debuggable="false",g' platforms/android/AndroidManifest.xml
-		cordova $BUILDCMD --release android
-		if [ $BUILDCMD = "build" ]; then
-			jarsigner -storepass "$SIGNING_PASS" -keystore ~/share/android/android-release-key.keystore -digestalg SHA1 -sigalg MD5withRSA platforms/android/bin/CruiseMonkey-release-unsigned.apk ranger
-			zipalign -v 4 platforms/android/bin/CruiseMonkey-release-unsigned.apk platforms/android/bin/CruiseMonkey-release-signed.apk
-		fi
-	else
+		ARGS="--release"
+		APKIN="CruiseMonkey-release-unsigned.apk"
+	fi
+
+	cordova prepare android $ARGS
+	if $DEBUG; then
 		perl -pi.bak -e 's,android:debuggable="false",android:debuggable="true",g' platforms/android/AndroidManifest.xml
-		cordova $BUILDCMD android
+	else
+		perl -pi.bak -e 's,android:debuggable="true",android:debuggable="false",g' platforms/android/AndroidManifest.xml
+	fi
+	prepare_ionic_scroll "platforms/android/assets/www" true
+	if ! $PREPARE; then
+		rm -rf platforms/android/bin/*.apk
+		cordova compile android $ARGS
+		if $SIGN; then
+			jarsigner -storepass "$SIGNING_PASS" -keystore ~/share/android/android-release-key.keystore -digestalg SHA1 -sigalg MD5withRSA "platforms/android/bin/$APKIN" ranger
+		fi
+		zipalign -v 4 "platforms/android/bin/$APKIN" "platforms/android/bin/$APKOUT"
 	fi
 fi
 if $IOS; then
-	/usr/libexec/PlistBuddy -c "Set :CFBundleVersion $VERSION" platforms/ios/CruiseMonkey/CruiseMonkey-Info.plist
-	/usr/libexec/PlistBuddy -c "Set :CFBundleShortVersionString $SHORTVERSION" platforms/ios/CruiseMonkey/CruiseMonkey-Info.plist
-	if $SIGN; then
-		cordova prepare --release ios
-	else
-		cordova prepare ios
+	ARGS=""
+	if ! $DEBUG; then
+		ARGS="--release"
 	fi
+	cordova prepare ios $ARGS
+	prepare_ionic_scroll "platforms/ios/www" true
 	/usr/libexec/PlistBuddy -c "Set :CFBundleVersion $VERSION" platforms/ios/CruiseMonkey/CruiseMonkey-Info.plist
 	/usr/libexec/PlistBuddy -c "Set :CFBundleShortVersionString $SHORTVERSION" platforms/ios/CruiseMonkey/CruiseMonkey-Info.plist
+	if ! $PREPARE; then
+		echo 'You must build the iOS app in Xcode.'
+	fi
 fi
 if $BLACKBERRY; then
+	ARGS=""
 	if $SIGN; then
-		cordova $BUILDCMD blackberry10
-	else
-		cordova $BUILDCMD --release blackberry10 --keystorepass "$SIGNING_PASS"
+		ARGS="--keystorepass $SIGNING_PASS"
+	fi
+	if ! $DEBUG; then
+		ARGS="--release $ARGS"
+	fi
+	cordova prepare blackberry10 $ARGS
+	prepare_ionic_scroll "platforms/blackberry10/www" true
+	if ! $PREPARE; then
+		cordova compile blackberry10 $ARGS
 	fi
 fi
 if $WP7; then
-	if $SIGN; then
-		cordova $BUILDCMD --release wp7
-	else
-		cordova $BUILDCMD wp7
+	ARGS=""
+	if ! $DEBUG; then
+		ARGS="--release"
+	fi
+	cordova prepare wp7 $ARGS
+	prepare_browser_scroll "platforms/wp7/www" true
+	if ! $PREPARE; then
+		cordova compile wp7 $ARGS
 	fi
 fi
