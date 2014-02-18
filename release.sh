@@ -128,8 +128,8 @@ prepare_browser_scroll() {
 chmod -R uga+rw www
 
 # Web
-#prepare_browser_scroll "platforms/web/www" false
-prepare_ionic_scroll "platforms/web/www" false
+prepare_browser_scroll "platforms/web/www" false
+#prepare_ionic_scroll "platforms/web/www" false
 
 if $ANDROID; then
 	rm -rf platforms/android/bin
