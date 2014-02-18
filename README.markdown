@@ -76,6 +76,13 @@ CruiseMonkey by Benjamin Reed is licensed under the [Creative Commons Attributio
 Release Notes
 =============
 
+4.0.5
+-----
+
+* fix a few object/memory leaks
+* fix SSL certificate handling on Android (tested!)
+* database optimization updates
+
 4.0.4
 -----
 * more cleanup of scrolling in the UI
