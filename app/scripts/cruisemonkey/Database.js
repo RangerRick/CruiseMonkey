@@ -78,6 +78,7 @@
 		var db = null,
 			remoteDb = null,
 			api = null,
+			compactTimer = null,
 			replicating = null,
 			replicated = false,
 			replicationTo = null,
@@ -182,52 +183,55 @@
 				remoteDb = new PouchDB(getHost());
 			}
 
-			$timeout(function() {
-				log.debug('Database.initialize(): Compacting database.');
-				var compact = $q.defer();
-				$timeout(function() {
-					try {
-						db.compact(function() {
-							$rootScope.safeApply(function() {
-								log.info('Database.initializeDatabase(): Compaction complete.');
-								compact.resolve(true);
-							});
+			log.info('Database.initializeDatabase(): Watching for document changes.');
+			/*jshint camelcase: false */
+			db.changes({
+				since: $rootScope.lastSequence,
+				onChange: function(change) {
+					console.log('local change:',change);
+					$rootScope.safeApply(function() {
+						$rootScope.lastSequence = change.seq;
+						$timeout(function() {
+							$rootScope.$broadcast('cm.database.documentchanged', change);
 						});
-					} catch (ex) {
-						log.error('Failed to compact database!');
-						console.log(ex);
-						compact.reject(ex);
-					}
-				});
-				compact.promise.then(function() {
-					/*jshint camelcase: false */
-					log.info('Database.initializeDatabase(): Watching for document changes.');
-					db.changes({
-						since: $rootScope.lastSequence,
-						onChange: function(change) {
-							console.log('local change:',change);
-							$rootScope.safeApply(function() {
-								$rootScope.lastSequence = change.seq;
-								$timeout(function() {
-									$rootScope.$broadcast('cm.database.documentchanged', change);
-								});
-							});
-						},
-						complete: function() {
-							$rootScope.safeApply(function() {
-								$timeout(function() {
-									$rootScope.$broadcast('cm.database.changesprocessed');
-								});
-							});
-						},
-						continuous: true,
-						conflicts: true,
-						include_docs: true
 					});
+				},
+				complete: function() {
+					$rootScope.safeApply(function() {
+						$timeout(function() {
+							$rootScope.$broadcast('cm.database.changesprocessed');
+						});
+					});
+				},
+				continuous: true,
+				conflicts: true,
+				include_docs: true
+			});
 
-					ready.resolve(api);
-					deferred.resolve(api);
-				});
+			ready.resolve(api);
+			deferred.resolve(api);
+
+			return deferred.promise;
+		};
+
+		var doCompact = function() {
+			var deferred = $q.defer();
+
+			log.debug('Database.initialize(): Compacting database.');
+			var compact = $q.defer();
+			$timeout(function() {
+				try {
+					db.compact(function() {
+						$rootScope.safeApply(function() {
+							log.info('Database.initializeDatabase(): Compaction complete.');
+							deferred.resolve(true);
+						});
+					});
+				} catch (ex) {
+					log.error('Failed to compact database!');
+					console.log(ex);
+					deferred.reject(ex);
+				}
 			});
 
 			return deferred.promise;
@@ -244,6 +248,13 @@
 
 			$q.when(ready).then(function() {
 				var filter, params;
+
+				if (compactTimer) {
+					log.info('Database.startReplication(): Scheduling compaction...');
+					compactTimer = $interval(function() {
+						doCompact();
+					}, 10 * 60 * 1000); // 10 minutes
+				}
 
 				if (replicationFrom) {
 					log.warn('Database.startReplication(): Replication from the remote DB has already been started!');
@@ -370,6 +381,10 @@
 		};
 
 		var stopReplication = function() {
+			if (compactTimer) {
+				log.info('Database.stopReplication(): Canceling compaction timer...');
+				$interval.cancel(compactTimer);
+			}
 			if (replicationFrom) {
 				log.info('Database.stopReplication(): Stopping replication from the remote DB...');
 				replicationFrom.cancel();

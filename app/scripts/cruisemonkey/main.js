@@ -170,7 +170,7 @@
 			}
 		};
 	}])
-	.run(['$q', '$rootScope', '$window', '$location', '$timeout', '$interval', '$urlRouter', 'UserService', 'storage', 'CordovaService', 'UpgradeService', 'Database', 'LoggingService', 'NotificationService', 'SettingsService', 'SeamailService', function($q, $rootScope, $window, $location, $timeout, $interval, $urlRouter, UserService, storage, cor, upgrades, Database, log, notifications, SettingsService, SeamailService) {
+	.run(['$q', '$rootScope', '$window', '$location', '$interval', '$urlRouter', 'UserService', 'storage', 'CordovaService', 'UpgradeService', 'Database', 'LoggingService', 'NotificationService', 'SettingsService', 'SeamailService', function($q, $rootScope, $window, $location, $interval, $urlRouter, UserService, storage, cor, upgrades, Database, log, notifications, SettingsService, SeamailService) {
 		log.debug('CruiseMonkey run() called.');
 
 		/*global moment: true*/
@@ -326,7 +326,7 @@
 		};
 		handleStateChange();
 
-		$timeout(function() {
+		$interval(function() {
 			databaseInitialized.promise.then(function() {
 				if ($rootScope.foreground) {
 					Database.restartReplication();

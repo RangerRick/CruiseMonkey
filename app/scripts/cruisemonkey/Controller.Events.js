@@ -455,7 +455,8 @@ function CMDay(d) {
 								break;
 							} else {
 								var j = i+1;
-								while (nextEntry = $scope.entries[j++]) {
+								nextEntry = $scope.entries[j];
+								while (nextEntry) {
 									if (nextEntry.getId().indexOf('day-') === 0) {
 										// next entry is a day marker, skip it
 										continue;
@@ -469,9 +470,10 @@ function CMDay(d) {
 									// the next entry is after now, we'll consider it the best match
 									if (now <= start) {
 										//log.debug(j + ': now > end: inexact match');
-										matched = j - 1;
+										matched = j;
 										break;
 									}
+									nextEntry = $scope.entries[j++];
 								}
 							}
 						}
