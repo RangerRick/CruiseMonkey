@@ -48,7 +48,9 @@ public class CruiseMonkey extends CordovaActivity
 	{
 		super.onCreate(savedInstanceState);
 		super.init();
-		this.appView.setWebViewClient(new MyWebViewClient(this));
+		final MyWebViewClient client = new MyWebViewClient(this);
+		client.setWebView(this.appView);
+		this.appView.setWebViewClient(client);
 
 		// Set by <content src="index.html" /> in config.xml
 		super.loadUrl(Config.getStartUrl());
