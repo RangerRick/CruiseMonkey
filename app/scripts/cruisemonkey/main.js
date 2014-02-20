@@ -201,15 +201,21 @@
 
 		$rootScope.openLeft = function(evt) {
 			log.info('Opening Sidebar.');
-			console.log('evt=',evt);
-			$rootScope.sideMenuController.toggleLeft();
+			if ($rootScope.sideMenuController) {
+				//$rootScope.sideMenuController.toggleLeft();
+			} else {
+				log.warn('Side menu controller not initialized yet!');
+			}
 			return false;
 		};
 
 		$rootScope.closeLeft = function(evt) {
 			log.info('Closing Sidebar.');
-			console.log('evt=',evt);
-			$rootScope.sideMenuController.close();
+			if ($rootScope.sideMenuController) {
+				//$rootScope.sideMenuController.close();
+			} else {
+				log.warn('Side menu controller not initialized yet!');
+			}
 			return false;
 		};
 
@@ -236,7 +242,7 @@
 				$urlRouter.sync();
 				angular.noop();
 				storage.set('cm.lasturl', newUrl);
-				$rootScope.sideMenuController.close();
+				$rootScope.closeLeft();
 				return;
 			}
 
@@ -244,7 +250,7 @@
 				$location.path('/events/official');
 				angular.noop();
 				storage.set('cm.lasturl', newUrl);
-				$rootScope.sideMenuController.close();
+				$rootScope.closeLeft();
 				return;
 			}
 
@@ -252,23 +258,21 @@
 				$location.path('/login');
 				angular.noop();
 				storage.set('cm.lasturl', newUrl);
-				$rootScope.sideMenuController.close();
+				$rootScope.closeLeft();
 				return;
 			}
 
 			$urlRouter.sync();
 			storage.set('cm.lasturl', newUrl);
 			angular.noop();
-			if ($rootScope.sideMenuController) {
-				$rootScope.sideMenuController.close();
-			}
+			$rootScope.closeLeft();
 
 			return;
 		});
 
 
 		$rootScope.$on('$viewContentLoaded', function(evt, toState, toParams, fromState, fromParams) {
-			$rootScope.sideMenuController.close();
+			$rootScope.closeLeft();
 		});
 
 		var savedUrl = storage.get('cm.lasturl');
@@ -342,8 +346,8 @@
 			log.debug('foreground status is now ' + $rootScope.foreground);
 
 			// just came back, close the drawer if it's open
-			if (newValue && $rootScope.sideMenuController) {
-				$rootScope.sideMenuController.close();
+			if (newValue) {
+				$rootScope.closeLeft();
 			}
 
 			handleStateChange();

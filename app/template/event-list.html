@@ -5,7 +5,7 @@
 			<button class="button button-clear button-positive" ng-click="cancelModal($event)" ng-disabled="isDisabled">Cancel</button>
 		</header>
 
-		<content has-header="true" scroll="true" overflow-scroll="true" padded="false">
+		<ion-content has-header="true" scroll="true" overflow-scroll="true" padded="false">
 			<form name="form" class="add-event-form" novalidate>
 				<input type="hidden" name="eId" value="{{eventData.id}}" />
 				<input type="hidden" name="eType" value="{{eventData.type}}" />
@@ -38,10 +38,10 @@
 					</label>
 					<button class="button button-full button-positive" ng-click="saveModal(eventData)" ng-disabled="form.$invalid || !eventData.isValid()">Save</button>
 			</form>
-		</content>
+		</ion-content>
 	</div>
 </script>
-<content has-header="true" overflow-scroll="false" scroll="true" padding="false" id="event-content">
+<ion-content has-header="true" overflow-scroll="false" scroll="true" padding="false" id="event-content">
 	<div class="bar item-input-inset">
 		<label class="item-input-wrapper">
 			<i class="icon ion-ios7-search placeholder-icon"></i>
@@ -51,10 +51,10 @@
 			<i class="icon ion-close-circled" ng-click="clearSearchString()"></i>
 		</button>
 	</div>
-	<list class="event-list">
+	<ion-list class="event-list">
 		<span bindonce ng-repeat="entry in entries" id="{{entry.getId()}}">
-			<item ng-if="isDay(entry)" class="item-divider event-header">{{prettyDate(entry.day)}}</item>
-			<item ng-if="!isDay(entry)" ng-class="'list-entry item-text-wrap ' + (entry.isEven()? 'even':'odd')">
+			<ion-item ng-if="isDay(entry)" class="item-divider event-header">{{prettyDate(entry.day)}}</ion-item>
+			<ion-item ng-if="!isDay(entry)" ng-class="'list-entry item-text-wrap ' + (entry.isEven()? 'even':'odd')">
 				<span class="item-note favorite" bo-show="(user.username &amp;&amp; user.username != entry.getUsername())">
 					<button id="{{entry.getId()}}-favorite" ng-click="onFavoriteChanged(entry)" class="button button-cm button-icon icon" ng-class="entry.isFavorite()? 'active ion-ios7-heart':'ion-ios7-heart-outline'"></button>
 				</span>
@@ -72,8 +72,8 @@
 				<div class="createdBy" bo-show="entry.getUsername() != 'official'" bo-text="'Created By: ' + entry.getUsername()"></div>
 				<div class="location" bo-show="entry.getLocation()" bo-text="'Location: ' + entry.getLocation()"></div>
 				<div class="description" bo-show="entry.getDescription()" bo-text="entry.getDescription()"></div>
-			</item>
+			</ion-item>
 		</span>
 		<div id="the-end"></div>
-	</list>
-</content>
+	</ion-list>
+</ion-content>

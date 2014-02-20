@@ -1,4 +1,4 @@
-<content has-header="true" overflow-scroll="true" scroll="true">
+<ion-content has-header="true" overflow-scroll="true" scroll="true">
 	<style>
 		.artist {
 			padding-left: 5px;
@@ -7,10 +7,10 @@
 			background-color: #f2f2f2;
 		}
 	</style>
-	<list>
+	<ion-list>
 		<a class="item" bindonce ng-repeat="entry in entries" bo-href="'#/karaoke/by-prefix/' + entry.prefix">
 			<span bo-text="entry.prefix"></span>
 			<span bo-html="entry.artist_count + ' artists'" class="artist"></span>
 		</a>
-	</list>
-</content>
+	</ion-list>
+</ion-content>

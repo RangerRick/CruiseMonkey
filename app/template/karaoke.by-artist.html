@@ -1,4 +1,4 @@
-<content has-header="true" overflow-scroll="true" scroll="true">
+<ion-content has-header="true" overflow-scroll="true" scroll="true">
 	<header class="bar bar-header item-input-inset">
 		<label class="item-input-wrapper">
 			<i class="icon ion-ios7-search placeholder-icon"></i>
@@ -8,7 +8,7 @@
 			<i class="icon ion-close-circled" ng-click="clearSearchString()"></i>
 		</button>
 	</header>
-	<list>
+	<ion-list>
 		<div bindonce class="item" ng-repeat="song in entries"><span bo-text="artist + ' - ' + song" class="item-text-wrap"></span></div>
-	</list>
-</content>
+	</ion-list>
+</ion-content>

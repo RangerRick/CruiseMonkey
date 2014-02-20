@@ -108,28 +108,28 @@ if (typeof String.prototype.contains !== 'function') {
 <title ng-bind="'CruiseMonkey - ' + $root.headerTitle">CruiseMonkey</title>
 </head>
 <body class="antialiased off-canvas hide-extras" ng-cloak>
-	<side-menus>
+	<ion-side-menus>
 		<!-- animation="slide-left-right-ios7" -->
-		<pane side-menu-content drag-content="false">
+		<ion-pane ion-side-menu-content drag-content="false">
 			<header class="bar bar-header bar-dark">
 				<div class="buttons">
 					<button class="button button-icon" open-menu><i class="icon ion-navicon"></i></button>
-					<button ng-repeat="button in leftButtons" class="button button-clear no-animation" ng-class="button.type" ng-click="button.tap($event, $index)" bind-html-unsafe="button.content"></button>
+					<button ng-repeat="button in leftButtons" class="button button-clear no-animation" ng-class="button.type" ng-click="button.tap($event, $index)" ion-bind-html-unsafe="button.content"></button>
 				</div>
 				<h1 class="title">{{headerTitle}}</h1>
 				<div class="buttons">
-					<button ng-repeat="button in rightButtons" class="button button-clear no-animation" ng-class="button.type" ng-click="button.tap($event, $index)" bind-html-unsafe="button.content"></button>
+					<button ng-repeat="button in rightButtons" class="button button-clear no-animation" ng-class="button.type" ng-click="button.tap($event, $index)" ion-bind-html-unsafe="button.content"></button>
 				</div>
 			</header>
 			<span close-menu>
-			<nav-view></nav-view>
+			<ion-nav-view></ion-nav-view>
 			</span>
-		</pane>
-		<side-menu side="left" close-menu>
+		</ion-pane>
+		<ion-side-menu side="left" close-menu>
 			<header class="bar bar-header bar-dark">
 				<h1 class="title bar-bold">CruiseMonkey</h1>
 			</header>
-			<content has-header="true" class="nav" scroll="false">
+			<ion-content has-header="true" class="nav" scroll="false">
 				<ul id="nav">
 					<li class="item item-complex" go-to="/events/official"><a>Official Events</a></li>
 					<li class="item item-complex" go-to="/events/unofficial"><a>Unofficial Events</a></li>
@@ -153,9 +153,9 @@ if (typeof String.prototype.contains !== 'function') {
 					<li class="item item-complex" go-to="/help"><a>Help</a></li>
 					<li class="item item-complex" go-to="/about"><a>About</a></li>
 				</ul>
-			</content>
-		</side-menu>
-	</side-menus>
+			</ion-content>
+		</ion-side-menu>
+	</ion-side-menus>
 	<div class="cm-notification" ng-if="statusNotification">
 		<div id="notification" class="cm-notification-inner" bind-html-unsafe="statusNotification"></div>
 		<div class="cm-notification-spinner"><i class="icon ion-loading-a icon-refreshing"></i></div>
