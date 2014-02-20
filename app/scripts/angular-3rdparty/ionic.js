@@ -174,7 +174,7 @@ window.ionic = {
      *
      * @example
      *   this.setTranslateX = ionic.animationFrameThrottle(function(x) {
-     *     this.el.style.webkitTransform = 'translate3d(' + x + 'px, 0, 0)';
+     *     this.el.style[ionic.CSS.TRANSFORM] = 'translate3d(' + x + 'px, 0, 0)';
      *   })
      */
     animationFrameThrottle: function(cb) {
@@ -2025,12 +2025,11 @@ window.ionic = {
   ionic.CSS = {};
 
   (function() {
-    var d = document.createElement('div');
     var keys = ['webkitTransform', 'transform', '-webkit-transform', 'webkit-transform',
                 '-moz-transform', 'moz-transform', 'MozTransform', 'mozTransform'];
 
     for(var i = 0; i < keys.length; i++) {
-      if(d.style[keys[i]] !== undefined) {
+      if(document.documentElement.style[keys[i]] !== undefined) {
         ionic.CSS.TRANSFORM = keys[i];
         break;
       }
@@ -2089,7 +2088,7 @@ window.ionic = {
 
     if(ele.disabled) return;
 
-    console.debug('tapElement', ele.tagName, ele.className);
+    
 
     var c = getCoordinates(e);
 
@@ -2115,7 +2114,7 @@ window.ionic = {
     }
 
     if(target.control) {
-      console.debug('tapElement, target.control, stop');
+      
       return stopEvent(e);
     }
   };
@@ -2129,7 +2128,7 @@ window.ionic = {
 
     if( isRecentTap(e) ) {
       // if a tap in the same area just happened, don't continue
-      console.debug('tapPolyfill', 'isRecentTap', ele.tagName);
+      
       return stopEvent(e);
     }
 
@@ -2157,13 +2156,13 @@ window.ionic = {
     if(e.target.control) {
       // this is a label that has an associated input
       // the native layer will send the actual event, so stop this one
-      console.debug('preventGhostClick', 'label');
+      
       return stopEvent(e);
     }
 
     if( isRecentTap(e) ) {
       // a tap has already happened at these coordinates recently, ignore this event
-      console.debug('preventGhostClick', 'isRecentTap', e.target.tagName);
+      
       return stopEvent(e);
     }
 
@@ -2250,7 +2249,7 @@ window.ionic = {
 
   var tapCoordinates = {}; // used to remember coordinates to ignore if they happen again quickly
   var CLICK_PREVENT_DURATION = 1500; // max milliseconds ghostclicks in the same area should be prevented
-  var REMOVE_PREVENT_DELAY = 325; // delay after a touchend/mouseup before removing the ghostclick prevent
+  var REMOVE_PREVENT_DELAY = 375; // delay after a touchend/mouseup before removing the ghostclick prevent
   var HIT_RADIUS = 15;
 
   // set global click handler and check if the event should stop or not
@@ -2472,7 +2471,7 @@ function androidKeyboardFix() {
     if (rememberedDeviceWidth !== window.innerWidth) {
       rememberedDeviceWidth = window.innerWidth;
       rememberedDeviceHeight = window.innerHeight;
-      console.info('orientation change. deviceWidth =', rememberedDeviceWidth, ', deviceHeight =', rememberedDeviceHeight);
+      
 
     //If the height changes, and it's less than before, we have a keyboard open
     } else if (rememberedDeviceHeight !== window.innerHeight &&
@@ -4755,7 +4754,7 @@ ionic.views.Scroll = ionic.views.View.inherit({
     content.classList.remove(ITEM_SLIDING_CLASS);
 
     // Grab the starting X point for the item (for example, so we can tell whether it is open or closed to start)
-    offsetX = parseFloat(content.style.webkitTransform.replace('translate3d(', '').split(',')[0]) || 0;
+    offsetX = parseFloat(content.style[ionic.CSS.TRANSFORM].replace('translate3d(', '').split(',')[0]) || 0;
 
     // Grab the buttons
     buttons = content.parentNode.querySelector('.' + ITEM_OPTIONS_CLASS);
@@ -4801,7 +4800,7 @@ ionic.views.Scroll = ionic.views.View.inherit({
         newX = Math.min(-buttonsWidth, -buttonsWidth + (((e.gesture.deltaX + buttonsWidth) * 0.4)));
       }
 
-      this._currentDrag.content.style.webkitTransform = 'translate3d(' + newX + 'px, 0, 0)';
+      this._currentDrag.content.style[ionic.CSS.TRANSFORM] = 'translate3d(' + newX + 'px, 0, 0)';
       this._currentDrag.content.style.webkitTransition = 'none';
     }
   });
@@ -4842,17 +4841,17 @@ ionic.views.Scroll = ionic.views.View.inherit({
     // };
 
     ionic.requestAnimationFrame(function() {
-      // var currentX = parseFloat(_this._currentDrag.content.style.webkitTransform.replace('translate3d(', '').split(',')[0]) || 0;
+      // var currentX = parseFloat(_this._currentDrag.content.style[ionic.CSS.TRANSFORM].replace('translate3d(', '').split(',')[0]) || 0;
       // if(currentX !== restingPoint) {
       //   _this._currentDrag.content.classList.add(ITEM_SLIDING_CLASS);
       //   _this._currentDrag.content.addEventListener('webkitTransitionEnd', onRestingAnimationEnd);
       // }
       if(restingPoint === 0) {
-        _this._currentDrag.content.style.webkitTransform = '';
+        _this._currentDrag.content.style[ionic.CSS.TRANSFORM] = '';
       } else {
-        _this._currentDrag.content.style.webkitTransform = 'translate3d(' + restingPoint + 'px, 0, 0)';
+        _this._currentDrag.content.style[ionic.CSS.TRANSFORM] = 'translate3d(' + restingPoint + 'px, 0, 0)';
       }
-      _this._currentDrag.content.style.webkitTransition = '';
+      _this._currentDrag.content.style[ionic.CSS.TRANSFORM] = '';
 
 
       // Kill the current drag
@@ -4876,7 +4875,7 @@ ionic.views.Scroll = ionic.views.View.inherit({
 
   ReorderDrag.prototype._moveElement = function(e) {
     var y = (e.gesture.center.pageY - this._currentDrag.elementHeight/2);
-    this.el.style.webkitTransform = 'translate3d(0, '+y+'px, 0)';
+    this.el.style[ionic.CSS.TRANSFORM] = 'translate3d(0, '+y+'px, 0)';
   };
 
   ReorderDrag.prototype.start = function(e) {
@@ -4884,7 +4883,7 @@ ionic.views.Scroll = ionic.views.View.inherit({
 
 
     // Grab the starting Y point for the item
-    var offsetY = this.el.offsetTop;//parseFloat(this.el.style.webkitTransform.replace('translate3d(', '').split(',')[1]) || 0;
+    var offsetY = this.el.offsetTop;//parseFloat(this.el.style[ionic.CSS.TRANSFORM].replace('translate3d(', '').split(',')[1]) || 0;
 
     var startIndex = ionic.DomUtil.getChildIndex(this.el, this.el.nodeName.toLowerCase());
     var elementHeight = this.el.offsetHeight;
@@ -4988,7 +4987,7 @@ ionic.views.Scroll = ionic.views.View.inherit({
 
     // Reposition the element
     this.el.classList.remove(ITEM_REORDERING_CLASS);
-    this.el.style.webkitTransform = '';
+    this.el.style[ionic.CSS.TRANSFORM] = '';
 
     placeholder.parentNode.insertBefore(this.el, placeholder);
     placeholder.parentNode.removeChild(placeholder);
@@ -5485,10 +5484,10 @@ ionic.views.Scroll = ionic.views.View.inherit({
       this.el.classList.add(this.animationClass);
     },
     getTranslateX: function() {
-      return parseFloat(this.el.style.webkitTransform.replace('translate3d(', '').split(',')[0]);
+      return parseFloat(this.el.style[ionic.CSS.TRANSFORM].replace('translate3d(', '').split(',')[0]);
     },
     setTranslateX: ionic.animationFrameThrottle(function(x) {
-      this.el.style.webkitTransform = 'translate3d(' + x + 'px, 0, 0)';
+      this.el.style[ionic.CSS.TRANSFORM] = 'translate3d(' + x + 'px, 0, 0)';
     })
   });
 
@@ -6346,7 +6345,7 @@ ionic.views.TabBar = ionic.views.View.inherit({
         } else {
           var openPixel = Math.round( (openPercent / 100) * this.track.offsetWidth - (this.handle.offsetWidth) );
           openPixel = (openPixel < 1 ? 0 : openPixel);
-          this.handle.style.webkitTransform = 'translate3d(' + openPixel + 'px,0,0)';
+          this.handle.style[ionic.CSS.TRANSFORM] = 'translate3d(' + openPixel + 'px,0,0)';
         }
       }
     },
@@ -6357,8 +6356,8 @@ ionic.views.TabBar = ionic.views.View.inherit({
 
     val: function(value) {
       if(value === true || value === false) {
-        if(this.handle.style.webkitTransform !== "") {
-          this.handle.style.webkitTransform = "";
+        if(this.handle.style[ionic.CSS.TRANSFORM] !== "") {
+          this.handle.style[ionic.CSS.TRANSFORM] = "";
         }
         this.checkbox.checked = value;
         this.openPercent = (value ? 100 : 0);

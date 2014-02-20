@@ -36,7 +36,6 @@ angular.module('ionic.ui.service', [
 ]);
 
 angular.module('ionic.ui', [
-                            'ionic.ui.bindHtml',
                             'ionic.ui.content',
                             'ionic.ui.scroll',
                             'ionic.ui.tabs',
@@ -59,6 +58,7 @@ angular.module('ionic', [
 
     // Angular deps
     'ngAnimate',
+    'ngSanitize',
     'ui.router'
 ]);
 ;
@@ -1322,7 +1322,7 @@ angular.module('ionic.ui.actionSheet', [])
 (function(ionic) {
 'use strict';
 
-angular.module('ionic.ui.header', ['ngAnimate'])
+angular.module('ionic.ui.header', ['ngAnimate', 'ngSanitize'])
 
 .directive('barHeader', ['$ionicScrollDelegate', function($ionicScrollDelegate) {
   return {
@@ -1341,12 +1341,12 @@ angular.module('ionic.ui.header', ['ngAnimate'])
     transclude: true,
     template: '<header class="bar bar-header">\
                 <div class="buttons">\
-                  <button ng-repeat="button in leftButtons" class="button no-animation" ng-class="button.type" ng-click="button.tap($event, $index)" ion-bind-html-unsafe="button.content">\
+                  <button ng-repeat="button in leftButtons" class="button no-animation" ng-class="button.type" ng-click="button.tap($event, $index)" ng-bind-html="button.content">\
                   </button>\
                 </div>\
-                <h1 class="title" ion-bind-html-unsafe="title"></h1>\
+                <h1 class="title" ng-bind-html="title"></h1>\
                 <div class="buttons">\
-                  <button ng-repeat="button in rightButtons" class="button no-animation" ng-class="button.type" ng-click="button.tap($event, $index)" ion-bind-html-unsafe="button.content">\
+                  <button ng-repeat="button in rightButtons" class="button no-animation" ng-class="button.type" ng-click="button.tap($event, $index)" ng-bind-html="button.content">\
                   </button>\
                 </div>\
               </header>',
@@ -1406,16 +1406,6 @@ angular.module('ionic.ui.header', ['ngAnimate'])
 });
 
 })(ionic);
-;
-angular.module('ionic.ui.bindHtml', [])
-.directive('ionBindHtmlUnsafe', function () {
-  return function (scope, element, attr) {
-    element.addClass('ng-binding').data('$binding', attr.ionBindHtmlUnsafe);
-    scope.$watch(attr.ionBindHtmlUnsafe, function(value) {
-      element.html(value || '');
-    });
-  };
-});
 ;
 (function() {
 'use strict';
@@ -1918,7 +1908,7 @@ angular.module('ionic.ui.radio', [])
       if(!ngModel || !radioButtons) { return; }
 
       var setIt = function() {
-        console.log('SET');
+        
         $element.addClass('active');
         ngModel.$setViewValue($scope.$eval($attr.ngValue));
 
@@ -1926,7 +1916,7 @@ angular.module('ionic.ui.radio', [])
       };
 
       var clickHandler = function(e) {
-        console.log('CLICK');
+        
         setIt();
       };
 
@@ -2059,7 +2049,7 @@ angular.module('ionic.ui.sideMenu', ['ionic.service.gesture', 'ionic.service.vie
     }],
     replace: true,
     transclude: true,
-    template: '<div class="pane" ng-transclude></div>'
+    template: '<div class="view" ng-transclude></div>'
   };
 })
 
@@ -2131,7 +2121,11 @@ angular.module('ionic.ui.sideMenu', ['ionic.service.gesture', 'ionic.service.vie
             return $scope.sideMenuContentTranslateX || 0;
           },
           setTranslateX: ionic.animationFrameThrottle(function(amount) {
-            $element[0].style[ionic.CSS.TRANSFORM] = 'translate3d(' + amount + 'px, 0, 0)';
+            if(amount > 0) {
+              $element[0].style[ionic.CSS.TRANSFORM] = 'translate3d(' + amount + 'px, 0, 0)';
+            } else {
+              $element[0].style[ionic.CSS.TRANSFORM] = 'none';
+            }
             $timeout(function() {
               $scope.sideMenuContentTranslateX = amount;
             });
@@ -2345,7 +2339,7 @@ angular.module('ionic.ui.slideBox', [])
 
 })();
 ;
-angular.module('ionic.ui.tabs', ['ionic.service.view', 'ionic.ui.bindHtml'])
+angular.module('ionic.ui.tabs', ['ionic.service.view', 'ngSanitize'])
 
 /**
  * @description
@@ -2647,11 +2641,11 @@ angular.module('ionic.ui.tabs', ['ionic.service.view', 'ionic.ui.bindHtml'])
     },
     template:
       '<a ng-class="{active:active, \'has-badge\':badge}" ng-click="selectTab()" class="tab-item">' +
-        '<i class="badge {{badgeStyle}}" ng-if="badge">{{badge}}</i>' +
-        '<i class="icon {{icon}}" ng-if="icon"></i>' +
-        '<i class="{{iconOn}}" ng-if="active"></i>' +
-        '<i class="{{iconOff}}" ng-if="!active"></i>' +
-        '<span ion-bind-html-unsafe="iconTitle"></span>' +
+        '<span class="badge {{badgeStyle}}" ng-if="badge">{{badge}}</span>' +
+        '<span class="icon {{icon}}" ng-if="icon"></span>' +
+        '<span class="{{iconOn}}" ng-if="active"></span>' +
+        '<span class="{{iconOff}}" ng-if="!active"></span>' +
+        '<span ng-bind-html="iconTitle"></span>' +
       '</a>'
   };
 }]);
@@ -2711,7 +2705,7 @@ angular.module('ionic.ui.toggle', [])
       //   });
 
       //   ionic.on('drag', function(e) {
-      //     console.log('drag');
+      //     
       //     $scope.toggle.drag(e);
       //   }, handle);
 
@@ -2806,7 +2800,7 @@ angular.module('ionic.ui.touch', [])
  *
  */
 
-angular.module('ionic.ui.viewState', ['ionic.service.view', 'ionic.service.gesture', 'ionic.ui.bindHtml'])
+angular.module('ionic.ui.viewState', ['ionic.service.view', 'ionic.service.gesture', 'ngSanitize'])
 
 /**
  * Our Nav Bar directive which updates as the controller state changes.
@@ -2834,16 +2828,16 @@ angular.module('ionic.ui.viewState', ['ionic.service.view', 'ionic.service.gestu
       '</ion-nav-back-button>' +
       '<div class="buttons left-buttons"> ' +
         '<button ng-click="button.tap($event)" ng-repeat="button in leftButtons" ' +
-          'class="button no-animation {{button.type}}" ion-bind-html-unsafe="button.content">' +
+          'class="button no-animation {{button.type}}" ng-bind-html="button.content">' +
         '</button>' +
       '</div>' +
 
       //ng-repeat makes it easy to add new / remove old and have proper enter/leave anims
-      '<h1 ng-repeat="title in titles" ion-bind-html-unsafe="title" class="title invisible" ion-async-visible ion-nav-bar-title></h1>' +
+      '<h1 ng-repeat="title in titles" ng-bind-html="title" class="title invisible" ion-async-visible ion-nav-bar-title></h1>' +
 
       '<div class="buttons right-buttons" ng-if="rightButtons.length"> ' +
       '<button ng-click="button.tap($event)" ng-repeat="button in rightButtons" '+
-        'class="button no-animation {{button.type}}" ion-bind-html-unsafe="button.content">' +
+        'class="button no-animation {{button.type}}" ng-bind-html="button.content">' +
         '</button>' +
       '</div>' +
     '</header>',
