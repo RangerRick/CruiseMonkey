@@ -18,6 +18,7 @@ function CMDay(d) {
 	/*global CMFavorite: true*/
 
 	var attrA, attrB;
+
 	var sortEvent = function(a,b) {
 		attrA = a.getStart();
 		attrB = b.getStart();
@@ -44,8 +45,8 @@ function CMDay(d) {
 		return 0;
 	};
 	var sortDay = function(a,b) {
-		attrA = a.date;
-		attrB = b.date;
+		attrA = a.day;
+		attrB = b.day;
 		
 		if (attrA.isBefore(attrB)) {
 			return -1;
@@ -54,6 +55,13 @@ function CMDay(d) {
 			return 1;
 		}
 		return 0;
+	};
+	var sortFunc = function(a,b) {
+		if (a.day !== undefined) {
+			return sortDay(a,b);
+		} else {
+			return sortEvent(a,b);
+		}
 	};
 
 	angular.module('cruisemonkey.controllers.Events', [
@@ -100,48 +108,40 @@ function CMDay(d) {
 		return {
 			get: function(name, searchString) {
 				var even = false,
-					ret = [],
 					i, j, day = null,
 					entry = null,
+					ret = [],
 					matches = [];
+					
 				var cacheEntry = getCacheEntry(name);
 				if (!searchString) {
 					for (i=0; i < cacheEntry.length; i++) {
-						entry = cacheEntry[i].clone();
-						if (entry instanceof CMEvent) {
-							entry.setEven(even);
-							even = !even;
-						}
-						ret.push(entry);
+						ret.push(cacheEntry[i]);
 					}
-					return ret;
+				} else {
+					for (i=0; i < cacheEntry.length; i++) {
+						entry = cacheEntry[i];
+						if (entry.matches(searchString)) {
+							ret.push(entry);
+						}
+					}
 				}
 
-				for (i=0; i < cacheEntry.length; i++) {
-					entry = cacheEntry[i].clone();
-					if (entry.getId().indexOf('day-') === 0) {
-						if (day === null || entry.day !== day.day) {
-							// new day
-							if (matches.length > 0) {
-								ret.push(day);
-								ret = ret.concat(matches);
-								matches = [];
-							}
-							day = entry;
-						}
-					} else {
-						matches.push(entry);
-					}
-
-					if (matches.length > 0 && day !== null) {
-						ret.push(day);
-						ret = ret.concat(matches);
-					}
-				}
+				ret.sort(sortEvent);
 				return ret;
 			},
 			put: function(name, data) {
-				cache[name] = data;
+				var evs = {}, i, entry, entries = [];
+				for (i=0; i < data.length; i++) {
+					entry = data[i];
+					evs[entry.getId()] = entry;
+				}
+
+				angular.forEach(evs, function(e) {
+					entries.push(e);
+				});
+				entries.sort(sortFunc);
+				cache[name] = entries;
 			}
 		};
 	}])
@@ -165,16 +165,35 @@ function CMDay(d) {
 		var message = 'Updating ' + eventType.capitalize() + ' events...';
 		var scrolled = false;
 
+		var withDays = function(events) {
+			var ret = [],
+				ev, i,
+				lastDay = moment('1970-01-01 00:00'),
+				currentDay = null;
+
+			for (i=0; i < events.length; i++) {
+				ev = events[i];
+				currentDay = ev.getDay();
+				if (!lastDay.isSame(currentDay)) {
+					ret.push(new CMDay(currentDay));
+					lastDay = currentDay;
+				}
+				ret.push(ev);
+			}
+
+			return ret;
+		};
+
 		storage.bind($scope, 'searchString', {
 			'storeName': 'cm.event.' + eventType
 		});
 		log.debug('$scope.searchString: ' + $scope.searchString);
 
-		$scope.entries = EventCache.get(eventType, $scope.searchString) || [];
+		$scope.entries = withDays(EventCache.get(eventType, $scope.searchString) || []);
 		if ($scope.entries.length === 0) {
 			notifications.status(message, 2000);
 		}
-		
+
 		var eventMethod = EventService.getOfficialEvents;
 		if (eventType === 'official') {
 			eventMethod = EventService.getOfficialEvents;
@@ -223,7 +242,7 @@ function CMDay(d) {
 		};
 
 		var updateEntries = function() {
-			var cached = EventCache.get(eventType, $scope.searchString);
+			var cached = withDays(EventCache.get(eventType, $scope.searchString));
 			console.log('cached events:',cached);
 			$scope.entries = cached;
 			$scope.$broadcast('scroll.resize');
@@ -262,19 +281,7 @@ function CMDay(d) {
 				deferred.resolve(true);
 
 				e.sort(sortEvent);
-				var evs = [], lastDay = null, i, ev, evDay;
-				for (i=0; i < e.length; i++) {
-					ev = e[i];
-					evDay = ev.getDay();
-					//log.debug(ev.getSummary() + ' ' + evDay);
-					if (!evDay.isSame(lastDay)) {
-						evs.push(new CMDay(evDay));
-						lastDay = evDay;
-					}
-					evs.push(ev);
-				}
-
-				EventCache.put(eventType, evs);
+				EventCache.put(eventType, e);
 				updateEntries();
 			}, function() {
 				log.warn('CMEventCtrl: failed to get ' + eventType + ' events');
@@ -405,7 +412,7 @@ function CMDay(d) {
 		};
 
 		$scope.isDay = function(entry) {
-			return entry.day !== undefined;
+			return entry && entry.day !== undefined;
 		};
 
 		$scope.prettyDate = function(date) {
