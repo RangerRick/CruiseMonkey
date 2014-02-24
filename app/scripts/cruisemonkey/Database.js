@@ -45,6 +45,10 @@
 				host = 'http://' + host;
 			}
 
+			if (SettingsService.getDirect()) {
+				host = host.replace('http://', 'http://admin:ppjND8kuoU4YQG@');
+			}
+
 			return host + SettingsService.getDatabaseName();
 		};
 
@@ -177,7 +181,12 @@
 				return deferred.promise;
 			}
 
-			db = new PouchDB(getDatabaseName());
+			if (SettingsService.getDirect()) {
+				db = new PouchDB(getHost());
+				replicate = false;
+			} else {
+				db = new PouchDB(getDatabaseName());
+			}
 			if (replicate) {
 				log.debug('Database.initialize(): Replication enabled, initializing remoteDb.');
 				remoteDb = new PouchDB(getHost());
@@ -256,125 +265,129 @@
 					}, 10 * 60 * 1000); // 10 minutes
 				}
 
-				if (replicationFrom) {
-					log.warn('Database.startReplication(): Replication from the remote DB has already been started!');
-				} else {
-					log.info('Database.startReplication(): Starting replication from the remote DB...');
-					replicationFrom = db.replicate.from(remoteDb, {
-						'continuous': true,
-						'onChange': function(change) {
-							$rootScope.safeApply(function() {
-								console.log('remote change to local:',change);
-								$rootScope.lastUpdated = moment();
-							});
-						},
-						filter: function(doc, req) {
-							if (doc.type === 'event') {
-								return true;
-							}
-							
-							if (doc.type === 'favorite') {
-								if (doc._id && doc._id.indexOf('favorite-') === 0) {
-									return true;
-								} else {
-									return false;
-								}
-							}
-							
-							// anything else, sync
-							return true;
-						},
-						'complete': function(err, details) {
-							$rootScope.safeApply(function() {
-								if (resetting) {
-									return;
-								}
-								if (err) {
-									log.error('Replication from remote DB ended: ' + err);
-									console.log('Details:',details);
-									if (db && replicationFrom) {
-										try {
-											replicationFrom.cancel();
-										} catch (err) {
-											console.log('Cancel failed.');
-										}
-										replicationFrom = null;
-									}
-								} else {
-									console.log('Replication from remote DB complete:',details);
-									$rootScope.lastUpdated = moment();
-								}
-							});
-						}
-					});
-				}
-
-				if (replicationTo) {
-					log.warn('Database.startReplication(): Replication to the remote DB has already been started!');
-				} else {
-					log.info('Database.startReplication(): Starting replication to the remote DB...');
-
-					if (UserService.loggedIn()) {
-						filter = function(doc, req) {
-							var ret=false;
-							if (doc.username === req.query.username) {
-								// if it's ours, sync it back
-								ret=true;
-							} else if (doc._deleted === true) {
-								// or if we've deleted it
-								ret=true;
-							} else {
-								// otherwise, don't
-								ret=false;
-							}
-							return ret;
-						};
-						params = {
-							username: UserService.getUsername()
-						};
+				$timeout(function() {
+					if (replicationFrom) {
+						log.warn('Database.startReplication(): Replication from the remote DB has already been started!');
 					} else {
-						// if we're not logged in, there is nothing local to sync
-						filter = function() {
-							return false;
-						};
-						params = {};
+						log.info('Database.startReplication(): Starting replication from the remote DB...');
+						$interval(function() {
+							replicationFrom = db.replicate.from(remoteDb, {
+								'continuous': false,
+								'onChange': function(change) {
+									$rootScope.safeApply(function() {
+										console.log('remote change to local:',change);
+										$rootScope.lastUpdated = moment();
+									});
+								},
+								filter: function(doc, req) {
+									if (doc.type === 'event') {
+										return true;
+									}
+
+									if (doc.type === 'favorite') {
+										if (doc._id && doc._id.indexOf('favorite-') === 0) {
+											return true;
+										} else {
+											return false;
+										}
+									}
+
+									// anything else, sync
+									return true;
+								},
+								'complete': function(err, details) {
+									$rootScope.safeApply(function() {
+										if (resetting) {
+											return;
+										}
+										if (err) {
+											log.error('Replication from remote DB ended: ' + err);
+											console.log('Details:',details);
+											if (db && replicationFrom) {
+												try {
+													replicationFrom.cancel();
+												} catch (err) {
+													console.log('Cancel failed.');
+												}
+												replicationFrom = null;
+											}
+										} else {
+											console.log('Replication from remote DB complete:',details);
+											$rootScope.lastUpdated = moment();
+										}
+									});
+								}
+							});
+						}, 10000);
 					}
 
-					/*jshint camelcase: false */
-					replicationTo = db.replicate.to(remoteDb, {
-						'continuous': true,
-						'onChange': function(change) {
-							$rootScope.safeApply(function() {
-								console.log('local change to remote:',change);
-								$rootScope.lastUpdated = moment();
-							});
-						},
-						filter: filter,
-						query_params: params,
-						'complete': function(err, details) {
-							$rootScope.safeApply(function() {
-								if (resetting) {
-									return;
-								}
-								if (err) {
-									log.error('Replication to remote DB ended: ' + err);
-									console.log('Details:',details);
-									if (db && replicationTo) {
-										try {
-											replicationTo.cancel();
-										} catch (err) {
-											console.log('Cancel failed.');
-										}
-										replicationTo = null;
-									}
+					if (replicationTo) {
+						log.warn('Database.startReplication(): Replication to the remote DB has already been started!');
+					} else {
+						log.info('Database.startReplication(): Starting replication to the remote DB...');
+
+						if (UserService.loggedIn()) {
+							filter = function(doc, req) {
+								var ret=false;
+								if (doc.username === req.query.username) {
+									// if it's ours, sync it back
+									ret=true;
+								} else if (doc._deleted === true) {
+									// or if we've deleted it
+									ret=true;
 								} else {
-									console.log('Replication to remote DB complete:',details);
-									$rootScope.lastUpdated = moment();
+									// otherwise, don't
+									ret=false;
 								}
-							});
+								return ret;
+							};
+							params = {
+								username: UserService.getUsername()
+							};
+						} else {
+							// if we're not logged in, there is nothing local to sync
+							filter = function() {
+								return false;
+							};
+							params = {};
 						}
-					});
-				}
+
+						/*jshint camelcase: false */
+						replicationTo = db.replicate.to(remoteDb, {
+							'continuous': true,
+							'onChange': function(change) {
+								$rootScope.safeApply(function() {
+									console.log('local change to remote:',change);
+									$rootScope.lastUpdated = moment();
+								});
+							},
+							filter: filter,
+							query_params: params,
+							'complete': function(err, details) {
+								$rootScope.safeApply(function() {
+									if (resetting) {
+										return;
+									}
+									if (err) {
+										log.error('Replication to remote DB ended: ' + err);
+										console.log('Details:',details);
+										if (db && replicationTo) {
+											try {
+												replicationTo.cancel();
+											} catch (err) {
+												console.log('Cancel failed.');
+											}
+											replicationTo = null;
+										}
+									} else {
+										console.log('Replication to remote DB complete:',details);
+										$rootScope.lastUpdated = moment();
+									}
+								});
+							}
+						});
+					}
+				}, 3000);
 			});
 
 			return true;

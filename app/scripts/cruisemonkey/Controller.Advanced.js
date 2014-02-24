@@ -18,6 +18,9 @@
 		$scope.openCertificate = function() {
 			$rootScope.openUrl('http://ranger.befunk.com/misc/twitarr.rylath.net.cer', '_system');
 		};
+		$scope.downloadAndroid = function() {
+			$rootScope.openUrl('dl/CruiseMonkey-install.apk', '_system');
+		};
 
 		$scope.isUnchanged = function() {
 			var existing = SettingsService.getSettings();
@@ -27,7 +30,8 @@
 				existing.databaseHost    === updated.databaseHost &&
 				existing.databaseName    === updated.databaseName &&
 				existing.openInChrome    === updated.openInChrome &&
-				existing.twitarrRoot     === updated.twitarrRoot
+				existing.twitarrRoot     === updated.twitarrRoot  &&
+				existing.direct          === updated.direct
 			);
 		};
 
@@ -46,6 +50,7 @@
 			SettingsService.setDatabaseName($scope.settings.databaseName);
 			SettingsService.setOpenInChrome($scope.settings.openInChrome);
 			SettingsService.setTwitarrRoot($scope.settings.twitarrRoot);
+			SettingsService.setDirect($scope.settings.direct);
 			$rootScope.$broadcast('cm.settingsChanged', {
 				'before': before,
 				'after': after

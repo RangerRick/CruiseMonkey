@@ -431,7 +431,7 @@ CMFavorite.prototype.getRawData = function() {
 
 			$q.when(db.getDatabase()).then(function(database) {
 				database.query({map: mapFunc}, options, function(err, res) {
-					$rootScope.$apply(function() {
+					$rootScope.safeApply(function() {
 						if (err) {
 							log.error(err);
 							deferred.reject(err);
@@ -484,11 +484,11 @@ CMFavorite.prototype.getRawData = function() {
 				database.query({
 					map: mapFunc
 				}, {
-					reduce: true,
+					/*reduce: true,*/
 					include_docs:true,
 					key:username
 				}, function(err, res) {
-					$rootScope.$apply(function() {
+					$rootScope.safeApply(function() {
 						if (err) {
 							log.error(err);
 							deferred.reject(err);
@@ -543,7 +543,7 @@ CMFavorite.prototype.getRawData = function() {
 					log.debug('EventService.addEvent(): posting event "' + eventToAdd.getSummary() + '" for user "' + eventToAdd.getUsername() + '"');
 					eventToAdd.refreshLastUpdated();
 					database.post(eventToAdd.getRawData(), function(err, response) {
-						$rootScope.$apply(function() {
+						$rootScope.safeApply(function() {
 							if (err) {
 								log.error(err);
 								deferred.reject(err);
@@ -580,7 +580,7 @@ CMFavorite.prototype.getRawData = function() {
 			$q.when(db.getDatabase()).then(function(database) {
 				ev.refreshLastUpdated();
 				database.put(ev.getRawData(), function(err, response) {
-					$rootScope.$apply(function() {
+					$rootScope.safeApply(function() {
 						if (err) {
 							log.error(err);
 							deferred.reject(err);
@@ -608,7 +608,7 @@ CMFavorite.prototype.getRawData = function() {
 
 			$q.when(db.getDatabase()).then(function(database) {
 				database.remove(ev.getRawData(), function(err, response) {
-					$rootScope.$apply(function() {
+					$rootScope.safeApply(function() {
 						if (err) {
 							log.error(err);
 							deferred.reject(err);
@@ -633,7 +633,7 @@ CMFavorite.prototype.getRawData = function() {
 				if (doc.type === 'event') {
 					emit(doc.username, doc);
 				}
-			}, {reduce: true});
+			}, {/*reduce: true*/});
 			_allEvents['finally'](function() {
 				log.debug('EventService.getAllEvents(): finished.');
 				_allEvents = null;
@@ -652,7 +652,7 @@ CMFavorite.prototype.getRawData = function() {
 				if (doc.type === 'favorite') {
 					emit(doc.username, doc);
 				}
-			}, {reduce: true});
+			}, {/*reduce: true*/});
 			_allFavorites['finally'](function() {
 				log.debug('EventService.getAllFavorites(): finished.');
 				_allFavorites = null;
@@ -683,10 +683,10 @@ CMFavorite.prototype.getRawData = function() {
 						}
 					}
 				}, {
-					reduce: true,
+					/*reduce: true,*/
 					include_docs:true
 				}, function(err, res) {
-					$rootScope.$apply(function() {
+					$rootScope.safeApply(function() {
 						if (err) {
 							log.error(err);
 							deferred.reject(err);
@@ -749,10 +749,10 @@ CMFavorite.prototype.getRawData = function() {
 						}
 					}
 				}, {
-					reduce: true,
+					/*reduce: true,*/
 					include_docs:true
 				}, function(err, res) {
-					$rootScope.$apply(function() {
+					$rootScope.safeApply(function() {
 						if (err) {
 							log.error(err);
 							deferred.reject(err);
@@ -874,11 +874,11 @@ CMFavorite.prototype.getRawData = function() {
 						}
 					}
 				}, {
-					reduce: true,
+					/*reduce: true,*/
 					include_docs:true,
 					key:username
 				}, function(err, res) {
-					$rootScope.$apply(function() {
+					$rootScope.safeApply(function() {
 						if (err) {
 							log.error(err);
 							deferred.reject(err);
@@ -936,11 +936,11 @@ CMFavorite.prototype.getRawData = function() {
 						}
 					}
 				}, {
-					reduce: true,
+					/*reduce: true,*/
 					include_docs:true,
 					key: {username: username, eventId: eventId}
 				}, function(err, res) {
-					$rootScope.$apply(function() {
+					$rootScope.safeApply(function() {
 						if (err) {
 							log.error(err);
 							deferred.reject(err);
@@ -985,7 +985,7 @@ CMFavorite.prototype.getRawData = function() {
 					open_revs: 'all',
 					conflicts: true
 				}, function(err, res) {
-					$rootScope.$apply(function() {
+					$rootScope.safeApply(function() {
 						if (err) {
 							log.error('Error getting existing (deleted) favorite.');
 							console.log(err);
@@ -1006,7 +1006,7 @@ CMFavorite.prototype.getRawData = function() {
 
 				checkExisting.promise.then(function() {
 					database.post(fav, function(err, res) {
-						$rootScope.$apply(function() {
+						$rootScope.safeApply(function() {
 							if (err) {
 								log.error(err);
 								deferred.reject(err);
@@ -1045,12 +1045,12 @@ CMFavorite.prototype.getRawData = function() {
 					}
 				},
 				{
-					reduce: true,
+					/*reduce: true,*/
 					include_docs: true,
 					key: { 'username': username, 'eventId': eventId }
 				},
 				function(err, res) {
-					$rootScope.$apply(function() {
+					$rootScope.safeApply(function() {
 						if (err) {
 							log.error(err);
 							deferred.reject(err);
@@ -1070,7 +1070,7 @@ CMFavorite.prototype.getRawData = function() {
 									var favoriteId = row.value;
 									var doc = row.doc;
 									database.remove(doc, function(err, res) {
-										$rootScope.$apply(function() {
+										$rootScope.safeApply(function() {
 											if (err) {
 												log.error(err);
 												def.reject(err);

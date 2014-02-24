@@ -611,6 +611,12 @@ function CMDay(d) {
 			var ev = $scope.event;
 			ev.fromEditableBean(data);
 			ev.setUsername(username);
+			if (!ev.getId()) {
+				log.debug('no id, creating one');
+				var u = uuid(32, 16).toLowerCase();
+				log.debug('uuid=' + u);
+				ev.setId(u);
+			}
 
 			console.log('saving=', ev.getRawData());
 

@@ -306,11 +306,16 @@
 
 					if ($rootScope.firstInitialization) {
 						$rootScope.firstInitialization = false;
+						/*
 						Database.syncRemote().then(function() {
 							Database.online();
 							SeamailService.online();
 							$rootScope.$broadcast('cm.main.refreshEvents');
 						});
+						*/
+						Database.online();
+						SeamailService.online();
+						$rootScope.$broadcast('cm.main.refreshEvents');
 					} else {
 						Database.online();
 						SeamailService.online();

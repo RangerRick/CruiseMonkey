@@ -11,7 +11,7 @@
 	.value('config.urls.openinchrome', false)
 	.value('config.notifications.timeout', 5000)
 	.value('config.twitarr.root', 'https://twitarr.rylath.net/')
-	.value('config.app.version', '4.0.6')
+	.value('config.app.version', '4.0.7')
 	.value('config.upgrade', true);
 	
 	angular.module('cruisemonkey.Settings', [
@@ -20,11 +20,13 @@
 		'cruisemonkey.Upgrades'
 	])
 	.factory('SettingsService', ['storage', '$rootScope', 'config.database.host', 'config.database.name', 'config.urls.openinchrome', 'config.twitarr.root', 'UpgradeService', function(storage, $rootScope, databaseHost, databaseName, openInChrome, twitarrRoot, upgrades) {
+		var directMode = true;
 		var defaultValue = {
 			'database.host': databaseHost,
 			'database.name': databaseName,
 			'urls.openinchrome': openInChrome,
-			'twitarr.root': twitarrRoot
+			'twitarr.root': twitarrRoot,
+			'direct': directMode
 		};
 
 		storage.bind($rootScope, 'onaboat', {
@@ -78,6 +80,7 @@
 			var dbName       = $rootScope._settings['database.name']     || databaseName;
 			var openInChrome = $rootScope._settings['urls.openinchrome'] || openInChrome;
 			var twRoot       = $rootScope._settings['twitarr.root']      || twitarrRoot;
+			var direct       = $rootScope._settings['direct']            || directMode;
 
 			if (dbHost === dbName) {
 				console.log('Database host invalid!');
@@ -96,7 +99,8 @@
 				databaseHost: dbHost,
 				databaseName: dbName,
 				openInChrome: openInChrome,
-				twitarrRoot: twRoot
+				twitarrRoot: twRoot,
+				direct: directMode
 			});
 		};
 
@@ -129,6 +133,12 @@
 			},
 			'setTwitarrRoot': function(root) {
 				$rootScope._settings['twitarr.root'] = angular.copy(root);
+			},
+			'getDirect': function() {
+				return getSettings().direct;
+			},
+			'setDirect': function(direct) {
+				$rootScope._settings['direct'] = direct;
 			}
 		};
 	}]);
