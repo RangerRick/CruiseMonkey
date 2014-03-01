@@ -4,12 +4,22 @@
  * --------------------------------------------------
  */
 
-.hidden,
 .hide {
+  display: none;
+}
+.opacity-hide {
+  opacity: 0;
+}
+.grade-b .opacity-hide,
+.grade-c .opacity-hide {
+  opacity: 1;
   display: none;
 }
 .show {
   display: block;
+}
+.opacity-show {
+  opacity: 1;
 }
 .invisible {
   visibility: hidden;
@@ -36,6 +46,20 @@
 
 .enable-pointer-events {
   pointer-events: auto;
+}
+
+.disable-user-behavior {
+  // used to prevent the browser from doing its native behavior. this doesnt 
+  // prevent the scrolling, but cancels the contextmenu, tap highlighting, etc
+
+  @include user-select(none);
+  @include touch-callout(none);
+  @include tap-highlight-transparent();
+
+  -webkit-user-drag: none;
+  
+  -ms-touch-action: none;
+  -ms-content-zooming: none;
 }
 
 .block {

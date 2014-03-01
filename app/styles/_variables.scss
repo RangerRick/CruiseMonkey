@@ -231,7 +231,7 @@ $tabs-height:                      49px !default;
 $tabs-text-font-size:              14px !default;
 $tabs-text-font-size-side-icon:    12px !default;
 $tabs-icon-size:                   32px !default;
-$tabs-badge-padding:               2px 6px !default;
+$tabs-badge-padding:               1px 6px !default;
 $tabs-badge-font-size:             12px !default;
 $tabs-text-font-size:              14px !default;
 
@@ -554,7 +554,7 @@ $badge-default-text:              #AAAAAA !default;
 // Z-Indexes
 // -------------------------------
 
-$z-index-action-sheet:            10 !default;
+$z-index-action-sheet:            11 !default;
 $z-index-bar:                     10 !default;
 $z-index-bar-title:               0 !default;
 $z-index-bar-button:              1 !default;

@@ -2,22 +2,23 @@
  * Copyright 2014 Drifty Co.
  * http://drifty.com/
  *
- * Ionic, v0.9.26-alpha
+ * Ionic, v0.10.0-alpha
  * A powerful HTML5 mobile app framework.
  * http://ionicframework.com/
  *
- * By @maxlynch, @helloimben, @adamdbradley <3
+ * By @maxlynch, @benjsperry, @adamdbradley <3
  *
  * Licensed under the MIT license. Please see LICENSE for more information.
  *
  */
 ;
 
-// Create namespaces 
+// Create namespaces
+//
 window.ionic = {
   controllers: {},
   views: {},
-  version: '0.9.26-alpha'
+  version: '0.10.0-alpha'
 };
 ;
 (function(ionic) {
@@ -425,23 +426,11 @@ window.ionic = {
 
   // default settings
   ionic.Gestures.defaults = {
-    // add styles and attributes to the element to prevent the browser from doing
-    // its native behavior. this doesnt prevent the scrolling, but cancels
-    // the contextmenu, tap highlighting etc
+    // add css to the element to prevent the browser from doing
+    // its native behavior. this doesnt prevent the scrolling, 
+    // but cancels the contextmenu, tap highlighting etc
     // set to false to disable this
-    stop_browser_behavior: {
-      // this also triggers onselectstart=false for IE
-      userSelect: 'none',
-      // this makes the element blocking in IE10 >, you could experiment with the value
-      // see for more options this issue; https://github.com/EightMedia/hammer.js/issues/241
-      touchAction: 'none',
-      touchCallout: 'none',
-      contentZooming: 'none',
-      userDrag: 'none',
-      tapHighlightColor: 'rgba(0,0,0,0)'
-    }
-
-                           // more settings are defined per gesture at gestures.js
+    stop_browser_behavior: 'disable-user-behavior'
   };
 
   // detect touchevents
@@ -1107,37 +1096,16 @@ window.ionic = {
 
 
     /**
-     * stop browser default behavior with css props
+     * stop browser default behavior with css class
      * @param   {HtmlElement}   element
-     * @param   {Object}        css_props
+     * @param   {Object}        css_class
      */
-    stopDefaultBrowserBehavior: function stopDefaultBrowserBehavior(element, css_props) {
-      var prop,
-      vendors = ['webkit','khtml','moz','Moz','ms','o',''];
-
-      if(!css_props || !element.style) {
-        return;
-      }
-
-      // with css properties for modern browsers
-      for(var i = 0; i < vendors.length; i++) {
-        for(var p in css_props) {
-          if(css_props.hasOwnProperty(p)) {
-            prop = p;
-
-            // vender prefix at the property
-            if(vendors[i]) {
-              prop = vendors[i] + prop.substring(0, 1).toUpperCase() + prop.substring(1);
-            }
-
-            // set the style
-            element.style[prop] = css_props[p];
-          }
-        }
-      }
-
-      // also the disable onselectstart
-      if(css_props.userSelect == 'none') {
+    stopDefaultBrowserBehavior: function stopDefaultBrowserBehavior(element, css_class) {
+      // changed from making many style changes to just adding a preset classname
+      // less DOM manipulations, less code, and easier to control in the CSS side of things
+      // hammer.js doesn't come with CSS, but ionic does, which is why we prefer this method
+      if(element && element.classList) {
+        element.classList.add(css_class);
         element.onselectstart = function() {
           return false;
         };
@@ -1838,6 +1806,8 @@ window.ionic = {
     isReady: false,
     isFullScreen: false,
     platforms: null,
+    grade: null,
+    ua: navigator.userAgent,
 
     ready: function(cb) {
       // run through tasks to complete now that the device is ready
@@ -1851,16 +1821,18 @@ window.ionic = {
     },
 
     detect: function() {
+      var i, bodyClass = document.body.className;
+
       ionic.Platform._checkPlatforms();
 
-      if(this.platforms.length) {
-        // only change the body class if we got platform info
-        var i, bodyClass = document.body.className;
-        for(i = 0; i < this.platforms.length; i++) {
-          bodyClass += ' platform-' + this.platforms[i];
-        }
-        document.body.className = bodyClass;
+      // only change the body class if we got platform info
+      for(i = 0; i < this.platforms.length; i++) {
+        bodyClass += ' platform-' + this.platforms[i];
       }
+
+      bodyClass += ' grade-' + this.grade;
+
+      document.body.className = bodyClass.trim();
     },
 
     device: function() {
@@ -1871,23 +1843,30 @@ window.ionic = {
 
     _checkPlatforms: function(platforms) {
       this.platforms = [];
-      var v = this.version().toString().replace('.', '_');
+      this.grade = 'a';
 
-      if(this.isCordova()) {
-        this.platforms.push('cordova');
-      }
-      if(this.isIOS()) {
-        this.platforms.push('ios');
-        this.platforms.push('ios' + v.split('_')[0]);
-        this.platforms.push('ios' + v);
-      }
-      if(this.isIPad()) {
-        this.platforms.push('ipad');
-      }
-      if(this.isAndroid()) {
-        this.platforms.push('android');
-        this.platforms.push('android' + v.split('_')[0]);
-        this.platforms.push('android' + v);
+      if(this.isCordova()) this.platforms.push('cordova');
+      if(this.isIPad()) this.platforms.push('ipad');
+
+      var platform = this.platform();
+      if(platform) {
+        this.platforms.push(platform);
+
+        var version = this.version();
+        if(version) {
+          var v = version.toString();
+          if(v.indexOf('.') > 0) {
+            v = v.replace('.', '_');
+          } else {
+            v += '_0';
+          }
+          this.platforms.push(platform + v.split('_')[0]);
+          this.platforms.push(platform + v);
+
+          if(this.isAndroid() && version < 4.4) {
+            this.grade = (version < 4 ? 'c' : 'b');
+          }
+        }
       }
     },
 
@@ -1896,7 +1875,7 @@ window.ionic = {
       return !(!window.cordova && !window.PhoneGap && !window.phonegap);
     },
     isIPad: function() {
-      return navigator.userAgent.toLowerCase().indexOf('ipad') >= 0;
+      return this.ua.toLowerCase().indexOf('ipad') >= 0;
     },
     isIOS: function() {
       return this.is('ios');
@@ -1907,37 +1886,71 @@ window.ionic = {
 
     platform: function() {
       // singleton to get the platform name
-      if(!platformName) this.setPlatform(this.device().platform);
+      if(platformName === null) this.setPlatform(this.device().platform);
       return platformName;
     },
 
     setPlatform: function(n) {
-      platformName = n;
+      if(typeof n != 'undefined' && n !== null && n.length) {
+        platformName = n.toLowerCase();
+      } else if(this.ua.indexOf('Android') > 0) {
+        platformName = 'android';
+      } else if(this.ua.indexOf('iPhone') > -1 || this.ua.indexOf('iPad') > -1 || this.ua.indexOf('iPod') > -1) {
+        platformName = 'ios';
+      } else {
+        platformName = 'unknown';
+      }
     },
 
     version: function() {
       // singleton to get the platform version
-      if(!platformVersion) this.setVersion(this.device().version);
+      if(platformVersion === null) this.setVersion(this.device().version);
       return platformVersion;
     },
 
     setVersion: function(v) {
-      if(v) {
+      if(typeof v != 'undefined' && v !== null) {
         v = v.split('.');
-        platformVersion = parseFloat(v[0] + '.' + (v.length > 1 ? v[1] : 0));
-      } else {
-        platformVersion = 0;
+        v = parseFloat(v[0] + '.' + (v.length > 1 ? v[1] : 0));
+        if(!isNaN(v)) {
+          platformVersion = v;
+          return;
+        }
+      }
+
+      platformVersion = 0;
+
+      // fallback to user-agent checking
+      var pName = this.platform();
+      var versionMatch = {
+        'android': /Android (\d+).(\d+)?/,
+        'ios': /OS (\d+)_(\d+)?/
+      };
+      if(versionMatch[pName]) {
+        v = this.ua.match( versionMatch[pName] );
+        if(v.length > 2) {
+          platformVersion = parseFloat( v[1] + '.' + v[2] );
+        }
       }
     },
 
     // Check if the platform is the one detected by cordova
     is: function(type) {
+      type = type.toLowerCase();
+      // check if it has an array of platforms
+      if(this.platforms) {
+        for(var x = 0; x < this.platforms.length; x++) {
+          if(this.platforms[x] === type) return true;
+        }
+      }
+      // exact match
       var pName = this.platform();
       if(pName) {
-        return pName.toLowerCase() === type.toLowerCase();
+        return pName === type.toLowerCase();
       }
-      // A quick hack for 
-      return navigator.userAgent.toLowerCase().indexOf(type.toLowerCase()) >= 0;
+
+      // A quick hack for to check userAgent
+      return this.ua.toLowerCase().indexOf(type) >= 0;
     },
 
     exitApp: function() {
@@ -1948,10 +1961,10 @@ window.ionic = {
 
     showStatusBar: function(val) {
       // Only useful when run within cordova
-      this.showStatusBar = val;
+      this._showStatusBar = val;
       this.ready(function(){
         // run this only when or if the platform (cordova) is ready
-        if(ionic.Platform.showStatusBar) {
+        if(ionic.Platform._showStatusBar) {
           // they do not want it to be full screen
           StatusBar.show();
           document.body.classList.remove('status-bar-hide');
@@ -1984,14 +1997,14 @@ window.ionic = {
 
   };
 
-  var platformName, // just the name, like iOS or Android
-  platformVersion, // a float of the major and minor, like 7.1
+  var platformName = null, // just the name, like iOS or Android
+  platformVersion = null, // a float of the major and minor, like 7.1
   readyCallbacks = [];
 
   // setup listeners to know when the device is ready to go
   function onWindowLoad() {
     if(ionic.Platform.isCordova()) {
-      // the window and scripts are fully loaded, and a cordova/phonegap 
+      // the window and scripts are fully loaded, and a cordova/phonegap
       // object exists then let's listen for the deviceready
       document.addEventListener("deviceready", onPlatformReady, false);
     } else {
@@ -2025,15 +2038,27 @@ window.ionic = {
   ionic.CSS = {};
 
   (function() {
-    var keys = ['webkitTransform', 'transform', '-webkit-transform', 'webkit-transform',
+
+    // transform
+    var i, keys = ['webkitTransform', 'transform', '-webkit-transform', 'webkit-transform',
                 '-moz-transform', 'moz-transform', 'MozTransform', 'mozTransform'];
 
-    for(var i = 0; i < keys.length; i++) {
+    for(i = 0; i < keys.length; i++) {
       if(document.documentElement.style[keys[i]] !== undefined) {
         ionic.CSS.TRANSFORM = keys[i];
         break;
       }
     }
+
+    // transition
+    keys = ['webkitTransition', 'mozTransition', 'transition'];
+    for(i = 0; i < keys.length; i++) {
+      if(document.documentElement.style[keys[i]] !== undefined) {
+        ionic.CSS.TRANSITION = keys[i];
+        break;
+      }
+    }
+
   })();
 
   // classList polyfill for them older Androids
@@ -2049,12 +2074,12 @@ window.ionic = {
             for(x=0; x<arguments.length; x++) {
               fn(classes, classes.indexOf(arguments[x]), arguments[x]);
             }
-            
+
             self.className = classes.join(" ");
           };
         }
 
-        return {                    
+        return {
           add: update(function(classes, index, value) {
             ~index || classes.push(value);
           }),
@@ -2083,7 +2108,7 @@ window.ionic = {
   // polyfill use to simulate native "tap"
   ionic.tapElement = function(target, e) {
     // simulate a normal click by running the element's click method then focus on it
-    
+
     var ele = target.control || target;
 
     if(ele.disabled) return;
@@ -4650,7 +4675,7 @@ ionic.views.Scroll = ionic.views.View.inherit({
       var childNodes = this.el.childNodes;
       var leftWidth = 0;
       var rightWidth = 0;
-      var isCountingRightWidth = true;
+      var isCountingRightWidth = false;
 
       // Compute how wide the left children are
       // Skip all titles (there may still be two titles, one leaving the dom)
@@ -4658,7 +4683,7 @@ ionic.views.Scroll = ionic.views.View.inherit({
       for(i = 0; i < childNodes.length; i++) {
         c = childNodes[i];
         if (c.tagName && c.tagName.toLowerCase() == 'h1') {
-          isCountingRightWidth = false;
+          isCountingRightWidth = true;
           continue;
         }
 
@@ -4692,12 +4717,12 @@ ionic.views.Scroll = ionic.views.View.inherit({
           }
         }
       } else if(this.alignTitle == 'left') {
-        titleEl.classList.add('titleEl-left');
+        titleEl.classList.add('title-left');
         if(leftWidth > 0) {
           titleEl.style.left = (leftWidth + 15) + 'px';
         }
       } else if(this.alignTitle == 'right') {
-        titleEl.classList.add('titleEl-right');
+        titleEl.classList.add('title-right');
         if(rightWidth > 0) {
           titleEl.style.right = (rightWidth + 15) + 'px';
         }
@@ -4801,7 +4826,7 @@ ionic.views.Scroll = ionic.views.View.inherit({
       }
 
       this._currentDrag.content.style[ionic.CSS.TRANSFORM] = 'translate3d(' + newX + 'px, 0, 0)';
-      this._currentDrag.content.style.webkitTransition = 'none';
+      this._currentDrag.content.style[ionic.CSS.TRANSITION] = 'none';
     }
   });
 
@@ -4851,7 +4876,7 @@ ionic.views.Scroll = ionic.views.View.inherit({
       } else {
         _this._currentDrag.content.style[ionic.CSS.TRANSFORM] = 'translate3d(' + restingPoint + 'px, 0, 0)';
       }
-      _this._currentDrag.content.style[ionic.CSS.TRANSFORM] = '';
+      _this._currentDrag.content.style[ionic.CSS.TRANSITION] = '';
 
 
       // Kill the current drag
@@ -5451,10 +5476,14 @@ ionic.views.Scroll = ionic.views.View.inherit({
       this.isEnabled = isEnabled;
     },
     bringUp: function() {
-      this.el.style.zIndex = 0;
+      if(this.el.style.zIndex !== '0') {
+        this.el.style.zIndex = '0';
+      }
     },
     pushDown: function() {
-      this.el.style.zIndex = -1;
+      if(this.el.style.zIndex !== '-1') {
+        this.el.style.zIndex = '-1';
+      }
     }
   });
 
@@ -5724,7 +5753,7 @@ ionic.views.Slider = ionic.views.View.inherit({
 
     function stop() {
 
-      delay = 0;
+      delay = options.auto || 0;
       clearTimeout(interval);
 
     }
@@ -6556,7 +6585,7 @@ ionic.controllers.NavController = ionic.controllers.ViewController.inherit({
       this.right = options.right;
       this.content = options.content;
       this.dragThresholdX = options.dragThresholdX || 10;
-        
+
       this._rightShowing = false;
       this._leftShowing = false;
       this._isDragging = false;
@@ -6573,7 +6602,7 @@ ionic.controllers.NavController = ionic.controllers.ViewController.inherit({
     },
     /**
      * Set the content view controller if not passed in the constructor options.
-     * 
+     *
      * @param {object} content
      */
     setContent: function(content) {
@@ -6688,17 +6717,19 @@ ionic.controllers.NavController = ionic.controllers.ViewController.inherit({
       if((this._leftShowing && amount > maxLeft) || (this._rightShowing && amount < -maxRight)) {
         return;
       }
-      
+
       this.content.setTranslateX(amount);
 
       if(amount >= 0) {
         this._leftShowing = true;
         this._rightShowing = false;
 
-        // Push the z-index of the right menu down
-        this.right && this.right.pushDown && this.right.pushDown();
-        // Bring the z-index of the left menu up
-        this.left && this.left.bringUp && this.left.bringUp();
+        if(amount > 0) {
+          // Push the z-index of the right menu down
+          this.right && this.right.pushDown && this.right.pushDown();
+          // Bring the z-index of the left menu up
+          this.left && this.left.bringUp && this.left.bringUp();
+        }
       } else {
         this._rightShowing = true;
         this._leftShowing = false;
@@ -6712,7 +6743,7 @@ ionic.controllers.NavController = ionic.controllers.ViewController.inherit({
 
     /**
      * Given an event object, find the final resting position of this side
-     * menu. For example, if the user "throws" the content to the right and 
+     * menu. For example, if the user "throws" the content to the right and
      * releases the touch, the left menu should snap open (animated, of course).
      *
      * @param {Event} e the gesture event to use for snapping
@@ -6733,7 +6764,7 @@ ionic.controllers.NavController = ionic.controllers.ViewController.inherit({
       var velocityX = e.gesture.velocityX;
       var direction = e.gesture.direction;
 
-      // Less than half, going left 
+      // Less than half, going left
       //if(ratio > 0 && ratio < 0.5 && direction == 'left' && velocityX < velocityThreshold) {
       //this.openPercentage(0);
       //}
@@ -6757,17 +6788,17 @@ ionic.controllers.NavController = ionic.controllers.ViewController.inherit({
       else if(ratio < 0.5 && direction == 'right' && velocityX < velocityThreshold) {
         this.openPercentage(-100);
       }
-      
+
       // Going right, more than half, or quickly (snap open)
       else if(direction == 'right' && ratio >= 0 && (ratio >= 0.5 || velocityX > velocityThreshold)) {
         this.openPercentage(100);
       }
-      
+
       // Going left, more than half, or quickly (span open)
       else if(direction == 'left' && ratio <= 0 && (ratio <= -0.5 || velocityX > velocityThreshold)) {
         this.openPercentage(-100);
       }
-      
+
       // Snap back for safety
       else {
         this.openPercentage(0);
