@@ -635,7 +635,9 @@ function CMDay(d) {
 		};
 
 		$scope.$on('$stateChangeStart', function(event, toState, toParams, fromState, fromParams){
-		  $scope.modal.remove();
+			if ($scope.modal) {
+				$scope.modal.remove();
+			}
 		});
 
 		$rootScope.leftButtons = [
