@@ -76,6 +76,10 @@ CruiseMonkey by Benjamin Reed is licensed under the [Creative Commons Attributio
 Release Notes
 =============
 
+4.0.6
+-----
+* fix event search
+
 4.0.5
 -----
 
