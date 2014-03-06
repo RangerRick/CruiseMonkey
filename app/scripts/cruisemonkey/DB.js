@@ -224,10 +224,27 @@
 			return deferred.promise;
 		};
 
+		var __get = function(db, id, options) {
+			var deferred = $q.defer();
+			db.get(id, options, function(err, response) {
+				$rootScope.$apply(function() {
+					if (err) {
+						deferred.reject(err);
+					} else {
+						deferred.resolve(response);
+					}
+				});
+			});
+			return deferred.promise;
+		};
+
 		var __remote = function() {
 			return {
 				'query': function(view, options) {
 					return __query(__pouchRemote, view, options);
+				},
+				'get': function(id, options) {
+					return __get(__pouchRemote, id, options);
 				}
 			};
 		};
@@ -236,6 +253,9 @@
 			return {
 				'query': function(view, options) {
 					return __query(__pouchUser, view, options);
+				},
+				'get': function(id, options) {
+					return __get(__pouchUser, id, options);
 				}
 			};
 		};

@@ -3,6 +3,7 @@
 
 	/*global Connection: true*/
 	/*global isMobile: true*/
+	/*global ionic: true*/
 
 	angular.module('cruisemonkey',
 	[

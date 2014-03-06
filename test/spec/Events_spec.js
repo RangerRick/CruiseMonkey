@@ -138,30 +138,26 @@ describe('cruisemonkey.Events', function() {
 				expect(err).toBe('EventService.getUserEvent(): user not logged in');
 				done();
 			});
-			$rootScope.$apply();
 			$timeout.flush();
 		});
 	});
 
-	xdescribe("#getMyEvents", function() {
+	describe("#getMyEvents", function() {
 		async.it('should return only the events that user "rangerrick" has created or favorited', function(done) {
 			userService.save({'loggedIn': true, 'username':'rangerrick', 'password':'whatever'});
 			expect(db).toBeDefined();
 			expect(service.getMyEvents).toBeDefined();
 			service.getMyEvents().then(function(result) {
-				expect(result.length).toEqual(4);
+				expect(result.length).toEqual(3);
 				var items = getEvents(result);
-				expect(items['1']).toBeDefined();
-				expect(items['1'].isFavorite()).toBeTruthy();
-				expect(items['2']).toBeDefined();
-				expect(items['2'].isFavorite()).toBeFalsy();
-				expect(items['3']).toBeDefined();
-				expect(items['3'].isFavorite()).toBeTruthy();
-				expect(items['4']).toBeDefined();
-				expect(items['4'].isFavorite()).toBeFalsy();
+				expect(items['official-event']).toBeDefined();
+				expect(items['official-event'].isFavorite()).toBeTruthy();
+				expect(items['rangerrick-public']).toBeDefined();
+				expect(items['rangerrick-public'].isFavorite()).toBeFalsy();
+				expect(items['rangerrick-private']).toBeDefined();
+				expect(items['rangerrick-private'].isFavorite()).toBeFalsy();
 				done();
 			});
-			$rootScope.$apply();
 		});
 		async.it('should return nothing when the user is not logged in', function(done) {
 			userService.save({'loggedIn': false, 'username':'rangerrick', 'password':'whatever'});
@@ -172,24 +168,22 @@ describe('cruisemonkey.Events', function() {
 				expect(err).toBe('EventService.getMyEvents(): user not logged in');
 				done();
 			});
-			$rootScope.$apply();
 			$timeout.flush();
 		});
 	});
 
-	xdescribe('#getMyFavorites', function() {
+	describe('#getMyFavorites', function() {
 		async.it('should return a list of favorited ids', function(done) {
 			userService.save({'loggedIn': true, 'username':'rangerrick', 'password':'whatever'});
 			expect(db).toBeDefined();
 			expect(service.getMyFavorites).toBeDefined();
 			service.getMyFavorites().then(function(result) {
-				expect(result.length).toEqual(2);
+				expect(result.length).toEqual(1);
 				var items = getEvents(result);
-				expect(items['1']).toBeDefined();
-				expect(items['3']).toBeDefined();
+				expect(items['official-event']).toBeDefined();
+				expect(items['official-event']).toBeDefined();
 				done();
 			});
-			$rootScope.$apply();
 		});
 		async.it('should return nothing when the user is not logged in', function(done) {
 			userService.save({'loggedIn': false, 'username':'rangerrick', 'password':'whatever'});
@@ -200,19 +194,18 @@ describe('cruisemonkey.Events', function() {
 				expect(err).toBe('EventService.getMyFavorites(): user not logged in');
 				done();
 			});
-			$rootScope.$apply();
 			$timeout.flush();
 		});
 	});
 
-	xdescribe('#isFavorite', function() {
+	describe('#isFavorite', function() {
 		async.it('should return true if the given id is a favorite while rangerrick is logged in', function(done) {
 			userService.save({'loggedIn': true, 'username':'rangerrick', 'password':'whatever'});
 			expect(db).toBeDefined();
 			expect(service.isFavorite).toBeDefined();
-			service.isFavorite('3').then(function(result) {
+			service.isFavorite('official-event').then(function(result) {
 				expect(result).toBeTruthy();
-				service.isFavorite('2').then(function(result) {
+				service.isFavorite('triluna-public').then(function(result) {
 					expect(result).toBeFalsy();
 					done();
 				});
@@ -223,7 +216,7 @@ describe('cruisemonkey.Events', function() {
 			userService.save({'loggedIn': false, 'username':'rangerrick', 'password':'whatever'});
 			expect(db).toBeDefined();
 			expect(service.isFavorite).toBeDefined();
-			service.isFavorite('3').then(function() {
+			service.isFavorite('official-event').then(function() {
 			}, function(err) {
 				expect(err).toBe('EventService.isFavorite(): user not logged in');
 				done();
@@ -235,7 +228,7 @@ describe('cruisemonkey.Events', function() {
 			userService.save({'loggedIn': true, 'username':'bob', 'password':'whatever'});
 			expect(db).toBeDefined();
 			expect(service.isFavorite).toBeDefined();
-			service.isFavorite('3').then(function(result) {
+			service.isFavorite('rangerrick-public').then(function(result) {
 				expect(result).toBeFalsy();
 				done();
 			});

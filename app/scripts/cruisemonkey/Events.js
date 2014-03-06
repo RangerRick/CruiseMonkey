@@ -824,16 +824,31 @@ CMFavorite.prototype.getRawData = function() {
 				return rejectedResult('EventService.getMyEvents(): user not logged in');
 			}
 
-			_myEvents = doEventQuery(username, function(doc) {
-				if (doc.type === 'event') {
-					emit(doc.username, {'_id': doc._id, 'type': doc.type});
-				} else if (doc.type === 'favorite') {
-					emit(doc.username, {'_id': doc.eventId, 'type': doc.type});
-					emit(doc.username, {'_id': doc._id, 'type': doc.type});
-				}
-			}, function(doc) {
-				return (doc.isPublic || doc.username === username);
+			var deferred = $q.defer();
+			_myEvents = deferred.promise;
+
+			var publicPromise = queryEventView('public-events');
+			var userPromise   = queryEventView('user-events', {
+				key: username
 			});
+
+			$q.all([publicPromise, userPromise]).then(function(results) {
+				var ret = {}, i, ev;
+				for (i=0; i < results[0].length; i++) {
+					ev = results[0][i];
+					if (ev.isPublic() && ev.isFavorite()) {
+						ret[ev.getId()] = ev;
+					}
+				}
+				for (i=0; i < results[1].length; i++) {
+					ev = results[1][i];
+					ret[ev.getId()] = ev;
+				}
+				deferred.resolve(reconcileEvents(ret, []));
+			}, function(err) {
+				deferred.reject(err);
+			});
+
 			_myEvents['finally'](function() {
 				log.debug('EventService.getMyEvents(): finished.');
 				_myEvents = null;
@@ -857,43 +872,17 @@ CMFavorite.prototype.getRawData = function() {
 			var deferred = $q.defer();
 			_myFavorites = deferred.promise;
 
-			$q.when(db.getDatabase()).then(function(database) {
-				database.query({
-					map: function(doc) {
-						if (doc.type === 'favorite') {
-							emit(doc.username, {'_id':doc.eventId});
-							emit(doc.username, {'_id':doc._id});
-						}
+			queryEventView('all-events').then(function(events) {
+				var ret = [], ev;
+				for (var i=0; i < events.length; i++) {
+					ev = events[i];
+					if (ev.isFavorite()) {
+						ret.push(ev);
 					}
-				}, {
-					reduce: true,
-					include_docs:true,
-					key:username
-				}, function(err, res) {
-					$rootScope.$apply(function() {
-						if (err) {
-							log.error(err);
-							deferred.reject(err);
-						} else {
-							var events = [],
-								favorites = [],
-								doc;
-							angular.forEach(res.rows, function(row, index) {
-								doc = row.doc;
-								if (doc.type === 'event') {
-									if (doc.username === username || doc.isPublic) {
-										events.push(new CMEvent(doc));
-									}
-								} else if (doc.type === 'favorite') {
-									favorites.push(new CMFavorite(doc));
-								} else {
-									log.warn('EventService.getMyFavorites(): unknown document type (' + doc.type + ') matched for id: ' + doc._id);
-								}
-							});
-							deferred.resolve(reconcileEvents(events, favorites));
-						}
-					});
-				});
+				}
+				deferred.resolve(ret);
+			}, function(err) {
+				deferred.reject(err);
 			});
 
 			_myFavorites['finally'](function() {
@@ -919,27 +908,12 @@ CMFavorite.prototype.getRawData = function() {
 			var deferred = $q.defer();
 			_isFavorite = deferred.promise;
 
-			$q.when(db.getDatabase()).then(function(database) {
-				database.query({
-					map: function(doc) {
-						if (doc.type === 'favorite') {
-							emit({ username: doc.username, eventId: doc.eventId }, null);
-						}
-					}
-				}, {
-					reduce: true,
-					include_docs:true,
-					key: {username: username, eventId: eventId}
-				}, function(err, res) {
-					$rootScope.$apply(function() {
-						if (err) {
-							log.error(err);
-							deferred.reject(err);
-						} else {
-							deferred.resolve(res.total_rows > 0);
-						}
-					});
-				});
+			var docId = username + ':' + eventId;
+			newdb.local().get(docId).then(function(response) {
+				deferred.resolve(response && response._id === docId);
+			}, function(err) {
+				log.warn('error getting ' + docId, err);
+				deferred.resolve(false);
 			});
 
 			_isFavorite['finally'](function() {
