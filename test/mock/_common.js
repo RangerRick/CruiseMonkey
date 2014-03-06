@@ -90,3 +90,95 @@ var MockPouchWrapper = function() {
 		}
 	};
 };
+
+var defaultDocs = [
+	{
+		'_id': 'official-event',
+		'type': 'event',
+		'username': 'official',
+		'summary': 'official event',
+		'start': '2012-01-01 00:00',
+		'isPublic': true
+	},
+	{
+		'_id': 'rangerrick-public',
+		'type': 'event',
+		'username': 'rangerrick',
+		'summary': 'rangerrick public event',
+		'start': '2013-01-01 00:00',
+		'isPublic': true
+	},
+	{
+		'_id': 'rangerrick-private',
+		'type': 'event',
+		'username': 'rangerrick',
+		'summary': 'rangerrick private event',
+		'start': '2013-01-02 00:00',
+		'isPublic': false
+	},
+	{
+		'_id': 'triluna-public',
+		'type': 'event',
+		'username': 'triluna',
+		'summary': 'triluna public event',
+		'start': '2013-02-01 00:00',
+		'isPublic': true
+	},
+	{
+		'_id': 'triluna-private',
+		'type': 'event',
+		'username': 'triluna',
+		'summary': 'triluna private event',
+		'start': '2013-02-02 00:00',
+		'isPublic': false
+	},
+	{
+		'_id': 'triluna:rangerrick-public',
+		'type': 'favorite',
+		'username': 'triluna',
+		'eventId': 'rangerrick-public'
+	}
+];
+
+var userDb     = 'http://localhost:5984/test-userdb',
+	pristineDb = 'http://localhost:5984/test-pristine',
+	remoteDb   = 'http://localhost:5984/test-db';
+
+var doDbSetup = function(userDb, pristineDb, remoteDb, done) {
+	var userDatabase = new PouchDB(userDb);
+	var pristineDatabase = new PouchDB(pristineDb);
+	var remoteDatabase = new PouchDB(remoteDb);
+	userDatabase.destroy(function(err, info) {
+		if (err) {
+			console.log(userDb + ' NOT destroyed:', err);
+			return;
+		}
+		//console.log(userDb + ' destroyed');
+
+		remoteDatabase.destroy(function(err, info) {
+			if (err) {
+				console.log(remoteDb + ' NOT destroyed:',err);
+				return;
+			}
+			//console.log(remoteDb + ' destroyed');
+
+			remoteDatabase = new PouchDB(remoteDb);
+			remoteDatabase.replicate.from(pristineDatabase, {
+				continuous: false,
+				complete: function() {
+					//console.log('finished replicating ' + pristineDb + ' to ' + remoteDb);
+					remoteDatabase.bulkDocs({
+						docs: defaultDocs
+					}, function(err, res) {
+						if (err) {
+							console.log('error bulk-adding docs:',err);
+						} else {
+							//console.log('finished bulk-adding docs to ' + remoteDb);
+							done();
+						}
+					});
+				}
+			});
+		});
+	});
+};
