@@ -457,14 +457,12 @@ CMFavorite.prototype.getRawData = function() {
 
 		var reconcileEvents = function(events, favorites) {
 			var _events = {}, _favs = {}, fav, i, ret = [];
-			for (i=0; i < events.length; i++) {
-				_events[events[i]._rawdata._id] = events[i];
-			}
-			for (i=0; i < favorites.length; i++) {
-				fav = favorites[i];
+			angular.forEach(events, function(ev) {
+				_events[ev._rawdata._id] = ev;
+			});
+			angular.forEach(favorites, function(fav) {
 				_favs[fav.getEventId()] = fav;
-			}
-
+			});
 			angular.forEach(_events, function(ev) {
 				fav = _favs[ev.getId()];
 				if (fav) {
@@ -502,7 +500,6 @@ CMFavorite.prototype.getRawData = function() {
 							var lastEvent;
 							var doc;
 							angular.forEach(res.rows, function(row, index) {
-								// log.debug('row=',row);
 								if (!row.doc) {
 									return;
 								}
@@ -526,6 +523,70 @@ CMFavorite.prototype.getRawData = function() {
 				});
 			});
 
+			return deferred.promise;
+		};
+
+		var isString = function(value) {
+			if (typeof value === 'string' || value instanceof String) {
+				return true;
+			} else {
+				return false;
+			}
+		};
+
+		/**
+		  * Given an event view name, query that view and optionally the favorites view,
+		  * and coalesce the results into a list of CMEvent objects, with associated
+		  * CMFavorite objects if any.
+		  */
+		var queryEventView = function() {
+			var deferred = $q.defer();
+
+			var args = Array.prototype.slice.call(arguments);
+			var username = UserService.getUsername();
+			var options = {include_docs:true};
+
+			if (args.length > 0 && !isString(args[args.length - 1])) {
+				var opt = args.pop();
+				//console.log('last argument was options!',opt);
+				angular.extend(options, opt);
+			}
+			//console.log('options=',options);
+
+			var promises = [], i;
+
+			for (i=0; i < args.length; i++) {
+				promises.push(newdb.local().query(args[i], angular.copy(options)));
+			}
+			if (username) {
+				var opts = angular.copy(options);
+				angular.extend(opts, {
+					key:username
+				});
+				promises.push(newdb.local().query('favorites', opts));
+			}
+
+			$q.all(promises).then(function(results) {
+				var events = [], favorites = [], favresults = [], j, result;
+				if (username) {
+					favresults = results.pop();
+				}
+
+				// iterate over any events results we got
+				for (i=0; i < results.length; i++) {
+					result = results[i];
+					for (j=0; j < result.rows.length; j++) {
+						events.push(new CMEvent(result.rows[j].doc));
+					}
+				}
+				for (i=0; i < favresults.rows.length; i++) {
+					favorites.push(new CMFavorite(favresults.rows[i].doc));
+				}
+
+				deferred.resolve(reconcileEvents(events, favorites));
+			}, function(err) {
+				deferred.reject(err);
+			});
 			return deferred.promise;
 		};
 
@@ -627,7 +688,6 @@ CMFavorite.prototype.getRawData = function() {
 			return deferred.promise;
 		};
 
-		/*
 		var _allEvents = null;
 		var getAllEvents = function() {
 			log.debug('EventService.getAllEvents()');
@@ -647,27 +707,6 @@ CMFavorite.prototype.getRawData = function() {
 				log.error('Failed to get all events:',err);
 				deferred.reject(err);
 			});
-			_allEvents['finally'](function() {
-				log.debug('EventService.getAllEvents(): finished.');
-				_allEvents = null;
-			});
-			return _allEvents;
-		};
-		*/
-
-		var _allEvents = null;
-		var getAllEvents = function() {
-			log.debug('EventService.getAllEvents()');
-			if (_allEvents) {
-				return _allEvents;
-			}
-
-			log.debug('EventService.getAllEvents()');
-			_allEvents = doQuery(CMEvent, function(doc) {
-				if (doc.type === 'event') {
-					emit(doc.username, doc);
-				}
-			}, {reduce: true});
 			_allEvents['finally'](function() {
 				log.debug('EventService.getAllEvents(): finished.');
 				_allEvents = null;
@@ -705,50 +744,10 @@ CMFavorite.prototype.getRawData = function() {
 			var deferred = $q.defer();
 			_officialEvents = deferred.promise;
 
-			$q.when(db.getDatabase()).then(function(database) {
-				database.query({
-					map: function(doc) {
-						if (doc.type === 'event' && doc.username === 'official') {
-							emit(doc._id);
-						} else if (doc.type === 'favorite') {
-							emit(doc.eventId);
-							emit(doc._id);
-						}
-					}
-				}, {
-					reduce: true,
-					include_docs:true
-				}, function(err, res) {
-					$rootScope.$apply(function() {
-						if (err) {
-							log.error(err);
-							deferred.reject(err);
-						} else {
-							var username = UserService.getUsername();
-
-							var events = [],
-								favorites = [],
-								doc;
-							angular.forEach(res.rows, function(row, index) {
-								doc = row.doc;
-								if (doc.type === 'event') {
-									if (doc.username === 'official') {
-										events.push(new CMEvent(doc));
-									} else {
-										log.debug('EventService.getOfficialEvents(): event (' + doc._id + ') did not match matchFunc()!  Skipping.');
-									}
-								} else if (doc.type === 'favorite') {
-									if (username && doc.username === username) {
-										favorites.push(new CMFavorite(doc));
-									}
-								} else {
-									log.warn('EventService.getOfficialEvents(): unknown document type (' + doc.type + ') matched for id: ' + doc._id);
-								}
-							});
-							deferred.resolve(reconcileEvents(events, favorites));
-						}
-					});
-				});
+			queryEventView('official-events').then(function(events) {
+				deferred.resolve(events);
+			}, function(err) {
+				deferred.reject(err);
 			});
 
 			_officialEvents['finally'](function() {
@@ -766,54 +765,13 @@ CMFavorite.prototype.getRawData = function() {
 
 			log.debug('EventService.getUnofficialEvents()');
 
-			var username = UserService.getUsername();
 			var deferred = $q.defer();
 			_unofficialEvents = deferred.promise;
 
-			$q.when(db.getDatabase()).then(function(database) {
-				database.query({
-					map: function(doc) {
-						if (doc.type === 'event' && doc.username !== 'official') {
-							emit(doc._id);
-						} else if (doc.type === 'favorite') {
-							emit(doc.eventId);
-							emit(doc._id);
-						}
-					}
-				}, {
-					reduce: true,
-					include_docs:true
-				}, function(err, res) {
-					$rootScope.$apply(function() {
-						if (err) {
-							log.error(err);
-							deferred.reject(err);
-						} else {
-							var username = UserService.getUsername();
-
-							var events = [],
-								favorites = [],
-								doc;
-							angular.forEach(res.rows, function(row, index) {
-								doc = row.doc;
-								if (doc.type === 'event') {
-									if (doc.isPublic) {
-										events.push(new CMEvent(doc));
-									} else {
-										log.debug('EventService.getUnofficialEvents(): event (' + doc._id + ') did not match matchFunc()!  Skipping.');
-									}
-								} else if (doc.type === 'favorite') {
-									if (username && doc.username === username) {
-										favorites.push(new CMFavorite(doc));
-									}
-								} else {
-									log.warn('EventService.getUnofficialEvents(): unknown document type (' + doc.type + ') matched for id: ' + doc._id);
-								}
-							});
-							deferred.resolve(reconcileEvents(events, favorites));
-						}
-					});
-				});
+			queryEventView('unofficial-events').then(function(events) {
+				deferred.resolve(events);
+			}, function(err) {
+				deferred.reject(err);
 			});
 
 			_unofficialEvents['finally'](function() {
@@ -836,12 +794,15 @@ CMFavorite.prototype.getRawData = function() {
 				return rejectedResult('EventService.getUserEvent(): user not logged in');
 			}
 
-			_userEvents = doEventQuery(username, function(doc) {
-				if (doc.type === 'event' && doc.username !== 'official') {
-					emit(doc.username, {'_id': doc._id, 'type': doc.type});
-				}
-			}, function(doc) {
-				return (doc.username === username);
+			var deferred = $q.defer();
+			_userEvents = deferred.promise;
+
+			queryEventView('user-events', {
+				key: username
+			}).then(function(events) {
+				deferred.resolve(events);
+			}, function(err) {
+				deferred.reject(err);
 			});
 			_userEvents['finally'](function() {
 				log.debug('EventService.getUserEvents(): finished.');

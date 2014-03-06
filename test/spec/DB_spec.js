@@ -170,18 +170,28 @@ describe('cruisemonkey.DB', function() {
 				_db.local().query('favorites', {include_docs: true}).then(function(results) {
 					expect(results).toBeDefined();
 					expect(results.rows).toBeDefined();
-					expect(results.rows.length).toEqual(1);
-					expect(results.rows[0].id).toBe('triluna:rangerrick-public');
+					expect(results.rows.length).toEqual(2);
+					//expect(results.rows[0].id).toBe('triluna:rangerrick-public');
 					done();
 				});
 			});
 		});
-		async.it('should return no favorites when queried for rangerrick', function(done) {
+		async.it('should return no favorites when queried for bob', function(done) {
+			doDbInit(function() {
+				_db.local().query('favorites', {include_docs: true, key: 'bob'}).then(function(results) {
+					expect(results).toBeDefined();
+					expect(results.rows).toBeDefined();
+					expect(results.rows.length).toEqual(0);
+					done();
+				});
+			});
+		});
+		async.it('should return 1 favorite when queried for rangerrick', function(done) {
 			doDbInit(function() {
 				_db.local().query('favorites', {include_docs: true, key: 'rangerrick'}).then(function(results) {
 					expect(results).toBeDefined();
 					expect(results.rows).toBeDefined();
-					expect(results.rows.length).toEqual(0);
+					expect(results.rows.length).toEqual(1);
 					done();
 				});
 			});

@@ -24,7 +24,7 @@ if (typeof String.prototype.contains !== 'function') {
 var LoggedInUserService = function() {
 	var user = {
 		loggedIn: true,
-		'username': 'ranger',
+		'username': 'rangerrick',
 		'password': 'secret'
 	};
 	
@@ -137,6 +137,12 @@ var defaultDocs = [
 		'type': 'favorite',
 		'username': 'triluna',
 		'eventId': 'rangerrick-public'
+	},
+	{
+		'_id': 'rangerrick:official-event',
+		'type': 'favorite',
+		'username': 'rangerrick',
+		'eventId': 'official-event'
 	}
 ];
 
