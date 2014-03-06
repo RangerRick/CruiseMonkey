@@ -4,12 +4,11 @@
 	angular.module('cruisemonkey.Seamail', [
 		'angularLocalStorage',
 		'cruisemonkey.Cordova',
-		'cruisemonkey.Logging',
 		'cruisemonkey.Notifications',
 		'cruisemonkey.Settings',
 		'cruisemonkey.User'
 	])
-	.factory('SeamailService', ['$q', '$rootScope', '$timeout', '$interval', '$http', 'SettingsService', 'NotificationService', 'UserService', 'LoggingService', 'storage', 'CordovaService', function($q, $rootScope, $timeout, $interval, $http, SettingsService, notifications, UserService, log, storage, cor) {
+	.factory('SeamailService', ['$q', '$rootScope', '$timeout', '$interval', '$http', 'SettingsService', 'NotificationService', 'UserService', '$log', 'storage', 'CordovaService', function($q, $rootScope, $timeout, $interval, $http, SettingsService, notifications, UserService, log, storage, cor) {
 		var interval = null;
 
 		storage.bind($rootScope, 'seamailCount', {
@@ -40,7 +39,6 @@
 				}
 			})
 			.success(function(data, status, headers, config) {
-				/*jshint camelcase: false */
 				log.debug('SeamailService: Success!');
 				if (data.status === 'ok') {
 					if (data.email_count > $rootScope.seamailCount) {

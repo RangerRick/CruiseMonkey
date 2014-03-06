@@ -5,10 +5,9 @@
 
 	angular.module('cruisemonkey.Cordova', [
 		'ng',
-		'ngAnimate',
-		'cruisemonkey.Logging'
+		'ngAnimate'
 	])
-	.factory('CordovaService', ['$rootScope', '$document', '$window', '$q', '$timeout', '$animate', 'LoggingService', function($rootScope, $document, $window, $q, $timeout, $animate, log) {
+	.factory('CordovaService', ['$rootScope', '$document', '$window', '$q', '$timeout', '$animate', '$log', function($rootScope, $document, $window, $q, $timeout, $animate, log) {
 		var isCordova = $q.defer();
 		var initWait = 5000;
 

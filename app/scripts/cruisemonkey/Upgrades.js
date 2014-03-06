@@ -25,10 +25,9 @@
 	angular.module('cruisemonkey.Upgrades', [
 		'angularLocalStorage',
 		'cruisemonkey.Config',
-		'cruisemonkey.Logging',
 		'cruisemonkey.Notifications'
 	])
-	.factory('UpgradeService', ['$q', '$timeout', 'LoggingService', 'NotificationService', 'storage', 'config.app.version', 'config.upgrade', function($q, $timeout, log, notifications, storage, version, shouldUpgrade) {
+	.factory('UpgradeService', ['$q', '$timeout', '$log', 'NotificationService', 'storage', 'config.app.version', 'config.upgrade', function($q, $timeout, log, notifications, storage, version, shouldUpgrade) {
 		var previousVersion = storage.get('cm.version');
 		if (!previousVersion) {
 			previousVersion = '0.0.0';

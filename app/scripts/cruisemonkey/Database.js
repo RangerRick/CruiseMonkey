@@ -9,55 +9,31 @@
 		'angularLocalStorage',
 		'cruisemonkey.Config',
 		'cruisemonkey.Cordova',
-		'cruisemonkey.Logging',
 		'cruisemonkey.Notifications',
 		'cruisemonkey.Settings',
 		'cruisemonkey.Upgrades',
 		'cruisemonkey.User'
 	])
-	.factory('Database', ['$q', '$location', '$interval', '$timeout', '$rootScope', '$window', 'LoggingService', 'UpgradeService', 'storage', 'config.database.replicate', 'SettingsService', 'CordovaService', 'NotificationService', 'UserService', function($q, $location, $interval, $timeout, $rootScope, $window, log, upgrades, storage, replicate, SettingsService, cor, notifications, UserService) {
+	.factory('Database', ['$q', '$location', '$interval', '$timeout', '$rootScope', '$window', '$log', 'UpgradeService', 'storage', 'config.database.replicate', 'SettingsService', 'CordovaService', 'NotificationService', 'UserService', function($q, $location, $interval, $timeout, $rootScope, $window, log, upgrades, storage, replicate, SettingsService, cor, notifications, UserService) {
 		var isAndroid = function() {
 			return $window.navigator && $window.navigator.userAgent && $window.navigator.userAgent.indexOf('Android') >= 0;
 		};
 
+		replicate = false;
 		storage.bind($rootScope, 'lastSent', {
 			'storeName': 'cm.lastSent'
 		});
 
-		var getDatabaseName = function(dbname) {
-			var deferred = $q.defer();
-			if (!dbname) {
-				dbname = SettingsService.getDatabaseName();
-			}
-			return (isAndroid()? 'websql://':'') + dbname;
-		};
-
-		var getHost = function() {
-			var host = SettingsService.getDatabaseHost();
-			if (!host) {
-				host = 'http://' + $location.host();
-			}
-
-			if (!host.endsWith('/')) {
-				host += '/';
-			}
-			if (!host.startsWith('http')) {
-				host = 'http://' + host;
-			}
-
-			return host + SettingsService.getDatabaseName();
-		};
-
-		log.info('Initializing CruiseMonkey database: ' + getDatabaseName());
+		log.info('Initializing CruiseMonkey database: ' + SettingsService.getDatabaseName());
 
 		upgrades.register('3.9.5', 'Reset Event Cache', function() {
 			var deferred = $q.defer();
-			PouchDB.destroy(getDatabaseName('cruisemonkey'), function(err) {
+			PouchDB.destroy('cruisemonkey', function(err) {
 				$rootScope.safeApply(function() {
 					if (err) {
 						deferred.reject('Failed to destroy cruisemonkey: ' + err);
 					} else {
-						PouchDB.destroy(getDatabaseName('cmtest'), function(err) {
+						PouchDB.destroy('cmtest', function(err) {
 							if (err) {
 								deferred.reject('Failed to destroy cmtest: ' + err);
 							} else {
@@ -87,7 +63,7 @@
 			ready = $q.defer();
 
 		var initializeFromRemote = function() {
-			var host = getHost();
+			var host = SettingsService.getRemoteDatabaseUrl();
 			var deferred = $q.defer();
 
 			if (resetting) {
@@ -99,7 +75,6 @@
 
 			$q.when(ready).then(function() {
 				if (host && replicate) {
-					/*jshint camelcase: false */
 					log.debug('Database.initializeFromRemote(): Getting all docs.');
 					db.info(function(err, info) {
 						$rootScope.safeApply(function() {
@@ -111,7 +86,7 @@
 								}, function(err, response) {
 									$rootScope.safeApply(function() {
 										if (err) {
-											console.log('Database.initializeFromRemote(): error:',err);
+											log.debug('Database.initializeFromRemote(): error:',err);
 											deferred.reject(err);
 											return;
 										}
@@ -129,18 +104,18 @@
 											}
 										});
 
-										console.log('newDocs=',newDocs);
+										log.debug('newDocs=',newDocs);
 										deferred.reject(err);
 										db.bulkDocs({
 											docs: newDocs,
 											new_edits: false
 										}, function(err, response) {
 											if (err) {
-												console.log('Database.initializeFromRemote(): error:',err);
+												log.debug('Database.initializeFromRemote(): error:',err);
 												deferred.reject(err);
 												return;
 											} else {
-												console.log('Database.initializeFromRemote(): response=',response);
+												log.debug('Database.initializeFromRemote(): response=',response);
 												deferred.resolve(response);
 											}
 
@@ -177,18 +152,18 @@
 				return deferred.promise;
 			}
 
-			db = new PouchDB(getDatabaseName());
+			// this should be getlocal, just do this for now
+			db = new PouchDB(SettingsService.getRemoteDatabaseUrl());
 			if (replicate) {
 				log.debug('Database.initialize(): Replication enabled, initializing remoteDb.');
-				remoteDb = new PouchDB(getHost());
+				remoteDb = new PouchDB(SettingsService.getRemoteDatabaseUrl());
 			}
 
 			log.info('Database.initializeDatabase(): Watching for document changes.');
-			/*jshint camelcase: false */
 			db.changes({
 				since: $rootScope.lastSequence,
 				onChange: function(change) {
-					console.log('local change:',change);
+					log.debug('local change:',change);
 					$rootScope.safeApply(function() {
 						$rootScope.lastSequence = change.seq;
 						$timeout(function() {
@@ -229,7 +204,7 @@
 					});
 				} catch (ex) {
 					log.error('Failed to compact database!');
-					console.log(ex);
+					log.debug(ex);
 					deferred.reject(ex);
 				}
 			});
@@ -262,9 +237,10 @@
 					log.info('Database.startReplication(): Starting replication from the remote DB...');
 					replicationFrom = db.replicate.from(remoteDb, {
 						'continuous': true,
+						'batch_size': 1000,
 						'onChange': function(change) {
 							$rootScope.safeApply(function() {
-								console.log('remote change to local:',change);
+								log.debug('remote change to local:',change);
 								$rootScope.lastUpdated = moment();
 							});
 						},
@@ -291,17 +267,17 @@
 								}
 								if (err) {
 									log.error('Replication from remote DB ended: ' + err);
-									console.log('Details:',details);
+									log.debug('Details:',details);
 									if (db && replicationFrom) {
 										try {
 											replicationFrom.cancel();
 										} catch (err) {
-											console.log('Cancel failed.');
+											log.debug('Cancel failed.');
 										}
 										replicationFrom = null;
 									}
 								} else {
-									console.log('Replication from remote DB complete:',details);
+									log.debug('Replication from remote DB complete:',details);
 									$rootScope.lastUpdated = moment();
 								}
 							});
@@ -340,12 +316,12 @@
 						params = {};
 					}
 
-					/*jshint camelcase: false */
 					replicationTo = db.replicate.to(remoteDb, {
 						'continuous': true,
+						'batch_size': 1000,
 						'onChange': function(change) {
 							$rootScope.safeApply(function() {
-								console.log('local change to remote:',change);
+								log.debug('local change to remote:',change);
 								$rootScope.lastUpdated = moment();
 							});
 						},
@@ -358,17 +334,17 @@
 								}
 								if (err) {
 									log.error('Replication to remote DB ended: ' + err);
-									console.log('Details:',details);
+									log.debug('Details:',details);
 									if (db && replicationTo) {
 										try {
 											replicationTo.cancel();
 										} catch (err) {
-											console.log('Cancel failed.');
+											log.debug('Cancel failed.');
 										}
 										replicationTo = null;
 									}
 								} else {
-									console.log('Replication to remote DB complete:',details);
+									log.debug('Replication to remote DB complete:',details);
 									$rootScope.lastUpdated = moment();
 								}
 							});
@@ -433,7 +409,7 @@
 				storage.set('cm.seamail.count', 0);
 				storage.set('cm.firstInitialization', true);
 
-				PouchDB.destroy(getDatabaseName(), function(err) {
+				PouchDB.destroy(SettingsService.getDatabaseName(), function(err) {
 					$rootScope.safeApply(function() {
 						if (err) {
 							$window.alert('Failed to destroy existing database!');

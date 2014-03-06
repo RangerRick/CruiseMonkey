@@ -9,10 +9,9 @@
 	
 	angular.module('cruisemonkey.Notifications', [
 		'cruisemonkey.Config',
-		'cruisemonkey.Cordova',
-		'cruisemonkey.Logging'
+		'cruisemonkey.Cordova'
 	])
-	.factory('NotificationService', ['$q', '$rootScope', '$timeout', '$window', 'config.notifications.timeout', 'LoggingService', 'CordovaService', function($q, $rootScope, $timeout, $window, notificationTimeout, log, cor) {
+	.factory('NotificationService', ['$q', '$rootScope', '$timeout', '$window', 'config.notifications.timeout', '$log', 'CordovaService', function($q, $rootScope, $timeout, $window, notificationTimeout, log, cor) {
 		var notificationQueue = [];
 		var nextId = 0;
 

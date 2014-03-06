@@ -221,8 +221,8 @@ CMAmenity.prototype.toString = function() {
 		])
 	};
 
-	angular.module('cruisemonkey.Decks', ['cruisemonkey.Logging'])
-	.factory('DeckService', ['LoggingService', function(log) {
+	angular.module('cruisemonkey.Decks', [])
+	.factory('DeckService', ['$log', function(log) {
 		log.info('DeckService: Initializing DeckService.');
 
 		return {

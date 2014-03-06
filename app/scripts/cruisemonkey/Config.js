@@ -19,7 +19,7 @@
 		'cruisemonkey.Config',
 		'cruisemonkey.Upgrades'
 	])
-	.factory('SettingsService', ['storage', '$rootScope', 'config.database.host', 'config.database.name', 'config.urls.openinchrome', 'config.twitarr.root', 'UpgradeService', function(storage, $rootScope, databaseHost, databaseName, openInChrome, twitarrRoot, upgrades) {
+	.factory('SettingsService', ['$log', 'storage', '$rootScope', '$location', 'config.database.host', 'config.database.name', 'config.urls.openinchrome', 'config.twitarr.root', 'UpgradeService', function(log, storage, $rootScope, $location, databaseHost, databaseName, openInChrome, twitarrRoot, upgrades) {
 		var defaultValue = {
 			'database.host': databaseHost,
 			'database.name': databaseName,
@@ -80,7 +80,7 @@
 			var twRoot       = $rootScope._settings['twitarr.root']      || twitarrRoot;
 
 			if (dbHost === dbName) {
-				console.log('Database host invalid!');
+				log.warn('Database host invalid!');
 				dbHost = databaseHost;
 			}
 
@@ -98,6 +98,26 @@
 				openInChrome: openInChrome,
 				twitarrRoot: twRoot
 			});
+		};
+
+		var getRemoteDatabaseUrl = function() {
+			var host = getSettings().databaseHost;
+			if (!host) {
+				host = 'http://' + $location.host();
+			}
+
+			if (!host.endsWith('/')) {
+				host += '/';
+			}
+			if (!host.startsWith('http')) {
+				host = 'http://' + host;
+			}
+
+			return host + getSettings().databaseName;
+		};
+
+		var getLocalDatabaseUrl = function() {
+			return getRemoteDatabaseUrl();
 		};
 
 		return {
@@ -129,6 +149,12 @@
 			},
 			'setTwitarrRoot': function(root) {
 				$rootScope._settings['twitarr.root'] = angular.copy(root);
+			},
+			'getRemoteDatabaseUrl': function() {
+				return getRemoteDatabaseUrl();
+			},
+			'getLocalDatabaseUrl': function() {
+				return getLocalDatabaseUrl();
 			}
 		};
 	}]);

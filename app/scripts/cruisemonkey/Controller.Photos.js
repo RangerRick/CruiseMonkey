@@ -4,10 +4,9 @@
 	angular.module('cruisemonkey.controllers.Photos', [
 		'ionic',
 		'cruisemonkey.Cordova',
-		'cruisemonkey.Logging',
 		'cruisemonkey.Settings'
 	])
-	.factory('PhotoService', ['$q', '$rootScope', '$http', '$timeout', 'SettingsService', 'CordovaService', 'LoggingService', function($q, $rootScope, $http, $timeout, settings, cordova, log) {
+	.factory('PhotoService', ['$q', '$rootScope', '$http', '$timeout', 'SettingsService', 'CordovaService', '$log', function($q, $rootScope, $http, $timeout, settings, cordova, log) {
 		var finished, nextPage, nextEntry, entries;
 
 		var reset = function() {
@@ -37,15 +36,15 @@
 				}
 			})
 			.success(function(data, status, headers, config) {
-				console.log('PhotoService.getNextPhoto(): data=',data);
-				console.log('PhotoService.getNextPhoto(): status=',status);
+				log.debug('PhotoService.getNextPhoto(): data=',data);
+				log.debug('PhotoService.getNextPhoto(): status=',status);
 				if (data && data.status === 'ok') {
 					if (data.photos.length > 0) {
 						angular.forEach(data.photos, function(entry, index) {
 							entry.url = settings.getTwitarrRoot() + 'img/photos/md_' + entry.photo;
 						});
 						nextPage++;
-						console.log('photos=',data.photos);
+						log.debug('photos=',data.photos);
 						deferred.resolve(data.photos);
 					} else {
 						deferred.reject(data);
@@ -57,7 +56,7 @@
 			})
 			.error(function(data, status, headers, config) {
 				log.warn('Bad response: ' + data);
-				console.log('status=',status);
+				log.debug('status=',status);
 				deferred.reject(data);
 			});
 			
@@ -112,7 +111,7 @@
 			getNextPhoto: getNextPhoto
 		};
 	}])
-	.controller('CMPhotoCtrl', ['$rootScope', '$scope', '$ionicSlideBoxDelegate', '$http', 'LoggingService', 'PhotoService', function($rootScope, $scope, $ionicSlideBoxDelegate, $http, log, photos) {
+	.controller('CMPhotoCtrl', ['$rootScope', '$scope', '$ionicSlideBoxDelegate', '$http', '$log', 'PhotoService', function($rootScope, $scope, $ionicSlideBoxDelegate, $http, log, photos) {
 		log.info('Initializing CMPhotoCtrl');
 		$rootScope.headerTitle = "Twit-Arr Pics";
 		$rootScope.leftButtons = [];

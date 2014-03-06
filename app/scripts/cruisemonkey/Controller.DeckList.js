@@ -4,10 +4,9 @@
 	angular.module('cruisemonkey.controllers.DeckList', [
 		'ui.router',
 		'angularLocalStorage',
-		'cruisemonkey.Cordova',
-		'cruisemonkey.Logging'
+		'cruisemonkey.Cordova'
 	])
-	.controller('CMDeckListCtrl', ['storage', '$scope', '$rootScope', '$timeout', '$state', '$stateParams', '$location', '$document', 'CordovaService', 'LoggingService', function(storage, $scope, $rootScope, $timeout, $state, $stateParams, $location, $document, cor, log) {
+	.controller('CMDeckListCtrl', ['storage', '$scope', '$rootScope', '$timeout', '$state', '$stateParams', '$location', '$document', 'CordovaService', '$log', function(storage, $scope, $rootScope, $timeout, $state, $stateParams, $location, $document, cor, log) {
 		log.info('Initializing CMDeckListCtrl');
 		$rootScope.headerTitle = "Deck Plans";
 		$rootScope.leftButtons = [];

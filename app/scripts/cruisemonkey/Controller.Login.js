@@ -4,12 +4,11 @@
 	angular.module('cruisemonkey.controllers.Login', [
 		'cruisemonkey.Config',
 		'cruisemonkey.Cordova',
-		'cruisemonkey.Logging',
 		'cruisemonkey.Notifications',
 		'cruisemonkey.Settings',
 		'cruisemonkey.User'
 	])
-	.controller('CMLoginCtrl', ['$scope', '$rootScope', '$location', '$http', 'UserService', 'LoggingService', 'SettingsService', 'CordovaService', 'NotificationService', function($scope, $rootScope, $location, $http, UserService, log, SettingsService, cor, notifications) {
+	.controller('CMLoginCtrl', ['$scope', '$rootScope', '$location', '$http', 'UserService', '$log', 'SettingsService', 'CordovaService', 'NotificationService', function($scope, $rootScope, $location, $http, UserService, log, SettingsService, cor, notifications) {
 		log.info('Initializing CMLoginCtrl');
 		$rootScope.headerTitle = "Log In";
 		$rootScope.leftButtons = [];

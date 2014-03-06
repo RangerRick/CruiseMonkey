@@ -71,10 +71,9 @@ function CMDay(d) {
 		'pasvaz.bindonce',
 		'cruisemonkey.User',
 		'cruisemonkey.Events',
-		'cruisemonkey.Logging',
 		'cruisemonkey.Notifications'
 	])
-	.controller('CMEditEventCtrl', ['$q', '$scope', '$rootScope', 'UserService', 'LoggingService', function($q, $scope, $rootScope, UserService, log) {
+	.controller('CMEditEventCtrl', ['$q', '$scope', '$rootScope', 'UserService', '$log', function($q, $scope, $rootScope, UserService, log) {
 		log.info('Initializing CMEditEventCtrl');
 
 		if ($rootScope.editEvent) {
@@ -82,7 +81,6 @@ function CMDay(d) {
 			delete $rootScope.editEvent;
 
 			log.debug('Found existing event to edit.');
-			// console.log($scope.event);
 		} else {
 			var ev = new CMEvent();
 			ev.setStart(moment());
@@ -92,7 +90,6 @@ function CMDay(d) {
 			$scope.event = ev.toEditableBean();
 
 			log.debug('Created fresh event.');
-			// console.log($scope.event);
 		}
 	}])
 	.factory('EventCache', [function() {
@@ -145,7 +142,7 @@ function CMDay(d) {
 			}
 		};
 	}])
-	.controller('CMEventCtrl', [ 'storage', '$scope', '$rootScope', '$interval', '$timeout', '$stateParams', '$location', '$q', '$ionicModal', '$ionicScrollDelegate', '$window', 'UserService', 'EventService', 'EventCache', 'LoggingService', 'NotificationService', function(storage, $scope, $rootScope, $interval, $timeout, $stateParams, $location, $q, $ionicModal, $ionicScrollDelegate, $window, UserService, EventService, EventCache, log, notifications) {
+	.controller('CMEventCtrl', [ 'storage', '$scope', '$rootScope', '$interval', '$timeout', '$stateParams', '$location', '$q', '$ionicModal', '$ionicScrollDelegate', '$window', 'UserService', 'EventService', 'EventCache', '$log', 'NotificationService', function(storage, $scope, $rootScope, $interval, $timeout, $stateParams, $location, $q, $ionicModal, $ionicScrollDelegate, $window, UserService, EventService, EventCache, log, notifications) {
 		if (!$stateParams.eventType) {
 			$location.path('/events/official');
 			return;
@@ -230,20 +227,19 @@ function CMDay(d) {
 					var offsetTop = scrollEl[0].offsetTop,
 						scrollTop = scrollEl[0].scrollTop,
 						clientTop = scrollEl[0].clientTop;
-					//console.log(offsetTop + ', ' + scrollTop + ', ' + clientTop + ': ' + getTextForElement(scrollEl[0]));
 					position += (offsetTop - scrollTop + clientTop);
 					scrollEl = scrollEl.parent();
 				}
-				console.log('offset='+position);
+				log.debug('offset='+position);
 				$scope.$broadcast('scroll.scrollTo', 0, position, true);
 			} else {
-				console.log("can't find element " + hash);
+				log.debug("can't find element " + hash);
 			}
 		};
 
 		var updateEntries = function() {
 			var cached = withDays(EventCache.get(eventType, $scope.searchString));
-			console.log('cached events:',cached);
+			log.debug('cached events:',cached);
 			$scope.entries = cached;
 			$scope.$broadcast('scroll.resize');
 		};
@@ -325,10 +321,10 @@ function CMDay(d) {
 
 					previousEntry = $scope.entries[i-1];
 					nextEntry     = $scope.entries[i+1];
-					console.log('previousEntry=',previousEntry);
-					console.log('nextEntry=',nextEntry);
-					console.log('i=',i);
-					console.log('length=',$scope.entries.length);
+					log.debug('previousEntry=',previousEntry);
+					log.debug('nextEntry=',nextEntry);
+					log.debug('i=',i);
+					log.debug('length=',$scope.entries.length);
 					// if this is the first entry of the day...
 					if (previousEntry && previousEntry.getId().indexOf('day-') === 0) {
 						if ((i+1) === $scope.entries.length) {
@@ -569,7 +565,7 @@ function CMDay(d) {
 		};
 
 		$scope.onPublicChanged = function(ev) {
-			console.log('onPublicChanged(' + ev.getId() + ')');
+			log.debug('onPublicChanged(' + ev.getId() + ')');
 			$scope.safeApply(function() {
 				ev.setPublic(!ev.isPublic());
 				$scope.$broadcast('scroll.resize');
@@ -612,7 +608,7 @@ function CMDay(d) {
 			ev.fromEditableBean(data);
 			ev.setUsername(username);
 
-			console.log('saving=', ev.getRawData());
+			log.debug('saving=', ev.getRawData());
 
 			if (ev.getRevision() && $scope.entries) {
 				// update the existing event in the UI
@@ -628,7 +624,7 @@ function CMDay(d) {
 			}
 
 			$q.when(EventService.addEvent(ev)).then(function(res) {
-				console.log('event added:', res);
+				log.debug('event added:', res);
 				$scope.modal.hide();
 				refreshEvents(true);
 			});

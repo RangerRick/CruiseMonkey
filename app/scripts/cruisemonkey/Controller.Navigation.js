@@ -1,8 +1,8 @@
 (function() {
 	'use strict';
 
-	angular.module('cruisemonkey.controllers.Navigation', ['cruisemonkey.Logging'])
-	.controller('CMNavigationCtrl', ['$rootScope', '$scope', '$location', '$document', 'UserService', 'LoggingService', '$mobileFrame', function($rootScope, $scope, $location, $document, UserService, log, $mobileFrame) {
+	angular.module('cruisemonkey.controllers.Navigation', [])
+	.controller('CMNavigationCtrl', ['$rootScope', '$scope', '$location', '$document', 'UserService', '$log', '$mobileFrame', function($rootScope, $scope, $location, $document, UserService, log, $mobileFrame) {
 		log.info('Initializing CMNavigationCtrl');
 
 		$scope.toggleDrawer = function() {

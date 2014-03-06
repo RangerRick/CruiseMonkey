@@ -21,10 +21,9 @@
 
 	angular.module('cruisemonkey.controllers.Karaoke', [
 		'angularLocalStorage',
-		'cruisemonkey.Logging',
 		'pasvaz.bindonce'
 	])
-	.factory('KaraokeService', ['$timeout', 'LoggingService', function($timeout, log) {
+	.factory('KaraokeService', ['$timeout', '$log', function($timeout, log) {
 		var scope = null,
 			updateFunction = null,
 			sortFunction = null,
@@ -79,7 +78,7 @@
 			'doUpdateDelayed': doUpdateDelayed
 		};
 	}])
-	.controller('CMKaraokeSearchCtrl', ['storage', '$rootScope', '$scope', '$state', 'KaraokeService', 'LoggingService', function(storage, $rootScope, $scope, $state, KaraokeService, log) {
+	.controller('CMKaraokeSearchCtrl', ['storage', '$rootScope', '$scope', '$state', 'KaraokeService', '$log', function(storage, $rootScope, $scope, $state, KaraokeService, log) {
 		log.info('Initializing CMKaraokeSearchCtrl');
 		$rootScope.headerTitle = 'Karaoke Search';
 		$rootScope.leftButtons = [
@@ -180,7 +179,7 @@
 
 		KaraokeService.initialize();
 	}])
-	.controller('CMKaraokePrefixListCtrl', ['$rootScope', '$scope', '$state', 'KaraokeService', 'LoggingService', function($rootScope, $scope, $state, KaraokeService, log) {
+	.controller('CMKaraokePrefixListCtrl', ['$rootScope', '$scope', '$state', 'KaraokeService', '$log', function($rootScope, $scope, $state, KaraokeService, log) {
 		log.info('Initializing CMKaraokePrefixListCtrl');
 		$rootScope.headerTitle = 'Artists';
 		$rootScope.leftButtons = [
@@ -207,7 +206,6 @@
 				i, j, obj;
 
 			addEntry = function(entry) {
-				/*jshint camelcase: false */
 				firstChar = entry.artist.charAt(0).toUpperCase();
 				if (firstChar !== previousChar) {
 					//log.info('updateList: new prefix: ' + entry.artist);
@@ -229,7 +227,7 @@
 
 		KaraokeService.initialize();
 	}])
-	.controller('CMKaraokeArtistListCtrl', ['storage', '$rootScope', '$scope', '$stateParams', '$state', '$location', 'KaraokeService', 'LoggingService', function(storage, $rootScope, $scope, $stateParams, $state, $location, KaraokeService, log) {
+	.controller('CMKaraokeArtistListCtrl', ['storage', '$rootScope', '$scope', '$stateParams', '$state', '$location', 'KaraokeService', '$log', function(storage, $rootScope, $scope, $stateParams, $state, $location, KaraokeService, log) {
 		log.info('Initializing CMKaraokeArtistListCtrl');
 		
 		var prefix = $stateParams.prefix;
@@ -308,7 +306,7 @@
 
 		KaraokeService.initialize();
 	}])
-	.controller('CMKaraokeArtistCtrl', ['storage', '$rootScope', '$scope', '$stateParams', '$state', 'KaraokeService', 'LoggingService', function(storage, $rootScope, $scope, $stateParams, $state, KaraokeService, log) {
+	.controller('CMKaraokeArtistCtrl', ['storage', '$rootScope', '$scope', '$stateParams', '$state', 'KaraokeService', '$log', function(storage, $rootScope, $scope, $stateParams, $state, KaraokeService, log) {
 		log.info('Initializing CMKaraokeArtistCtrl (' + $stateParams.artist + ')');
 		$rootScope.headerTitle = $stateParams.artist;
 		$scope.artist = $stateParams.artist;

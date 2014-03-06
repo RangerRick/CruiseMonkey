@@ -3,10 +3,9 @@
 
 	angular.module('cruisemonkey.controllers.About', [
 		'cruisemonkey.Database',
-		'cruisemonkey.Logging',
 		'cruisemonkey.Config'
 	])
-	.controller('CMAboutCtrl', ['$scope', '$rootScope', 'LoggingService', 'EventService', 'config.app.version', function($scope, $rootScope, log, EventService, version) {
+	.controller('CMAboutCtrl', ['$log', '$scope', '$rootScope', 'EventService', 'config.app.version', function(log, $scope, $rootScope, EventService, version) {
 		log.info('Initializing CMAboutCtrl');
 		$rootScope.headerTitle = 'About CM4';
 		$rootScope.leftButtons = [];

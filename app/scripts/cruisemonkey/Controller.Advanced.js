@@ -2,12 +2,11 @@
 	'use strict';
 
 	angular.module('cruisemonkey.controllers.Advanced', [
-		'cruisemonkey.Logging',
 		'cruisemonkey.Config',
 		'cruisemonkey.Cordova',
 		'cruisemonkey.Settings'
 	])
-	.controller('CMAdvancedCtrl', ['$scope', '$rootScope', '$window', 'Database', 'LoggingService', 'CordovaService', 'config.app.version', 'SettingsService', function($scope, $rootScope, $window, Database, log, cor, version, SettingsService) {
+	.controller('CMAdvancedCtrl', ['$log', '$scope', '$rootScope', '$window', 'Database', 'CordovaService', 'config.app.version', 'SettingsService', function(log, $scope, $rootScope, $window, Database, cor, version, SettingsService) {
 		log.info('Initializing CMAdvancedCtrl');
 		$rootScope.headerTitle = 'Advanced Options';
 		$rootScope.leftButtons = [];
@@ -33,13 +32,13 @@
 
 		$scope.resetSettings = function() {
 			var updated = SettingsService.getDefaults();
-			console.log('resetting to', updated);
+			log.info('resetting to', updated);
 			$scope.settings = updated;
 			$scope.saveSettings();
 		};
 		
 		$scope.saveSettings = function() {
-			console.log('saving=', $scope.settings);
+			log.info('saving=', $scope.settings);
 			var before = angular.copy(SettingsService.getSettings());
 			var after = angular.copy($scope.settings);
 			SettingsService.setDatabaseHost($scope.settings.databaseHost);

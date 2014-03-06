@@ -1,4 +1,4 @@
-describe('Notifications', function() {
+xdescribe('Notifications', function() {
 	var notifications = null;
 	var q             = null;
 	var rootScope     = null;

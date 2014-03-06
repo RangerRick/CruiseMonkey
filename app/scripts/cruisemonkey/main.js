@@ -32,6 +32,10 @@
 		'cruisemonkey.User'
 	])
 	.config(['$stateProvider', '$urlRouterProvider', '$compileProvider', 'cfpLoadingBarProvider', function($stateProvider, $urlRouterProvider, $compileProvider, cfpLoadingBarProvider) {
+		if (isMobile) {
+			ionic.Platform.fullScreen(false,true);
+		}
+
 		$compileProvider.aHrefSanitizationWhitelist(/^\s*(https?|ftp|mailto|file|tel):/);
 		$compileProvider.imgSrcSanitizationWhitelist(/^\s*(https?|file):/);
 
@@ -120,7 +124,6 @@
 			restrict: 'A',
 			link: function ($scope, $element, $attrs) {
 				var handleTap = function (e) {
-					//console.log('closeMenu');
 					e.preventDefault();
 					if ($rootScope.sideMenuController) {
 						$rootScope.sideMenuController.close();
@@ -139,7 +142,6 @@
 			restrict: 'A',
 			link: function ($scope, $element, $attrs) {
 				var handleTap = function (e) {
-					//console.log('openMenu');
 					e.preventDefault();
 					if ($rootScope.sideMenuController) {
 						$rootScope.sideMenuController.toggleLeft();
@@ -158,7 +160,6 @@
 			restrict: 'A',
 			link: function ($scope, $element, $attrs) {
 				var handleTap = function (e) {
-					//console.log('goTo: ' + $attrs.goTo);
 					$location.path($attrs.goTo);
 					e.preventDefault();
 				};
@@ -170,7 +171,7 @@
 			}
 		};
 	}])
-	.run(['$q', '$rootScope', '$window', '$location', '$interval', '$urlRouter', 'UserService', 'storage', 'CordovaService', 'UpgradeService', 'Database', 'LoggingService', 'NotificationService', 'SettingsService', 'SeamailService', function($q, $rootScope, $window, $location, $interval, $urlRouter, UserService, storage, cor, upgrades, Database, log, notifications, SettingsService, SeamailService) {
+	.run(['$q', '$rootScope', '$window', '$location', '$interval', '$urlRouter', '$log', 'UserService', 'storage', 'CordovaService', 'UpgradeService', 'Database', 'NotificationService', 'SettingsService', 'SeamailService', function($q, $rootScope, $window, $location, $interval, $urlRouter, log, UserService, storage, cor, upgrades, Database, notifications, SettingsService, SeamailService) {
 		log.debug('CruiseMonkey run() called.');
 
 		/*global moment: true*/

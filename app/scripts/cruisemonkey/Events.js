@@ -402,8 +402,14 @@ CMFavorite.prototype.getRawData = function() {
 (function() {
 	'use strict';
 
-	angular.module('cruisemonkey.Events', ['cruisemonkey.Config', 'cruisemonkey.Database', 'cruisemonkey.User', 'cruisemonkey.Logging'])
-	.factory('EventService', ['$q', '$rootScope', '$timeout', '$location', 'Database', 'UserService', 'LoggingService', 'config.database.host', 'config.database.name', 'config.database.replicate', function($q, $rootScope, $timeout, $location, db, UserService, log, databaseHost, databaseName, replicate) {
+	angular.module('cruisemonkey.Events', [
+		'uuid4',
+		'cruisemonkey.Config',
+		'cruisemonkey.Database',
+		'cruisemonkey.DB',
+		'cruisemonkey.User'
+	])
+	.factory('EventService', ['$q', '$rootScope', '$timeout', '$location', 'uuid4', '_db', 'Database', 'UserService', '$log', 'config.database.host', 'config.database.name', 'config.database.replicate', function($q, $rootScope, $timeout, $location, uuid4, newdb, db, UserService, log, databaseHost, databaseName, replicate) {
 		log.info('EventService: Initializing EventService.');
 
 		var listeners = [],
@@ -436,7 +442,6 @@ CMFavorite.prototype.getRawData = function() {
 							log.error(err);
 							deferred.reject(err);
 						} else {
-							/*jshint camelcase: false */
 							var results = [], i;
 							angular.forEach(res.rows, function(row, index) {
 								results.push(new ObjConstructor(row.value));
@@ -480,7 +485,6 @@ CMFavorite.prototype.getRawData = function() {
 			var deferred = $q.defer();
 
 			$q.when(db.getDatabase()).then(function(database) {
-				/*jshint camelcase: false */
 				database.query({
 					map: mapFunc
 				}, {
@@ -498,7 +502,7 @@ CMFavorite.prototype.getRawData = function() {
 							var lastEvent;
 							var doc;
 							angular.forEach(res.rows, function(row, index) {
-								// console.log('row=',row);
+								// log.debug('row=',row);
 								if (!row.doc) {
 									return;
 								}
@@ -542,6 +546,7 @@ CMFavorite.prototype.getRawData = function() {
 				} else {
 					log.debug('EventService.addEvent(): posting event "' + eventToAdd.getSummary() + '" for user "' + eventToAdd.getUsername() + '"');
 					eventToAdd.refreshLastUpdated();
+					eventToAdd.setId(uuid4.generate());
 					database.post(eventToAdd.getRawData(), function(err, response) {
 						$rootScope.$apply(function() {
 							if (err) {
@@ -622,8 +627,37 @@ CMFavorite.prototype.getRawData = function() {
 			return deferred.promise;
 		};
 
+		/*
 		var _allEvents = null;
 		var getAllEvents = function() {
+			log.debug('EventService.getAllEvents()');
+			if (_allEvents) {
+				return _allEvents;
+			}
+
+			var deferred = $q.defer();
+			_allEvents = deferred.promise;
+			newdb.local().query('all-events', {include_docs: true}).then(function(results) {
+				var ret = [];
+				for (var i=0; i < results.rows.length; i++) {
+					ret.push(new CMEvent(results.rows[i].doc));
+				}
+				deferred.resolve(ret);
+			}, function(err) {
+				log.error('Failed to get all events:',err);
+				deferred.reject(err);
+			});
+			_allEvents['finally'](function() {
+				log.debug('EventService.getAllEvents(): finished.');
+				_allEvents = null;
+			});
+			return _allEvents;
+		};
+		*/
+
+		var _allEvents = null;
+		var getAllEvents = function() {
+			log.debug('EventService.getAllEvents()');
 			if (_allEvents) {
 				return _allEvents;
 			}
@@ -672,7 +706,6 @@ CMFavorite.prototype.getRawData = function() {
 			_officialEvents = deferred.promise;
 
 			$q.when(db.getDatabase()).then(function(database) {
-				/*jshint camelcase: false */
 				database.query({
 					map: function(doc) {
 						if (doc.type === 'event' && doc.username === 'official') {
@@ -738,7 +771,6 @@ CMFavorite.prototype.getRawData = function() {
 			_unofficialEvents = deferred.promise;
 
 			$q.when(db.getDatabase()).then(function(database) {
-				/*jshint camelcase: false */
 				database.query({
 					map: function(doc) {
 						if (doc.type === 'event' && doc.username !== 'official') {
@@ -865,7 +897,6 @@ CMFavorite.prototype.getRawData = function() {
 			_myFavorites = deferred.promise;
 
 			$q.when(db.getDatabase()).then(function(database) {
-				/*jshint camelcase: false */
 				database.query({
 					map: function(doc) {
 						if (doc.type === 'favorite') {
@@ -928,7 +959,6 @@ CMFavorite.prototype.getRawData = function() {
 			_isFavorite = deferred.promise;
 
 			$q.when(db.getDatabase()).then(function(database) {
-				/*jshint camelcase: false */
 				database.query({
 					map: function(doc) {
 						if (doc.type === 'favorite') {
@@ -979,7 +1009,6 @@ CMFavorite.prototype.getRawData = function() {
 
 				var checkExisting = $q.defer();
 
-				/*jshint camelcase: false */
 				database.get(favId, {
 					revs: true,
 					open_revs: 'all',
@@ -988,7 +1017,7 @@ CMFavorite.prototype.getRawData = function() {
 					$rootScope.$apply(function() {
 						if (err) {
 							log.error('Error getting existing (deleted) favorite.');
-							console.log(err);
+							log.debug(err);
 							checkExisting.resolve(false);
 						} else if (res && res.length > 0) {
 							var obj = res[0];
@@ -1035,7 +1064,6 @@ CMFavorite.prototype.getRawData = function() {
 			$q.when(db.getDatabase()).then(function(database) {
 				log.debug('EventService.removeFavorite(): removing');
 				/* first, we get the list of favorites pointing to the given event ID */
-				/*jshint camelcase: false */
 				database.query(
 				{
 					map: function(doc) {
@@ -1055,11 +1083,10 @@ CMFavorite.prototype.getRawData = function() {
 							log.error(err);
 							deferred.reject(err);
 						} else {
-							/*jshint camelcase: false */
 							if (res.total_rows > 0) {
 								var promises = [];
 
-								console.log('removeFavorite(): results =',res.rows);
+								log.debug('removeFavorite(): results =',res.rows);
 
 								/* for any existing favorites associated with the event,
 								store a promise to delete that event */

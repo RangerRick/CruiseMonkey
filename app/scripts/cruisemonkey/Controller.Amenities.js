@@ -1,7 +1,7 @@
 (function() {
 	'use strict';
 
-	angular.module('cruisemonkey.controllers.Amenities', ['angularLocalStorage', 'cruisemonkey.Decks', 'cruisemonkey.Logging'])
+	angular.module('cruisemonkey.controllers.Amenities', ['angularLocalStorage', 'cruisemonkey.Decks'])
 	.filter('amenityFilter', function() {
 		return function(input, searchString) {
 			var array = [];
@@ -13,7 +13,7 @@
 			return array;
 		};
 	})
-	.controller('CMAmenitiesCtrl', ['storage', '$rootScope', '$scope', '$timeout', '$location', 'DeckService', 'LoggingService', function(storage, $rootScope, $scope, $timeout, $location, DeckService, log) {
+	.controller('CMAmenitiesCtrl', ['storage', '$rootScope', '$scope', '$timeout', '$location', 'DeckService', '$log', function(storage, $rootScope, $scope, $timeout, $location, DeckService, log) {
 		log.info('Initializing CMAmenitiesCtrl');
 		$rootScope.headerTitle = 'Amenities';
 		$rootScope.leftButtons = [];

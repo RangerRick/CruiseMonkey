@@ -15,6 +15,7 @@ module.exports = function(config) {
       'app/scripts/3rdparty/modernizr-latest.js',
       'app/bower_components/log4javascript/log4javascript.js',
       'app/bower_components/momentjs/moment.js',
+      'app/bower_components/lie/dist/lie.noConflict.js',
       'app/scripts/3rdparty/pouchdb-nightly.js',
       'app/scripts/angular-3rdparty/ionic.js',
       'app/bower_components/angular/angular.js',
@@ -30,8 +31,10 @@ module.exports = function(config) {
       'app/scripts/angular-3rdparty/ionic-angular.js',
       'app/bower_components/angularLocalStorage/src/angularLocalStorage.js',
       'app/bower_components/angular-bindonce/bindonce.js',
+      'app/bower_components/angular-uuid4/angular-uuid4.js',
       'app/scripts/cruisemonkey/karaoke-list.js',
       'app/scripts/cruisemonkey/*.js',
+      'app/bower_components/requirejs/require.js',
       'test/mock/**/*.js',
       'test/spec/**/*.js'
     ],
