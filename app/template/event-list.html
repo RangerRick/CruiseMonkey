@@ -52,7 +52,7 @@
 		</button>
 	</div>
 	<ion-list class="event-list">
-		<span bindonce ng-repeat="entry in entries" id="{{entry.getId()}}">
+		<span bindonce ng-repeat="entry in entries track by entry.getId()" id="{{entry.getId()}}">
 			<ion-item ng-if="isDay(entry)" class="item-divider event-header">{{prettyDate(entry.day)}}</ion-item>
 			<ion-item ng-if="!isDay(entry)" ng-class="'list-entry item-text-wrap ' + (entry.isEven()? 'even':'odd')">
 				<span class="item-note favorite" bo-show="(user.username &amp;&amp; user.username != entry.getUsername())">
