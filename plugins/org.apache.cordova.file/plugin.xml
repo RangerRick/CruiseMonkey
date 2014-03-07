@@ -3,7 +3,7 @@
 <plugin xmlns="http://apache.org/cordova/ns/plugins/1.0"
 xmlns:android="http://schemas.android.com/apk/res/android"
            id="org.apache.cordova.file"
-      version="0.2.5">
+      version="1.0.1">
     <name>File</name>
     <description>Cordova File Plugin</description>
     <license>Apache 2.0</license>
@@ -79,7 +79,7 @@ xmlns:android="http://schemas.android.com/apk/res/android"
     </js-module>
 
     <js-module src="www/resolveLocalFileSystemURI.js" name="resolveLocalFileSystemURI">
-        <clobbers target="window.resolveLocalFileSystemURI" />
+        <merges target="window" />
     </js-module>
 
     <!-- android -->
@@ -87,6 +87,7 @@ xmlns:android="http://schemas.android.com/apk/res/android"
         <config-file target="res/xml/config.xml" parent="/*">
             <feature name="File" >
                 <param name="android-package" value="org.apache.cordova.file.FileUtils"/>
+                <param name="onload" value="true" />
             </feature>
         </config-file>
 
@@ -102,6 +103,62 @@ xmlns:android="http://schemas.android.com/apk/res/android"
         <source-file src="src/android/FileUtils.java" target-dir="src/org/apache/cordova/file" />
         <source-file src="src/android/FileHelper.java" target-dir="src/org/apache/cordova/file" />
         <source-file src="src/android/DirectoryManager.java" target-dir="src/org/apache/cordova/file" />
+        <source-file src="src/android/LocalFilesystemURL.java" target-dir="src/org/apache/cordova/file" />
+        <source-file src="src/android/Filesystem.java" target-dir="src/org/apache/cordova/file" />
+        <source-file src="src/android/LocalFilesystem.java" target-dir="src/org/apache/cordova/file" />
+        <source-file src="src/android/ContentFilesystem.java" target-dir="src/org/apache/cordova/file" />
+
+        <!-- android specific file apis -->
+        <js-module src="www/android/FileSystem.js" name="androidFileSystem">
+            <merges target="window.FileSystem" />
+        </js-module>
+    </platform>
+
+    <!-- amazon-fireos -->
+    <platform name="amazon-fireos">
+        <config-file target="res/xml/config.xml" parent="/*">
+            <feature name="File" >
+                <param name="android-package" value="org.apache.cordova.file.FileUtils"/>
+                <param name="onload" value="true" />
+            </feature>
+        </config-file>
+
+        <config-file target="AndroidManifest.xml" parent="/*">
+            <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+        </config-file>
+
+        <source-file src="src/android/EncodingException.java" target-dir="src/org/apache/cordova/file" />
+        <source-file src="src/android/FileExistsException.java" target-dir="src/org/apache/cordova/file" />
+        <source-file src="src/android/InvalidModificationException.java" target-dir="src/org/apache/cordova/file" />
+        <source-file src="src/android/NoModificationAllowedException.java" target-dir="src/org/apache/cordova/file" />
+        <source-file src="src/android/TypeMismatchException.java" target-dir="src/org/apache/cordova/file" />
+        <source-file src="src/android/FileUtils.java" target-dir="src/org/apache/cordova/file" />
+        <source-file src="src/android/FileHelper.java" target-dir="src/org/apache/cordova/file" />
+        <source-file src="src/android/DirectoryManager.java" target-dir="src/org/apache/cordova/file" />
+        <source-file src="src/android/LocalFilesystemURL.java" target-dir="src/org/apache/cordova/file" />
+        <source-file src="src/android/Filesystem.java" target-dir="src/org/apache/cordova/file" />
+        <source-file src="src/android/LocalFilesystem.java" target-dir="src/org/apache/cordova/file" />
+        <source-file src="src/android/ContentFilesystem.java" target-dir="src/org/apache/cordova/file" />
+        
+        <!-- android specific file apis -->
+        <js-module src="www/android/FileSystem.js" name="androidFileSystem">
+            <merges target="window.FileSystem" />
+        </js-module>
+    </platform>
+
+    <!-- ubuntu -->
+    <platform name="ubuntu">
+        <header-file src="src/ubuntu/file.h" />
+        <source-file src="src/ubuntu/file.cpp" />
+        <js-module src="www/ubuntu/Entry.js" name="Entry1">
+            <merges target="window.Entry" />
+        </js-module>
+        <js-module src="www/ubuntu/DirectoryEntry.js" name="DirectoryEntry1">
+            <merges target="window.DirectoryEntry" />
+        </js-module>
+        <js-module src="www/ubuntu/FileWriter.js" name="FileWriter1">
+            <merges target="window.FileWriter" />
+        </js-module>
     </platform>
 
     <!-- ios -->
@@ -109,14 +166,22 @@ xmlns:android="http://schemas.android.com/apk/res/android"
         <config-file target="config.xml" parent="/*">
             <feature name="File">
                 <param name="ios-package" value="CDVFile" />
+                <param name="onload" value="true" />
             </feature>
         </config-file>
         <header-file src="src/ios/CDVFile.h" />
         <source-file src="src/ios/CDVFile.m" />
+        <header-file src="src/ios/CDVLocalFilesystem.h" />
+        <source-file src="src/ios/CDVLocalFilesystem.m" />
+        <header-file src="src/ios/CDVAssetLibraryFilesystem.h" />
+        <source-file src="src/ios/CDVAssetLibraryFilesystem.m" />
 
         <!-- ios specific file apis -->
-        <js-module src="www/ios/Entry.js" name="Entry1">
+        <js-module src="www/ios/Entry.js" name="iosEntry">
             <merges target="window.Entry" />
+        </js-module>
+        <js-module src="www/ios/FileSystem.js" name="iosFileSystem">
+            <merges target="window.FileSystem" />
         </js-module>
 
         <framework src="AssetsLibrary.framework" />

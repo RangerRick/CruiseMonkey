@@ -64,3 +64,21 @@
 * Apply CB-5193 to InAppBrowser (Fix DB quota exception)
 * CB-5593 iOS: Make InAppBrowser localizable
 * CB-5591 Change window.escape to encodeURIComponent
+
+### 0.3.1 (Feb 05, 2014)
+* CB-5756: Android: Use WebView.evaluateJavascript for script injection on Android 4.4+
+* Didn't test on ICS or lower, getDrawable isn't supported until Jellybean
+* add ubuntu platform
+* Adding drawables to the inAppBrowser.  This doesn't look quite right, but it's a HUGE improvement over the previous settings
+* CB-5756: Android: Use WebView.evaluateJavascript for script injection on Android 4.4+
+* Remove alive from InAppBrowser.js since it didn't catch the case where the browser is closed by the user.
+* CB-5733 Fix IAB.close() not working if called before show() animation is done
+
+### 0.3.2 (Feb 26, 2014)
+* Validate that callbackId is correctly formed
+* CB-6035 Move js-module so it is not loaded on unsupported platforms
+* Removed some iOS6 Deprecations
+
+### 0.3.3 (Mar 5, 2014)
+* CB-6172 Fix broken install on case-sensitive file-systems
+

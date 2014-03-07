@@ -3,7 +3,8 @@
 <plugin xmlns="http://apache.org/cordova/ns/plugins/1.0"
 xmlns:android="http://schemas.android.com/apk/res/android"
 id="org.apache.cordova.media"
-    version="0.2.7">
+    version="0.2.9">
+
     <name>Media</name>
     <description>Cordova Media Plugin</description>
     <license>Apache 2.0</license>
@@ -131,6 +132,11 @@ id="org.apache.cordova.media"
             <merges target="" />
         </js-module>
     </platform>
-    
-            
+
+    <!-- tizen -->
+    <platform name="tizen">
+        <js-module src="src/tizen/MediaProxy.js" name="MediaProxy">
+            <runs/>
+        </js-module>
+    </platform>
 </plugin>

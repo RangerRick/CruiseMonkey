@@ -3,7 +3,7 @@
 <plugin xmlns="http://apache.org/cordova/ns/plugins/1.0"
     xmlns:android="http://schemas.android.com/apk/res/android"
     id="org.apache.cordova.vibration"
-    version="0.3.6">
+    version="0.3.7">
 
     <name>Vibration</name>
     <description>Cordova Vibration Plugin</description>
@@ -107,5 +107,12 @@
         <config-file target="www/config.xml" parent="/widget">
             <feature name="Vibration" value="Vibration" />
         </config-file>
+    </platform>
+
+    <!-- tizen -->
+    <platform name="tizen">
+        <js-module src="src/tizen/VibrationProxy.js" name="VibrationProxy">
+            <runs />
+        </js-module>
     </platform>
 </plugin>

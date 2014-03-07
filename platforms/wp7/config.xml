@@ -1,40 +1,7 @@
 <?xml version='1.0' encoding='utf-8'?>
 <widget id="com.raccoonfink.cruisemonkey" version="3.9.2" xmlns="http://www.w3.org/ns/widgets" xmlns:gap="http://phonegap.com/ns/1.0">
-    <feature name="Camera">
-        <param name="wp-package" value="Camera" />
-    </feature>
-    <feature name="Console">
-        <param name="wp-package" value="DebugConsole" />
-    </feature>
-    <feature name="Device">
-        <param name="wp-package" value="Device" />
-    </feature>
-    <feature name="Compass">
-        <param name="wp-package" value="Compass" />
-    </feature>
-    <feature name="Notification">
-        <param name="wp-package" value="Notification" />
-    </feature>
     <feature name="File">
         <param name="wp-package" value="File" />
-    </feature>
-    <feature name="InAppBrowser">
-        <param name="wp-package" value="InAppBrowser" />
-    </feature>
-    <feature name="Media">
-        <param name="wp-package" value="Media" />
-    </feature>
-    <feature name="Capture">
-        <param name="wp-package" value="Capture" />
-    </feature>
-    <feature name="NetworkStatus">
-        <param name="wp-package" value="NetworkStatus" />
-    </feature>
-    <feature name="SplashScreen">
-        <param name="wp-package" value="SplashScreen" />
-    </feature>
-    <feature name="Vibration">
-        <param name="wp-package" value="Vibration" />
     </feature>
     <name>CruiseMonkey</name>
     <description>Keep Track of Your Cruise</description>
@@ -86,4 +53,37 @@
     <preference name="DisallowOverscroll" value="true" />
     <preference name="SplashScreen" value="splash" />
     <access origin="*" />
+    <feature name="Camera">
+        <param name="wp-package" value="Camera" />
+    </feature>
+    <feature name="Console">
+        <param name="wp-package" value="DebugConsole" />
+    </feature>
+    <feature name="Device">
+        <param name="wp-package" value="Device" />
+    </feature>
+    <feature name="Compass">
+        <param name="wp-package" value="Compass" />
+    </feature>
+    <feature name="Notification">
+        <param name="wp-package" value="Notification" />
+    </feature>
+    <feature name="Media">
+        <param name="wp-package" value="Media" />
+    </feature>
+    <feature name="Capture">
+        <param name="wp-package" value="Capture" />
+    </feature>
+    <feature name="NetworkStatus">
+        <param name="wp-package" value="NetworkStatus" />
+    </feature>
+    <feature name="SplashScreen">
+        <param name="wp-package" value="SplashScreen" />
+    </feature>
+    <feature name="Vibration">
+        <param name="wp-package" value="Vibration" />
+    </feature>
+    <feature name="InAppBrowser">
+        <param name="wp-package" value="InAppBrowser" />
+    </feature>
 </widget>

@@ -3,7 +3,7 @@
 <plugin xmlns="http://apache.org/cordova/ns/plugins/1.0"
     xmlns:android="http://schemas.android.com/apk/res/android"
     id="org.apache.cordova.device-orientation"
-    version="0.3.4">
+    version="0.3.5">
 
     <name>Device Orientation</name>
     <description>Cordova Device Orientation Plugin</description>
@@ -73,6 +73,11 @@
     <platform name="ubuntu">
         <header-file src="src/ubuntu/compass.h" />
         <source-file src="src/ubuntu/compass.cpp" />
+        <config-file target="config.xml" parent="/*">
+            <feature name="DeviceOrientation">
+                <param policy_group="sensors" policy_version="1" />
+            </feature>
+        </config-file>
     </platform>
 
     <!-- blackberry10 -->
@@ -134,4 +139,10 @@
         </js-module>
     </platform>
 
+    <!-- tizen -->
+    <platform name="tizen">
+        <js-module src="src/tizen/CompassProxy.js" name="CompassProxy">
+            <runs/>
+        </js-module>
+    </platform>
 </plugin>

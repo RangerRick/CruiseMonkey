@@ -22,34 +22,53 @@
 var fileUtils = require('./BB10Utils'),
     FileError = require('./FileError');
 
-function stripURI(uri) {
-    var rmFsLocal = uri.substring("filesystem:local:///".length);
-    return rmFsLocal.substring(rmFsLocal.indexOf('/') + 1);
-}
-
 module.exports = function (uri, success, fail) {
-    var sandboxState,
-        decodedURI = decodeURI(uri);
 
-    cordova.exec(function (sandboxed) {
-        sandboxState = sandboxed;
-    }, function (e) {
-        console.log("[ERROR]: Could not retrieve sandbox state ", e);
-    }, "org.apache.cordova.file", "isSandboxed");
+    var decodedURI = decodeURI(uri).replace(/filesystem:/, '').replace(/file:\/\//, ''),
+        failNotFound = function () {
+            if (fail) {
+                fail(FileError.NOT_FOUND_ERR);
+            }
+        },
+        resolveURI = function () {
+            window.requestAnimationFrame(function () {
+                window.webkitRequestFileSystem(
+                    window.PERSISTENT,
+                    50*1024*1024,
+                    function (fs) {
+                        var op = decodedURI.slice(-1) === '/' ? 'getDirectory' : 'getFile';
+                        fs.root[op](
+                            decodedURI,
+                            { create: false },
+                            function (entry) {
+                                success(fileUtils.createEntry(entry));
+                            },
+                            failNotFound
+                        );
+                    },
+                    failNotFound
+                );
+            });
+        };
 
-    if (fileUtils.isOutsideSandbox(stripURI(decodedURI))) {
-        cordova.exec(null, null, "org.apache.cordova.file", "setSandbox", [false]);
+    if (decodedURI.substring(0, 8) === 'local://') {
+        cordova.exec(
+            function (path) {
+                decodedURI = path;
+                resolveURI();
+            },
+            failNotFound,
+            'org.apache.cordova.file',
+            'resolveLocalPath',
+            [decodedURI]
+        );
     } else {
-        cordova.exec(null, null, "org.apache.cordova.file", "setSandbox", [true]);
+        cordova.exec(
+            resolveURI, 
+            failNotFound, 
+            'org.apache.cordova.file', 
+            'setSandbox', 
+            [!fileUtils.isOutsideSandbox(decodedURI)]
+        );
     }
-    window.webkitResolveLocalFileSystemURL(decodedURI, function (entry) {
-        success(fileUtils.createEntry(entry));
-    }, function (e) {
-        window.webkitResolveLocalFileSystemURL(decodedURI + '/', function (entry) {
-            success(fileUtils.createEntry(entry));
-        }, function (e) {
-            fail(e);
-        });
-    });
-    cordova.exec(null, null, "org.apache.cordova.file", "setSandbox", [sandboxState]);
 };

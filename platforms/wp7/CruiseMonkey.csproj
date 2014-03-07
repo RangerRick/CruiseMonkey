@@ -177,75 +177,12 @@
         <PostBuildEvent>
         </PostBuildEvent>
     </PropertyGroup>
-    <ItemGroup>
-        <Compile Include="Plugins\org.apache.cordova.camera\Camera.cs" />
-    </ItemGroup>
-    <ItemGroup>
-        <Compile Include="Plugins\org.apache.cordova.console\DebugConsole.cs" />
-    </ItemGroup>
-    <ItemGroup>
-        <Compile Include="Plugins\org.apache.cordova.device\Device.cs" />
-    </ItemGroup>
-    <ItemGroup>
-        <Compile Include="Plugins\org.apache.cordova.device-orientation\Compass.cs" />
-    </ItemGroup>
-    <ItemGroup>
-        <Compile Include="Plugins\org.apache.cordova.dialogs\Notification.cs" />
-    </ItemGroup>
-    <ItemGroup>
-        <Compile Include="Plugins\org.apache.cordova.dialogs\NotificationBox.xaml.cs">
-            <DependentUpon>NotificationBox.xaml</DependentUpon>
-        </Compile>
-    </ItemGroup>
     <ItemGroup />
-    <ItemGroup>
-        <Content Include="Plugins\org.apache.cordova.dialogs\notification-beep.wav" />
-    </ItemGroup>
     <ItemGroup>
         <Compile Include="Plugins\org.apache.cordova.file\File.cs" />
     </ItemGroup>
-    <ItemGroup>
-        <Compile Include="Plugins\org.apache.cordova.geolocation\Geolocation.cs" />
-    </ItemGroup>
-    <ItemGroup>
-        <Compile Include="Plugins\org.apache.cordova.inappbrowser\InAppBrowser.cs" />
-    </ItemGroup>
-    <ItemGroup>
-        <Compile Include="Plugins\org.apache.cordova.media\Media.cs" />
-    </ItemGroup>
-    <ItemGroup>
-        <Compile Include="Plugins\org.apache.cordova.media\AudioPlayer.cs" />
-    </ItemGroup>
-    <ItemGroup>
-        <Compile Include="Plugins\org.apache.cordova.media-capture\Capture.cs" />
-    </ItemGroup>
-    <ItemGroup>
-        <Compile Include="Plugins\org.apache.cordova.media-capture\AudioCaptureTask.cs" />
-    </ItemGroup>
     <ItemGroup />
-    <ItemGroup>
-        <Compile Include="Plugins\org.apache.cordova.media-capture\AudioRecorder.xaml.cs">
-            <DependentUpon>AudioRecorder.xaml</DependentUpon>
-        </Compile>
-    </ItemGroup>
-    <ItemGroup>
-        <Compile Include="Plugins\org.apache.cordova.media-capture\VideoCaptureTask.cs" />
-    </ItemGroup>
     <ItemGroup />
-    <ItemGroup>
-        <Compile Include="Plugins\org.apache.cordova.media-capture\VideoRecorder.xaml.cs">
-            <DependentUpon>VideoRecorder.xaml</DependentUpon>
-        </Compile>
-    </ItemGroup>
-    <ItemGroup>
-        <Compile Include="Plugins\org.apache.cordova.network-information\NetworkStatus.cs" />
-    </ItemGroup>
-    <ItemGroup>
-        <Compile Include="Plugins\org.apache.cordova.splashscreen\SplashScreen.cs" />
-    </ItemGroup>
-    <ItemGroup>
-        <Compile Include="Plugins\org.apache.cordova.vibration\Vibration.cs" />
-    </ItemGroup>
     <ItemGroup>
         <Content Include="www\404.html" />
     </ItemGroup>
@@ -607,37 +544,70 @@
         <Content Include="www\twitarr.rylath.net.cer" />
     </ItemGroup>
     <ItemGroup>
-        <Content Include="www\plugins\org.apache.cordova.camera\www\CameraConstants.js" />
+        <Compile Include="Plugins\org.apache.cordova.camera\Camera.cs" />
     </ItemGroup>
     <ItemGroup>
-        <Content Include="www\plugins\org.apache.cordova.camera\www\CameraPopoverOptions.js" />
+        <Compile Include="Plugins\org.apache.cordova.console\DebugConsole.cs" />
     </ItemGroup>
     <ItemGroup>
-        <Content Include="www\plugins\org.apache.cordova.camera\www\Camera.js" />
+        <Compile Include="Plugins\org.apache.cordova.device\Device.cs" />
     </ItemGroup>
     <ItemGroup>
-        <Content Include="www\plugins\org.apache.cordova.camera\www\CameraPopoverHandle.js" />
+        <Compile Include="Plugins\org.apache.cordova.device-orientation\Compass.cs" />
     </ItemGroup>
     <ItemGroup>
-        <Content Include="www\plugins\org.apache.cordova.console\www\console-via-logger.js" />
+        <Compile Include="Plugins\org.apache.cordova.dialogs\Notification.cs" />
     </ItemGroup>
     <ItemGroup>
-        <Content Include="www\plugins\org.apache.cordova.console\www\logger.js" />
+        <Compile Include="Plugins\org.apache.cordova.dialogs\NotificationBox.xaml.cs">
+            <DependentUpon>NotificationBox.xaml</DependentUpon>
+        </Compile>
+    </ItemGroup>
+    <ItemGroup />
+    <ItemGroup>
+        <Content Include="Plugins\org.apache.cordova.dialogs\notification-beep.wav" />
     </ItemGroup>
     <ItemGroup>
-        <Content Include="www\plugins\org.apache.cordova.device\www\device.js" />
+        <Compile Include="Plugins\org.apache.cordova.geolocation\Geolocation.cs" />
     </ItemGroup>
     <ItemGroup>
-        <Content Include="www\plugins\org.apache.cordova.device-orientation\www\CompassError.js" />
+        <Compile Include="Plugins\org.apache.cordova.media\Media.cs" />
     </ItemGroup>
     <ItemGroup>
-        <Content Include="www\plugins\org.apache.cordova.device-orientation\www\CompassHeading.js" />
+        <Compile Include="Plugins\org.apache.cordova.media\AudioPlayer.cs" />
     </ItemGroup>
     <ItemGroup>
-        <Content Include="www\plugins\org.apache.cordova.device-orientation\www\compass.js" />
+        <Compile Include="Plugins\org.apache.cordova.media-capture\Capture.cs" />
     </ItemGroup>
     <ItemGroup>
-        <Content Include="www\plugins\org.apache.cordova.dialogs\www\notification.js" />
+        <Compile Include="Plugins\org.apache.cordova.media-capture\AudioCaptureTask.cs" />
+    </ItemGroup>
+    <ItemGroup />
+    <ItemGroup>
+        <Compile Include="Plugins\org.apache.cordova.media-capture\AudioRecorder.xaml.cs">
+            <DependentUpon>AudioRecorder.xaml</DependentUpon>
+        </Compile>
+    </ItemGroup>
+    <ItemGroup>
+        <Compile Include="Plugins\org.apache.cordova.media-capture\VideoCaptureTask.cs" />
+    </ItemGroup>
+    <ItemGroup />
+    <ItemGroup>
+        <Compile Include="Plugins\org.apache.cordova.media-capture\VideoRecorder.xaml.cs">
+            <DependentUpon>VideoRecorder.xaml</DependentUpon>
+        </Compile>
+    </ItemGroup>
+    <ItemGroup>
+        <Compile Include="Plugins\org.apache.cordova.network-information\NetworkStatus.cs" />
+    </ItemGroup>
+    <ItemGroup>
+        <Compile Include="Plugins\org.apache.cordova.splashscreen\SplashScreen.cs" />
+    </ItemGroup>
+    <ItemGroup>
+        <Compile Include="Plugins\org.apache.cordova.vibration\Vibration.cs" />
+    </ItemGroup>
+    <ItemGroup>
+        <Compile Include="Plugins\org.apache.cordova.inappbrowser\InAppBrowser.cs" />
     </ItemGroup>
     <ItemGroup>
         <Content Include="www\plugins\org.apache.cordova.file\www\DirectoryEntry.js" />
@@ -694,7 +664,37 @@
         <Content Include="www\plugins\org.apache.cordova.file\www\wp\FileUploadOptions.js" />
     </ItemGroup>
     <ItemGroup>
-        <Content Include="www\plugins\org.apache.cordova.inappbrowser\www\InAppBrowser.js" />
+        <Content Include="www\plugins\org.apache.cordova.camera\www\CameraConstants.js" />
+    </ItemGroup>
+    <ItemGroup>
+        <Content Include="www\plugins\org.apache.cordova.camera\www\CameraPopoverOptions.js" />
+    </ItemGroup>
+    <ItemGroup>
+        <Content Include="www\plugins\org.apache.cordova.camera\www\Camera.js" />
+    </ItemGroup>
+    <ItemGroup>
+        <Content Include="www\plugins\org.apache.cordova.camera\www\CameraPopoverHandle.js" />
+    </ItemGroup>
+    <ItemGroup>
+        <Content Include="www\plugins\org.apache.cordova.console\www\console-via-logger.js" />
+    </ItemGroup>
+    <ItemGroup>
+        <Content Include="www\plugins\org.apache.cordova.console\www\logger.js" />
+    </ItemGroup>
+    <ItemGroup>
+        <Content Include="www\plugins\org.apache.cordova.device\www\device.js" />
+    </ItemGroup>
+    <ItemGroup>
+        <Content Include="www\plugins\org.apache.cordova.device-orientation\www\CompassError.js" />
+    </ItemGroup>
+    <ItemGroup>
+        <Content Include="www\plugins\org.apache.cordova.device-orientation\www\CompassHeading.js" />
+    </ItemGroup>
+    <ItemGroup>
+        <Content Include="www\plugins\org.apache.cordova.device-orientation\www\compass.js" />
+    </ItemGroup>
+    <ItemGroup>
+        <Content Include="www\plugins\org.apache.cordova.dialogs\www\notification.js" />
     </ItemGroup>
     <ItemGroup>
         <Content Include="www\plugins\org.apache.cordova.media\www\MediaError.js" />
@@ -734,6 +734,12 @@
     </ItemGroup>
     <ItemGroup>
         <Content Include="www\plugins\org.apache.cordova.vibration\www\vibration.js" />
+    </ItemGroup>
+    <ItemGroup>
+        <Content Include="www\plugins\org.apache.cordova.inappbrowser\www\inappbrowser.js" />
+    </ItemGroup>
+    <ItemGroup>
+        <Content Include="www\plugins\org.apache.cordova.statusbar\www\statusbar.js" />
     </ItemGroup>
     <ItemGroup>
         <Content Include="www\cordova_plugins.js" />
