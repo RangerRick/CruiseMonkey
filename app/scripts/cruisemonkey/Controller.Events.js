@@ -344,7 +344,7 @@ function CMDay(d) {
 			}
 		};
 
-		$ionicModal.fromTemplateUrl('edit-event.html', function(modal) {
+		$ionicModal.fromTemplateUrl('template/event-edit.html', function(modal) {
 			$scope.modal = modal;
 		}, {
 			scope: $scope,
