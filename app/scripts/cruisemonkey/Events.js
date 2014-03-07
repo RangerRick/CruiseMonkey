@@ -409,7 +409,7 @@ CMFavorite.prototype.getRawData = function() {
 		'cruisemonkey.DB',
 		'cruisemonkey.User'
 	])
-	.factory('EventService', ['$q', '$rootScope', '$timeout', '$location', 'uuid4', '_db', 'Database', 'UserService', '$log', 'config.database.host', 'config.database.name', 'config.database.replicate', function($q, $rootScope, $timeout, $location, uuid4, newdb, db, UserService, log, databaseHost, databaseName, replicate) {
+	.factory('EventService', ['$q', '$rootScope', '$timeout', '$location', 'uuid4', '_db', 'Database', 'UserService', '$log', 'config.database.host', 'config.database.name', 'config.database.replicate', function($q, $rootScope, $timeout, $location, uuid4, _db, db, UserService, log, databaseHost, databaseName, replicate) {
 		log.info('EventService: Initializing EventService.');
 
 		var listeners = [],
@@ -432,29 +432,6 @@ CMFavorite.prototype.getRawData = function() {
 			return deferred.promise;
 		};
 
-		var doQuery = function(ObjConstructor, mapFunc, options) {
-			var deferred = $q.defer();
-
-			$q.when(db.getDatabase()).then(function(database) {
-				database.query({map: mapFunc}, options, function(err, res) {
-					$rootScope.$apply(function() {
-						if (err) {
-							log.error(err);
-							deferred.reject(err);
-						} else {
-							var results = [], i;
-							angular.forEach(res.rows, function(row, index) {
-								results.push(new ObjConstructor(row.value));
-							});
-							deferred.resolve(results);
-						}
-					});
-				});
-			});
-
-			return deferred.promise;
-		};
-
 		var reconcileEvents = function(events, favorites) {
 			var _events = {}, _favs = {}, fav, i, ret = [];
 			angular.forEach(events, function(ev) {
@@ -473,57 +450,6 @@ CMFavorite.prototype.getRawData = function() {
 			});
 
 			return ret;
-		};
-
-		var doEventQuery = function(username, mapFunc, matchFunc) {
-			if (!mapFunc || !matchFunc) {
-				return rejectedResult('EventService.doEventQuery(): you must specify a map function and a match function!');
-			}
-
-			var deferred = $q.defer();
-
-			$q.when(db.getDatabase()).then(function(database) {
-				database.query({
-					map: mapFunc
-				}, {
-					reduce: true,
-					include_docs:true,
-					key:username
-				}, function(err, res) {
-					$rootScope.$apply(function() {
-						if (err) {
-							log.error(err);
-							deferred.reject(err);
-						} else {
-							var events = [];
-							var favorites = [];
-							var lastEvent;
-							var doc;
-							angular.forEach(res.rows, function(row, index) {
-								if (!row.doc) {
-									return;
-								}
-								doc = row.doc;
-								if (doc.type === 'event') {
-									if (matchFunc(doc)) {
-										events.push(new CMEvent(doc));
-									} else {
-										log.debug('EventService.doEventQuery(): event (' + doc._id + ') did not match matchFunc()!  Skipping.');
-										lastEvent = undefined;
-									}
-								} else if (doc.type === 'favorite') {
-									favorites.push(new CMFavorite(doc));
-								} else {
-									log.warn('EventService.doEventQuery(): unknown document type (' + doc.type + ') matched for id: ' + doc._id);
-								}
-							});
-							deferred.resolve(reconcileEvents(events, favorites));
-						}
-					});
-				});
-			});
-
-			return deferred.promise;
 		};
 
 		var isString = function(value) {
@@ -556,18 +482,18 @@ CMFavorite.prototype.getRawData = function() {
 			var promises = [], i;
 
 			for (i=0; i < args.length; i++) {
-				promises.push(newdb.local().query(args[i], angular.copy(options)));
+				promises.push(_db.local().query(args[i], angular.copy(options)));
 			}
 			if (username) {
 				var opts = angular.copy(options);
 				angular.extend(opts, {
 					key:username
 				});
-				promises.push(newdb.local().query('favorites', opts));
+				promises.push(_db.local().query('favorites', opts));
 			}
 
 			$q.all(promises).then(function(results) {
-				var events = [], favorites = [], favresults = [], j, result;
+				var events = [], favorites = [], favresults = {rows: []}, j, result;
 				if (username) {
 					favresults = results.pop();
 				}
@@ -600,28 +526,21 @@ CMFavorite.prototype.getRawData = function() {
 
 			var deferred = $q.defer();
 
-			$q.when(db.getDatabase()).then(function(database) {
-				if (eventToAdd.getUsername() === undefined) {
+			if (eventToAdd.getUsername() === undefined) {
+				$timeout(function() {
 					log.warn('EventService.addEvent(): no username in the event!');
 					deferred.reject('no username specified');
-				} else {
-					log.debug('EventService.addEvent(): posting event "' + eventToAdd.getSummary() + '" for user "' + eventToAdd.getUsername() + '"');
-					eventToAdd.refreshLastUpdated();
-					eventToAdd.setId(uuid4.generate());
-					database.post(eventToAdd.getRawData(), function(err, response) {
-						$rootScope.$apply(function() {
-							if (err) {
-								log.error(err);
-								deferred.reject(err);
-							} else {
-								eventToAdd.setId(response.id);
-								eventToAdd.setRevision(response.rev);
-								log.trace('eventToAdd: ' + eventToAdd.toString());
-								deferred.resolve(eventToAdd);
-							}
-						});
-					});
-				}
+				});
+				return;
+			}
+
+			eventToAdd.refreshLastUpdated();
+			_db.local().post(eventToAdd.getRawData()).then(function(response) {
+				eventToAdd.setId(response.id);
+				eventToAdd.setRevision(response.rev);
+				deferred.resolve(eventToAdd);
+			}, function(err) {
+				deferred.reject(err);
 			});
 
 			return deferred.promise;
@@ -638,24 +557,19 @@ CMFavorite.prototype.getRawData = function() {
 			}
 
 			if (!ev.getRevision() || !ev.getId()) {
-				log.warn('EventService.updateEvent(): Attempting to update event ' + ev.summary + ', but it is missing _rev or _id!');
-				deferred.reject('bad event');
+				$timeout(function() {
+					log.warn('EventService.updateEvent(): Attempting to update event ' + ev.summary + ', but it is missing _rev or _id!');
+					deferred.reject('bad event');
+				});
 				return deferred.promise;
 			}
 
-			$q.when(db.getDatabase()).then(function(database) {
-				ev.refreshLastUpdated();
-				database.put(ev.getRawData(), function(err, response) {
-					$rootScope.$apply(function() {
-						if (err) {
-							log.error(err);
-							deferred.reject(err);
-						} else {
-							ev.setRevision(response.rev);
-							deferred.resolve(ev);
-						}
-					});
-				});
+			ev.refreshLastUpdated();
+			_db.local().put(ev.getRawData()).then(function(response) {
+				ev.setRevision(response.rev);
+				deferred.resolve(ev);
+			}, function(err) {
+				deferred.reject(err);
 			});
 
 			return deferred.promise;
@@ -672,17 +586,10 @@ CMFavorite.prototype.getRawData = function() {
 			log.debug('EventService.removeEvent(' + ev.getId() + ')');
 			var deferred = $q.defer();
 
-			$q.when(db.getDatabase()).then(function(database) {
-				database.remove(ev.getRawData(), function(err, response) {
-					$rootScope.$apply(function() {
-						if (err) {
-							log.error(err);
-							deferred.reject(err);
-						} else {
-							deferred.resolve(response);
-						}
-					});
-				});
+			_db.local().remove(ev.getRawData()).then(function(response) {
+				deferred.resolve(response);
+			}, function(err) {
+				deferred.reject(err);
 			});
 
 			return deferred.promise;
@@ -697,7 +604,7 @@ CMFavorite.prototype.getRawData = function() {
 
 			var deferred = $q.defer();
 			_allEvents = deferred.promise;
-			newdb.local().query('all-events', {include_docs: true}).then(function(results) {
+			_db.local().query('all-events', {include_docs: true}).then(function(results) {
 				var ret = [];
 				for (var i=0; i < results.rows.length; i++) {
 					ret.push(new CMEvent(results.rows[i].doc));
@@ -720,12 +627,21 @@ CMFavorite.prototype.getRawData = function() {
 				return _allFavorites;
 			}
 
+			var deferred = $q.defer();
+			__allFavorites = deferred.promise;
+			
 			log.debug('EventService.getAllFavorites()');
-			_allFavorites = doQuery(CMFavorite, function(doc) {
-				if (doc.type === 'favorite') {
-					emit(doc.username, doc);
+			_db.local().query('favorites', {include_docs:true}).then(function(results) {
+				var ret = [];
+				for (i=0; i < results.rows.length; i++) {
+					fav = results.rows[i].doc;
+					ret.push(new CMFavorite(fav));
 				}
-			}, {reduce: true});
+				deferred.resolve(ret);
+			}, function(err) {
+				deferred.reject(err);
+			});
+
 			_allFavorites['finally'](function() {
 				log.debug('EventService.getAllFavorites(): finished.');
 				_allFavorites = null;
@@ -908,9 +824,9 @@ CMFavorite.prototype.getRawData = function() {
 			var deferred = $q.defer();
 			_isFavorite = deferred.promise;
 
-			var docId = username + ':' + eventId;
-			newdb.local().get(docId).then(function(response) {
-				deferred.resolve(response && response._id === docId);
+			var docId = 'favorite:' + username + ':' + eventId;
+			_db.local().get(docId).then(function(response) {
+				deferred.resolve(response && response._id === docId && !response._deleted);
 			}, function(err) {
 				log.warn('error getting ' + docId, err);
 				deferred.resolve(false);
@@ -931,56 +847,47 @@ CMFavorite.prototype.getRawData = function() {
 			}
 
 			var deferred = $q.defer(),
-				favId = 'favorite-' + username + '-' + eventId;
+				favId = 'favorite:' + username + ':' + eventId;
 
-			$q.when(db.getDatabase()).then(function(database) {
-				var fav = {
-					'_id': favId,
-					'type': 'favorite',
-					'username': username,
-					'eventId': eventId,
-					'lastModified': stringifyDate(moment())
-				};
+			var fav = {
+				'_id': favId,
+				'type': 'favorite',
+				'username': username,
+				'eventId': eventId,
+				'lastModified': stringifyDate(moment())
+			};
 
-				var checkExisting = $q.defer();
+			var checkExisting = $q.defer();
 
-				database.get(favId, {
-					revs: true,
-					open_revs: 'all',
-					conflicts: true
-				}, function(err, res) {
-					$rootScope.$apply(function() {
-						if (err) {
-							log.error('Error getting existing (deleted) favorite.');
-							log.debug(err);
-							checkExisting.resolve(false);
-						} else if (res && res.length > 0) {
-							var obj = res[0];
-							if (obj && obj.ok && obj.ok._id === favId) {
-								fav._rev = obj.ok._rev;
-								checkExisting.resolve(true);
-							} else {
-								checkExisting.resolve(false);
-							}
-						} else {
-							checkExisting.resolve(false);
-						}
-					});
-				});
+			_db.local().get(favId, {
+				revs: true,
+				open_revs: 'all',
+				conflicts: true
+			}).then(function(res) {
+				if (res.length > 0) {
+					var obj = res[0];
+					if (obj && obj.ok && obj.ok._id === favId) {
+						fav._rev = obj.ok._rev;
+						checkExisting.resolve(true);
+					} else {
+						checkExisting.resolve(false);
+					}
+				} else {
+					checkExisting.resolve(false);
+				}
+			}, function(err) {
+				log.warn('Checking for existing document ' + favId + ': error was: ' + err);
+				checkExisting.resolve(false);
+			});
 
-				checkExisting.promise.then(function() {
-					database.post(fav, function(err, res) {
-						$rootScope.$apply(function() {
-							if (err) {
-								log.error(err);
-								deferred.reject(err);
-							} else {
-								log.debug('EventService.addFavorite(): favorite added.');
-								fav._rev = res.rev;
-								deferred.resolve(new CMFavorite(fav));
-							}
-						});
-					});
+			checkExisting.promise.then(function() {
+				_db.local().put(fav).then(function(res) {
+					log.debug('EventService.addFavorite(): favorite added.');
+					fav._rev = res.rev;
+					deferred.resolve(new CMFavorite(fav));
+				}, function(err) {
+					log.error(err);
+					deferred.reject(err);
 				});
 			});
 
@@ -996,67 +903,24 @@ CMFavorite.prototype.getRawData = function() {
 
 			var deferred = $q.defer();
 
-			$q.when(db.getDatabase()).then(function(database) {
-				log.debug('EventService.removeFavorite(): removing');
-				/* first, we get the list of favorites pointing to the given event ID */
-				database.query(
-				{
-					map: function(doc) {
-						if (doc.type === 'favorite') {
-							emit({ 'username': doc.username, 'eventId': doc.eventId }, doc._id);
-						}
+			_db.local().query('favorites', {include_docs:true,key:username}).then(function(results) {
+				var remove = [], fav, promises, def, i;
+				for (i=0; i < results.rows.length; i++) {
+					fav = results.rows[i].doc;
+					if (fav.username === username && fav.eventId === eventId) {
+						fav._deleted = true;
+						remove.push(fav);
 					}
-				},
-				{
-					reduce: true,
-					include_docs: true,
-					key: { 'username': username, 'eventId': eventId }
-				},
-				function(err, res) {
-					$rootScope.$apply(function() {
-						if (err) {
-							log.error(err);
-							deferred.reject(err);
-						} else {
-							if (res.total_rows > 0) {
-								var promises = [];
+				}
 
-								log.debug('removeFavorite(): results =',res.rows);
-
-								/* for any existing favorites associated with the event,
-								store a promise to delete that event */
-								angular.forEach(res.rows, function(row, index) {
-									var def = $q.defer();
-									promises.push(def.promise);
-
-									var favoriteId = row.value;
-									var doc = row.doc;
-									database.remove(doc, function(err, res) {
-										$rootScope.$apply(function() {
-											if (err) {
-												log.error(err);
-												def.reject(err);
-											} else {
-												def.resolve(res);
-											}
-										});
-									});
-								});
-
-								/* when all of the deletes have finished, then resolve & return */
-								log.debug('EventService.removeFavorite(): finished.');
-								$q.all(promises).then(function() {
-									deferred.resolve(res.total_rows);
-								}, function(err) {
-									deferred.reject(err);
-								});
-							} else {
-								log.debug('EventService.removeFavorite(): no rows matched ' + eventId + ' for username ' + username);
-								deferred.resolve(0);
-							}
-						}
-					});
+				_db.local().bulk(remove).then(function(results) {
+					deferred.resolve(results.length);
+				}, function(err) {
+					console.log('bulk error:',err);
+					deferred.reject(err);
 				});
+			}, function(err) {
+				deferred.reject(err);
 			});
 
 			return deferred.promise;

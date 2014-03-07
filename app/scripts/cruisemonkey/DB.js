@@ -35,6 +35,10 @@
 		};
 
 		var __sync = function(from, to) {
+			if (from === to) {
+				log.debug('Cannot sync to itself!');
+				return;
+			}
 			if (__syncing[from] && __syncing[from][to]) {
 				log.debug('Already syncing!');
 				return;
@@ -179,7 +183,7 @@
 								var updatedDocs = [], row;
 								for (var i=0; i < res.rows.length; i++) {
 									row = res.rows[i];
-									//log.debug('row:',row);
+									//console.log('row:',row);
 									if (row.doc._deleted) {
 										log.debug('deleted: ', row);
 									} else {
@@ -196,6 +200,7 @@
 											deferred.reject(err);
 										} else {
 											__replicate(__pouchRemote, __pouchUser).then(function(changes) {
+												__sync(__pouchRemote, __pouchUser);
 												deferred.resolve(changes);
 											});
 										}
@@ -238,26 +243,92 @@
 			return deferred.promise;
 		};
 
-		var __remote = function() {
+		var __put = function(db, doc, options) {
+			var deferred = $q.defer();
+			db.put(doc, options, function(err, response) {
+				$rootScope.$apply(function() {
+					if (err) {
+						deferred.reject(err);
+					} else {
+						deferred.resolve(response);
+					}
+				});
+			});
+			return deferred.promise;
+		};
+		
+		var __post = function(db, doc, options) {
+			var deferred = $q.defer();
+			db.post(doc, options, function(err, response) {
+				$rootScope.$apply(function() {
+					if (err) {
+						deferred.reject(err);
+					} else {
+						deferred.resolve(response);
+					}
+				});
+			});
+			return deferred.promise;
+		};
+		
+		var __bulk = function(db, docs) {
+			var deferred = $q.defer();
+			db.bulkDocs({
+				docs: docs
+			}, function(err, res) {
+				$rootScope.$apply(function() {
+					if (err) {
+						deferred.reject(err);
+					} else {
+						deferred.resolve(res);
+					}
+				});
+			});
+			return deferred.promise;
+		};
+		
+		var __remove = function(db, doc) {
+			var deferred = $q.defer();
+			db.remove(doc, function(err,res) {
+				$rootScope.$apply(function() {
+					if (err) {
+						deferred.reject(err);
+					} else {
+						deferred.resolve(res);
+					}
+				});
+			});
+			return deferred.promise;
+		}
+
+		var __db = function(db) {
 			return {
 				'query': function(view, options) {
-					return __query(__pouchRemote, view, options);
+					return __query(db, view, options);
 				},
 				'get': function(id, options) {
-					return __get(__pouchRemote, id, options);
+					return __get(db, id, options);
+				},
+				'put': function(doc, options) {
+					return __put(db, doc, options);
+				},
+				'post': function(doc, options) {
+					return __post(db, doc, options);
+				},
+				'bulk': function(docs) {
+					return __bulk(db, docs);
+				},
+				'remove': function(doc) {
+					return __remove(db, doc);
 				}
 			};
+		}
+		var __remote = function() {
+			return __db(__pouchRemote);
 		};
 		
 		var __local = function() {
-			return {
-				'query': function(view, options) {
-					return __query(__pouchUser, view, options);
-				},
-				'get': function(id, options) {
-					return __get(__pouchUser, id, options);
-				}
-			};
+			return __db(__pouchUser);
 		};
 
 		return {

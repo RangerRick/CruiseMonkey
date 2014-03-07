@@ -306,7 +306,7 @@ describe('cruisemonkey.DB', function() {
 					expect(results.rows.length).toEqual(1);
 
 					var db = new PouchDB(remoteDb);
-					db.get('triluna:rangerrick-public', function(err,res) {
+					db.get('favorite:triluna:rangerrick-public', function(err,res) {
 						expect(err).toBeNull();
 						expect(res).not.toBeNull();
 						db.remove(res, function(err,res) {

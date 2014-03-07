@@ -117,7 +117,7 @@
 		};
 
 		var getLocalDatabaseUrl = function() {
-			return getRemoteDatabaseUrl();
+			return getSettings().databaseName;
 		};
 
 		return {

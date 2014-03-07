@@ -25,6 +25,7 @@
 		'cruisemonkey.controllers.Logout',
 		'cruisemonkey.controllers.Navigation',
 		'cruisemonkey.controllers.Photos',
+		'cruisemonkey.DB',
 		'cruisemonkey.Database',
 		'cruisemonkey.Notifications',
 		'cruisemonkey.Seamail',
@@ -172,7 +173,7 @@
 			}
 		};
 	}])
-	.run(['$q', '$rootScope', '$window', '$location', '$interval', '$urlRouter', '$log', 'UserService', 'storage', 'CordovaService', 'UpgradeService', 'Database', 'NotificationService', 'SettingsService', 'SeamailService', function($q, $rootScope, $window, $location, $interval, $urlRouter, log, UserService, storage, cor, upgrades, Database, notifications, SettingsService, SeamailService) {
+	.run(['$q', '$rootScope', '$window', '$location', '$interval', '$urlRouter', '$log', 'UserService', 'storage', 'CordovaService', 'UpgradeService', '_db', 'Database', 'NotificationService', 'SettingsService', 'SeamailService', function($q, $rootScope, $window, $location, $interval, $urlRouter, log, UserService, storage, cor, upgrades, _db, Database, notifications, SettingsService, SeamailService) {
 		log.debug('CruiseMonkey run() called.');
 
 		/*global moment: true*/
@@ -391,6 +392,7 @@
 		*/
 
 		$q.when(upgrades.upgrade()).then(function() {
+			/*
 			Database.initialize().then(function(db) {
 				databaseInitialized.resolve(db);
 				cor.ifCordova(function() {
@@ -401,6 +403,19 @@
 				cor.ifCordova(function() {
 					navigator.splashscreen.hide();
 				});
+				log.error('Failed to initialize database!');
+				databaseInitialized.reject(err);
+			});
+			*/
+			_db.setUserDatabase(SettingsService.getLocalDatabaseUrl());
+			_db.setRemoteDatabase(SettingsService.getRemoteDatabaseUrl());
+			_db.init().then(function() {
+				databaseInitialized.resolve();
+				cor.ifCordova(function() {
+					navigator.splashscreen.hide();
+				});
+				$rootScope.$broadcast('cm.main.databaseInitialized');
+			}, function(err) {
 				log.error('Failed to initialize database!');
 				databaseInitialized.reject(err);
 			});

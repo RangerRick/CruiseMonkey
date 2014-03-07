@@ -133,13 +133,13 @@ var defaultDocs = [
 		'isPublic': false
 	},
 	{
-		'_id': 'triluna:rangerrick-public',
+		'_id': 'favorite:triluna:rangerrick-public',
 		'type': 'favorite',
 		'username': 'triluna',
 		'eventId': 'rangerrick-public'
 	},
 	{
-		'_id': 'rangerrick:official-event',
+		'_id': 'favorite:rangerrick:official-event',
 		'type': 'favorite',
 		'username': 'rangerrick',
 		'eventId': 'official-event'
