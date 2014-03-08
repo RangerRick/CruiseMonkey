@@ -57,8 +57,10 @@ function computeHeight(revs) {
   });
   return height;
 }
+
 utils.inherits(AbstractPouchDB, EventEmitter);
 module.exports = AbstractPouchDB;
+
 function AbstractPouchDB() {
   var self = this;
   EventEmitter.call(this);
@@ -88,6 +90,7 @@ function AbstractPouchDB() {
       }
     };
   };
+
   var listeners = 0, changes;
   var eventNames = ['change', 'delete', 'create', 'update'];
   this.on('newListener', function (eventName) {
@@ -135,7 +138,18 @@ function AbstractPouchDB() {
     changes.cancel();
   });
 }
-AbstractPouchDB.prototype.post = utils.toPromise(function (doc, opts, callback) {
+
+function adapterFun(name, callback) {
+  return utils.toPromise(function () {
+    if (!this.taskqueue.isReady) {
+      this.taskqueue.addTask(name, arguments);
+      return;
+    }
+    callback.apply(this, arguments);
+  });
+}
+
+AbstractPouchDB.prototype.post = adapterFun('post', function (doc, opts, callback) {
   if (typeof opts === 'function') {
     callback = opts;
     opts = {};
@@ -147,7 +161,7 @@ AbstractPouchDB.prototype.post = utils.toPromise(function (doc, opts, callback) 
       this.autoCompact(yankError(callback)));
 });
 
-AbstractPouchDB.prototype.put = utils.toPromise(function () {
+AbstractPouchDB.prototype.put = adapterFun('put', function () {
   var args = Array.prototype.slice.call(arguments);
   var temp, temptype, opts, callback;
   var doc = args.shift();
@@ -183,11 +197,7 @@ AbstractPouchDB.prototype.put = utils.toPromise(function () {
       this.autoCompact(yankError(callback)));
 });
 
-AbstractPouchDB.prototype.putAttachment = utils.toPromise(function (docId, attachmentId, rev, blob, type, callback) {
-  if (!this.taskqueue.isReady) {
-    this.taskqueue.addTask('putAttachment', arguments);
-    return;
-  }
+AbstractPouchDB.prototype.putAttachment = adapterFun('putAttachment', function (docId, attachmentId, rev, blob, type, callback) {
   var api = this;
   if (typeof type === 'function') {
     callback = type;
@@ -230,7 +240,7 @@ AbstractPouchDB.prototype.putAttachment = utils.toPromise(function (docId, attac
   });
 });
 
-AbstractPouchDB.prototype.removeAttachment = utils.toPromise(function (docId, attachmentId, rev, callback) {
+AbstractPouchDB.prototype.removeAttachment = adapterFun('removeAttachment', function (docId, attachmentId, rev, callback) {
   var self = this;
   self.get(docId, function (err, obj) {
     if (err) {
@@ -252,7 +262,7 @@ AbstractPouchDB.prototype.removeAttachment = utils.toPromise(function (docId, at
   });
 });
 
-AbstractPouchDB.prototype.remove = utils.toPromise(function (doc, opts, callback) {
+AbstractPouchDB.prototype.remove = adapterFun('remove', function (doc, opts, callback) {
   if (typeof opts === 'function') {
     callback = opts;
     opts = {};
@@ -267,7 +277,7 @@ AbstractPouchDB.prototype.remove = utils.toPromise(function (doc, opts, callback
   return this.bulkDocs({docs: [newDoc]}, opts, yankError(callback));
 });
 
-AbstractPouchDB.prototype.revsDiff = utils.toPromise(function (req, opts, callback) {
+AbstractPouchDB.prototype.revsDiff = adapterFun('revsDiff', function (req, opts, callback) {
   if (typeof opts === 'function') {
     callback = opts;
     opts = {};
@@ -356,7 +366,7 @@ AbstractPouchDB.prototype.compactDocument = function (docId, max_height, callbac
 
 // compact the whole database using single document
 // compaction
-AbstractPouchDB.prototype.compact = utils.toPromise(function (opts, callback) {
+AbstractPouchDB.prototype.compact = adapterFun('compact', function (opts, callback) {
   if (typeof opts === 'function') {
     callback = opts;
     opts = {};
@@ -384,11 +394,7 @@ AbstractPouchDB.prototype.compact = utils.toPromise(function (opts, callback) {
 });
 
 /* Begin api wrappers. Specific functionality to storage belongs in the _[method] */
-AbstractPouchDB.prototype.get = utils.toPromise(function (id, opts, callback) {
-  if (!this.taskqueue.isReady) {
-    this.taskqueue.addTask('get', arguments);
-    return;
-  }
+AbstractPouchDB.prototype.get = adapterFun('get', function (id, opts, callback) {
   if (typeof opts === 'function') {
     callback = opts;
     opts = {};
@@ -531,11 +537,7 @@ AbstractPouchDB.prototype.get = utils.toPromise(function (id, opts, callback) {
   });
 });
 
-AbstractPouchDB.prototype.getAttachment = utils.toPromise(function (docId, attachmentId, opts, callback) {
-  if (!this.taskqueue.isReady) {
-    this.taskqueue.addTask('getAttachment', arguments);
-    return;
-  }
+AbstractPouchDB.prototype.getAttachment = adapterFun('getAttachment', function (docId, attachmentId, opts, callback) {
   var self = this;
   if (opts instanceof Function) {
     callback = opts;
@@ -555,11 +557,7 @@ AbstractPouchDB.prototype.getAttachment = utils.toPromise(function (docId, attac
   });
 });
 
-AbstractPouchDB.prototype.allDocs = utils.toPromise(function (opts, callback) {
-  if (!this.taskqueue.isReady) {
-    this.taskqueue.addTask('allDocs', arguments);
-    return;
-  }
+AbstractPouchDB.prototype.allDocs = adapterFun('allDocs', function (opts, callback) {
   if (typeof opts === 'function') {
     callback = opts;
     opts = {};
@@ -791,19 +789,11 @@ AbstractPouchDB.prototype.changes = function (opts, promise, callback) {
   return promise;
 };
 
-AbstractPouchDB.prototype.close = utils.toPromise(function (callback) {
-  if (!this.taskqueue.isReady) {
-    this.taskqueue.addTask('close', arguments);
-    return;
-  }
+AbstractPouchDB.prototype.close = adapterFun('close', function (callback) {
   return this._close(callback);
 });
 
-AbstractPouchDB.prototype.info = utils.toPromise(function (callback) {
-  if (!this.taskqueue.isReady) {
-    this.taskqueue.addTask('info', arguments);
-    return;
-  }
+AbstractPouchDB.prototype.info = adapterFun('info', function (callback) {
   var self = this;
   this._info(function (err, info) {
     if (err) {
@@ -817,11 +807,7 @@ AbstractPouchDB.prototype.info = utils.toPromise(function (callback) {
   });
 });
 
-AbstractPouchDB.prototype.id = utils.toPromise(function (callback) {
-  if (!this.taskqueue.isReady) {
-    this.taskqueue.addTask('id', arguments);
-    return;
-  }
+AbstractPouchDB.prototype.id = adapterFun('id', function (callback) {
   return this._id(callback);
 });
 
@@ -829,11 +815,7 @@ AbstractPouchDB.prototype.type = function () {
   return (typeof this._type === 'function') ? this._type() : this.adapter;
 };
 
-AbstractPouchDB.prototype.bulkDocs = utils.toPromise(function (req, opts, callback) {
-  if (!this.taskqueue.isReady) {
-    this.taskqueue.addTask('bulkDocs', arguments);
-    return;
-  }
+AbstractPouchDB.prototype.bulkDocs = adapterFun('bulkDocs', function (req, opts, callback) {
   if (typeof opts === 'function') {
     callback = opts;
     opts = {};
@@ -1789,8 +1771,6 @@ function HttpPouch(opts, callback) {
     // Return a method to cancel this method from processing any more
     return {
       cancel: function () {
-        utils.call(opts.complete, null, {status: 'cancelled'});
-        opts.complete = null;
         opts.aborted = true;
         xhr.abort();
       }
@@ -2728,14 +2708,10 @@ function IdbPouch(opts, callback) {
 
     if (opts.continuous) {
       var id = name + ':' + utils.uuid();
-      opts.cancelled = false;
       IdbPouch.Changes.addListener(name, id, api, opts);
       IdbPouch.Changes.notify(name);
       return {
         cancel: function () {
-          opts.complete(null, {status: 'cancelled'});
-          opts.complete = null;
-          opts.cancelled = true;
           IdbPouch.Changes.removeListener(name, id);
         }
       };
@@ -3696,20 +3672,12 @@ function WebSqlPouch(opts, callback) {
   api._changes = function idb_changes(opts) {
     opts = utils.extend(true, {}, opts);
 
-
-    //console.log(name + ': Start Changes Feed: continuous=' + opts.continuous);
-
-
     if (opts.continuous) {
       var id = name + ':' + utils.uuid();
-      opts.cancelled = false;
       WebSqlPouch.Changes.addListener(name, id, api, opts);
       WebSqlPouch.Changes.notify(name);
       return {
         cancel: function () {
-          opts.complete(null, {status: 'cancelled'});
-          opts.complete = null;
-          opts.cancelled = true;
           WebSqlPouch.Changes.removeListener(name, id);
         }
       };
@@ -6279,6 +6247,20 @@ exports.fixBinary = function (bin) {
   return buf;
 };
 
+exports.once = function (fun) {
+  var called = false;
+  return function () {
+    if (called) {
+      console.warn('once thrown more than once');
+      console.trace();
+      //throw new Error('once called  more than once');
+    } else {
+      called = true;
+      fun.apply(this, arguments);
+    }
+  };
+};
+
 exports.toPromise = function (func, passPromise) {
   //create the function we will be returning
   return function () {
@@ -6298,13 +6280,13 @@ exports.toPromise = function (func, passPromise) {
     }
     var promise = new Promise(function (fulfill, reject) {
       try {
-        function callback(err, mesg) {
+        var callback = exports.once(function (err, mesg) {
           if (err) {
             reject(err);
           } else {
             fulfill(mesg);
           }
-        }
+        });
         // create a callback for this invocation
         // apply the function in the orig context
         if (passPromise) {
@@ -7626,13 +7608,14 @@ module.exports={
     "pouchdb"
   ],
   "dependencies": {
-    "request": "~2.28.0",
-    "pouchdb-mapreduce": "1.0.0",
     "bluebird": "~1.0.0",
+    "inherits": "~2.0.1",
     "level-sublevel": "~5.2.0",
-    "levelup": "~0.18.2",
     "leveldown": "~0.10.2",
-    "inherits": "~2.0.1"
+    "levelup": "~0.18.2",
+    "lie": "^2.5.3",
+    "pouchdb-mapreduce": "1.0.0",
+    "request": "~2.28.0"
   },
   "devDependencies": {
     "commander": "~2.1.0",
@@ -7643,7 +7626,6 @@ module.exports={
     "corsproxy": "~0.2.13",
     "http-server": "~0.5.5",
     "browserify": "~3.24.13",
-    "lie": "~2.5.2",
     "wd": "~0.2.8",
     "tin": "~0.4.0",
     "mocha": "~1.17.1",
@@ -7665,7 +7647,8 @@ module.exports={
     "test": "npm run jshint && ./bin/run-test.sh",
     "publish": "./bin/publish.sh",
     "publish-site": "./bin/publish-site.sh",
-    "build-site": "./bin/build-site.sh"
+    "build-site": "./bin/build-site.sh",
+    "shell": "./bin/repl.js"  
   },
   "browser": {
     "./adapters/leveldb": false,
