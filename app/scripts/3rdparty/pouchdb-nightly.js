@@ -609,6 +609,9 @@ function processChange(doc, metadata, opts) {
 
 function doChanges(api, opts, promise, callback) {
   opts = utils.extend(true, {}, opts);
+  if ('live' in opts && !('continuous' in opts)) {
+    opts.continuous = opts.live;
+  }
   opts.processChange = processChange;
 
   if (!opts.since) {
@@ -718,8 +721,8 @@ function doChanges(api, opts, promise, callback) {
   if (newPromise && typeof newPromise.cancel === 'function') {
     var cancel = promise.cancel;
     promise.cancel = function () {
-      cancel.apply(this, arguments);
       newPromise.cancel();
+      cancel.apply(this, arguments);
     };
   }
 }
@@ -759,8 +762,10 @@ AbstractPouchDB.prototype.changes = function (opts, promise, callback) {
 
     var origCancel = promise.cancel;
     promise.cancel = function (reason) {
+      if (typeof origCancel === 'function') {
+        origCancel.apply(this);
+      }
       callback(null, {status: 'cancelled', reason: reason});
-      origCancel.apply(this);
     };
 
     if (promise.isCancelled) {
@@ -1093,7 +1098,13 @@ function HttpPouch(opts, callback) {
       method: 'GET',
       url: genUrl(host, '')
     }, function (err, result) {
-      callback(null, typeof result.uuid !== 'undefined' ? result.uuid + host.db : host.db);
+      if (err) {
+        callback(err);
+      } else {
+        var uuid = (result && result.uuid) ?
+          result.uuid + host.db : genDBUrl(host, '');
+        callback(null, uuid);
+      }
     });
   });
 
@@ -1668,6 +1679,9 @@ function HttpPouch(opts, callback) {
     // Get all the changes starting wtih the one immediately after the
     // sequence number given by since.
     var fetch = function (since, callback) {
+      if (opts.aborted) {
+        return;
+      }
       params.since = since;
       if (opts.descending) {
         if (limit) {
@@ -1709,6 +1723,9 @@ function HttpPouch(opts, callback) {
     var results = {results: []};
 
     var fetched = function (err, res) {
+      if (opts.aborted) {
+        return;
+      }
       var raw_results_length = 0;
       // If the result of the ajax call (res) contains changes (res.results)
       if (res && res.results) {
@@ -1967,7 +1984,7 @@ function isModernIdb() {
   // cache based on appVersion, in case the browser is updated
   var cacheKey = "_pouch__checkModernIdb_" +
     (global.navigator && global.navigator.appVersion);
-  var cached = global.localStorage && global.localStorage[cacheKey];
+  var cached = utils.hasLocalStorage() && global.localStorage[cacheKey];
   if (cached) {
     return JSON.parse(cached);
   }
@@ -1978,7 +1995,7 @@ function isModernIdb() {
   if (global.indexedDB.deleteDatabase) {
     global.indexedDB.deleteDatabase(dbName); // db no longer needed
   }
-  if (global.localStorage) {
+  if (utils.hasLocalStorage()) {
     global.localStorage[cacheKey] = JSON.stringify(result); // cache
   }
   return result;
@@ -3034,6 +3051,10 @@ function WebSqlPouch(opts, callback) {
   }
 
   function dbCreated() {
+    // note the db name in case the browser upgrades to idb
+    if (utils.hasLocalStorage()) {
+      global.localStorage['_pouch__websqldb_' + name] = true;
+    }
     callback(null, api);
   }
 
@@ -3818,6 +3839,9 @@ WebSqlPouch.destroy = utils.toPromise(function (name, opts, callback) {
     tx.executeSql('DROP TABLE IF EXISTS ' + ATTACH_STORE, []);
     tx.executeSql('DROP TABLE IF EXISTS ' + META_STORE, []);
   }, unknownError(callback), function () {
+    if (utils.hasLocalStorage()) {
+      delete global.localStorage['_pouch__websqldb_' + name];
+    }
     callback();
   });
 });
@@ -5293,7 +5317,9 @@ function writeCheckpoint(src, target, id, checkpoint, callback) {
     });
   }
   updateCheckpoint(target, function (err, doc) {
+    if (err) { return callback(err); }
     updateCheckpoint(src, function (err, doc) {
+      if (err) { return callback(err); }
       callback();
     });
   });
@@ -5307,7 +5333,7 @@ function replicate(repId, src, target, opts, promise) {
   var changesCompleted = false;
   var completeCalled = false;
   var last_seq = 0;
-  var continuous = opts.continuous || false;
+  var continuous = opts.continuous || opts.live || false;
   var batch_size = opts.batch_size || 1;
   var doc_ids = opts.doc_ids;
   var result = {
@@ -5615,6 +5641,8 @@ function replicateWrapper(src, target, opts, callback) {
   if (!opts.complete) {
     opts.complete = callback;
   }
+  opts = PouchUtils.extend(true, {}, opts);
+  opts.continuous = opts.continuous || opts.live;
   var replicateRet = new Promise();
   toPouch(src, function (err, src) {
     if (err) {
@@ -5688,6 +5716,7 @@ function sync(db1, db2, opts, callback) {
     opts = PouchUtils.extend(true, {}, opts);
     opts.complete = complete(opts.complete, direction);
     opts.onChange = onChange(src, opts.onChange);
+    opts.continuous = opts.continuous || opts.live;
     return opts;
   }
 
@@ -5721,6 +5750,7 @@ exports.replicate = replicateWrapper;
 exports.sync = sync;
 
 },{"./index":13,"./utils":18}],16:[function(_dereq_,module,exports){
+(function (global){
 "use strict";
 
 var PouchDB = _dereq_("./constructor");
@@ -5743,6 +5773,8 @@ var eventEmitterMethods = [
   'setMaxListeners'
 ];
 
+var preferredAdapters = ['idb', 'leveldb', 'websql'];
+
 eventEmitterMethods.forEach(function (method) {
   PouchDB[method] = eventEmitter[method].bind(eventEmitter);
 });
@@ -5760,15 +5792,23 @@ PouchDB.parseAdapter = function (name) {
     return {name: name, adapter: match[1]};
   }
 
-  var preferredAdapters = ['idb', 'leveldb', 'websql'];
+  // check for browers that have been upgraded from websql-only to websql+idb
+  var skipIdb = 'idb' in PouchDB.adapters && 'websql' in PouchDB.adapters &&
+    utils.hasLocalStorage() &&
+    global.localStorage['_pouch__websqldb_' + PouchDB.prefix + name];
+
   for (var i = 0; i < preferredAdapters.length; ++i) {
-    if (preferredAdapters[i] in PouchDB.adapters) {
-      adapter = PouchDB.adapters[preferredAdapters[i]];
+    var adapterName = preferredAdapters[i];
+    if (adapterName in PouchDB.adapters) {
+      if (skipIdb && adapterName === 'idb') {
+        continue; // keep using websql to avoid user data loss
+      }
+      adapter = PouchDB.adapters[adapterName];
       var use_prefix = 'use_prefix' in adapter ? adapter.use_prefix : true;
 
       return {
         name: use_prefix ? PouchDB.prefix + name : name,
-        adapter: preferredAdapters[i]
+        adapter: adapterName
       };
     }
   }
@@ -5821,6 +5861,7 @@ PouchDB.plugin = function (obj) {
 
 module.exports = PouchDB;
 
+}).call(this,typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 },{"./constructor":5,"./utils":18,"events":21}],17:[function(_dereq_,module,exports){
 'use strict';
 
@@ -6110,19 +6151,30 @@ exports.isCordova = function () {
           typeof phonegap !== "undefined");
 };
 
+exports.hasLocalStorage = function () {
+  try {
+    return global.localStorage;
+  } catch (e) {
+    return false;
+  }
+};
 exports.Changes = function () {
 
   var api = {};
   var listeners = {};
-
-  if (isChromeApp()) {
+  var isChrome = isChromeApp();
+  var hasLocal = false;
+  if (!isChrome) {
+    hasLocal = exports.hasLocalStorage();
+  }
+  if (isChrome) {
     chrome.storage.onChanged.addListener(function (e) {
       // make sure it's event addressed to us
       if (e.db_name != null) {
         api.notify(e.db_name.newValue);//object only has oldValue, newValue members
       }
     });
-  } else if (typeof window !== 'undefined') {
+  } else if (hasLocal) {
     global.addEventListener("storage", function (e) {
       api.notify(e.key);
     });
@@ -6151,9 +6203,9 @@ exports.Changes = function () {
   api.notifyLocalWindows = function (db_name) {
     //do a useless change on a storage thing
     //in order to get other windows's listeners to activate
-    if (isChromeApp()) {
+    if (isChrome) {
       chrome.storage.local.set({db_name: db_name});
-    } else if (global.localStorage) {
+    } else if (hasLocal) {
       localStorage[db_name] = (localStorage[db_name] === "a") ? "b" : "a";
     }
   };
@@ -6245,25 +6297,29 @@ exports.toPromise = function (func, passPromise) {
       };
     }
     var promise = new Promise(function (fulfill, reject) {
-      function callback(err, mesg) {
-        if (err) {
-          reject(err);
-        } else {
-          fulfill(mesg);
+      try {
+        function callback(err, mesg) {
+          if (err) {
+            reject(err);
+          } else {
+            fulfill(mesg);
+          }
         }
-      }
-      // create a callback for this invocation
-      // apply the function in the orig context
-      if (passPromise) {
-        // Defer until after promise is set
-        process.nextTick(function () {
-          args.push(promise);
+        // create a callback for this invocation
+        // apply the function in the orig context
+        if (passPromise) {
+          // Defer until after promise is set
+          process.nextTick(function () {
+            args.push(promise);
+            args.push(callback);
+            func.apply(self, args);
+          });
+        } else {
           args.push(callback);
           func.apply(self, args);
-        });
-      } else {
-        args.push(callback);
-        func.apply(self, args);
+        }
+      } catch (e) {
+        reject(e);
       }
     });
     // if there is a callback, call it back
@@ -6272,6 +6328,9 @@ exports.toPromise = function (func, passPromise) {
         usedCB(null, result);
       }, usedCB);
     }
+    promise.cancel = function () {
+      return this;
+    };
     return promise;
   };
 };
