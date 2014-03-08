@@ -493,7 +493,7 @@ CMFavorite.prototype.getRawData = function() {
 			}
 
 			$q.all(promises).then(function(results) {
-				var events = [], favorites = [], favresults = {rows: []}, j, result;
+				var events = [], favorites = [], favresults = {rows: []}, j, ev, fav, result, ret;
 				if (username) {
 					favresults = results.pop();
 				}
@@ -502,14 +502,19 @@ CMFavorite.prototype.getRawData = function() {
 				for (i=0; i < results.length; i++) {
 					result = results[i];
 					for (j=0; j < result.rows.length; j++) {
-						events.push(new CMEvent(result.rows[j].doc));
+						ev = new CMEvent(result.rows[j].doc);
+						//console.log(ev.toString());
+						events.push(ev);
 					}
 				}
 				for (i=0; i < favresults.rows.length; i++) {
-					favorites.push(new CMFavorite(favresults.rows[i].doc));
+					fav = new CMFavorite(favresults.rows[i].doc);
+					//console.log(fav.toString());
+					favorites.push(fav);
 				}
 
-				deferred.resolve(reconcileEvents(events, favorites));
+				ret = reconcileEvents(events, favorites);
+				deferred.resolve(ret);
 			}, function(err) {
 				deferred.reject(err);
 			});
@@ -628,11 +633,11 @@ CMFavorite.prototype.getRawData = function() {
 			}
 
 			var deferred = $q.defer();
-			__allFavorites = deferred.promise;
+			_allFavorites = deferred.promise;
 			
 			log.debug('EventService.getAllFavorites()');
 			_db.local().query('favorites', {include_docs:true}).then(function(results) {
-				var ret = [];
+				var ret = [], i, fav;
 				for (i=0; i < results.rows.length; i++) {
 					fav = results.rows[i].doc;
 					ret.push(new CMFavorite(fav));

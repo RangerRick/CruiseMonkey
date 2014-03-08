@@ -11,21 +11,33 @@
 		var __pouchUser = null,
 			__pouchRemote = null;
 
-		var __syncing = {},
+		var __syncing = null,
 			__onSyncStart = null,
 			__onSyncEnd = null,
 			__onChange = null;
+
+		if (!$rootScope.safeApply) {
+			$rootScope.safeApply = function(fn) {
+				var phase = this.$root.$$phase;
+				if(phase === '$apply' || phase === '$digest') {
+					if(fn && (typeof(fn) === 'function')) {
+						fn();
+					}
+				} else {
+					this.$apply(fn);
+				}
+			};
+		}
 
 		var __replicate = function(from, to) {
 			var deferred = $q.defer();
 			from.replicate.to(to, {
 				batch_size: 500,
 				complete: function(err, response) {
-					$rootScope.$apply(function() {
+					$rootScope.safeApply(function() {
 						if (err) {
 							deferred.reject(err);
 						} else {
-							//log.debug('__replicate:response=',response);
 							deferred.resolve(response.docs_written);
 						}
 					});
@@ -39,42 +51,43 @@
 				log.debug('Cannot sync to itself!');
 				return;
 			}
-			if (__syncing[from] && __syncing[from][to]) {
+			if (__syncing !== null) {
 				log.debug('Already syncing!');
 				return;
 			}
-
-			if (!__syncing[from]) {
-				__syncing[from] = [];
-			}
-			__syncing[from][to] = true;
 
 			if (__onSyncStart) {
 				__onSyncStart(from, to);
 			}
 
-			var change = function() {};
-			if (__onChange) {
-				change = __onChange;
-			}
-
-			PouchDB.sync(from, to, {
+			__syncing = PouchDB.sync(from, to, {
 				continuous: true,
 				onChange: function(change) {
 					if (__onChange) {
-						$rootScope.$apply(function() {
+						$rootScope.safeApply(function() {
 							__onChange(change);
 						});
 					}
 				},
 				complete: function(err, response) {
 					if (__onSyncEnd) {
-						$rootScope.$apply(function() {
+						$rootScope.safeApply(function() {
 							__onSyncEnd(err, response, from, to);
+							__syncing = null;
 						});
 					}
 				}
 			});
+		};
+
+		var __stop_sync = function() {
+			if (__syncing === null) {
+				log.debug('Already stopped!');
+				return;
+			}
+
+			__syncing.cancel();
+			__syncing = null;
 		};
 
 		var __initialize = function() {
@@ -97,11 +110,10 @@
 				}
 
 				if (numDocs === 0) {
-					//log.debug('No documents in user (local) database: initializing.');
+					log.debug('No documents in user (local) database: initializing.');
 					__pouchRemote.allDocs({include_docs:true}, function(err, response) {
-						//log.debug('allDocs:response=',response);
 						if (err) {
-							$rootScope.$apply(function() {
+							$rootScope.safeApply(function() {
 								deferred.reject(err);
 							});
 							return;
@@ -110,14 +122,11 @@
 						for (var i=0; i < response.rows.length; i++) {
 							newdocs.push(response.rows[i].doc);
 						}
-						//log.debug('newdocs=',newdocs);
 						__pouchUser.bulkDocs({
 							docs: newdocs,
 							new_edits: false
 						}, function(err, response) {
-							//log.debug('bulkDocs:err=',err);
-							//log.debug('bulkDocs:response=',response);
-							$rootScope.$apply(function() {
+							$rootScope.safeApply(function() {
 								if (err) {
 									deferred.reject(err);
 								} else {
@@ -129,11 +138,11 @@
 						});
 					});
 				} else {
-					//log.debug('User (local) database has ' + numDocs + ' documents: fetching changes.');
+					log.debug('User (local) database has ' + numDocs + ' documents: fetching changes.');
 					// first, fetch all known IDs
 					__pouchUser.allDocs(function(err,res) {
 						if (err) {
-							$rootScope.$apply(function() {
+							$rootScope.safeApply(function() {
 								deferred.reject(err);
 								return;
 							});
@@ -143,11 +152,10 @@
 						for (var i=0; i < res.rows.length; i++) {
 							existingKeys.push(res.rows[i].id);
 						}
-						//log.debug('existingKeys=',existingKeys);
 						
 						__pouchRemote.allDocs(function(err,res) {
 							if (err) {
-								$rootScope.$apply(function() {
+								$rootScope.safeApply(function() {
 									deferred.reject(err);
 									return;
 								});
@@ -157,7 +165,6 @@
 							for (var i=0; i < res.rows.length; i++) {
 								allKeys.push(res.rows[i].id);
 							}
-							//log.debug('allKeys=',allKeys);
 							
 							var index;
 							for (var e=0; e < existingKeys.length; e++) {
@@ -166,24 +173,21 @@
 									allKeys.splice(index, 1);
 								}
 							}
-							//log.debug(allKeys.length + ' new documents remaining');
 							
 							__pouchRemote.allDocs({
 								include_docs: true,
 								keys: allKeys
 							}, function(err,res) {
 								if (err) {
-									$rootScope.$apply(function() {
+									$rootScope.safeApply(function() {
 										deferred.reject(err);
 										return;
 									});
 								}
 
-								//log.debug('got ' + res.rows.length + ' documents');
 								var updatedDocs = [], row;
 								for (var i=0; i < res.rows.length; i++) {
 									row = res.rows[i];
-									//console.log('row:',row);
 									if (row.doc._deleted) {
 										log.debug('deleted: ', row);
 									} else {
@@ -195,15 +199,18 @@
 									docs: updatedDocs,
 									new_edits: false
 								}, function(err, response) {
-									$rootScope.$apply(function() {
-										if (err) {
+									if (err) {
+										$rootScope.safeApply(function() {
 											deferred.reject(err);
-										} else {
-											__replicate(__pouchRemote, __pouchUser).then(function(changes) {
-												__sync(__pouchRemote, __pouchUser);
-												deferred.resolve(changes);
-											});
-										}
+										});
+										return;
+									}
+
+									__replicate(__pouchRemote, __pouchUser).then(function(changes) {
+										log.debug('finished replication:', changes);
+										$rootScope.safeApply(function() {
+											deferred.resolve(changes);
+										});
 									});
 								});
 							});
@@ -218,7 +225,7 @@
 		var __query = function(db, view, options) {
 			var deferred = $q.defer();
 			db.query('cruisemonkey/' + view, options, function(err, response) {
-				$rootScope.$apply(function() {
+				$rootScope.safeApply(function() {
 					if (err) {
 						deferred.reject(err);
 					} else {
@@ -232,7 +239,7 @@
 		var __get = function(db, id, options) {
 			var deferred = $q.defer();
 			db.get(id, options, function(err, response) {
-				$rootScope.$apply(function() {
+				$rootScope.safeApply(function() {
 					if (err) {
 						deferred.reject(err);
 					} else {
@@ -246,7 +253,7 @@
 		var __put = function(db, doc, options) {
 			var deferred = $q.defer();
 			db.put(doc, options, function(err, response) {
-				$rootScope.$apply(function() {
+				$rootScope.safeApply(function() {
 					if (err) {
 						deferred.reject(err);
 					} else {
@@ -260,7 +267,7 @@
 		var __post = function(db, doc, options) {
 			var deferred = $q.defer();
 			db.post(doc, options, function(err, response) {
-				$rootScope.$apply(function() {
+				$rootScope.safeApply(function() {
 					if (err) {
 						deferred.reject(err);
 					} else {
@@ -276,7 +283,7 @@
 			db.bulkDocs({
 				docs: docs
 			}, function(err, res) {
-				$rootScope.$apply(function() {
+				$rootScope.safeApply(function() {
 					if (err) {
 						deferred.reject(err);
 					} else {
@@ -290,7 +297,7 @@
 		var __remove = function(db, doc) {
 			var deferred = $q.defer();
 			db.remove(doc, function(err,res) {
-				$rootScope.$apply(function() {
+				$rootScope.safeApply(function() {
 					if (err) {
 						deferred.reject(err);
 					} else {
@@ -299,7 +306,7 @@
 				});
 			});
 			return deferred.promise;
-		}
+		};
 
 		var __db = function(db) {
 			return {
@@ -322,7 +329,7 @@
 					return __remove(db, doc);
 				}
 			};
-		}
+		};
 		var __remote = function() {
 			return __db(__pouchRemote);
 		};
@@ -330,6 +337,11 @@
 		var __local = function() {
 			return __db(__pouchUser);
 		};
+
+		$rootScope.$on('$destroy', function() {
+			log.debug('Destroying root scope; stopping sync.');
+			__stop_sync();
+		});
 
 		return {
 			'setUserDatabase': function(db) {

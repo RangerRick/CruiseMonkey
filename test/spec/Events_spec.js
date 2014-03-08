@@ -3,7 +3,6 @@ describe('cruisemonkey.Events', function() {
 	var service      = null;
 	var userService  = null;
 	var db           = null;
-	var newdb        = null;
 	var $q           = null;
 	var $timeout     = null;
 	var $rootScope   = null;
@@ -28,10 +27,10 @@ describe('cruisemonkey.Events', function() {
 	};
 
 	var doDbInit = function(done) {
-		newdb.setUserDatabase(userDb);
-		newdb.setRemoteDatabase(remoteDb);
+		db.setUserDatabase(userDb);
+		db.setRemoteDatabase(remoteDb);
 
-		newdb.init().then(function(res) {
+		db.init().then(function(res) {
 			expect(res).toBeGreaterThan(-1);
 			done();
 		});
@@ -47,19 +46,20 @@ describe('cruisemonkey.Events', function() {
 			$provide.value('config.twitarr.root', 'https://twitarr.rylath.net/');
 			$provide.value('config.upgrade', false);
 		});
-		inject(['$log', 'EventService', 'UserService', '_db', 'Database', '$q', '$timeout', '$rootScope', '$httpBackend', function($log, EventService, UserService, _db, Database, q, timeout, scope, backend) {
+		inject(['$log', 'EventService', 'UserService', '_db', '$q', '$timeout', '$rootScope', '$httpBackend', function($log, EventService, UserService, _db, q, timeout, scope, backend) {
 			log          = $log;
 			service      = EventService;
 			userService  = UserService;
-			db           = Database;
-			newdb        = _db;
+			db           = _db;
 			$q           = q;
 			$timeout     = timeout;
 			$rootScope   = scope;
 			$httpBackend = backend;
 
 			backend.when('GET', 'http://jccc4.rccl.com/cruisemonkey-jccc4').respond(500, '');
-			doDbInit(done);
+			doDbSetup(userDb, pristineDb, remoteDb, function() {
+				doDbInit(done);
+			});
 			$timeout.flush();
 		}]);
 	});
@@ -410,7 +410,7 @@ describe('cruisemonkey.Events', function() {
 		});
 	});
 
-	xdescribe('CMEvent#fromEditableBean', function() {
+	describe('CMEvent#fromEditableBean', function() {
 		async.it('should update the event to have matching bean data', function(done) {
 			var ev = new CMEvent();
 			ev.setId('2');
