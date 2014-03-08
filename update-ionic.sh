@@ -18,8 +18,8 @@ pushd "${CMDIR}/ionic"
 	rm -rf dist
 	git checkout master
 	git pull
-	npm install
-	grunt
+	npm install && sudo npm install -g gulp protractor
+	gulp build --release
 	COMMIT=`git log -1 | grep -E '^commit' | cut -d' ' -f2`
 popd
 
