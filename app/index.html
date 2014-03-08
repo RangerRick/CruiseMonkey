@@ -165,6 +165,7 @@ if (typeof String.prototype.contains !== 'function') {
 	<script src="scripts/3rdparty/modernizr-latest.js"></script>
 	<script src="bower_components/classlist/classList.js"></script>
 	<script src="bower_components/es5-shim/es5-shim.js"></script>
+	<script src="bower_components/offline/offline.min.js"></script>
 	<script src="scripts/3rdparty/pouchdb-nightly.js"></script>
 	<script src="bower_components/momentjs/moment.js"></script>
 	<script src="bower_components/base64/base64.js"></script>
@@ -212,6 +213,14 @@ if (typeof String.prototype.contains !== 'function') {
 	<script src="cordova.js"></script>
 	<script>
 		var isMobile = false;
+
+		Offline.options = {
+			checkOnLoad: false,
+			interceptRequests: true,
+			reconnect: false,
+			requests: false,
+			checks: {}
+		};
 
 		if (isMobile) {
 			console.log('Mobile.  Bootstrapping when "deviceready" event fires.');

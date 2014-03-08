@@ -278,6 +278,12 @@
 			$rootScope.closeLeft();
 		});
 
+		$rootScope.$on('cm.foreground', function(evt, isForeground) {
+			if (isForeground) {
+				$rootScope.closeLeft();
+			}
+		});
+
 		var savedUrl = storage.get('cm.lasturl');
 		if (savedUrl) {
 			log.info('main: lasturl = ' + savedUrl);
@@ -296,73 +302,33 @@
 
 		var databaseInitialized = $q.defer();
 		$rootScope.foreground = true;
-		// if we're not mobile, we don't know if we're online or not, so set it online
-		$rootScope.online = true;
-		/* I'm really afraid this is gonna go bad on the ship.  Let's just pretend we're always online.
-		$rootScope.online = !isMobile;
-		if (navigator && navigator.network && navigator.network.connection) {
-			$rootScope.online = navigator.network.connection.type !== Connection.NONE;
-			log.info('navigator support found, setting to online');
-		}
-		*/
-
-		var handleStateChange = function() {
-			databaseInitialized.promise.then(function() {
-				if ($rootScope.foreground) {
-					log.debug('handleStateChange: setting foreground');
-
-					if ($rootScope.firstInitialization) {
-						$rootScope.firstInitialization = false;
-						Database.syncRemote().then(function() {
-							Database.online();
-							SeamailService.online();
-							$rootScope.$broadcast('cm.main.refreshEvents');
-						});
-					} else {
-						Database.online();
-						SeamailService.online();
-						$rootScope.$broadcast('cm.main.refreshEvents');
-					}
-				} else {
-					log.debug('handleStateChange: setting background');
-					Database.offline();
-					// we leave seamail service going so it can send notifications in the background
-					SeamailService.online();
-				}
-			});
-		};
-		handleStateChange();
-
-		$interval(function() {
-			databaseInitialized.promise.then(function() {
-				if ($rootScope.foreground) {
-					Database.restartReplication();
-				}
-			});
-		}, 10 * 60 * 1000); // do it manually every 10 minutes, just to be sure
+		$rootScope.online     = undefined;
 
 		$rootScope.$watch('foreground', function(newValue, oldValue) {
+			if (newValue === undefined) {return;}
 			if (newValue === oldValue) {
-				log.warn('foreground: ' + oldValue + ' -> ' + newValue);
+				log.warn('foreground status unchanged: ' + newValue);
 				return;
 			}
 			log.debug('foreground status is now ' + $rootScope.foreground);
-
-			// just came back, close the drawer if it's open
-			if (newValue) {
-				$rootScope.closeLeft();
-			}
-
-			handleStateChange();
+			$rootScope.$broadcast('cm.foreground', $rootScope.foreground);
 		});
 		$rootScope.$watch('online', function(newValue, oldValue) {
+			if (newValue === undefined) {return;}
 			if (newValue === oldValue) {
-				log.warn('online: ' + oldValue + ' -> ' + newValue);
+				log.warn('online status unchanged: ' + newValue);
 				return;
 			}
 			log.debug('online status is now ' + $rootScope.online);
-			handleStateChange();
+			$rootScope.$broadcast('cm.online', newValue);
 		});
+
+		var onOnline = function() {
+			$rootScope.online = true;
+		};
+		var onOffline = function() {
+			$rootScope.online = false;
+		}
 
 		document.addEventListener('pause', function() {
 			$rootScope.safeApply(function() {
@@ -377,44 +343,37 @@
 				});
 			});
 		}, false);
+		
+		var initializeOffline = function() {
+			if (Offline.options.reconnect) {
+				log.debug('initializeOffline() called, but options already initialized.');
+				return;
+			}
 
-		/*
-		document.addEventListener('offline', function() {
-			$rootScope.safeApply(function() {
-				$rootScope.online = false;
-			});
-		}, false);
-		document.addEventListener('online', function() {
-			$rootScope.safeApply(function() {
-				$rootScope.online = true;
-			});
-		}, false);
-		*/
+			Offline.options.checks = {
+				xhr: {
+					url: SettingsService.getRemoteDatabaseUrl()
+				}
+			};
+			Offline.options.reconnect = true;
+			Offline.on('confirmed-up', onOnline, $rootScope);
+			Offline.on('confirmed-down', onOffline, $rootScope);
+			Offline.check();
+		};
 
 		$q.when(upgrades.upgrade()).then(function() {
-			/*
-			Database.initialize().then(function(db) {
-				databaseInitialized.resolve(db);
-				cor.ifCordova(function() {
-					navigator.splashscreen.hide();
-				});
-				$rootScope.$broadcast('cm.main.databaseInitialized');
-			}, function(err) {
-				cor.ifCordova(function() {
-					navigator.splashscreen.hide();
-				});
-				log.error('Failed to initialize database!');
-				databaseInitialized.reject(err);
-			});
-			*/
 			_db.setUserDatabase(SettingsService.getLocalDatabaseUrl());
 			_db.setRemoteDatabase(SettingsService.getRemoteDatabaseUrl());
+			_db.onChange(function(change) {
+				$rootScope.$broadcast('cm.database.change', change);
+			});
 			_db.init().then(function() {
 				databaseInitialized.resolve();
 				cor.ifCordova(function() {
 					navigator.splashscreen.hide();
 				});
 				$rootScope.$broadcast('cm.main.databaseInitialized');
+				initializeOffline();
 			}, function(err) {
 				log.error('Failed to initialize database!');
 				databaseInitialized.reject(err);

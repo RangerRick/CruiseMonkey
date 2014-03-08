@@ -1,28 +1,6 @@
 <ion-content has-header="true" overflow-scroll="true" scroll="true" padded="false">
 <div class="list">
 	<div class="card">
-		<div class="item item-divider">Force Database Sync</div>
-		<div class="item item-text-wrap">
-			The shipboard network can be pretty flaky, especially with hundreds of geeks hitting it at once.
-			CruiseMonkey will attempt to force a sync every 15 minutes, but if you'd like to force one now,
-			click this.<br />
-			Last replication update: {{(lastModified &amp;&amp; !lastModified.isSame(0))? lastModified.fromNow() : 'N/A'}}
-		</div>
-		<a class="button button-full button-assertive" ng-click="forceSync()">Force Sync</a>
-	</div>
-
-	<div class="card">
-		<div class="item item-divider">Reset Your Cache</div>
-		<div class="item item-text-wrap">
-			This will clear your local client cache and re-sync from the CruiseMonkey server.  Any events
-			or favorites you have created will come back, as long as CruiseMonkey had previously synced them
-			to the server.  If you are not online when you hit this, it <em>will</em> leave you with an
-			empty CruiseMonkey!
-		</div>
-		<button class="button button-full button-positive" ng-click="resetDatabase()">Reset Cache</button>
-	</div>
-
-	<div class="card">
 		<div class="item item-divider">Network Configuration</div>
 		<form name="networkForm" class="network-form" novalidate>
 			<div class="item item-text-wrap">
@@ -49,6 +27,28 @@
 			<button class="button button-full button-positive" ng-click="saveSettings()" ng-disabled="form.$invalid || isUnchanged()">Save</button>
 			<button class="button button-full button-assertive" ng-click="resetSettings()" ng-disabled="form.$invalid">Reset to Defaults</button>
 		</form>
+	</div>
+
+	<div class="card">
+		<div class="item item-divider">Force Database Sync</div>
+		<div class="item item-text-wrap">
+			The shipboard network can be pretty flaky, especially with hundreds of geeks hitting it at once.
+			CruiseMonkey will attempt to force a sync every 15 minutes, but if you'd like to force one now,
+			click this.<br />
+			Last replication update: {{(lastModified &amp;&amp; !lastModified.isSame(0))? lastModified.fromNow() : 'N/A'}}
+		</div>
+		<a class="button button-full button-assertive" ng-click="forceSync()">Force Sync</a>
+	</div>
+
+	<div class="card">
+		<div class="item item-divider">Reset Your Cache</div>
+		<div class="item item-text-wrap">
+			This will clear your local client cache and re-sync from the CruiseMonkey server.  Any events
+			or favorites you have created will come back, as long as CruiseMonkey had previously synced them
+			to the server.  If you are not online when you hit this, it <em>will</em> leave you with an
+			empty CruiseMonkey!
+		</div>
+		<button class="button button-full button-positive" ng-click="resetDatabase()">Reset Cache</button>
 	</div>
 
 	<div class="card">

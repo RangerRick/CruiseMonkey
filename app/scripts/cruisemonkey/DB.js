@@ -46,7 +46,7 @@
 			return deferred.promise;
 		};
 
-		var __sync = function(from, to) {
+		var __startSync = function(from, to) {
 			if (from === to) {
 				log.debug('Cannot sync to itself!');
 				return;
@@ -55,6 +55,7 @@
 				log.debug('Already syncing!');
 				return;
 			}
+			log.info('Starting sync.');
 
 			if (__onSyncStart) {
 				__onSyncStart(from, to);
@@ -80,7 +81,7 @@
 			});
 		};
 
-		var __stop_sync = function() {
+		var __stopSync = function() {
 			if (__syncing === null) {
 				log.debug('Already stopped!');
 				return;
@@ -338,9 +339,16 @@
 			return __db(__pouchUser);
 		};
 
+		$rootScope.$on('cm.online', function(ev, isOnline) {
+			if (isOnline) {
+				__startSync(__pouchRemote, __pouchUser);
+			} else {
+				__stopSync();
+			}
+		});
 		$rootScope.$on('$destroy', function() {
 			log.debug('Destroying root scope; stopping sync.');
-			__stop_sync();
+			__stopSync();
 		});
 
 		return {

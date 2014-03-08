@@ -412,9 +412,6 @@ CMFavorite.prototype.getRawData = function() {
 	.factory('EventService', ['$q', '$rootScope', '$timeout', '$location', 'uuid4', '_db', 'Database', 'UserService', '$log', 'config.database.host', 'config.database.name', 'config.database.replicate', function($q, $rootScope, $timeout, $location, uuid4, _db, db, UserService, log, databaseHost, databaseName, replicate) {
 		log.info('EventService: Initializing EventService.');
 
-		var listeners = [],
-			databaseReady = false;
-
 		var promisedResult = function(result) {
 			var deferred = $q.defer();
 			$timeout(function() {
@@ -930,12 +927,6 @@ CMFavorite.prototype.getRawData = function() {
 
 			return deferred.promise;
 		};
-
-		$rootScope.$on('$destroy', function() {
-			angular.forEach(listeners, function(listener) {
-				listener();
-			});
-		});
 
 		return {
 			'addEvent': addEvent,

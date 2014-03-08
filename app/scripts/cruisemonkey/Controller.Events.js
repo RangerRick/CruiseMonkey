@@ -296,7 +296,7 @@ function CMDay(d) {
 
 		var refreshEvents = function(immediately) {
 			if (timeout) {
-				log.trace('CMEventCtrl.refreshEvents(): Refresh already in-flight.  Skipping.');
+				//log.debug('CMEventCtrl.refreshEvents(): Refresh already in-flight.  Skipping.');
 				return;
 			} else if (immediately) {
 				log.debug('CMEventCtrl.refreshEvents(): Refreshing immediately.');
@@ -357,8 +357,7 @@ function CMDay(d) {
 				refreshEvents(true);
 			}, 100);
 		});
-		$scope.$on('cm.database.documentchanged', function() {
-			//log.debug('CMEventCtrl: Document changed.');
+		$scope.$on('cm.database.change', function(ev, change) {
 			refreshEvents();
 		});
 		$scope.$on('cm.database.changesprocessed', function() {

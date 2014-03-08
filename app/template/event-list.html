@@ -24,11 +24,11 @@
 				<span class="item-note edit" bo-show="(user.username &amp;&amp; user.username == entry.getUsername())">
 					<button id="{{entry.getId()}}-edit" ng-click="edit(entry)" class="button button-cm button-icon icon active ion-gear-a"></button>
 				</span>
-				<div class="summary" bo-text="entry.getSummary()"></div>
-				<div class="time" bo-text="'Time: ' + entry.getDisplayTime()"></div>
+				<div class="summary">{{entry.getSummary()}}</div>
+				<div class="time">Time: {{entry.getDisplayTime()}}</div>
 				<div class="createdBy" bo-show="entry.getUsername() != 'official'" bo-text="'Created By: ' + entry.getUsername()"></div>
-				<div class="location" bo-show="entry.getLocation()" bo-text="'Location: ' + entry.getLocation()"></div>
-				<div class="description" bo-show="entry.getDescription()" bo-text="entry.getDescription()"></div>
+				<div class="location" ng-show="entry.getLocation()">Location: {{entry.getLocation()}}</div>
+				<div class="description" ng-show="entry.getDescription()">{{entry.getDescription()}}</div>
 			</ion-item>
 		</span>
 		<div id="the-end"></div>
