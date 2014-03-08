@@ -10,18 +10,6 @@
   @include box-sizing(border-box);
 }
 
-a {
-  -webkit-user-drag: none;
-  -webkit-tap-highlight-color: transparent;
-
-  &[href]:hover {
-    cursor: pointer;
-  }
-}
-img {
-  -webkit-user-drag: none;
-}
-
 body, .ionic-body {
   @include touch-callout(none);
   @include font-smoothing(antialiased);
@@ -92,7 +80,6 @@ body.grade-c {
   @include user-select(none);
   @include touch-callout(none);
   @include text-size-adjust(none);
-  @include translateZ(0);
   @include transform-origin(left, top);
   -webkit-backface-visibility: hidden;
 }
