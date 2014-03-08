@@ -75,6 +75,13 @@ $navWidth: 250px;
 
 $gutterMonkey: url(../images/cruise-monkey-transparent-bg.png);
 
+/* Ionic Overrides */
+$font-family-sans-serif: Hero, "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
+$font-family-light-sans-serif:   Hero, "Helvetica Neue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
+$item-divider-bg: $dark;
+$item-divider-color: $light;
+$menu-animation-speed: 100ms;
+
 @import "ionic";
 
 .cm-dice {

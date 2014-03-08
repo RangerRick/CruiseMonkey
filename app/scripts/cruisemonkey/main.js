@@ -4,6 +4,7 @@
 	/*global Connection: true*/
 	/*global isMobile: true*/
 	/*global ionic: true*/
+	/*global Offline: true*/
 
 	angular.module('cruisemonkey',
 	[
@@ -328,7 +329,7 @@
 		};
 		var onOffline = function() {
 			$rootScope.online = false;
-		}
+		};
 
 		document.addEventListener('pause', function() {
 			$rootScope.safeApply(function() {
