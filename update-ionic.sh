@@ -16,6 +16,7 @@ echo "CruiseMonkey is '$CMDIR'."
 
 pushd "${CMDIR}/ionic"
 	rm -rf dist
+	git checkout master
 	git pull
 	npm install
 	grunt
