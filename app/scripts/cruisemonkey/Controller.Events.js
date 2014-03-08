@@ -104,11 +104,7 @@ function CMDay(d) {
 
 		return {
 			get: function(name, searchString) {
-				var even = false,
-					i, j, day = null,
-					entry = null,
-					ret = [],
-					matches = [];
+				var even = false, i, entry = null, ret = [];
 					
 				var cacheEntry = getCacheEntry(name);
 				if (!searchString) {
@@ -125,6 +121,10 @@ function CMDay(d) {
 				}
 
 				ret.sort(sortEvent);
+				for (i=0; i < ret.length; i++) {
+					ret[i].setEven(even);
+					even = !even;
+				}
 				return ret;
 			},
 			put: function(name, data) {

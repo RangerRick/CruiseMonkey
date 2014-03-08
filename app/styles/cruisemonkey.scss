@@ -77,13 +77,25 @@ $gutterMonkey: url(../images/cruise-monkey-transparent-bg.png);
 
 /* Ionic Overrides */
 $font-family-sans-serif: Hero, "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
-$font-family-light-sans-serif:   Hero, "Helvetica Neue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
+$font-family-light-sans-serif: Hero, "Helvetica Neue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
 $dark: black;
+$light: white;
 $item-divider-bg: $dark;
 $item-divider-color: $light;
 $menu-animation-speed: 100ms;
 
+$item-default-bg:                 $light;
+$item-default-border:             #ddd;
+$item-default-text:               #444;
+$item-default-active-bg:          $light;
+$item-default-active-border:      #444;
+
 @import "ionic";
+
+.item-complex .item-content,
+.item-radio .item-content {
+  background-color: transparent;
+}
 
 .cm-dice {
 	@extend .ion;
