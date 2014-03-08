@@ -61,8 +61,8 @@
 				__onSyncStart(from, to);
 			}
 
-			__syncing = PouchDB.sync(from, to, {
-				continuous: true,
+			__syncing = from.replicate.sync(to, {
+				live: true,
 				onChange: function(change) {
 					if (__onChange) {
 						$rootScope.safeApply(function() {
@@ -86,7 +86,9 @@
 				log.debug('Already stopped!');
 				return;
 			}
+			log.info('Stopping sync.');
 
+			console.log(__syncing);
 			__syncing.cancel();
 			__syncing = null;
 		};
@@ -145,8 +147,8 @@
 						if (err) {
 							$rootScope.safeApply(function() {
 								deferred.reject(err);
-								return;
 							});
+							return;
 						}
 
 						var existingKeys = [];
@@ -158,8 +160,15 @@
 							if (err) {
 								$rootScope.safeApply(function() {
 									deferred.reject(err);
-									return;
 								});
+								return;
+							}
+
+							if (!res || !res.rows) {
+								$rootScope.safeApply(function() {
+									deferred.reject('No results.');
+								});
+								return;
 							}
 
 							var allKeys = [];
@@ -182,8 +191,8 @@
 								if (err) {
 									$rootScope.safeApply(function() {
 										deferred.reject(err);
-										return;
 									});
+									return;
 								}
 
 								var updatedDocs = [], row;

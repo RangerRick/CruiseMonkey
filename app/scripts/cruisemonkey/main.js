@@ -325,10 +325,14 @@
 		});
 
 		var onOnline = function() {
-			$rootScope.online = true;
+			$rootScope.safeApply(function() {
+				$rootScope.online = true;
+			});
 		};
 		var onOffline = function() {
-			$rootScope.online = false;
+			$rootScope.safeApply(function() {
+				$rootScope.online = false;
+			});
 		};
 
 		document.addEventListener('pause', function() {
@@ -356,8 +360,13 @@
 					url: SettingsService.getRemoteDatabaseUrl()
 				}
 			};
-			Offline.options.reconnect = true;
+			Offline.options.reconnect = {
+				initialDelay: 3,
+				delay: 10
+			};
+			Offline.on('up', onOnline, $rootScope);
 			Offline.on('confirmed-up', onOnline, $rootScope);
+			Offline.on('down', onOffline, $rootScope);
 			Offline.on('confirmed-down', onOffline, $rootScope);
 			Offline.check();
 		};
