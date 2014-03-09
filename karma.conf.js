@@ -33,6 +33,7 @@ module.exports = function(config) {
       'app/bower_components/angular-bindonce/bindonce.js',
       'app/bower_components/angular-uuid4/angular-uuid4.js',
       'app/scripts/cruisemonkey/karaoke-list.js',
+      'app/scripts/cruisemonkey/model.js',
       'app/scripts/cruisemonkey/*.js',
       'test/mock/**/*.js',
       'test/spec/**/*.js'
