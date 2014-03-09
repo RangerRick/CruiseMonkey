@@ -76,6 +76,20 @@ CruiseMonkey by Benjamin Reed is licensed under the [Creative Commons Attributio
 Release Notes
 =============
 
+4.0.80
+------
+* update to latest Ionic
+* clean up navigation to use default Ionic nav-bar
+* MANY CSS cleanups so we no longer need to hand-override Ionic CSS in the Ionic source code
+* update to PouchDB 2.x
+* completely rewrite data layer.  New initialization is *very* fast, even with large databases
+* separate model out into separate code
+* fix an obscure bug in "go to now" that could occur when events matched certain day boundaries
+
+4.0.7
+-----
+* Hack to make direct calls to couchdb, rather than using the local pouchdb ("direct mode")
+
 4.0.6
 -----
 * fix event search
