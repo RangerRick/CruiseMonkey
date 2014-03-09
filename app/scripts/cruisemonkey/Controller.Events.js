@@ -423,82 +423,11 @@ function CMDay(d) {
 		};
 
 		$scope.goToNow = function() {
-			var now = moment().unix(),
-				matched = -1,
-				nextEntry,
-				i, entry,
-				start, end;
-
-			//log.debug('now = ' + now);
-			if ($scope.entries && $scope.entries.length > 0) {
-				for (i=0; i < $scope.entries.length; i++) {
-					entry = $scope.entries[i];
-					if (entry.getId().indexOf('day-') === 0) {
-						// skip day markers, we'll fix them at the end anyways
-						continue;
-					} else {
-						// this is an event
-						start = entry.getStart().unix();
-						end   = entry.getEnd() === undefined? start : entry.getEnd().unix();
-
-						//log.debug('now=' + now + ',start=' + start + ',end=' + end + ': ' + entry.getSummary());
-						if (now < start) {
-							// we're still before the current event
-							//log.debug(i + ': now < start: inexact match');
-							matched = i;
-							break;
-						} else {
-							// we're after the start of the current event
-
-							if (now <= end) {
-								// we're in the event, match!
-								//log.debug(i + ': now <= end: exact match');
-								matched = i;
-								break;
-							} else {
-								var j = i+1;
-								nextEntry = $scope.entries[j];
-								while (nextEntry) {
-									if (nextEntry.getId().indexOf('day-') === 0) {
-										// next entry is a day marker, skip it
-										continue;
-									} else {
-										//log.debug('nextEntry = ' + nextEntry.getSummary());
-										start = nextEntry.getStart().unix();
-										end   = nextEntry.getEnd() === undefined? start : nextEntry.getEnd().unix();
-										j = $scope.entries.length;
-									}
-
-									// the next entry is after now, we'll consider it the best match
-									if (now <= start) {
-										//log.debug(j + ': now > end: inexact match');
-										matched = j;
-										break;
-									}
-									nextEntry = $scope.entries[j++];
-								}
-							}
-						}
-					}
-				}
-
-				//log.debug('matched = ' + matched);
-				entry = undefined;
-				if (matched > -1) {
-					entry = $scope.entries[matched];
-					log.debug('matched ' + entry.getId());
-				}
-
-				if (matched === -1) {
-					goToHash('the-end');
-					return;
-				}
-
-				if (entry.day === undefined && matched > 0 && $scope.entries[matched - 1].day !== undefined) {
-					log.debug('entry ' + entry.getId() + ' was the first of the day, scrolling to the day marker instead.');
-					entry = $scope.entries[matched-1];
-				}
-				goToHash(entry.getId());
+			var nextEvent = EventService.getNextEvent($scope.events);
+			if (nextEvent) {
+				goToHash(nextEvent.getId());
+			} else {
+				goToHash('the-end');
 			}
 		};
 
@@ -635,18 +564,17 @@ function CMDay(d) {
 			}
 		});
 
-		$rootScope.leftButtons = [
-			{
-				type: 'button-positive',
-				content: '<i class="icon icon-cm active ion-clock"></i>',
-				tap: $scope.goToNow
-			}
-		];
+		$rootScope.leftButtons = $rootScope.getLeftButtons();
+		$rootScope.leftButtons.push({
+			type: 'button-clear',
+			content: '<i class="icon icon-cm active ion-clock"></i>',
+			tap: $scope.goToNow
+		});
 		$rootScope.rightButtons = [];
 
 		if (UserService.getUsername() && UserService.getUsername() !== '') {
 			$rootScope.rightButtons.push({
-				type: 'button-positive',
+				type: 'button-clear',
 				content: '<i class="icon icon-cm active ion-ios7-plus"></i>',
 				tap: function(e) {
 					e.preventDefault();

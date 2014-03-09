@@ -4003,20 +4003,23 @@ var createBlob = _dereq_('./blob.js');
 var errors = _dereq_('./errors');
 var uuid = _dereq_('../deps/uuid');
 
-function ajax(options, callback) {
+function ajax(options, adapterCallback) {
+
+  var requestCompleted = false;
+  var callback = function () {
+    if (requestCompleted) {
+      return;
+    }
+    adapterCallback.apply(this, arguments);
+    requestCompleted = true;
+  };
 
   if (typeof options === "function") {
     callback = options;
     options = {};
   }
+
   options = extend(true, {}, options);
-  function call(fun) {
-    /* jshint validthis: true */
-    var args = Array.prototype.slice.call(arguments, 1);
-    if (typeof fun === typeof Function) {
-      fun.apply(this, args);
-    }
-  }
 
   var defaultOptions = {
     method : "GET",
@@ -4045,8 +4048,7 @@ function ajax(options, callback) {
         obj = JSON.parse(obj);
       } catch (e) {
         // Probably a malformed JSON from server
-        call(cb, e);
-        return;
+        return cb(e);
       }
     }
     if (Array.isArray(obj)) {
@@ -4072,7 +4074,7 @@ function ajax(options, callback) {
         }
       });
     }
-    call(cb, null, obj, resp);
+    cb(null, obj, resp);
   }
 
   function onError(err, cb) {
@@ -4114,11 +4116,11 @@ function ajax(options, callback) {
       }
       errObj = errors.error(errType);
     }
-    call(cb, errObj);
+    cb(errObj);
   }
 
   if (process.browser) {
-    var timer, timedout = false;
+    var timer;
     var xhr;
     if (options.xhr) {
       xhr = new options.xhr();
@@ -4165,13 +4167,15 @@ function ajax(options, callback) {
     }
 
     var abortReq = function () {
-      timedout = true;
+      if (requestCompleted) {
+        return;
+      }
       xhr.abort();
-      call(onError, xhr, callback);
+      onError(xhr, callback);
     };
 
     xhr.onreadystatechange = function () {
-      if (xhr.readyState !== 4 || timedout) {
+      if (xhr.readyState !== 4 || requestCompleted) {
         return;
       }
       clearTimeout(timer);
@@ -4184,9 +4188,9 @@ function ajax(options, callback) {
         } else {
           data = xhr.responseText;
         }
-        call(onSuccess, data, xhr, callback);
+        onSuccess(data, xhr, callback);
       } else {
-        call(onError, xhr, callback);
+        onError(xhr, callback);
       }
     };
 
@@ -4225,7 +4229,7 @@ function ajax(options, callback) {
     return request(options, function (err, response, body) {
       if (err) {
         err.status = response ? response.statusCode : 400;
-        return call(onError, err, callback);
+        return onError(err, callback);
       }
       var error;
       var content_type = response.headers['content-type'];
@@ -4241,7 +4245,7 @@ function ajax(options, callback) {
       }
 
       if (response.statusCode >= 200 && response.statusCode < 300) {
-        call(onSuccess, data, response, callback);
+        onSuccess(data, response, callback);
       }
       else {
         if (options.binary) {
@@ -4257,7 +4261,7 @@ function ajax(options, callback) {
           error = errors.error(errors.UNKNOWN_ERROR, data.reason, data.error);
         }
         error.status = response.statusCode;
-        call(callback, error);
+        callback(error);
       }
     });
   }
@@ -5895,6 +5899,7 @@ var uuid = _dereq_('./deps/uuid');
 exports.Crypto = _dereq_('./deps/md5.js');
 var buffer = _dereq_('./deps/buffer');
 var errors = _dereq_('./deps/errors');
+var EventEmitter = _dereq_('events').EventEmitter;
 var Promise = typeof global.Promise === 'function' ? global.Promise : _dereq_('bluebird');
 
 // List of top level reserved words for doc
@@ -6129,8 +6134,9 @@ exports.hasLocalStorage = function () {
 exports.Changes = function () {
 
   var api = {};
-  var listeners = {};
+  var eventEmitter = new EventEmitter();
   var isChrome = isChromeApp();
+  var listeners = {};
   var hasLocal = false;
   if (!isChrome) {
     hasLocal = exports.hasLocalStorage();
@@ -6139,51 +6145,21 @@ exports.Changes = function () {
     chrome.storage.onChanged.addListener(function (e) {
       // make sure it's event addressed to us
       if (e.db_name != null) {
-        api.notify(e.db_name.newValue);//object only has oldValue, newValue members
+        eventEmitter.emit(e.dbName.newValue);//object only has oldValue, newValue members
       }
     });
   } else if (hasLocal) {
     global.addEventListener("storage", function (e) {
-      api.notify(e.key);
+      eventEmitter.emit(e.key);
     });
   }
 
-  api.addListener = function (db_name, id, db, opts) {
-    if (!listeners[db_name]) {
-      listeners[db_name] = {};
+  api.addListener = function (dbName, id, db, opts) {
+    if (listeners[id]) {
+      return;
     }
-    listeners[db_name][id] = {
-      db: db,
-      opts: opts
-    };
-  };
-
-  api.removeListener = function (db_name, id) {
-    if (listeners[db_name]) {
-      delete listeners[db_name][id];
-    }
-  };
-
-  api.clearListeners = function (db_name) {
-    delete listeners[db_name];
-  };
-
-  api.notifyLocalWindows = function (db_name) {
-    //do a useless change on a storage thing
-    //in order to get other windows's listeners to activate
-    if (isChrome) {
-      chrome.storage.local.set({db_name: db_name});
-    } else if (hasLocal) {
-      localStorage[db_name] = (localStorage[db_name] === "a") ? "b" : "a";
-    }
-  };
-
-  api.notify = function (db_name) {
-    if (!listeners[db_name]) { return; }
-
-    Object.keys(listeners[db_name]).forEach(function (i) {
-      var opts = listeners[db_name][i].opts;
-      listeners[db_name][i].db.changes({
+    function eventFunction() {
+      db.changes({
         include_docs: opts.include_docs,
         conflicts: opts.conflicts,
         continuous: false,
@@ -6199,7 +6175,34 @@ exports.Changes = function () {
           }
         }
       });
-    });
+    }
+    listeners[id] = eventFunction;
+    eventEmitter.on(dbName, eventFunction);
+  };
+
+  api.removeListener = function (dbName, id) {
+    if (!(id in listeners)) {
+      return;
+    }
+    eventEmitter.removeListener(dbName, listeners[id]);
+  };
+
+  api.clearListeners = function (dbName) {
+    eventEmitter.removeAllListeners(dbName);
+  };
+
+  api.notifyLocalWindows = function (dbName) {
+    //do a useless change on a storage thing
+    //in order to get other windows's listeners to activate
+    if (isChrome) {
+      chrome.storage.local.set({dbName: dbName});
+    } else if (hasLocal) {
+      localStorage[dbName] = (localStorage[dbName] === "a") ? "b" : "a";
+    }
+  };
+
+  api.notify = function (dbName) {
+    eventEmitter.emit(dbName);
   };
 
   return api;
@@ -6251,9 +6254,8 @@ exports.once = function (fun) {
   var called = false;
   return function () {
     if (called) {
-      console.warn('once thrown more than once');
       console.trace();
-      //throw new Error('once called  more than once');
+      throw new Error('once called  more than once');
     } else {
       called = true;
       fun.apply(this, arguments);
@@ -6318,7 +6320,7 @@ exports.toPromise = function (func, passPromise) {
 };
 
 }).call(this,_dereq_("/Users/ranger/rcs/pouchdb/node_modules/browserify/node_modules/insert-module-globals/node_modules/process/browser.js"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./deps/ajax":6,"./deps/blob":7,"./deps/buffer":20,"./deps/errors":8,"./deps/extend":10,"./deps/md5.js":11,"./deps/uuid":12,"./merge":14,"/Users/ranger/rcs/pouchdb/node_modules/browserify/node_modules/insert-module-globals/node_modules/process/browser.js":22,"bluebird":24,"inherits":23}],19:[function(_dereq_,module,exports){
+},{"./deps/ajax":6,"./deps/blob":7,"./deps/buffer":20,"./deps/errors":8,"./deps/extend":10,"./deps/md5.js":11,"./deps/uuid":12,"./merge":14,"/Users/ranger/rcs/pouchdb/node_modules/browserify/node_modules/insert-module-globals/node_modules/process/browser.js":22,"bluebird":24,"events":21,"inherits":23}],19:[function(_dereq_,module,exports){
 module.exports = _dereq_('../package.json').version;
 },{"../package.json":37}],20:[function(_dereq_,module,exports){
 

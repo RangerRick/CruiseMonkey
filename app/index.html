@@ -111,16 +111,8 @@ if (typeof String.prototype.contains !== 'function') {
 	<ion-side-menus>
 		<!-- animation="slide-left-right-ios7" -->
 		<ion-pane ion-side-menu-content drag-content="false">
-			<header class="bar bar-header bar-dark">
-				<div class="buttons">
-					<button class="button button-icon" open-menu><i class="icon ion-navicon"></i></button>
-					<button ng-repeat="button in leftButtons" class="button button-clear no-animation" ng-class="button.type" ng-click="button.tap($event, $index)" ion-bind-html-unsafe="button.content"></button>
-				</div>
-				<h1 class="title">{{headerTitle}}</h1>
-				<div class="buttons">
-					<button ng-repeat="button in rightButtons" class="button button-clear no-animation" ng-class="button.type" ng-click="button.tap($event, $index)" ion-bind-html-unsafe="button.content"></button>
-				</div>
-			</header>
+			<ion-header-bar title="{{headerTitle}}" left-buttons="leftButtons" right-buttons="rightButtons" type="bar-dark" align-title="center">
+			</ion-header-bar>
 			<span close-menu>
 			<ion-nav-view></ion-nav-view>
 			</span>

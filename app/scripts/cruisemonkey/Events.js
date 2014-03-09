@@ -471,10 +471,10 @@ CMFavorite.prototype.getRawData = function() {
 
 			if (args.length > 0 && !isString(args[args.length - 1])) {
 				var opt = args.pop();
-				//console.log('last argument was options!',opt);
+				//log.debug('last argument was options!',opt);
 				angular.extend(options, opt);
 			}
-			//console.log('options=',options);
+			//log.debug('options=',options);
 
 			var promises = [], i;
 
@@ -500,13 +500,13 @@ CMFavorite.prototype.getRawData = function() {
 					result = results[i];
 					for (j=0; j < result.rows.length; j++) {
 						ev = new CMEvent(result.rows[j].doc);
-						//console.log(ev.toString());
+						//log.debug(ev.toString());
 						events.push(ev);
 					}
 				}
 				for (i=0; i < favresults.rows.length; i++) {
 					fav = new CMFavorite(favresults.rows[i].doc);
-					//console.log(fav.toString());
+					//log.debug(fav.toString());
 					favorites.push(fav);
 				}
 
@@ -918,7 +918,7 @@ CMFavorite.prototype.getRawData = function() {
 				_db.local().bulk(remove).then(function(results) {
 					deferred.resolve(results.length);
 				}, function(err) {
-					console.log('bulk error:',err);
+					log.debug('bulk error:',err);
 					deferred.reject(err);
 				});
 			}, function(err) {
@@ -926,6 +926,88 @@ CMFavorite.prototype.getRawData = function() {
 			});
 
 			return deferred.promise;
+		};
+
+		var getEventForTime = function(time, eventList) {
+			var now = moment(time).unix(),
+				matched = -1,
+				nextEntry,
+				i, entry,
+				start, end;
+
+			log.debug('now = ' + now);
+			if (eventList && eventList.length > 0) {
+				for (i=0; i < eventList.length; i++) {
+					entry = eventList[i];
+					if (entry.getId().indexOf('day-') === 0) {
+						// skip day markers, we'll fix them at the end anyways
+						continue;
+					} else {
+						// this is an event
+						start = entry.getStart().unix();
+						end   = entry.getEnd() === undefined? start : entry.getEnd().unix();
+
+						log.debug('now=' + now + ',start=' + start + ',end=' + end + ': ' + entry.getSummary());
+						if (now < start) {
+							// we're still before the current event
+							log.debug(i + ': now < start: inexact match');
+							matched = i;
+							break;
+						} else {
+							// we're after the start of the current event
+
+							if (now <= end) {
+								// we're in the event, match!
+								log.debug(i + ': now <= end: exact match');
+								matched = i;
+								break;
+							} else {
+								var j = i+1;
+								nextEntry = eventList[j];
+								while (nextEntry) {
+									if (nextEntry.getId().indexOf('day-') === 0) {
+										// next entry is a day marker, skip it
+										continue;
+									} else {
+										log.debug('nextEntry = ' + nextEntry.getSummary());
+										start = nextEntry.getStart().unix();
+										end   = nextEntry.getEnd() === undefined? start : nextEntry.getEnd().unix();
+										j = eventList.length;
+									}
+
+									// the next entry is after now, we'll consider it the best match
+									if (now <= start) {
+										log.debug(j + ': now > end: inexact match');
+										matched = j;
+										break;
+									}
+									nextEntry = eventList[j++];
+								}
+							}
+						}
+					}
+				}
+
+				log.debug('matched = ' + matched);
+				entry = undefined;
+				if (matched > -1) {
+					entry = eventList[matched];
+					log.debug('matched ' + entry.getId());
+				}
+
+				if (matched === -1) {
+					return undefined;
+				}
+
+				if (entry.day === undefined && matched > 0 && eventList[matched - 1].day !== undefined) {
+					log.debug('entry ' + entry.getId() + ' was the first of the day, scrolling to the day marker instead.');
+					entry = eventList[matched-1];
+				}
+				return entry;
+			} else {
+				// no events, return nothing
+				return undefined;
+			}
 		};
 
 		return {
@@ -940,7 +1022,11 @@ CMFavorite.prototype.getRawData = function() {
 			'getMyFavorites': getMyFavorites,
 			'isFavorite': isFavorite,
 			'addFavorite': addFavorite,
-			'removeFavorite': removeFavorite
+			'removeFavorite': removeFavorite,
+			'getEventForTime': getEventForTime,
+			'getNextEvent': function(events) {
+				return getEventForTime(moment(), events);
+			}
 		};
 	}]);
 

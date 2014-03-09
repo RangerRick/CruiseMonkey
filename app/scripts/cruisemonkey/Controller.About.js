@@ -8,7 +8,7 @@
 	.controller('CMAboutCtrl', ['$log', '$scope', '$rootScope', 'EventService', 'config.app.version', function(log, $scope, $rootScope, EventService, version) {
 		log.info('Initializing CMAboutCtrl');
 		$rootScope.headerTitle = 'About CM4';
-		$rootScope.leftButtons = [];
+		$rootScope.leftButtons = $rootScope.getLeftButtons();
 		$rootScope.rightButtons = [];
 		$scope.version = version;
 		

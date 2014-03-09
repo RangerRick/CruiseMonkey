@@ -87,7 +87,7 @@
 				templateUrl: 'template/karaoke.html',
 				controller: ['$rootScope', function($rootScope) {
 					$rootScope.headerTitle = 'Karaoke';
-					$rootScope.leftButtons = [];
+					$rootScope.leftButtons = $rootScope.getLeftButtons();
 					$rootScope.rightButtons = [];
 				}]
 			})
@@ -206,7 +206,7 @@
 		$rootScope.openLeft = function(evt) {
 			log.info('Opening Sidebar.');
 			if ($rootScope.sideMenuController) {
-				//$rootScope.sideMenuController.toggleLeft();
+				$rootScope.sideMenuController.toggleLeft();
 			} else {
 				log.warn('Side menu controller not initialized yet!');
 			}
@@ -216,11 +216,19 @@
 		$rootScope.closeLeft = function(evt) {
 			log.info('Closing Sidebar.');
 			if ($rootScope.sideMenuController) {
-				//$rootScope.sideMenuController.close();
+				$rootScope.sideMenuController.close();
 			} else {
 				log.warn('Side menu controller not initialized yet!');
 			}
 			return false;
+		};
+
+		$rootScope.getLeftButtons = function() {
+			return [{
+				type: 'button-clear',
+				content: '<i class="icon active ion-navicon"></i>',
+				tap: $rootScope.openLeft
+			}];
 		};
 
 		$rootScope.openUrl = function(url, target) {

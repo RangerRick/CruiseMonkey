@@ -9,7 +9,7 @@
 	.controller('CMDeckListCtrl', ['storage', '$scope', '$rootScope', '$timeout', '$state', '$stateParams', '$location', '$document', 'CordovaService', '$log', function(storage, $scope, $rootScope, $timeout, $state, $stateParams, $location, $document, cor, log) {
 		log.info('Initializing CMDeckListCtrl');
 		$rootScope.headerTitle = "Deck Plans";
-		$rootScope.leftButtons = [];
+		$rootScope.leftButtons = $rootScope.getLeftButtons();
 		$rootScope.rightButtons = [];
 
 		storage.bind($scope, 'deck', {

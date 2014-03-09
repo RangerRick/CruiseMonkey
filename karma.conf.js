@@ -34,7 +34,6 @@ module.exports = function(config) {
       'app/bower_components/angular-uuid4/angular-uuid4.js',
       'app/scripts/cruisemonkey/karaoke-list.js',
       'app/scripts/cruisemonkey/*.js',
-      'app/bower_components/requirejs/require.js',
       'test/mock/**/*.js',
       'test/spec/**/*.js'
     ],

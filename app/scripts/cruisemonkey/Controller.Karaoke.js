@@ -81,17 +81,16 @@
 	.controller('CMKaraokeSearchCtrl', ['storage', '$rootScope', '$scope', '$state', 'KaraokeService', '$log', function(storage, $rootScope, $scope, $state, KaraokeService, log) {
 		log.info('Initializing CMKaraokeSearchCtrl');
 		$rootScope.headerTitle = 'Karaoke Search';
-		$rootScope.leftButtons = [
-			{
-				'type': 'button-clear',
-				'content': '<i class="icon icon-cm ion-arrow-left-b"></i>',
-				tap: function(e) {
-					e.preventDefault();
-					$state.go('karaoke');
-					return false;
-				}
+		$rootScope.leftButtons = $rootScope.getLeftButtons();
+		$rootScope.leftButtons.push({
+			'type': 'button-clear',
+			'content': '<i class="icon icon-cm ion-arrow-left-b"></i>',
+			tap: function(e) {
+				e.preventDefault();
+				$state.go('karaoke');
+				return false;
 			}
-		];
+		});
 		$rootScope.rightButtons = [];
 
 		var entryLimit = 50;
@@ -182,17 +181,16 @@
 	.controller('CMKaraokePrefixListCtrl', ['$rootScope', '$scope', '$state', 'KaraokeService', '$log', function($rootScope, $scope, $state, KaraokeService, log) {
 		log.info('Initializing CMKaraokePrefixListCtrl');
 		$rootScope.headerTitle = 'Artists';
-		$rootScope.leftButtons = [
-			{
-				'type': 'button-clear',
-				'content': '<i class="icon icon-cm ion-arrow-left-b"></i>',
-				tap: function(e) {
-					e.preventDefault();
-					$state.go('karaoke');
-					return false;
-				}
+		$rootScope.leftButtons = $rootScope.getLeftButtons();
+		$rootScope.leftButtons.push({
+			'type': 'button-clear',
+			'content': '<i class="icon icon-cm ion-arrow-left-b"></i>',
+			tap: function(e) {
+				e.preventDefault();
+				$state.go('karaoke');
+				return false;
 			}
-		];
+		});
 		$rootScope.rightButtons = [];
 
 		KaraokeService.setScope($scope);
@@ -236,17 +234,16 @@
 		}
 
 		$rootScope.headerTitle = 'Artists: ' + prefix;
-		$rootScope.leftButtons = [
-			{
-				'type': 'button-clear',
-				'content': '<i class="icon icon-cm ion-arrow-left-b"></i>',
-				tap: function(e) {
-					e.preventDefault();
-					$state.go('karaoke-list');
-					return false;
-				}
+		$rootScope.leftButtons = $rootScope.getLeftButtons();
+		$rootScope.leftButtons.push({
+			'type': 'button-clear',
+			'content': '<i class="icon icon-cm ion-arrow-left-b"></i>',
+			tap: function(e) {
+				e.preventDefault();
+				$state.go('karaoke-list');
+				return false;
 			}
-		];
+		});
 		$rootScope.rightButtons = [];
 
 		KaraokeService.setScope($scope);
@@ -314,19 +311,18 @@
 			$rootScope.headerTitle = $stateParams.artist.substring(0,12) + '...';
 		}
 
-		$rootScope.leftButtons = [
-			{
-				'type': 'button-clear',
-				'content': '<i class="icon icon-cm ion-arrow-left-b"></i>',
-				tap: function(e) {
-					e.preventDefault();
-					$state.go('karaoke-by-prefix', {
-						prefix: $stateParams.artist.charAt(0).toUpperCase()
-					});
-					return false;
-				}
+		$rootScope.leftButtons = $rootScope.getLeftButtons();
+		$rootScope.leftButtons.push({
+			'type': 'button-clear',
+			'content': '<i class="icon icon-cm ion-arrow-left-b"></i>',
+			tap: function(e) {
+				e.preventDefault();
+				$state.go('karaoke-by-prefix', {
+					prefix: $stateParams.artist.charAt(0).toUpperCase()
+				});
+				return false;
 			}
-		];
+		});
 		$rootScope.rightButtons = [];
 
 		var songList = [];

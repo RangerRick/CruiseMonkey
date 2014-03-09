@@ -11,7 +11,7 @@
 	.controller('CMLoginCtrl', ['$scope', '$rootScope', '$location', '$http', 'UserService', '$log', 'SettingsService', 'CordovaService', 'NotificationService', function($scope, $rootScope, $location, $http, UserService, log, SettingsService, cor, notifications) {
 		log.info('Initializing CMLoginCtrl');
 		$rootScope.headerTitle = "Log In";
-		$rootScope.leftButtons = [];
+		$rootScope.leftButtons = $rootScope.getLeftButtons();
 
 		$rootScope.user = UserService.get();
 
