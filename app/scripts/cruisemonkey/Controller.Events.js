@@ -1,13 +1,16 @@
 function CMDay(d) {
 	'use strict';
 	this.day = d;
-	this.getId = function() {
-		return 'day-' + this.day.unix();
-	};
-	this.clone = function() {
-		return new CMDay(this.day);
-	};
 }
+
+CMDay.prototype.getId = function() {
+	'use strict';
+	return 'day-' + this.day.unix();
+};
+CMDay.prototype.clone = function() {
+	'use strict';
+	return new CMDay(this.day);
+};
 
 (function() {
 	'use strict';
