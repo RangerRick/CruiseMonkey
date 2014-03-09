@@ -114,7 +114,6 @@
 			}
 			log.info('Stopping sync.');
 
-			console.log(__syncing);
 			__syncing.cancel();
 			__syncing = null;
 		};
@@ -351,6 +350,20 @@
 			return deferred.promise;
 		};
 
+		var __info = function(db) {
+			var deferred = $q.defer();
+			db.info(function(err, info) {
+				$rootScope.safeApply(function() {
+					if (err) {
+						deferred.reject(err);
+					} else {
+						deferred.resolve(info);
+					}
+				});
+			});
+			return deferred.promise;
+		};
+
 		var __db = function(db) {
 			return {
 				'query': function(view, options) {
@@ -370,6 +383,9 @@
 				},
 				'remove': function(doc) {
 					return __remove(db, doc);
+				},
+				'info': function() {
+					return __info(db);
 				}
 			};
 		};
@@ -381,22 +397,26 @@
 			return __db(__pouchUser);
 		};
 
-		var __destroy = function(db) {
+		var __destroy = function() {
 			var deferred = $q.defer();
-			db.destroy(function(err,info) {
-				$rootScope.safeApply(function() {
-					if (err) {
-						deferred.reject(err);
-					} else {
-						deferred.resolve(info);
-					}
+			__local().info().then(function(info) {
+				PouchDB.destroy(info.db_name, function(err,res) {
+					$rootScope.safeApply(function() {
+						if (err) {
+							deferred.reject(err);
+						} else {
+							deferred.resolve(info);
+						}
+					});
 				});
+			}, function(err) {
+				deferred.reject(err);
 			});
 			return deferred.promise;
 		};
-		var __reset = function(db) {
+		var __reset = function() {
 			var deferred = $q.defer();
-			__destroy(db).then(function(results) {
+			__destroy().then(function(results) {
 				log.debug('destroyed:',results);
 				__ready = null;
 				__initialize().then(function(init) {
@@ -404,7 +424,7 @@
 				}, function(err) {
 					log.debug('failed to initialize: ' + err);
 					deferred.reject(err);
-				})
+				});
 			}, function(err) {
 				log.debug('failed to destroy existing database: ' + err);
 				deferred.reject(err);
@@ -443,9 +463,7 @@
 			'init': __initialize,
 			'remote': __remote,
 			'local': __local,
-			'reset': function() {
-				return __reset(__local());
-			},
+			'reset': __reset,
 			'restartSync': function() {
 				__stopSync();
 				__startSync(__pouchRemote, __pouchUser);
