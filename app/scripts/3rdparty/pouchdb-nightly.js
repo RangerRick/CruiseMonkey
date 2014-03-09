@@ -3985,7 +3985,7 @@ function PouchDB(name, opts, callback) {
   //prevent deoptimizing
   (function () {
     try {
-      self.catch = promise.catch.bind(promise);
+      self['catch'] = promise['catch'].bind(promise);
     } catch (e) {}
   }());
 }
@@ -6767,7 +6767,7 @@ Promise.prototype.then = function(onFulfilled, onRejected) {
 };
 (function(){
     try {
-        Promise.prototype.catch = function(onRejected) {
+        Promise.prototype['catch'] = function(onRejected) {
             return this.then(null, onRejected);
         };
     } catch(e){}
