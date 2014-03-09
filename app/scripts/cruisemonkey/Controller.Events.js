@@ -1,17 +1,3 @@
-function CMDay(d) {
-	'use strict';
-	this.day = d;
-}
-
-CMDay.prototype.getId = function() {
-	'use strict';
-	return 'day-' + this.day.unix();
-};
-CMDay.prototype.clone = function() {
-	'use strict';
-	return new CMDay(this.day);
-};
-
 (function() {
 	'use strict';
 
@@ -19,6 +5,7 @@ CMDay.prototype.clone = function() {
 	/*global Modernizr: true*/
 	/*global CMEvent: true*/
 	/*global CMFavorite: true*/
+	/*global CMDay: true*/
 
 	var attrA, attrB;
 
