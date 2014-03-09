@@ -965,11 +965,12 @@ CMFavorite.prototype.getRawData = function() {
 								var j = i+1;
 								nextEntry = eventList[j];
 								while (nextEntry) {
+									log.debug(j + '/' + eventList.length + ': nextEntry = ' + nextEntry);
 									if (nextEntry.getId().indexOf('day-') === 0) {
 										// next entry is a day marker, skip it
+										nextEntry = eventList[j++];
 										continue;
 									} else {
-										log.debug('nextEntry = ' + nextEntry.getSummary());
 										start = nextEntry.getStart().unix();
 										end   = nextEntry.getEnd() === undefined? start : nextEntry.getEnd().unix();
 										j = eventList.length;

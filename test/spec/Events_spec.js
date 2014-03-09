@@ -375,7 +375,249 @@ describe('cruisemonkey.Events', function() {
 			$rootScope.$apply();
 		});
 	});
-	
+
+	describe('#getEventForTime', function() {
+		it('Should find the next event in a simple list of events with only start times.', function() {
+			var eventList = [
+				new CMEvent({
+					'_id': 'a',
+					'summary': 'A',
+					'start': '2010-01-01 00:00'
+				}),
+				new CMEvent({
+					'_id': 'b',
+					'summary': 'B',
+					'start': '2010-02-01 00:00'
+				}),
+				new CMEvent({
+					'_id': 'c',
+					'summary': 'C',
+					'start': '2010-03-01 00:00'
+				})
+			];
+			var ev = service.getEventForTime(moment('2009-01-01 00:00'), eventList);
+			expect(ev).toBeDefined();
+			expect(ev.getSummary()).toBe('A');
+
+			ev = service.getEventForTime(moment('2010-01-01 00:00'), eventList);
+			expect(ev).toBeDefined();
+			expect(ev.getSummary()).toBe('A');
+
+			ev = service.getEventForTime(moment('2010-01-01 00:01'), eventList);
+			expect(ev).toBeDefined();
+			expect(ev.getSummary()).toBe('B');
+			
+			ev = service.getEventForTime(moment('2010-05-01 00:00'), eventList);
+			expect(ev).not.toBeDefined();
+		});
+
+		it('Should find the next event in a simple list of events with start and end times.', function() {
+			var eventList = [
+				new CMEvent({
+					'_id': 'a',
+					'summary': 'A',
+					'start': '2010-01-01 00:00',
+					'end': '2010-01-01 01:00'
+				}),
+				new CMEvent({
+					'_id': 'b',
+					'summary': 'B',
+					'start': '2010-02-01 00:00',
+					'end': '2010-02-01 01:00'
+				}),
+				new CMEvent({
+					'_id': 'c',
+					'summary': 'C',
+					'start': '2010-03-01 00:00',
+					'end': '2010-03-01 01:00'
+				})
+			];
+			ev = service.getEventForTime(moment('2010-01-01 00:01'), eventList);
+			expect(ev).toBeDefined();
+			expect(ev.getSummary()).toBe('A');
+
+			ev = service.getEventForTime(moment('2010-01-01 00:59'), eventList);
+			expect(ev).toBeDefined();
+			expect(ev.getSummary()).toBe('A');
+
+			ev = service.getEventForTime(moment('2010-01-01 01:00'), eventList);
+			expect(ev).toBeDefined();
+			expect(ev.getSummary()).toBe('A');
+
+			ev = service.getEventForTime(moment('2010-01-01 01:01'), eventList);
+			expect(ev).toBeDefined();
+			expect(ev.getSummary()).toBe('B');
+		});
+
+
+		it('Should find the first event that matches when multiple events match the given time.', function() {
+			var eventList = [
+				new CMEvent({
+					'_id': 'a',
+					'summary': 'A',
+					'start': '2010-01-01 00:00',
+					'end': '2010-01-02 00:00'
+				}),
+				new CMEvent({
+					'_id': 'b',
+					'summary': 'B',
+					'start': '2010-01-01 12:00',
+					'end': '2010-01-02 12:00'
+				}),
+				new CMEvent({
+					'_id': 'c',
+					'summary': 'C',
+					'start': '2010-01-02 00:00',
+					'end': '2010-01-03 00:00'
+				}),
+				new CMEvent({
+					'_id': 'd',
+					'summary': 'D',
+					'start': '2010-01-02 12:00',
+					'end': '2010-01-03 12:00'
+				}),
+				new CMEvent({
+					'_id': 'e',
+					'summary': 'E',
+					'start': '2010-01-03 00:00',
+					'end': '2010-01-04 00:00'
+				}),
+			];
+			ev = service.getEventForTime(moment('2010-01-01 00:00'), eventList);
+			expect(ev).toBeDefined();
+			expect(ev.getSummary()).toBe('A');
+
+			ev = service.getEventForTime(moment('2010-01-01 11:59'), eventList);
+			expect(ev).toBeDefined();
+			expect(ev.getSummary()).toBe('A');
+
+			ev = service.getEventForTime(moment('2010-01-01 12:00'), eventList);
+			expect(ev).toBeDefined();
+			expect(ev.getSummary()).toBe('A');
+
+			ev = service.getEventForTime(moment('2010-01-01 12:01'), eventList);
+			expect(ev).toBeDefined();
+			expect(ev.getSummary()).toBe('A');
+
+			ev = service.getEventForTime(moment('2010-01-01 23:59'), eventList);
+			expect(ev).toBeDefined();
+			expect(ev.getSummary()).toBe('A');
+
+			ev = service.getEventForTime(moment('2010-01-02 00:00'), eventList);
+			expect(ev).toBeDefined();
+			expect(ev.getSummary()).toBe('A');
+
+			ev = service.getEventForTime(moment('2010-01-02 00:01'), eventList);
+			expect(ev).toBeDefined();
+			expect(ev.getSummary()).toBe('B');
+
+			ev = service.getEventForTime(moment('2010-01-03 04:00'), eventList);
+			expect(ev).toBeDefined();
+			expect(ev.getSummary()).toBe('D');
+		});
+
+		it('Should go to the day if the event is the first for the day.', function() {
+			var eventList = [
+				new CMDay(moment('2010-01-01 00:00')),
+				new CMEvent({
+					'_id': 'a',
+					'summary': 'A',
+					'start': '2010-01-01 00:00',
+					'end': '2010-01-01 01:00'
+				}),
+				new CMDay(moment('2010-02-01 00:00')),
+				new CMEvent({
+					'_id': 'b',
+					'summary': 'B',
+					'start': '2010-02-01 00:00',
+					'end': '2010-02-01 01:00'
+				}),
+				new CMEvent({
+					'_id': 'c',
+					'summary': 'C',
+					'start': '2010-02-01 01:00',
+					'end': '2010-02-01 02:00'
+				}),
+				new CMEvent({
+					'_id': 'd',
+					'summary': 'D',
+					'start': '2010-02-01 23:00',
+					'end': '2010-02-02 01:00'
+				}),
+				new CMDay(moment('2010-02-02 00:00')),
+				new CMEvent({
+					'_id': 'e',
+					'summary': 'E',
+					'start': '2010-02-02 09:00',
+					'end': '2010-02-02 10:00'
+				})
+			];
+			// before a event, should match first day
+			var ev = service.getEventForTime(moment('2009-01-01 00:00'), eventList);
+			expect(ev).toBeDefined();
+			expect(ev instanceof CMDay).toBe(true);
+			expect(ev.day.isSame(moment('2010-01-01 00:00'))).toBe(true);
+
+			// during a event, should match first day
+			ev = service.getEventForTime(moment('2010-01-01 01:00'), eventList);
+			expect(ev).toBeDefined();
+			expect(ev instanceof CMDay).toBe(true);
+			expect(ev.day.isSame(moment('2010-01-01 00:00'))).toBe(true);
+
+			// after a event, should match second day
+			ev = service.getEventForTime(moment('2010-01-01 02:00'), eventList);
+			expect(ev).toBeDefined();
+			expect(ev instanceof CMDay).toBe(true);
+			expect(ev.day.isSame(moment('2010-02-01 00:00'))).toBe(true);
+
+			// during b event, should match second day
+			ev = service.getEventForTime(moment('2010-02-01 00:30'), eventList);
+			expect(ev).toBeDefined();
+			expect(ev instanceof CMDay).toBe(true);
+			expect(ev.day.isSame(moment('2010-02-01 00:00'))).toBe(true);
+
+			// during c event, should match c
+			ev = service.getEventForTime(moment('2010-02-01 01:30'), eventList);
+			expect(ev).toBeDefined();
+			expect(ev instanceof CMEvent).toBe(true);
+			expect(ev.getSummary()).toBe('C');
+
+			// after c event, should match d
+			ev = service.getEventForTime(moment('2010-02-01 02:30'), eventList);
+			expect(ev).toBeDefined();
+			expect(ev instanceof CMEvent).toBe(true);
+			expect(ev.getSummary()).toBe('D');
+
+			// during d event, should match d
+			ev = service.getEventForTime(moment('2010-02-01 23:30'), eventList);
+			expect(ev).toBeDefined();
+			expect(ev instanceof CMEvent).toBe(true);
+			expect(ev.getSummary()).toBe('D');
+
+			// during d event after midnight, should still match d
+			ev = service.getEventForTime(moment('2010-02-02 00:30'), eventList);
+			expect(ev).toBeDefined();
+			expect(ev instanceof CMEvent).toBe(true);
+			expect(ev.getSummary()).toBe('D');
+
+			// after d event, before e, should match third day
+			ev = service.getEventForTime(moment('2010-02-02 01:30'), eventList);
+			expect(ev).toBeDefined();
+			expect(ev instanceof CMDay).toBe(true);
+			expect(ev.day.isSame(moment('2010-02-02 00:00'))).toBe(true);
+
+			// during e event, should match third day
+			ev = service.getEventForTime(moment('2010-02-02 09:30'), eventList);
+			expect(ev).toBeDefined();
+			expect(ev instanceof CMDay).toBe(true);
+			expect(ev.day.isSame(moment('2010-02-02 00:00'))).toBe(true);
+
+			// after e event, should match nothing
+			ev = service.getEventForTime(moment('2010-02-02 10:30'), eventList);
+			expect(ev).not.toBeDefined();
+		});
+	});
+
 	describe('CMEvent#toEditableBean', function() {
 		async.it('should create a bean that matches the event data', function(done) {
 			var ev = new CMEvent();
@@ -447,146 +689,4 @@ describe('cruisemonkey.Events', function() {
 			done();
 		});
 	});
-	
-	describe('#getEventForTime', function() {
-		it('Should find the next event in a simple list of events with only start times.', function() {
-			var simpleEventList = [
-				new CMEvent({
-					'_id': 'a',
-					'summary': 'A',
-					'start': '2010-01-01 00:00'
-				}),
-				new CMEvent({
-					'_id': 'b',
-					'summary': 'B',
-					'start': '2010-02-01 00:00'
-				}),
-				new CMEvent({
-					'_id': 'c',
-					'summary': 'C',
-					'start': '2010-03-01 00:00'
-				})
-			];
-			var ev = service.getEventForTime(moment('2009-01-01 00:00'), simpleEventList);
-			expect(ev).toBeDefined();
-			expect(ev.getSummary()).toBe('A');
-
-			ev = service.getEventForTime(moment('2010-01-01 00:00'), simpleEventList);
-			expect(ev).toBeDefined();
-			expect(ev.getSummary()).toBe('A');
-
-			ev = service.getEventForTime(moment('2010-01-01 00:01'), simpleEventList);
-			expect(ev).toBeDefined();
-			expect(ev.getSummary()).toBe('B');
-			
-			ev = service.getEventForTime(moment('2010-05-01 00:00'), simpleEventList);
-			expect(ev).not.toBeDefined();
-		});
-
-		it('Should find the next event in a simple list of events with start and end times.', function() {
-			var simpleEventList = [
-				new CMEvent({
-					'_id': 'a',
-					'summary': 'A',
-					'start': '2010-01-01 00:00',
-					'end': '2010-01-01 01:00'
-				}),
-				new CMEvent({
-					'_id': 'b',
-					'summary': 'B',
-					'start': '2010-02-01 00:00',
-					'end': '2010-02-01 01:00'
-				}),
-				new CMEvent({
-					'_id': 'c',
-					'summary': 'C',
-					'start': '2010-03-01 00:00',
-					'end': '2010-03-01 01:00'
-				})
-			];
-			ev = service.getEventForTime(moment('2010-01-01 00:01'), simpleEventList);
-			expect(ev).toBeDefined();
-			expect(ev.getSummary()).toBe('A');
-
-			ev = service.getEventForTime(moment('2010-01-01 00:59'), simpleEventList);
-			expect(ev).toBeDefined();
-			expect(ev.getSummary()).toBe('A');
-
-			ev = service.getEventForTime(moment('2010-01-01 01:00'), simpleEventList);
-			expect(ev).toBeDefined();
-			expect(ev.getSummary()).toBe('A');
-
-			ev = service.getEventForTime(moment('2010-01-01 01:01'), simpleEventList);
-			expect(ev).toBeDefined();
-			expect(ev.getSummary()).toBe('B');
-		});
-
-
-		it('Should find the first event that matches when multiple events match the given time.', function() {
-			var simpleEventList = [
-				new CMEvent({
-					'_id': 'a',
-					'summary': 'A',
-					'start': '2010-01-01 00:00',
-					'end': '2010-01-02 00:00'
-				}),
-				new CMEvent({
-					'_id': 'b',
-					'summary': 'B',
-					'start': '2010-01-01 12:00',
-					'end': '2010-01-02 12:00'
-				}),
-				new CMEvent({
-					'_id': 'c',
-					'summary': 'C',
-					'start': '2010-01-02 00:00',
-					'end': '2010-01-03 00:00'
-				}),
-				new CMEvent({
-					'_id': 'd',
-					'summary': 'D',
-					'start': '2010-01-02 12:00',
-					'end': '2010-01-03 12:00'
-				}),
-				new CMEvent({
-					'_id': 'e',
-					'summary': 'E',
-					'start': '2010-01-03 00:00',
-					'end': '2010-01-04 00:00'
-				}),
-			];
-			ev = service.getEventForTime(moment('2010-01-01 00:00'), simpleEventList);
-			expect(ev).toBeDefined();
-			expect(ev.getSummary()).toBe('A');
-
-			ev = service.getEventForTime(moment('2010-01-01 11:59'), simpleEventList);
-			expect(ev).toBeDefined();
-			expect(ev.getSummary()).toBe('A');
-
-			ev = service.getEventForTime(moment('2010-01-01 12:00'), simpleEventList);
-			expect(ev).toBeDefined();
-			expect(ev.getSummary()).toBe('A');
-
-			ev = service.getEventForTime(moment('2010-01-01 12:01'), simpleEventList);
-			expect(ev).toBeDefined();
-			expect(ev.getSummary()).toBe('A');
-
-			ev = service.getEventForTime(moment('2010-01-01 23:59'), simpleEventList);
-			expect(ev).toBeDefined();
-			expect(ev.getSummary()).toBe('A');
-
-			ev = service.getEventForTime(moment('2010-01-02 00:00'), simpleEventList);
-			expect(ev).toBeDefined();
-			expect(ev.getSummary()).toBe('A');
-
-			ev = service.getEventForTime(moment('2010-01-02 00:01'), simpleEventList);
-			expect(ev).toBeDefined();
-			expect(ev.getSummary()).toBe('B');
-
-			ev = service.getEventForTime(moment('2010-01-03 04:00'), simpleEventList);
-			expect(ev).toBeDefined();
-			expect(ev.getSummary()).toBe('D');
-		});
-	});
-	
 });
