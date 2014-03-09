@@ -354,7 +354,7 @@
 			log.debug('CMEventCtrl: Changes processed.');
 			refreshEvents();
 		});
-		$scope.$on('cm.main.databaseInitialized', function() {
+		$scope.$on('cm.main.database-initialized', function() {
 			log.debug('CMEventCtrl: Database initialized.');
 			$timeout(function() {
 				refreshEvents(true);
@@ -368,12 +368,6 @@
 		});
 		$scope.$on('cm.EventService.remoteDocsUpdated', function() {
 			log.debug('CMEventCtrl: Remote docs fetched, refreshing.');
-			$timeout(function() {
-				refreshEvents(true);
-			}, 100);
-		});
-		$scope.$on('cm.main.databaseInitialized', function() {
-			log.debug('CMEventCtrl: Database initialized, refreshing.');
 			$timeout(function() {
 				refreshEvents(true);
 			}, 100);

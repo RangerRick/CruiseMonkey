@@ -18,6 +18,9 @@ describe('cruisemonkey.DB', function() {
 			expect(res).toBeGreaterThan(-1);
 			done();
 		});
+		if ($timeout) {
+			$timeout.flush();
+		}
 	};
 
 	async.beforeEach(function(done) {
@@ -66,7 +69,10 @@ describe('cruisemonkey.DB', function() {
 						done();
 					});
 				});
+			}, function(err) {
+				console.log(err);
 			});
+			$timeout.flush();
 		});
 	});
 

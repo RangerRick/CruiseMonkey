@@ -4,9 +4,10 @@
 	angular.module('cruisemonkey.controllers.Advanced', [
 		'cruisemonkey.Config',
 		'cruisemonkey.Cordova',
+		'cruisemonkey.DB',
 		'cruisemonkey.Settings'
 	])
-	.controller('CMAdvancedCtrl', ['$log', '$scope', '$rootScope', '$window', 'Database', 'CordovaService', 'config.app.version', 'SettingsService', function(log, $scope, $rootScope, $window, Database, cor, version, SettingsService) {
+	.controller('CMAdvancedCtrl', ['$log', '$scope', '$rootScope', '$window', '_db', 'CordovaService', 'config.app.version', 'SettingsService', function(log, $scope, $rootScope, $window, _db, cor, version, SettingsService) {
 		log.info('Initializing CMAdvancedCtrl');
 		$rootScope.headerTitle = 'Advanced Options';
 		$rootScope.leftButtons = $rootScope.getLeftButtons();
@@ -45,18 +46,18 @@
 			SettingsService.setDatabaseName($scope.settings.databaseName);
 			SettingsService.setOpenInChrome($scope.settings.openInChrome);
 			SettingsService.setTwitarrRoot($scope.settings.twitarrRoot);
-			$rootScope.$broadcast('cm.settingsChanged', {
+			$rootScope.$broadcast('cm.settings-changed', {
 				'before': before,
 				'after': after
 			});
 		};
 
 		$scope.resetDatabase = function() {
-			Database.reset();
+			_db.reset();
 		};
 
 		$scope.forceSync = function() {
-			Database.restartReplication();
+			_db.restartSync();
 		};
 
 		cor.ifCordova(function() {

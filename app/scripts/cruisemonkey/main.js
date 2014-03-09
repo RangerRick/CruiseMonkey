@@ -27,7 +27,6 @@
 		'cruisemonkey.controllers.Navigation',
 		'cruisemonkey.controllers.Photos',
 		'cruisemonkey.DB',
-		'cruisemonkey.Database',
 		'cruisemonkey.Notifications',
 		'cruisemonkey.Seamail',
 		'cruisemonkey.Settings',
@@ -174,7 +173,7 @@
 			}
 		};
 	}])
-	.run(['$q', '$rootScope', '$window', '$location', '$interval', '$urlRouter', '$log', 'UserService', 'storage', 'CordovaService', 'UpgradeService', '_db', 'Database', 'NotificationService', 'SettingsService', 'SeamailService', function($q, $rootScope, $window, $location, $interval, $urlRouter, log, UserService, storage, cor, upgrades, _db, Database, notifications, SettingsService, SeamailService) {
+	.run(['$q', '$rootScope', '$window', '$location', '$interval', '$urlRouter', '$log', 'UserService', 'storage', 'CordovaService', 'UpgradeService', '_db', 'NotificationService', 'SettingsService', 'SeamailService', function($q, $rootScope, $window, $location, $interval, $urlRouter, log, UserService, storage, cor, upgrades, _db, notifications, SettingsService, SeamailService) {
 		log.debug('CruiseMonkey run() called.');
 
 		/*global moment: true*/
@@ -358,16 +357,17 @@
 		}, false);
 		
 		var initializeOffline = function() {
-			if (Offline.options.reconnect) {
-				log.debug('initializeOffline() called, but options already initialized.');
-				return;
-			}
-
 			Offline.options.checks = {
 				xhr: {
 					url: SettingsService.getRemoteDatabaseUrl()
 				}
 			};
+
+			if (Offline.options.reconnect) {
+				log.debug('initializeOffline() called, but options already initialized.');
+				return;
+			}
+
 			Offline.options.reconnect = {
 				initialDelay: 3,
 				delay: 10
@@ -379,7 +379,7 @@
 			Offline.check();
 		};
 
-		$q.when(upgrades.upgrade()).then(function() {
+		var doDbInit = function() {
 			_db.setUserDatabase(SettingsService.getLocalDatabaseUrl());
 			_db.setRemoteDatabase(SettingsService.getRemoteDatabaseUrl());
 			_db.onChange(function(change) {
@@ -390,12 +390,16 @@
 				cor.ifCordova(function() {
 					navigator.splashscreen.hide();
 				});
-				$rootScope.$broadcast('cm.main.databaseInitialized');
+				$rootScope.$broadcast('cm.main.database-initialized');
 				initializeOffline();
 			}, function(err) {
 				log.error('Failed to initialize database!');
 				databaseInitialized.reject(err);
 			});
+		};
+
+		$q.when(upgrades.upgrade()).then(function() {
+			doDbInit();
 		});
 
 		$rootScope.$on('cm.loggedIn', function(event) {
@@ -403,6 +407,9 @@
 		});
 		$rootScope.$on('cm.loggedOut', function(event) {
 			log.info('User logged out.');
+		});
+		$rootScope.$on('cm.settings-changed', function() {
+			doDbInit();
 		});
 	}])
 	;

@@ -34,10 +34,11 @@ describe('cruisemonkey.Events', function() {
 			expect(res).toBeGreaterThan(-1);
 			done();
 		});
+		$timeout.flush();
 	};
 
 	async.beforeEach(function(done) {
-		module('cruisemonkey.DB', 'cruisemonkey.Database', 'cruisemonkey.User', 'cruisemonkey.Events', function($provide) {
+		module('cruisemonkey.DB', 'cruisemonkey.User', 'cruisemonkey.Events', function($provide) {
 			$provide.value('config.logging.useStringAppender', true);
 			$provide.value('config.database.host', 'localhost');
 			$provide.value('config.database.name', dbName);
@@ -60,7 +61,6 @@ describe('cruisemonkey.Events', function() {
 			doDbSetup(userDb, pristineDb, remoteDb, function() {
 				doDbInit(done);
 			});
-			$timeout.flush();
 		}]);
 	});
 

@@ -12,11 +12,10 @@
 	angular.module('cruisemonkey.Events', [
 		'uuid4',
 		'cruisemonkey.Config',
-		'cruisemonkey.Database',
 		'cruisemonkey.DB',
 		'cruisemonkey.User'
 	])
-	.factory('EventService', ['$q', '$rootScope', '$timeout', '$location', 'uuid4', '_db', 'Database', 'UserService', '$log', 'config.database.host', 'config.database.name', 'config.database.replicate', function($q, $rootScope, $timeout, $location, uuid4, _db, db, UserService, log, databaseHost, databaseName, replicate) {
+	.factory('EventService', ['$q', '$rootScope', '$timeout', '$location', 'uuid4', '_db', 'UserService', '$log', 'config.database.host', 'config.database.name', 'config.database.replicate', function($q, $rootScope, $timeout, $location, uuid4, _db, UserService, log, databaseHost, databaseName, replicate) {
 		log.info('EventService: Initializing EventService.');
 
 		var promisedResult = function(result) {

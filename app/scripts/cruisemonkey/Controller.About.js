@@ -2,7 +2,6 @@
 	'use strict';
 
 	angular.module('cruisemonkey.controllers.About', [
-		'cruisemonkey.Database',
 		'cruisemonkey.Config'
 	])
 	.controller('CMAboutCtrl', ['$log', '$scope', '$rootScope', 'EventService', 'config.app.version', function(log, $scope, $rootScope, EventService, version) {
