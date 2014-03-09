@@ -64,8 +64,8 @@ Contact
 =======
 
 * E-Mail: You can reach me (Benjamin Reed) at [testflight@raccoonfink.com](mailto:testflight@raccoonfink.com).
-* IRC: Join me in #cruisemonkey on FreeNode: irc.freenode.net
-* Forums: You can also discuss CruiseMonkey on the [JoCo Forums](http://www.jonathancoulton.com/forums/index.php?p=/discussion/2264/cruisemonkey-4)
+* IRC: Join me in [#SeaMonkeyIT on FreeNode: irc.freenode.net](irc://irc.freenode.net/SeaMonkeyIT).
+* Forums: You can also discuss CruiseMonkey on the [JoCo Forums](http://www.jonathancoulton.com/forums/index.php?p=/discussion/2264/cruisemonkey-4).
 
 Licensing
 =========
