@@ -78,7 +78,7 @@ Release Notes
 
 4.0.80
 ------
-* update to latest Ionic
+* update to latest Ionic and AngularJS
 * clean up navigation to use default Ionic nav-bar
 * MANY CSS cleanups so we no longer need to hand-override Ionic CSS in the Ionic source code
 * update to PouchDB 2.x

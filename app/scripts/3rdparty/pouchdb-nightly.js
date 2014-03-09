@@ -3984,9 +3984,7 @@ function PouchDB(name, opts, callback) {
   self.then = promise.then.bind(promise);
   //prevent deoptimizing
   (function () {
-    try {
-      self['catch'] = promise['catch'].bind(promise);
-    } catch (e) {}
+    self['catch'] = promise['catch'].bind(promise);
   }());
 }
 
@@ -6768,11 +6766,9 @@ Promise.prototype.then = function(onFulfilled, onRejected) {
     }
 };
 (function(){
-    try {
-        Promise.prototype['catch'] = function(onRejected) {
-            return this.then(null, onRejected);
-        };
-    } catch(e){}
+    Promise.prototype['catch'] = function(onRejected) {
+        return this.then(null, onRejected);
+    };
 }());
 defineNonEnum(Promise.prototype, 'pending', function(onFulfilled, onRejected){
     var self = this;
