@@ -269,8 +269,8 @@
 				e.sort(sortEvent);
 				EventCache.put(eventType, e);
 				updateEntries();
-			}, function() {
-				log.warn('CMEventCtrl: failed to get ' + eventType + ' events');
+			}, function(err) {
+				log.warn('CMEventCtrl: failed to get ' + eventType + ' events: ' + err);
 				notifications.removeStatus(message);
 				deferred.resolve(false);
 			});
