@@ -31,7 +31,7 @@
 			};
 		}
 
-		var ready = function() {
+		var ready = function(dbtype) {
 			var deferred = $q.defer();
 			if (__ready === null) {
 				$timeout(function() {
@@ -40,7 +40,13 @@
 				return;
 			} else {
 				__ready.then(function(res) {
-					deferred.resolve(res);
+					if (dbtype === 'local') {
+						deferred.resolve(__pouchUser);
+					} else if (dbtype === 'remote') {
+						deferred.resolve(__pouchRemote);
+					} else {
+						deferred.resolve(undefined);
+					}
 				}, function(err) {
 					deferred.reject(err);
 				});
@@ -364,37 +370,107 @@
 			return deferred.promise;
 		};
 
-		var __db = function(db) {
+		var __db = function(dbtype) {
 			return {
 				'query': function(view, options) {
-					return __query(db, view, options);
+					var deferred = $q.defer();
+					ready(dbtype).then(function(db) {
+						__query(db, view, options).then(function(res) {
+							deferred.resolve(res);
+						}, function(err) {
+							deferred.reject(err);
+						});
+					}, function(err) {
+						deferred.reject(err);
+					});
+					return deferred.promise;
 				},
 				'get': function(id, options) {
-					return __get(db, id, options);
+					var deferred = $q.defer();
+					ready(dbtype).then(function(db) {
+						__get(db, id, options).then(function(res) {
+							deferred.resolve(res);
+						}, function(err) {
+							deferred.reject(err);
+						});
+					}, function(err) {
+						deferred.reject(err);
+					});
+					return deferred.promise;
 				},
 				'put': function(doc, options) {
-					return __put(db, doc, options);
+					var deferred = $q.defer();
+					ready(dbtype).then(function(db) {
+						__put(db, doc, options).then(function(res) {
+							deferred.resolve(res);
+						}, function(err) {
+							deferred.reject(err);
+						});
+					}, function(err) {
+						deferred.reject(err);
+					});
+					return deferred.promise;
 				},
 				'post': function(doc, options) {
-					return __post(db, doc, options);
+					var deferred = $q.defer();
+					ready(dbtype).then(function(db) {
+						__post(db, doc, options).then(function(res) {
+							deferred.resolve(res);
+						}, function(err) {
+							deferred.reject(err);
+						});
+					}, function(err) {
+						deferred.reject(err);
+					});
+					return deferred.promise;
 				},
 				'bulk': function(docs) {
-					return __bulk(db, docs);
+					var deferred = $q.defer();
+					ready(dbtype).then(function(db) {
+						__bulk(db, docs).then(function(res) {
+							deferred.resolve(res);
+						}, function(err) {
+							deferred.reject(err);
+						});
+					}, function(err) {
+						deferred.reject(err);
+					});
+					return deferred.promise;
 				},
 				'remove': function(doc) {
-					return __remove(db, doc);
+					var deferred = $q.defer();
+					ready(dbtype).then(function(db) {
+						__remove(db, doc).then(function(res) {
+							deferred.resolve(res);
+						}, function(err) {
+							deferred.reject(err);
+						});
+					}, function(err) {
+						deferred.reject(err);
+					});
+					return deferred.promise;
 				},
 				'info': function() {
-					return __info(db);
+					var deferred = $q.defer();
+					ready(dbtype).then(function(db) {
+						__info(db).then(function(res) {
+							deferred.resolve(res);
+						}, function(err) {
+							deferred.reject(err);
+						});
+					}, function(err) {
+						deferred.reject(err);
+					});
+					return deferred.promise;
 				}
 			};
 		};
 		var __remote = function() {
-			return __db(__pouchRemote);
+			return __db('remote');
 		};
 		
 		var __local = function() {
-			return __db(__pouchUser);
+			return __db('local');
 		};
 
 		var __destroy = function() {
