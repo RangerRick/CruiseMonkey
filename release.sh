@@ -135,6 +135,7 @@ if $ANDROID; then
 	rm -rf platforms/android/bin
 	VERSIONCODE=`cat platforms/android/AndroidManifest.xml | grep android:versionCode | sed -e 's,^.*android:versionCode=",,' -e 's,".*$,,'`
 	NEWVERSIONCODE="$(($VERSIONCODE + 1))"
+	perl -pi.bak -e "s,android:versionName=\"[^\"]*\",android:versionName=\"$VERSION\"," platforms/android/AndroidManifest.xml
 	perl -pi.bak -e "s,android:versionCode=\"$VERSIONCODE\",android:versionCode=\"$NEWVERSIONCODE\"," platforms/android/AndroidManifest.xml
 	ARGS=""
 	APKIN="CruiseMonkey-debug.apk"
