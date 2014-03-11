@@ -5,11 +5,11 @@
 	angular.module('cruisemonkey.DB', [
 	])
 	.factory('_db', ['$log', '$q', '$rootScope', '$timeout', function(log, $q, $rootScope, $timeout) {
-		var __userDatabase = null,
-			__remoteDatabase = null;
-
-		var __pouchUser = null,
+		var __pouchEvents = null,
+			__pouchFavorites = null,
 			__pouchRemote = null;
+
+		var __username = null;
 
 		var __syncing = null,
 			__onSyncStart = null,
@@ -33,15 +33,17 @@
 
 		var ready = function(dbtype) {
 			var deferred = $q.defer();
-			if (__ready === null) {
+			if (__ready === undefined || __ready === null) {
 				$timeout(function() {
 					deferred.reject('Database not initialized!');
 				});
 				return;
 			} else {
 				__ready.then(function(res) {
-					if (dbtype === 'local') {
-						deferred.resolve(__pouchUser);
+					if (dbtype === 'favorites') {
+						deferred.resolve(__pouchFavorites);
+					} else if (dbtype === 'events') {
+						deferred.resolve(__pouchEvents);
 					} else if (dbtype === 'remote') {
 						deferred.resolve(__pouchRemote);
 					} else {
@@ -55,9 +57,9 @@
 		};
 
 		// don't wrap this in ready() since it's called during init
-		var __replicate = function(from, to) {
+		var __replicate = function(from, to, options) {
 			var deferred = $q.defer();
-			from.replicate.to(to, {
+			var opts = angular.extend({}, {
 				batch_size: 500,
 				complete: function(err, response) {
 					$rootScope.safeApply(function() {
@@ -68,11 +70,13 @@
 						}
 					});
 				}
-			});
+			}, options);
+			log.debug('__replicate:',opts);
+			from.replicate.to(to, opts);
 			return deferred.promise;
 		};
 
-		var __startSync = function(from, to) {
+		var __startSync = function(from, to, options) {
 			var deferred = $q.defer();
 
 			ready().then(function() {
@@ -90,7 +94,7 @@
 					__onSyncStart(from, to);
 				}
 
-				__syncing = from.replicate.sync(to, {
+				var opts = angular.extend({}, {
 					live: true,
 					onChange: function(change) {
 						if (__onChange) {
@@ -107,7 +111,8 @@
 							});
 						}
 					}
-				});
+				}, options);
+				__syncing = from.replicate.sync(to, opts);
 				deferred.resolve(true);
 			});
 			return deferred.promise;
@@ -124,11 +129,104 @@
 			__syncing = null;
 		};
 
+		var __initializeDatabase = function(from, to, viewOptions, replicationOptions) {
+			var deferred = $q.defer();
+
+			to.allDocs(function(err,res) {
+				if (err) {
+					$rootScope.safeApply(function() {
+						deferred.reject(err);
+					});
+					return;
+				}
+
+				var existingIds = [], i;
+				for (i=0; i < res.rows.length; i++) {
+					existingIds.push(res.rows[i].id);
+				}
+
+				var opts = {};
+				if (viewOptions.key) {
+					opts.key = viewOptions.key;
+				}
+				from.query(viewOptions.view, opts, function(err,res) {
+					if (err) {
+						$rootScope.safeApply(function() {
+							deferred.reject(err);
+						});
+						return;
+					}
+
+					var newIds = [];
+					for (i=0; i < res.rows.length; i++) {
+						var id = res.rows[i].id;
+						if (existingIds.indexOf(id) === -1) {
+							// we don't already have this ID
+							newIds.push(id);
+						}
+					}
+					if (newIds.length > 0) {
+						log.debug('existing items found, fetching only new documents');
+						from.allDocs({
+							include_docs: true,
+							keys: newIds
+						}, function(err,res) {
+							if (err) {
+								$rootScope.safeApply(function() {
+									deferred.reject(err);
+								});
+								return;
+							}
+
+							var newDocs = [];
+							for (i=0; i < res.rows.length; i++) {
+								if (res.rows[i].doc._deleted) {
+									// skip deleted documents, let them get caught by replication
+								} else {
+									newDocs.push(res.rows[i].doc);
+								}
+							}
+
+							log.debug('bulk-saving ' + newDocs.length + ' documents');
+							to.bulkDocs({
+								docs: newDocs,
+								new_edits: false
+							}, function(err,res) {
+								if (err) {
+									$rootScope.safeApply(function() {
+										deferred.reject(err);
+									});
+									return;
+								}
+
+								log.debug('bulk-save complete. replicating:',replicationOptions);
+								__replicate(from, to, replicationOptions).then(function(res) {
+									log.debug('replication complete: ' + res);
+									deferred.resolve(res);
+								}, function(err) {
+									deferred.reject(err);
+								});
+							});
+						});
+					} else {
+						log.debug('no new items found. replicating:',replicationOptions);
+						__replicate(from, to, replicationOptions).then(function(res) {
+							log.debug('replication complete: ' + res);
+							deferred.resolve(res);
+						}, function(err) {
+							deferred.reject(err);
+						});
+					}
+				});
+			});
+			return deferred.promise;
+		};
+
 		var __initialize = function() {
 			var deferred = $q.defer();
 			__ready = deferred.promise;
-			if (__userDatabase === null || __remoteDatabase === null) {
-				log.debug('You must set a user and remote database!');
+			if (__pouchRemote === null) {
+				log.debug('You must set a remote database!');
 				$timeout(function() {
 					deferred.reject();
 				});
@@ -140,131 +238,51 @@
 			}
 
 			$timeout(function() {
-				__pouchUser = new PouchDB(__userDatabase);
-				__pouchRemote = new PouchDB(__remoteDatabase);
+				if (__pouchEvents === null || __pouchEvents === undefined) {
+					__pouchEvents = new PouchDB('events');
+				}
 
-				__pouchUser.info(function(err,info) {
-					var numDocs = 0;
-					if (info && info.doc_count) {
-						numDocs = info.doc_count;
+				var promises = [
+					__initializeDatabase(__pouchRemote, __pouchEvents, {
+						'view': 'cruisemonkey/events-replication'
+					}, {
+						'filter':'cruisemonkey/events'
+					})
+				];
+
+				if (__username && __pouchFavorites) {
+					promises.push(
+						__initializeDatabase(__pouchRemote, __pouchFavorites, {
+							'view': 'cruisemonkey/favorites-all',
+							'key': __username
+						}, {
+							'filter':'cruisemonkey/favorites',
+							'query_params': {
+								'username': __username
+							}
+						})
+					);
+				}
+
+				$q.all(promises).then(function(results) {
+					var count = 0, r;
+					for (r=0; r < results.length; r++) {
+						count += results[r];
 					}
-
-					if (numDocs === 0) {
-						log.debug('No documents in user (local) database: initializing.');
-						__pouchRemote.allDocs({include_docs:true}, function(err, response) {
-							if (err) {
-								$rootScope.safeApply(function() {
-									deferred.reject(err);
-								});
-								return;
-							}
-							var newdocs = [];
-							for (var i=0; i < response.rows.length; i++) {
-								newdocs.push(response.rows[i].doc);
-							}
-							__pouchUser.bulkDocs({
-								docs: newdocs,
-								new_edits: false
-							}, function(err, response) {
-								$rootScope.safeApply(function() {
-									if (err) {
-										deferred.reject(err);
-									} else {
-										__replicate(__pouchRemote, __pouchUser).then(function(changes) {
-											deferred.resolve(changes);
-										});
-									}
-								});
-							});
-						});
-					} else {
-						log.debug('User (local) database has ' + numDocs + ' documents: fetching changes.');
-						// first, fetch all known IDs
-						__pouchUser.allDocs(function(err,res) {
-							if (err) {
-								$rootScope.safeApply(function() {
-									deferred.reject(err);
-								});
-								return;
-							}
-
-							var existingKeys = [];
-							for (var i=0; i < res.rows.length; i++) {
-								existingKeys.push(res.rows[i].id);
-							}
-
-							__pouchRemote.allDocs(function(err,res) {
-								if (err) {
-									$rootScope.safeApply(function() {
-										deferred.reject(err);
-									});
-									return;
-								}
-
-								if (!res || !res.rows) {
-									$rootScope.safeApply(function() {
-										deferred.reject('No results.');
-									});
-									return;
-								}
-
-								var allKeys = [];
-								for (var i=0; i < res.rows.length; i++) {
-									allKeys.push(res.rows[i].id);
-								}
-
-								var index;
-								for (var e=0; e < existingKeys.length; e++) {
-									index = allKeys.indexOf(existingKeys[e]);
-									if (index !== -1) {
-										allKeys.splice(index, 1);
-									}
-								}
-
-								__pouchRemote.allDocs({
-									include_docs: true,
-									keys: allKeys
-								}, function(err,res) {
-									if (err) {
-										$rootScope.safeApply(function() {
-											deferred.reject(err);
-										});
-										return;
-									}
-
-									var updatedDocs = [], row;
-									for (var i=0; i < res.rows.length; i++) {
-										row = res.rows[i];
-										if (row.doc._deleted) {
-											log.debug('deleted: ', row);
-										} else {
-											updatedDocs.push(row.doc);
-										}
-									}
-
-									__pouchUser.bulkDocs({
-										docs: updatedDocs,
-										new_edits: false
-									}, function(err, response) {
-										if (err) {
-											$rootScope.safeApply(function() {
-												deferred.reject(err);
-											});
-											return;
-										}
-
-										__replicate(__pouchRemote, __pouchUser).then(function(changes) {
-											log.debug('finished replication:', changes);
-											$rootScope.safeApply(function() {
-												deferred.resolve(changes);
-											});
-										});
-									});
-								});
-							});
-						});
-					}
+					deferred.resolve(count);
+				}, function(err) {
+					deferred.reject(err);
 				});
+				/*
+				$q.all([
+					__initializeDatabase(__pouchRemote, __pouchEvents,    'cruisemonkey/events-replication',    'cruisemonkey/events'),
+					__initializeDatabase(__pouchRemote, __pouchFavorites, 'cruisemonkey/favorites-replication', 'cruisemonkey/favorites')
+				}).then(function(results) {
+					deferred.resolve(results);
+				}, function(err) {
+					deferred.reject(err);
+				});
+				*/
 			}, 10);
 
 			return deferred.promise;
@@ -462,6 +480,19 @@
 						deferred.reject(err);
 					});
 					return deferred.promise;
+				},
+				'ready': function() {
+					var deferred = $q.defer();
+					ready(dbtype).then(function(db) {
+						if (db === undefined || db === null) {
+							deferred.reject();
+						} else {
+							deferred.resolve(true);
+						}
+					}, function(err) {
+						deferred.reject(err);
+					});
+					return deferred.promise;
 				}
 			};
 		};
@@ -469,8 +500,12 @@
 			return __db('remote');
 		};
 		
-		var __local = function() {
-			return __db('local');
+		var __events = function() {
+			return __db('events');
+		};
+
+		var __favorites = function() {
+			return __db('favorites');
 		};
 
 		var __destroy = function() {
@@ -510,7 +545,7 @@
 
 		$rootScope.$on('cm.online', function(ev, isOnline) {
 			if (isOnline) {
-				__startSync(__pouchRemote, __pouchUser);
+				__startSync(__pouchRemote, __pouchEvents, {filter:'cruisemonkey/events'});
 			} else {
 				__stopSync();
 			}
@@ -521,11 +556,35 @@
 		});
 
 		return {
-			'setUserDatabase': function(db) {
-				__userDatabase = db;
-			},
 			'setRemoteDatabase': function(db) {
-				__remoteDatabase = db;
+				if (typeof db === 'string' || db instanceof String) {
+					__pouchRemote = new PouchDB(db);
+				} else if (db === undefined || db === null) {
+					__pouchRemote = db;
+				} else {
+					__pouchRemote = db;
+				}
+			},
+			'setEventsDatabase': function(db) {
+				if (typeof db === 'string' || db instanceof String) {
+					__pouchEvents = new PouchDB(db);
+				} else if (db === undefined || db === null) {
+					__pouchEvents = db;
+				} else {
+					__pouchEvents = db;
+				}
+			},
+			'setFavoritesDatabase': function(db) {
+				if (typeof db === 'string' || db instanceof String) {
+					__pouchFavorites = new PouchDB(db);
+				} else if (db === undefined || db === null) {
+					__pouchFavorites = db;
+				} else {
+					__pouchFavorites = db;
+				}
+			},
+			'setUsername': function(username) {
+				__username = username;
 			},
 			'onSyncStart': function(callback) {
 				__onSyncStart = callback;
@@ -538,11 +597,12 @@
 			},
 			'init': __initialize,
 			'remote': __remote,
-			'local': __local,
+			'events': __events,
+			'favorites': __favorites,
 			'reset': __reset,
 			'restartSync': function() {
 				__stopSync();
-				__startSync(__pouchRemote, __pouchUser);
+				__startSync(__pouchRemote, __pouchEvents, {filter:'cruisemonkey/events'});
 			}
 		};
 	}]);

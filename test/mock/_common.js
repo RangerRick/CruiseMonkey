@@ -91,7 +91,7 @@ var MockPouchWrapper = function() {
 	};
 };
 
-var defaultDocs = [
+var defaultEventDocs = [
 	{
 		'_id': 'official-event',
 		'type': 'event',
@@ -131,7 +131,10 @@ var defaultDocs = [
 		'summary': 'triluna private event',
 		'start': '2013-02-02 00:00',
 		'isPublic': false
-	},
+	}
+];
+
+var defaultFavoriteDocs = [
 	{
 		'_id': 'favorite:triluna:rangerrick-public',
 		'type': 'favorite',
@@ -146,44 +149,61 @@ var defaultDocs = [
 	}
 ];
 
-var userDb     = 'http://localhost:5984/test-userdb',
-	pristineDb = 'http://localhost:5984/test-pristine',
-	remoteDb   = 'http://localhost:5984/test-db';
+var defaultDocs = defaultEventDocs.concat(defaultFavoriteDocs);
 
-var doDbSetup = function(userDb, pristineDb, remoteDb, done) {
-	var userDatabase = new PouchDB(userDb);
-	var pristineDatabase = new PouchDB(pristineDb);
-	var remoteDatabase = new PouchDB(remoteDb);
-	userDatabase.destroy(function(err, info) {
+var eventsDb    = 'http://localhost:5984/test-events',
+	favoritesDb = 'http://localhost:5984/test-favorites',
+	pristineDb  = 'http://localhost:5984/test-pristine',
+	remoteDb    = 'http://localhost:5984/test-db';
+
+var doDbSetup = function(done) {
+	var eventsDatabase    = new PouchDB(eventsDb);
+	var favoritesDatabase = new PouchDB(favoritesDb);
+	var pristineDatabase  = new PouchDB(pristineDb);
+	var remoteDatabase    = new PouchDB(remoteDb);
+
+	eventsDatabase.destroy(function(err,info) {
 		if (err) {
-			console.log(userDb + ' NOT destroyed:', err);
+			console.log(eventsDb + ' NOT destroyed:', err);
+			done();
 			return;
 		}
-		//console.log(userDb + ' destroyed');
 
-		remoteDatabase.destroy(function(err, info) {
+		//console.log('eventsDatabase destroyed:',info);
+		favoritesDatabase.destroy(function(err,info) {
 			if (err) {
-				console.log(remoteDb + ' NOT destroyed:',err);
+				console.log(favoritesDb + ' NOT destroyed:', err);
+				done();
 				return;
 			}
-			//console.log(remoteDb + ' destroyed');
 
-			remoteDatabase = new PouchDB(remoteDb);
-			remoteDatabase.replicate.from(pristineDatabase, {
-				continuous: false,
-				complete: function() {
-					//console.log('finished replicating ' + pristineDb + ' to ' + remoteDb);
-					remoteDatabase.bulkDocs({
-						docs: defaultDocs
-					}, function(err, res) {
-						if (err) {
-							console.log('error bulk-adding docs:',err);
-						} else {
-							//console.log('finished bulk-adding docs to ' + remoteDb);
-							done();
-						}
-					});
+			//console.log('favoritesDatabase destroyed:',info);
+			remoteDatabase.destroy(function(err,info) {
+				if (err) {
+					console.log(remoteDb + ' NOT destroyed:', err);
+					done();
+					return;
 				}
+				
+				//console.log('remoteDatabase destroyed:',info);
+
+				remoteDatabase = new PouchDB(remoteDb);
+				remoteDatabase.replicate.from(pristineDatabase, {
+					continuous: false,
+					complete: function() {
+						//console.log('finished replicating ' + pristineDb + ' to ' + remoteDb);
+						remoteDatabase.bulkDocs({
+							docs: defaultDocs
+						}, function(err, res) {
+							if (err) {
+								console.log('error bulk-adding docs:',err);
+							} else {
+								//console.log('finished bulk-adding docs to ' + remoteDb);
+								done();
+							}
+						});
+					}
+				});
 			});
 		});
 	});

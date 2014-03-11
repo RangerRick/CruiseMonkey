@@ -77,22 +77,23 @@
 
 			if (args.length > 0 && !isString(args[args.length - 1])) {
 				var opt = args.pop();
-				//log.debug('last argument was options!',opt);
+				//console.log('last argument was options!',opt);
 				angular.extend(options, opt);
 			}
-			//log.debug('options=',options);
+			//console.log('options=',options);
 
 			var promises = [], i;
 
 			for (i=0; i < args.length; i++) {
-				promises.push(_db.local().query(args[i], angular.copy(options)));
+				promises.push(_db.events().query(args[i], angular.copy(options)));
 			}
 			if (username) {
 				var opts = angular.copy(options);
 				angular.extend(opts, {
 					key:username
 				});
-				promises.push(_db.local().query('favorites', opts));
+				promises.push(_db.favorites().query('favorites-all', opts));
+				//console.log('opts=',opts);
 			}
 
 			$q.all(promises).then(function(results) {
@@ -106,13 +107,13 @@
 					result = results[i];
 					for (j=0; j < result.rows.length; j++) {
 						ev = new CMEvent(result.rows[j].doc);
-						//log.debug(ev.toString());
+						//console.log(ev.toString());
 						events.push(ev);
 					}
 				}
 				for (i=0; i < favresults.rows.length; i++) {
 					fav = new CMFavorite(favresults.rows[i].doc);
-					//log.debug(fav.toString());
+					//console.log(fav.toString());
 					favorites.push(fav);
 				}
 
@@ -143,7 +144,7 @@
 			}
 
 			eventToAdd.refreshLastUpdated();
-			_db.local().post(eventToAdd.getRawData()).then(function(response) {
+			_db.events().post(eventToAdd.getRawData()).then(function(response) {
 				eventToAdd.setId(response.id);
 				eventToAdd.setRevision(response.rev);
 				deferred.resolve(eventToAdd);
@@ -173,7 +174,7 @@
 			}
 
 			ev.refreshLastUpdated();
-			_db.local().put(ev.getRawData()).then(function(response) {
+			_db.events().put(ev.getRawData()).then(function(response) {
 				ev.setRevision(response.rev);
 				deferred.resolve(ev);
 			}, function(err) {
@@ -194,7 +195,7 @@
 			log.debug('EventService.removeEvent(' + ev.getId() + ')');
 			var deferred = $q.defer();
 
-			_db.local().remove(ev.getRawData()).then(function(response) {
+			_db.events().remove(ev.getRawData()).then(function(response) {
 				deferred.resolve(response);
 			}, function(err) {
 				deferred.reject(err);
@@ -212,7 +213,7 @@
 
 			var deferred = $q.defer();
 			_allEvents = deferred.promise;
-			_db.local().query('all-events', {include_docs: true}).then(function(results) {
+			_db.events().query('events-all', {include_docs: true}).then(function(results) {
 				var ret = [];
 				for (var i=0; i < results.rows.length; i++) {
 					ret.push(new CMEvent(results.rows[i].doc));
@@ -239,7 +240,7 @@
 			_allFavorites = deferred.promise;
 			
 			log.debug('EventService.getAllFavorites()');
-			_db.local().query('favorites', {include_docs:true}).then(function(results) {
+			_db.favorites().query('favorites-all', {include_docs:true}).then(function(results) {
 				var ret = [], i, fav;
 				for (i=0; i < results.rows.length; i++) {
 					fav = results.rows[i].doc;
@@ -268,7 +269,7 @@
 			var deferred = $q.defer();
 			_officialEvents = deferred.promise;
 
-			queryEventView('official-events').then(function(events) {
+			queryEventView('events-official').then(function(events) {
 				deferred.resolve(events);
 			}, function(err) {
 				deferred.reject(err);
@@ -292,7 +293,7 @@
 			var deferred = $q.defer();
 			_unofficialEvents = deferred.promise;
 
-			queryEventView('unofficial-events').then(function(events) {
+			queryEventView('events-unofficial').then(function(events) {
 				deferred.resolve(events);
 			}, function(err) {
 				deferred.reject(err);
@@ -321,7 +322,7 @@
 			var deferred = $q.defer();
 			_userEvents = deferred.promise;
 
-			queryEventView('user-events', {
+			queryEventView('events-user', {
 				key: username
 			}).then(function(events) {
 				deferred.resolve(events);
@@ -351,8 +352,8 @@
 			var deferred = $q.defer();
 			_myEvents = deferred.promise;
 
-			var publicPromise = queryEventView('public-events');
-			var userPromise   = queryEventView('user-events', {
+			var publicPromise = queryEventView('events-public');
+			var userPromise   = queryEventView('events-user', {
 				key: username
 			});
 
@@ -396,7 +397,7 @@
 			var deferred = $q.defer();
 			_myFavorites = deferred.promise;
 
-			queryEventView('all-events').then(function(events) {
+			queryEventView('events-all').then(function(events) {
 				var ret = [], ev;
 				for (var i=0; i < events.length; i++) {
 					ev = events[i];
@@ -433,7 +434,7 @@
 			_isFavorite = deferred.promise;
 
 			var docId = 'favorite:' + username + ':' + eventId;
-			_db.local().get(docId).then(function(response) {
+			_db.favorites().get(docId).then(function(response) {
 				deferred.resolve(response && response._id === docId && !response._deleted);
 			}, function(err) {
 				log.warn('error getting ' + docId, err);
@@ -467,7 +468,7 @@
 
 			var checkExisting = $q.defer();
 
-			_db.local().get(favId, {
+			_db.favorites().get(favId, {
 				revs: true,
 				open_revs: 'all',
 				conflicts: true
@@ -489,7 +490,7 @@
 			});
 
 			checkExisting.promise.then(function() {
-				_db.local().put(fav).then(function(res) {
+				_db.favorites().put(fav).then(function(res) {
 					log.debug('EventService.addFavorite(): favorite added.');
 					fav._rev = res.rev;
 					deferred.resolve(new CMFavorite(fav));
@@ -511,7 +512,7 @@
 
 			var deferred = $q.defer();
 
-			_db.local().query('favorites', {include_docs:true,key:username}).then(function(results) {
+			_db.favorites().query('favorites-all', {include_docs:true,key:username}).then(function(results) {
 				var remove = [], fav, promises, def, i;
 				for (i=0; i < results.rows.length; i++) {
 					fav = results.rows[i].doc;
@@ -521,7 +522,7 @@
 					}
 				}
 
-				_db.local().bulk(remove).then(function(results) {
+				_db.favorites().bulk(remove).then(function(results) {
 					deferred.resolve(results.length);
 				}, function(err) {
 					log.debug('bulk error:',err);

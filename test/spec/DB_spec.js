@@ -1,6 +1,6 @@
 describe('cruisemonkey.DB', function() {
 	var async       = new AsyncSpec(this);
-	jasmine.getEnv().defaultTimeoutInterval = 10000;
+	jasmine.getEnv().defaultTimeoutInterval = 15000;
 
 	var $q           = null,
 		$timeout     = null,
@@ -11,8 +11,8 @@ describe('cruisemonkey.DB', function() {
 	var dbCounter = 0;
 
 	var doDbInit = function(done) {
-		_db.setUserDatabase(userDb);
 		_db.setRemoteDatabase(remoteDb);
+		_db.setEventsDatabase(eventsDb);
 
 		_db.init().then(function(res) {
 			expect(res).toBeGreaterThan(-1);
@@ -34,7 +34,7 @@ describe('cruisemonkey.DB', function() {
 			$httpBackend = httpBackend;
 			_db = db;
 
-			doDbSetup(userDb, pristineDb, remoteDb, done);
+			doDbSetup(done);
 
 			/*
 			backend.when('GET', 'http://jccc4.rccl.com/cruisemonkey-jccc4').respond(500, '');
@@ -50,12 +50,12 @@ describe('cruisemonkey.DB', function() {
 		async.it('should return true if able to initialize the database', function(done) {
 			expect(_db).not.toBeNull();
 
-			_db.setUserDatabase(userDb);
 			_db.setRemoteDatabase(remoteDb);
+			_db.setEventsDatabase(eventsDb);
 
 			_db.init().then(function(res) {
 				expect(res).toBeGreaterThan(-1);
-				var db = new PouchDB(userDb);
+				var db = new PouchDB(eventsDb);
 				db.get('_design/cruisemonkey', function(err, doc)  {
 					expect(err).toBeNull();
 					expect(doc).not.toBeNull();
@@ -65,7 +65,7 @@ describe('cruisemonkey.DB', function() {
 						expect(err).toBeNull();
 						expect(res).not.toBeNull();
 						expect(res.rows).not.toBeUndefined();
-						expect(res.rows.length).toEqual(1 + defaultDocs.length); // design doc + default docs
+						expect(res.rows.length).toEqual(1 + defaultEventDocs.length); // design doc + event docs
 						done();
 					});
 				});
@@ -76,39 +76,43 @@ describe('cruisemonkey.DB', function() {
 		});
 	});
 
-	describe("Design Doc: all-events", function() {
+	describe("Design Doc: events-all", function() {
 		async.it('should return all 5 events when queried', function(done) {
 			doDbInit(function() {
-				_db.local().query('all-events', {include_docs: true}).then(function(results) {
+				_db.events().query('events-all', {include_docs: true}).then(function(results) {
 					//console.log('results=',results);
 					expect(results).toBeDefined();
 					expect(results.rows).toBeDefined();
 					expect(results.rows.length).toEqual(5);
 					done();
+				},function(err) {
+					console.log(err);
 				});
 			});
 		});
 	});
 
-	describe("Design Doc: official-events", function() {
+	describe("Design Doc: events-official", function() {
 		async.it('should return the 1 official event when queried', function(done) {
 			doDbInit(function() {
-				_db.local().query('official-events', {include_docs: true}).then(function(results) {
+				_db.events().query('events-official', {include_docs: true}).then(function(results) {
 					//console.log('results=',results);
 					expect(results).toBeDefined();
 					expect(results.rows).toBeDefined();
 					expect(results.rows.length).toEqual(1);
 					expect(results.rows[0].doc.summary).toBe('official event');
 					done();
+				}, function(err) {
+					console.log(err);
 				});
 			});
 		});
 	});
 
-	describe("Design Doc: public-events", function() {
+	describe("Design Doc: events-public", function() {
 		async.it('should return the public events when queried', function(done) {
 			doDbInit(function() {
-				_db.local().query('public-events', {include_docs: true}).then(function(results) {
+				_db.events().query('events-public', {include_docs: true}).then(function(results) {
 					expect(results).toBeDefined();
 					expect(results.rows).toBeDefined();
 					expect(results.rows.length).toEqual(3);
@@ -127,10 +131,10 @@ describe('cruisemonkey.DB', function() {
 		});
 	});
 
-	describe("Design Doc: unofficial-events", function() {
+	describe("Design Doc: events-unofficial", function() {
 		async.it('should return the unofficial events when queried', function(done) {
 			doDbInit(function() {
-				_db.local().query('unofficial-events', {include_docs: true}).then(function(results) {
+				_db.events().query('events-unofficial', {include_docs: true}).then(function(results) {
 					expect(results).toBeDefined();
 					expect(results.rows).toBeDefined();
 					expect(results.rows.length).toEqual(2);
@@ -149,10 +153,10 @@ describe('cruisemonkey.DB', function() {
 	});
 
 
-	describe("Design Doc: user-events", function() {
+	describe("Design Doc: events-user", function() {
 		async.it('should return the events for user "rangerrick" when queried', function(done) {
 			doDbInit(function() {
-				_db.local().query('user-events', {include_docs: true, key: 'rangerrick'}).then(function(results) {
+				_db.events().query('events-user', {include_docs: true, key: 'rangerrick'}).then(function(results) {
 					expect(results).toBeDefined();
 					expect(results.rows).toBeDefined();
 					expect(results.rows.length).toEqual(2);
@@ -170,21 +174,44 @@ describe('cruisemonkey.DB', function() {
 		});
 	});
 	
-	describe("Design Doc: favorites", function() {
-		async.it('should return all favorites when queried', function(done) {
+	describe("Design Doc: replication", function() {
+		async.it('should return all events', function(done) {
 			doDbInit(function() {
-				_db.local().query('favorites', {include_docs: true}).then(function(results) {
+				_db.events().query('events-replication', {include_docs: true}).then(function(results) {
 					expect(results).toBeDefined();
 					expect(results.rows).toBeDefined();
-					expect(results.rows.length).toEqual(2);
-					//expect(results.rows[0].id).toBe('triluna:rangerrick-public');
+					expect(results.rows.length).toEqual(defaultEventDocs.length);
+
+					var ids = [];
+					for (var i = 0; i < results.rows.length; i++) {
+						ids.push(results.rows[i].id);
+					}
+					
+					expect(ids).toContain('rangerrick-public');
+					expect(ids).toContain('rangerrick-private');
 					done();
 				});
 			});
 		});
-		async.it('should return no favorites when queried for bob', function(done) {
+	});
+	
+	describe("Design Doc: favorites-all", function() {
+		async.it('should fail when no favorites DB is configured', function(done) {
+			_db.setFavoritesDatabase(undefined);
+			_db.setUsername(undefined);
 			doDbInit(function() {
-				_db.local().query('favorites', {include_docs: true, key: 'bob'}).then(function(results) {
+				expect(_db.favorites().ready).toBeDefined();
+				_db.favorites().ready().then(function() {
+				}, function(err) {
+					done();
+				});
+			});
+		});
+		async.it('should return no favorites when queried for bob, while logged in as bob', function(done) {
+			_db.setFavoritesDatabase(favoritesDb);
+			_db.setUsername('bob');
+			doDbInit(function() {
+				_db.favorites().query('favorites-all', {include_docs: true, key: 'bob'}).then(function(results) {
 					expect(results).toBeDefined();
 					expect(results.rows).toBeDefined();
 					expect(results.rows.length).toEqual(0);
@@ -192,9 +219,11 @@ describe('cruisemonkey.DB', function() {
 				});
 			});
 		});
-		async.it('should return 1 favorite when queried for rangerrick', function(done) {
+		async.it('should return 1 favorite when queried for rangerrick, while logged in as rangerrick', function(done) {
+			_db.setFavoritesDatabase(favoritesDb);
+			_db.setUsername('rangerrick');
 			doDbInit(function() {
-				_db.local().query('favorites', {include_docs: true, key: 'rangerrick'}).then(function(results) {
+				_db.favorites().query('favorites-all', {include_docs: true, key: 'rangerrick'}).then(function(results) {
 					expect(results).toBeDefined();
 					expect(results.rows).toBeDefined();
 					expect(results.rows.length).toEqual(1);
@@ -202,12 +231,14 @@ describe('cruisemonkey.DB', function() {
 				});
 			});
 		});
-		async.it('should return 1 favorite when queried for triluna', function(done) {
+		async.it('should return 0 favorites when queried for triluna while logged in as rangerrick', function(done) {
+			_db.setFavoritesDatabase(favoritesDb);
+			_db.setUsername('rangerrick');
 			doDbInit(function() {
-				_db.local().query('favorites', {include_docs: true, key: 'triluna'}).then(function(results) {
+				_db.favorites().query('favorites-all', {include_docs: true, key: 'triluna'}).then(function(results) {
 					expect(results).toBeDefined();
 					expect(results.rows).toBeDefined();
-					expect(results.rows.length).toEqual(1);
+					expect(results.rows.length).toEqual(0);
 					done();
 				});
 			});
@@ -236,13 +267,13 @@ describe('cruisemonkey.DB', function() {
 				var start = moment();
 				doDbInit(function() {
 					var diff = moment().diff(start);
-					expect(diff).toBeLessThan(5000); // this should take less than 3 seconds
-					db = new PouchDB(userDb);
+					expect(diff).toBeLessThan(15000); // this should take less than 15 seconds
+					db = new PouchDB(eventsDb);
 					db.allDocs(function(err,res) {
 						expect(err).toBeNull();
 						expect(res).not.toBeNull();
 						expect(res.rows).not.toBeUndefined();
-						expect(res.rows.length).toEqual(1 + newDocs.length + defaultDocs.length); // design doc + new docs + default docs
+						expect(res.rows.length).toEqual(1 + newDocs.length + defaultEventDocs.length); // design doc + new docs + default event docs
 						done();
 					});
 				});
@@ -287,13 +318,13 @@ describe('cruisemonkey.DB', function() {
 						var start = moment();
 						doDbInit(function() {
 							var diff = moment().diff(start);
-							expect(diff).toBeLessThan(3000); // this should take less than 3 seconds
-							db = new PouchDB(userDb);
+							expect(diff).toBeLessThan(15000); // this should take less than 15 seconds
+							db = new PouchDB(eventsDb);
 							db.allDocs(function(err,res) {
 								expect(err).toBeNull();
 								expect(res).not.toBeNull();
 								expect(res.rows).not.toBeUndefined();
-								expect(res.rows.length).toEqual(1 + firsthalf.length + secondhalf.length + defaultDocs.length); // design doc + new docs + default docs
+								expect(res.rows.length).toEqual(1 + firsthalf.length + secondhalf.length + defaultEventDocs.length); // design doc + new docs + default event docs
 								done();
 							});
 						});
@@ -305,8 +336,10 @@ describe('cruisemonkey.DB', function() {
 
 	describe("Sync with Deleted Documents", function() {
 		async.it('should sync deletes as well as adds', function(done) {
+			_db.setFavoritesDatabase(favoritesDb);
+			_db.setUsername('triluna');
 			doDbInit(function() {
-				_db.local().query('favorites', {include_docs: true, key: 'triluna'}).then(function(results) {
+				_db.favorites().query('favorites-all', {include_docs: true, key: 'triluna'}).then(function(results) {
 					expect(results).toBeDefined();
 					expect(results.rows).toBeDefined();
 					expect(results.rows.length).toEqual(1);
@@ -320,7 +353,7 @@ describe('cruisemonkey.DB', function() {
 							expect(res).not.toBeNull();
 							doDbInit(function() {
 								// triluna's 1 favorite should now be deleted
-								_db.local().query('favorites', {include_docs: true, key: 'triluna'}).then(function(results) {
+								_db.favorites().query('favorites-all', {include_docs: true, key: 'triluna'}).then(function(results) {
 									expect(results).toBeDefined();
 									expect(results.rows).toBeDefined();
 									expect(results.rows.length).toEqual(0);
