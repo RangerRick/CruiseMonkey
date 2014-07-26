@@ -27,7 +27,7 @@
 			self.name   = name;
 			self.view   = view;
 			self.filter = filter;
-		};
+		}
 
 		Database.prototype.pouch = function() {
 			return this.db;
@@ -144,7 +144,7 @@
 					if (err) {
 						deferred.reject(err);
 					} else {
-						deferred.resolve(res.doc_count == 0);
+						deferred.resolve(res.doc_count === 0);
 					}
 				});
 			});

@@ -9,7 +9,7 @@
     "node": ">=0.8.0"
   },
   "scripts": {
-    "test": "grunt test"
+    "test": "grunt test --verbose"
   },
   "dependencies": {
     "couchapp": "^0.11.0",

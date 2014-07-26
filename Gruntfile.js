@@ -332,6 +332,7 @@ module.exports = function (grunt) {
 
   grunt.registerTask('test', [
     'clean:server',
+    'jshint',
     'concurrent:test',
     'autoprefixer',
     'connect:test',

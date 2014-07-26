@@ -274,7 +274,7 @@
 				var syncinfoready = $q.defer();
 
 				__syncInfo(__pouchEvents)['finally'](function(res) {
-					console.log('finally args:',args);
+					console.log('finally args:',arguments);
 					var dirty = false;
 					var _syncInfo = {
 						'_id': 'syncInfo',
@@ -531,19 +531,40 @@
 
 		var __destroy = function() {
 			var deferred = $q.defer();
-			__local().info().then(function(info) {
-				PouchDB.destroy(info.db_name, function(err,res) {
-					$rootScope.safeApply(function() {
-						if (err) {
-							deferred.reject(err);
-						} else {
-							deferred.resolve(info);
-						}
+
+			var doDestroy = function(info) {
+				var def = $q.defer();
+
+				if (info.length === 0) {
+					def.resolve();
+				} else {
+					var db = info.shift();
+					PouchDB.destroy(db.db_name, function(err,res) {
+						$rootScope.safeApply(function() {
+							if (err) {
+								def.reject(err);
+							} else {
+								doDestroy(info).then(function() {
+									def.resolve();
+								}, function(err) {
+									def.reject(err);
+								});
+							}
+						});
 					});
+				}
+				
+				return def.promise;
+			};
+
+			$q.all([__remote.info(), __events.info(), __favorites.info()]).then(function(res) {
+				doDestroy(res).then(function() {
+					deferred.resolve();
+				}, function(err) {
+					deferred.reject(err);
 				});
-			}, function(err) {
-				deferred.reject(err);
 			});
+
 			return deferred.promise;
 		};
 		var __reset = function() {
