@@ -12,11 +12,13 @@
 	angular.module('cruisemonkey.Events', [
 		'uuid4',
 		'cruisemonkey.Config',
-		'cruisemonkey.DB',
+		'cruisemonkey.Database',
 		'cruisemonkey.User'
 	])
-	.factory('EventService', ['$q', '$rootScope', '$timeout', '$location', 'uuid4', '_db', 'UserService', '$log', 'config.database.host', 'config.database.name', 'config.database.replicate', function($q, $rootScope, $timeout, $location, uuid4, _db, UserService, log, databaseHost, databaseName, replicate) {
+	.factory('EventService', ['$q', '$rootScope', '$timeout', '$location', 'uuid4', '_database', 'UserService', '$log', 'config.database.name', function($q, $rootScope, $timeout, $location, uuid4, _database, UserService, log, databaseName) {
 		log.info('EventService: Initializing EventService.');
+
+		var localdb = _database.get(databaseName);
 
 		var promisedResult = function(result) {
 			var deferred = $q.defer();
@@ -78,14 +80,14 @@
 			if (args.length > 0 && !isString(args[args.length - 1])) {
 				var opt = args.pop();
 				//console.log('last argument was options!',opt);
-				angular.extend(options, opt);
+				options = angular.extend({}, options, opt);
 			}
 			//console.log('options=',options);
 
 			var promises = [], i;
 
 			for (i=0; i < args.length; i++) {
-				promises.push(_db.events().query(args[i], angular.copy(options)));
+				promises.push(localdb.query(args[i], angular.copy(options)));
 			}
 			if (username) {
 				var opts = angular.copy(options);

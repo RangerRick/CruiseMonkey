@@ -93,7 +93,7 @@ var MockPouchWrapper = function() {
 
 var defaultEventDocs = [
 	{
-		'_id': 'official-event',
+		'_id': 'event:official-event',
 		'type': 'event',
 		'username': 'official',
 		'summary': 'official event',
@@ -101,7 +101,7 @@ var defaultEventDocs = [
 		'isPublic': true
 	},
 	{
-		'_id': 'rangerrick-public',
+		'_id': 'event:rangerrick-public',
 		'type': 'event',
 		'username': 'rangerrick',
 		'summary': 'rangerrick public event',
@@ -109,7 +109,7 @@ var defaultEventDocs = [
 		'isPublic': true
 	},
 	{
-		'_id': 'rangerrick-private',
+		'_id': 'event:rangerrick-private',
 		'type': 'event',
 		'username': 'rangerrick',
 		'summary': 'rangerrick private event',
@@ -117,7 +117,7 @@ var defaultEventDocs = [
 		'isPublic': false
 	},
 	{
-		'_id': 'triluna-public',
+		'_id': 'event:triluna-public',
 		'type': 'event',
 		'username': 'triluna',
 		'summary': 'triluna public event',
@@ -125,7 +125,7 @@ var defaultEventDocs = [
 		'isPublic': true
 	},
 	{
-		'_id': 'triluna-private',
+		'_id': 'event:triluna-private',
 		'type': 'event',
 		'username': 'triluna',
 		'summary': 'triluna private event',

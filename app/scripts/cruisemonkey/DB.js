@@ -9,6 +9,8 @@
 			__pouchFavorites = null,
 			__pouchRemote = null;
 
+		var __api = 1;
+
 		var __username = null;
 
 		var __syncing = null,
@@ -37,7 +39,7 @@
 				$timeout(function() {
 					deferred.reject('Database not initialized!');
 				});
-				return;
+				return deferred.promise;
 			} else {
 				__ready.then(function(res) {
 					if (dbtype === 'favorites') {
@@ -129,18 +131,54 @@
 			__syncing = null;
 		};
 
+		var __call = function() {
+			var self = this;
+			var args = Array.prototype.slice.call(arguments);
+			var deferred = $q.defer();
+			var db = args.shift();
+			var method = args.shift();
+			args.push(function(err,res) {
+				$rootScope.safeApply(function() {
+					if (err) {
+						deferred.reject(err);
+					} else {
+						deferred.resolve(res);
+					}
+				});
+			});
+			db[method].apply(db, args);
+			return deferred.promise;
+		};
+
+		var __get = function(db, id, options) {
+			return __call(db, 'get', id, options);
+		};
+
+		var __put = function(db, doc, options) {
+			return __call(db, 'put', doc, options);
+		};
+		
+		var __query = function(db, view, options) {
+			return __call(db, 'query', view, options);
+		};
+		
+		var __allDocs = function(db, options) {
+			return __call(db, 'allDocs', options);
+		};
+
+		var __bulkDocs = function(db, options) {
+			return __call(db, 'bulkDocs', options);
+		};
+
+		var __syncInfo = function(db) {
+			return __call(db, 'get', 'syncInfo');
+		};
+
 		var __initializeDatabase = function(from, to, viewOptions, replicationOptions) {
 			var deferred = $q.defer();
 
-			to.allDocs(function(err,res) {
-				if (err) {
-					$rootScope.safeApply(function() {
-						deferred.reject(err);
-					});
-					return;
-				}
-
-				var existingIds = [], i;
+			__allDocs(to).then(function(res) {
+				var existingIds = [], i, existingId;
 				for (i=0; i < res.rows.length; i++) {
 					existingIds.push(res.rows[i].id);
 				}
@@ -149,14 +187,7 @@
 				if (viewOptions.key) {
 					opts.key = viewOptions.key;
 				}
-				from.query(viewOptions.view, opts, function(err,res) {
-					if (err) {
-						$rootScope.safeApply(function() {
-							deferred.reject(err);
-						});
-						return;
-					}
-
+				__query(from, viewOptions.view, opts).then(function(res) {
 					var newIds = [];
 					for (i=0; i < res.rows.length; i++) {
 						var id = res.rows[i].id;
@@ -167,17 +198,10 @@
 					}
 					if (newIds.length > 0) {
 						log.debug('existing items found, fetching only new documents');
-						from.allDocs({
+						__allDocs(from, {
 							include_docs: true,
 							keys: newIds
-						}, function(err,res) {
-							if (err) {
-								$rootScope.safeApply(function() {
-									deferred.reject(err);
-								});
-								return;
-							}
-
+						}).then(function(res) {
 							var newDocs = [];
 							for (i=0; i < res.rows.length; i++) {
 								if (res.rows[i].doc._deleted) {
@@ -188,17 +212,10 @@
 							}
 
 							log.debug('bulk-saving ' + newDocs.length + ' documents');
-							to.bulkDocs({
+							__bulkDocs(to, {
 								docs: newDocs,
 								new_edits: false
-							}, function(err,res) {
-								if (err) {
-									$rootScope.safeApply(function() {
-										deferred.reject(err);
-									});
-									return;
-								}
-
+							}).then(function(res) {
 								log.debug('bulk-save complete. replicating:',replicationOptions);
 								__replicate(from, to, replicationOptions).then(function(res) {
 									log.debug('replication complete: ' + res);
@@ -206,7 +223,13 @@
 								}, function(err) {
 									deferred.reject(err);
 								});
+							}, function(err) {
+								log.error('bulkDocs(to) query failed:',err);
+								deferred.reject(err);
 							});
+						}, function(err) {
+							log.error('allDocs(from) query failed:',err);
+							deferred.reject(err);
 						});
 					} else {
 						log.debug('no new items found. replicating:',replicationOptions);
@@ -217,8 +240,14 @@
 							deferred.reject(err);
 						});
 					}
+				}, function(err) {
+					log.error(viewOptions.view + ' query failed:',err);
+					deferred.reject(err);
 				});
+			}, function(err) {
+				log.error('allDocs(to) query failed:',err);
 			});
+
 			return deferred.promise;
 		};
 
@@ -242,94 +271,83 @@
 					__pouchEvents = new PouchDB('events');
 				}
 
-				var promises = [
-					__initializeDatabase(__pouchRemote, __pouchEvents, {
-						'view': 'cruisemonkey/events-replication'
-					}, {
-						'filter':'cruisemonkey/events'
-					})
-				];
+				var syncinfoready = $q.defer();
 
-				if (__username && __pouchFavorites) {
-					promises.push(
-						__initializeDatabase(__pouchRemote, __pouchFavorites, {
-							'view': 'cruisemonkey/favorites-all',
-							'key': __username
-						}, {
-							'filter':'cruisemonkey/favorites',
-							'query_params': {
-								'username': __username
-							}
-						})
-					);
-				}
+				__syncInfo(__pouchEvents)['finally'](function(res) {
+					console.log('finally args:',args);
+					var dirty = false;
+					var _syncInfo = {
+						'_id': 'syncInfo',
+						'api': __api,
+						'url': __pouchEvents.url
+					};
 
-				$q.all(promises).then(function(results) {
-					var count = 0, r;
-					for (r=0; r < results.length; r++) {
-						count += results[r];
+					console.log('res=',res);
+					if (res) {
+						_syncInfo._rev = res._rev;
+						if (res.api !== __api) {
+							dirty = true;
+						}
+						if (res.url !== __pouchEvents.url) {
+							dirty = true;
+						}
+					} else {
+						dirty = true;
 					}
-					deferred.resolve(count);
+					console.log('dirty=',dirty,'original=',__pouchRemote.url,'syncinfo=',_syncInfo);
+					if (dirty) {
+						__put(__pouchEvents, _syncInfo).then(function(res) {
+							console.log(res);
+							syncinfoready.resolve(res);
+						}, function(err) {
+							syncinfoready.reject(err);
+						});
+					} else {
+						syncinfoready.resolve(true);
+					}
+				});
+
+				syncinfoready.promise.then(function() {
+					var promises = [
+						__initializeDatabase(__pouchRemote, __pouchEvents, {
+							'view': 'cruisemonkey/events-replication'
+						}, {
+							'filter':'cruisemonkey/events'
+						})
+					];
+
+					if (__username && __pouchFavorites) {
+						promises.push(
+							__initializeDatabase(__pouchRemote, __pouchFavorites, {
+								'view': 'cruisemonkey/favorites-all',
+								'key': __username
+							}, {
+								'filter':'cruisemonkey/favorites',
+								'query_params': {
+									'username': __username
+								}
+							})
+						);
+					}
+
+					$q.all(promises).then(function(results) {
+						var count = 0, r;
+						for (r=0; r < results.length; r++) {
+							count += results[r];
+						}
+						deferred.resolve(count);
+					}, function(err) {
+						deferred.reject(err);
+					});
 				}, function(err) {
+					console.log('failed to create syncInfo!',err);
 					deferred.reject(err);
 				});
-				/*
-				$q.all([
-					__initializeDatabase(__pouchRemote, __pouchEvents,    'cruisemonkey/events-replication',    'cruisemonkey/events'),
-					__initializeDatabase(__pouchRemote, __pouchFavorites, 'cruisemonkey/favorites-replication', 'cruisemonkey/favorites')
-				}).then(function(results) {
-					deferred.resolve(results);
-				}, function(err) {
-					deferred.reject(err);
-				});
-				*/
 			}, 10);
 
 			return deferred.promise;
 		};
 
-		var __query = function(db, view, options) {
-			var deferred = $q.defer();
-			db.query('cruisemonkey/' + view, options, function(err, response) {
-				$rootScope.safeApply(function() {
-					if (err) {
-						deferred.reject(err);
-					} else {
-						deferred.resolve(response);
-					}
-				});
-			});
-			return deferred.promise;
-		};
-
-		var __get = function(db, id, options) {
-			var deferred = $q.defer();
-			db.get(id, options, function(err, response) {
-				$rootScope.safeApply(function() {
-					if (err) {
-						deferred.reject(err);
-					} else {
-						deferred.resolve(response);
-					}
-				});
-			});
-			return deferred.promise;
-		};
-
-		var __put = function(db, doc, options) {
-			var deferred = $q.defer();
-			db.put(doc, options, function(err, response) {
-				$rootScope.safeApply(function() {
-					if (err) {
-						deferred.reject(err);
-					} else {
-						deferred.resolve(response);
-					}
-				});
-			});
-			return deferred.promise;
-		};
-		
 		var __post = function(db, doc, options) {
 			var deferred = $q.defer();
 			db.post(doc, options, function(err, response) {
@@ -393,6 +411,9 @@
 				'query': function(view, options) {
 					var deferred = $q.defer();
 					ready(dbtype).then(function(db) {
+						if (view.indexOf('cruisemonkey/') === -1) {
+							view = 'cruisemonkey/' + view;
+						}
 						__query(db, view, options).then(function(res) {
 							deferred.resolve(res);
 						}, function(err) {
@@ -559,28 +580,31 @@
 			'setRemoteDatabase': function(db) {
 				if (typeof db === 'string' || db instanceof String) {
 					__pouchRemote = new PouchDB(db);
-				} else if (db === undefined || db === null) {
-					__pouchRemote = db;
+					__pouchRemote.url = db;
+				} else if (db === null || db === undefined) {
+					__pouchRemote = null;
 				} else {
-					__pouchRemote = db;
+					throw('setRemoteDatabase: Expected a database string, but got: ' + db);
 				}
 			},
 			'setEventsDatabase': function(db) {
 				if (typeof db === 'string' || db instanceof String) {
 					__pouchEvents = new PouchDB(db);
-				} else if (db === undefined || db === null) {
-					__pouchEvents = db;
+					__pouchEvents.url = db;
+				} else if (db === null || db === undefined) {
+					__pouchEvents = null;
 				} else {
-					__pouchEvents = db;
+					throw('setEventsDatabase: Expected a database string, but got: ' + db);
 				}
 			},
 			'setFavoritesDatabase': function(db) {
 				if (typeof db === 'string' || db instanceof String) {
 					__pouchFavorites = new PouchDB(db);
-				} else if (db === undefined || db === null) {
-					__pouchFavorites = db;
+					__pouchFavorites.url = db;
+				} else if (db === null || db === undefined) {
+					__pouchFavorites = null;
 				} else {
-					__pouchFavorites = db;
+					throw('setFavoritesDatabase: Expected a database string, but got: ' + db);
 				}
 			},
 			'setUsername': function(username) {

@@ -1,5 +1,5 @@
 function(doc, req) {
-	if (doc.type === 'event') {
+	if (doc.type === 'event' && doc.isPublic) {
 		return true;
 	} else if (doc._id.indexOf('_design/') === 0) {
 		return true;
