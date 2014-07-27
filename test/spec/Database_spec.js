@@ -27,10 +27,10 @@ describe('cruisemonkey.Database', function() {
 	});
 
 	var dbs = [
-		webroot + 'test-remote',
 		'test-local',
 		'test-events',
-		'test-favorites'
+		'test-favorites',
+		webroot + 'test-remote'
 	];
 
 	var _doDestroy = function(destroyme, deferred) {
@@ -46,8 +46,8 @@ describe('cruisemonkey.Database', function() {
 			db.destroy().then(function() {
 				_doDestroy(destroyme, deferred);
 			}, function(err) {
-				console.error('failed to destroy ' + nextdb + ':', err);
-				deferred.reject(err);
+				console.warn('failed to destroy ' + nextdb + ':', err);
+				_doDestroy(destroyme, deferred);
 			});
 		}
 	};
