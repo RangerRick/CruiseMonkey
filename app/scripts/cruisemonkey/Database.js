@@ -65,39 +65,33 @@
 		Database.prototype.destroy = function() {
 			var deferred = $q.defer();
 			var self = this;
-			self.pouch().info(function(err,res) {
-				if (err) {
-					$rootScope.safeApply(function() {
-						console.warn('error getting database info for ' + self.name + ':',err);
-						deferred.reject(err);
-					});
+			
+			self.isEmpty().then(function(isEmpty) {
+				if (isEmpty) {
+					console.debug('database ' + self.name + ' is already empty, skipping destroy');
+					deferred.resolve({ok: true});
 				} else {
-					if (res.doc_count && res.doc_count > 0) {
-						self.pouch().destroy(function(err, res) {
-							$rootScope.safeApply(function() {
-								if (err) {
-									if (err.message && err.message.indexOf('no such table') >= 0) {
-										console.warn('cruisemonkey.Database: destroy called on database that already does not exist.');
-										delete databases[self.name];
-										deferred.resolve({ok: true});
-									} else {
-										console.error('cruisemonkey.Database: failed to destroy ' + self.name,err);
-										deferred.reject(err);
-									}
-								} else {
-									console.debug('destroyed ' + self.name);
-									delete databases[self.name];
-									deferred.resolve(res);
-								}
-							});
-						});
-					} else {
+					self.pouch().destroy(function(err, res) {
 						$rootScope.safeApply(function() {
-							deferred.resolve({ok: true});
+							if (err) {
+								if (err.message && err.message.indexOf('no such table') >= 0) {
+									console.warn('cruisemonkey.Database: destroy called on database that already does not exist.');
+									delete databases[self.name];
+									deferred.resolve({ok: true});
+								} else {
+									console.error('cruisemonkey.Database: failed to destroy ' + self.name,err);
+									deferred.reject(err);
+								}
+							} else {
+								console.debug('destroyed ' + self.name);
+								delete databases[self.name];
+								deferred.resolve(res);
+							}
 						});
-					}
+					});
 				}
 			});
+
 			return deferred.promise;
 		};
 
