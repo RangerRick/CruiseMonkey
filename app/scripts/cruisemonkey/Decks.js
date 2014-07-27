@@ -1,27 +1,21 @@
 function CMDeck(floor, amenities) {
 	'use strict';
 	var self = this;
-
 	self._floor = floor;
 	self._amenities = [];
-
 	angular.forEach(amenities, function(amenity, index) {
 		amenity.setDeck(self);
 		self._amenities.push(amenity);
 	});
-
 }
-
 CMDeck.prototype.getFloor = function() {
 	'use strict';
 	return this._floor;
 };
-
 CMDeck.prototype.getAmenities = function() {
 	'use strict';
 	return this._amenities;
 };
-
 CMDeck.prototype.toString = function() {
 	'use strict';
 	var ret = 'CMDeck[floor=' + this._floor + ',amenities=[';
@@ -34,11 +28,9 @@ CMDeck.prototype.toString = function() {
 	ret += ']]';
 	return ret;
 };
-
 function CMAmenity(id, summary, icon, category, description) {
 	'use strict';
 	var self = this;
-
 	self._id = id;
 	self._summary = summary;
 	self._icon = icon;
@@ -46,7 +38,6 @@ function CMAmenity(id, summary, icon, category, description) {
 	self._description = description;
 	self._deck = undefined;
 }
-
 CMAmenity.prototype.getDeck = function() {
 	'use strict';
 	return this._deck;
@@ -55,43 +46,35 @@ CMAmenity.prototype.setDeck = function(deck) {
 	'use strict';
 	this._deck = deck;
 };
-
 CMAmenity.prototype.getUniqueId = function() {
 	'use strict';
 	return this._deck.getFloor() + '-' + this._id;
 };
-
 CMAmenity.prototype.getId = function() {
 	'use strict';
 	return this._id;
 };
-
 CMAmenity.prototype.getSummary = function() {
 	'use strict';
 	return this._summary;
 };
-
 CMAmenity.prototype.getIcon = function() {
 	'use strict';
 	return this._icon;
 };
-
 CMAmenity.prototype.getCategory = function() {
 	'use strict';
 	return this._category;
 };
-
 CMAmenity.prototype.getDescription = function() {
 	'use strict';
 	return this._description;
 };
-
 CMAmenity.prototype.matches = function(searchString) {
 	'use strict';
 	if (searchString === undefined || searchString === '') {
 		return true;
 	}
-
 	if (this.getSummary() !== undefined && this.getSummary().contains(searchString)) {
 		return true;
 	} else if (this.getDescription() !== undefined && this.getDescription().contains(searchString)) {
@@ -102,18 +85,14 @@ CMAmenity.prototype.matches = function(searchString) {
 			return true;
 		}
 	}
-
 	return false;
 };
-
 CMAmenity.prototype.toString = function() {
 	'use strict';
 	return 'CMAmenity[deck=' + this._deck.getFloor() + ',id=' + this._id + ',summary=' + this._summary + ']';
 };
-
 (function() {
 	'use strict';
-
 	var _deckInfo = {
 		2: new CMDeck(2, [
 			new CMAmenity('alhambra-theatre', 'Alhambra Theatre', 'ion-music-note', 'Entertainment', 'Spanning three decks, the Alhambra Theatre holds 1,320 people.'),
@@ -220,11 +199,9 @@ CMAmenity.prototype.toString = function() {
 			new CMAmenity('skylight-chapel', 'Skylight Chapel', undefined, undefined, 'The wedding chapel, which can accommodate 40 people, is located on top of the Viking Crown Lounge® (the highest point on the ship) and is the perfect place to say "I do."')
 		])
 	};
-
 	angular.module('cruisemonkey.Decks', [])
 	.factory('DeckService', ['$log', function(log) {
 		log.info('DeckService: Initializing DeckService.');
-
 		return {
 			'get': function() {
 				return _deckInfo;

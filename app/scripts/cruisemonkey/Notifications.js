@@ -1,12 +1,9 @@
 (function() {
 	'use strict';
-
 	/*global isMobile: true*/
-
 	function isNumber(n) {
 	  return !isNaN(parseFloat(n)) && isFinite(n);
 	}
-	
 	angular.module('cruisemonkey.Notifications', [
 		'cruisemonkey.Config',
 		'cruisemonkey.Cordova'
@@ -14,7 +11,6 @@
 	.factory('NotificationService', ['$q', '$rootScope', '$timeout', '$window', 'config.notifications.timeout', '$log', 'CordovaService', function($q, $rootScope, $timeout, $window, notificationTimeout, log, cor) {
 		var notificationQueue = [];
 		var nextId = 0;
-
 		var doAlert = function(message, callback) {
 			cor.ifCordova(function() {
 				log.info('NotificationService.doAlert(): native cordova: ' + message);
@@ -25,12 +21,9 @@
 				callback();
 			});
 		};
-
 		var alert = function(message, alertCallback) {
 			log.info('NotificationService.alert(): message = "' + message + '"');
-
 			var deferred = $q.defer();
-
 			$timeout(function() {
 				doAlert(message, function() {
 					if (alertCallback) {
@@ -40,10 +33,8 @@
 					}
 				});
 			});
-			
 			return deferred.promise;
 		};
-
 		var updateStatusNotification = function(message) {
 			if (message) {
 				notificationQueue.push(message);
@@ -54,7 +45,6 @@
 				$rootScope.statusNotification = undefined;
 			}
 		};
-
 		var removeStatusNotification = function(message) {
 			for (var i = notificationQueue.length; i >= 0; --i) {
 				var queueEntry = notificationQueue[i];
@@ -67,7 +57,6 @@
 			}
 			log.debug('Unable to remove notification for message "' + message + '".');
 		};
-
 		var statusNotification = function(message, arg) {
 			var id = ++nextId;
 			if (isNumber(arg)) {
@@ -86,12 +75,10 @@
 				}
 			}
 		};
-
 		return {
 			'alert': alert,
 			'status': statusNotification,
 			'removeStatus': removeStatusNotification
 		};
-
 	}]);
 }());

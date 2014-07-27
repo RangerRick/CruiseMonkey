@@ -1,40 +1,30 @@
 /*global moment: true*/
 /*global Modernizr: true*/
-
 function stringifyDate(date) {
 	'use strict';
-
 	if (date === null || date === undefined) {
 		return undefined;
 	}
 	return moment(date).format("YYYY-MM-DD HH:mm");
 }
-
 var dateStringFormat="YYYY-MM-DD HH:mm";
 if (Modernizr.inputtypes["datetime-local"]) {
 	dateStringFormat="YYYY-MM-DDTHH:mm";
 }
-
 var epochZero = stringifyDate(moment(0));
-
 function CMDay(d) {
 	'use strict';
 	this.day = d;
 }
-
 function CMEvent(data) {
 	'use strict';
-
 	var self = this;
-
 	self._rawdata  = angular.copy(data) || {};
 	self._favorite = undefined;
 	self._day      = undefined;
 	self._start    = undefined;
 	self._end      = undefined;
-
 	self._rawdata.type = 'event';
-
 	if (self._rawdata.start === 'Invalid date') {
 		self._rawdata.start = undefined;
 	}
@@ -47,20 +37,15 @@ function CMEvent(data) {
 	if (self._rawdata.lastUpdated === undefined) {
 		self._rawdata.lastUpdated = moment(epochZero);
 	}
-
 	delete self._rawdata.isFavorite;
 	delete self._rawdata.isNewDay;
 }
-
 function CMFavorite(data) {
 	'use strict';
-
 	var self = this;
-
 	self._rawdata  = angular.copy(data) || {};
 	self._rawdata.type = 'favorite';
 	self._event = undefined;
-
 	if (self._rawdata.lastUpdated === 'Invalid date') {
 		self._rawdata.lastUpdated = undefined;
 	}
@@ -68,7 +53,6 @@ function CMFavorite(data) {
 		self._rawdata.lastUpdated = moment(epochZero);
 	}
 }
-
 CMDay.prototype.getId = function() {
 	'use strict';
 	return 'day-' + this.day.unix();
@@ -77,7 +61,6 @@ CMDay.prototype.clone = function() {
 	'use strict';
 	return new CMDay(this.day);
 };
-
 CMEvent.prototype.clone = function() {
 	'use strict';
 	var newobj = new CMEvent(this._rawdata);
@@ -89,10 +72,8 @@ CMEvent.prototype.clone = function() {
 	newobj._start = angular.copy(this._start);
 	newobj._end   = angular.copy(this._end);
 	newobj._even  = angular.copy(this._even);
-
 	return newobj;
 };
-
 CMEvent.prototype.isEven = function() {
 	'use strict';
 	return this._even || false;
@@ -101,7 +82,6 @@ CMEvent.prototype.setEven = function(bool) {
 	'use strict';
 	this._even = bool;
 };
-
 CMEvent.prototype.getId = function() {
 	'use strict';
 	return this._rawdata._id;
@@ -110,7 +90,6 @@ CMEvent.prototype.setId = function(id) {
 	'use strict';
 	this._rawdata._id = id;
 };
-
 CMEvent.prototype.getRevision = function() {
 	'use strict';
 	return this._rawdata._rev;
@@ -119,7 +98,6 @@ CMEvent.prototype.setRevision = function(rev) {
 	'use strict';
 	this._rawdata._rev = rev;
 };
-
 CMEvent.prototype.getSummary = function() {
 	'use strict';
 	return this._rawdata.summary;
@@ -128,7 +106,6 @@ CMEvent.prototype.setSummary = function(summary) {
 	'use strict';
 	this._rawdata.summary = summary;
 };
-
 CMEvent.prototype.getDescription = function() {
 	'use strict';
 	return this._rawdata.description;
@@ -137,7 +114,6 @@ CMEvent.prototype.setDescription = function(description) {
 	'use strict';
 	this._rawdata.description = description;
 };
-
 CMEvent.prototype.getDay = function() {
 	'use strict';
 	if (this._day === undefined && this._rawdata.start !== undefined) {
@@ -145,7 +121,6 @@ CMEvent.prototype.getDay = function() {
 	}
 	return this._day;
 };
-
 /**
   * Get the start date as a Moment.js object.
   *
@@ -158,7 +133,6 @@ CMEvent.prototype.getStart = function() {
 	}
 	return this._start;
 };
-
 /**
   * Set the start date.  Accepts a moment, a Date, or a pre-formatted string.
   *
@@ -174,19 +148,16 @@ CMEvent.prototype.setStart = function(start) {
 	this._start = undefined;
 	this._day = undefined;
 };
-
 CMEvent.prototype.getStartString = function() {
 	'use strict';
 	return this._rawdata.start;
 };
-
 CMEvent.prototype.setStartString = function(start) {
 	'use strict';
 	this._rawdata.start = start;
 	this._start = undefined;
 	this._day = undefined;
 };
-
 /**
   * Get the end date as a Moment.js object.
   *
@@ -199,7 +170,6 @@ CMEvent.prototype.getEnd = function() {
 	}
 	return this._end;
 };
-
 /**
   * Set the end date.  Accepts a moment, a Date, or a pre-formatted string.
   *
@@ -214,7 +184,6 @@ CMEvent.prototype.setEnd = function(end) {
 	}
 	this._end = undefined;
 };
-
 CMEvent.prototype.getEndString = function() {
 	'use strict';
 	return this._rawdata.end;
@@ -224,7 +193,6 @@ CMEvent.prototype.setEndString = function(end) {
 	this._rawdata.end = end;
 	this._end = undefined;
 };
-
 CMEvent.prototype.getLastUpdated = function() {
 	'use strict';
 	return moment(this._rawdata.lastUpdated);
@@ -233,7 +201,6 @@ CMEvent.prototype.refreshLastUpdated = function() {
 	'use strict';
 	this._rawdata.lastUpdated = stringifyDate(moment());
 };
-
 CMEvent.prototype.getUsername = function() {
 	'use strict';
 	if (this._rawdata.username !== undefined && this._rawdata.username !== '') {
@@ -245,7 +212,6 @@ CMEvent.prototype.setUsername = function(username) {
 	'use strict';
 	this._rawdata.username = username;
 };
-
 CMEvent.prototype.getLocation = function() {
 	'use strict';
 	return this._rawdata.location;
@@ -254,7 +220,6 @@ CMEvent.prototype.setLocation = function(loc) {
 	'use strict';
 	this._rawdata.location = loc;
 };
-
 CMEvent.prototype.isPublic = function() {
 	'use strict';
 	return this._rawdata.isPublic;
@@ -263,7 +228,6 @@ CMEvent.prototype.setPublic = function(pub) {
 	'use strict';
 	this._rawdata.isPublic = pub;
 };
-
 CMEvent.prototype.isFavorite = function() {
 	'use strict';
 	return this._favorite !== undefined;
@@ -276,7 +240,6 @@ CMEvent.prototype.setFavorite = function(fav) {
 	'use strict';
 	this._favorite = fav;
 };
-
 CMEvent.prototype.getDisplayTime = function() {
 	'use strict';
 	var start = this.getStart(), end, ret;
@@ -290,11 +253,9 @@ CMEvent.prototype.getDisplayTime = function() {
 	}
 	return undefined;
 };
-
 CMEvent.prototype.toEditableBean = function() {
 	'use strict';
 	var end = this.getEnd();
-
 	var bean = {
 		id: this.getId(),
 		revision: this.getRevision(),
@@ -305,21 +266,16 @@ CMEvent.prototype.toEditableBean = function() {
 		location: this.getLocation(),
 		isPublic: this.isPublic()
 	};
-
 	bean.isValid = function() {
 		if (bean.summary === undefined || bean.summary === '') { return false; }
 		if (bean.startDate === undefined || bean.startDate === '') { return false; }
-
 		if (bean.endDate && moment(bean.endDate).isBefore(moment(bean.startDate))) {
 			return false;
 		}
-
 		return true;
 	};
-
 	return bean;
 };
-
 CMEvent.prototype.fromEditableBean = function(bean) {
 	'use strict';
 	this.setId(bean.id);
@@ -331,23 +287,19 @@ CMEvent.prototype.fromEditableBean = function(bean) {
 	this.setLocation(bean.location);
 	this.setPublic(bean.isPublic);
 };
-
 CMEvent.prototype.toString = function() {
 	'use strict';
 	return 'CMEvent[id=' + this._rawdata._id + ',summary=' + this._rawdata.summary + ',favorite=' + this.isFavorite() + ',public=' + this.isPublic() + ']';
 };
-
 CMEvent.prototype.getRawData = function() {
 	'use strict';
 	return this._rawdata;
 };
-
 CMEvent.prototype.matches = function(searchString) {
 	'use strict';
 	if (searchString === undefined || searchString === '') {
 		return true;
 	}
-
 	if (this.getSummary() !== undefined && this.getSummary().contains(searchString)) {
 		return true;
 	} else if (this.getDescription() !== undefined && this.getDescription().contains(searchString)) {
@@ -355,10 +307,8 @@ CMEvent.prototype.matches = function(searchString) {
 	} else if (this.getLocation() !== undefined && this.getLocation().contains(searchString)) {
 		return true;
 	}
-
 	return false;
 };
-
 CMFavorite.prototype.getId = function() {
 	'use strict';
 	return this._rawdata._id;
@@ -383,7 +333,6 @@ CMFavorite.prototype.setUsername = function(username) {
 	'use strict';
 	this._rawdata.username = username;
 };
-
 CMFavorite.prototype.getEvent = function() {
 	'use strict';
 	return this._event;
@@ -392,7 +341,6 @@ CMFavorite.prototype.setEvent = function(ev) {
 	'use strict';
 	this._event = ev;
 };
-
 CMFavorite.prototype.getLastUpdated = function() {
 	'use strict';
 	return moment(this._rawdata.lastUpdated);
@@ -401,12 +349,10 @@ CMFavorite.prototype.refreshLastUpdated = function() {
 	'use strict';
 	this._rawdata.lastUpdated = stringifyDate(moment());
 };
-
 CMFavorite.prototype.toString = function() {
 	'use strict';
 	return 'CMFavorite[id=' + this.getId() + ',username=' + this.getUsername() + ',eventId=' + this.getEventId() + ']';
 };
-
 CMFavorite.prototype.getRawData = function() {
 	'use strict';
 	return this._rawdata;

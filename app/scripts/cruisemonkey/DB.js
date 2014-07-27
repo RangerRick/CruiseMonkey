@@ -1,6 +1,5 @@
 (function() {
 	'use strict';
-
 	/*global PouchDB: true*/
 	angular.module('cruisemonkey.DB', [
 	])
@@ -8,18 +7,13 @@
 		var __pouchEvents = null,
 			__pouchFavorites = null,
 			__pouchRemote = null;
-
 		var __api = 1;
-
 		var __username = null;
-
 		var __syncing = null,
 			__onSyncStart = null,
 			__onSyncEnd = null,
 			__onChange = null;
-			
 		var __ready = null;
-
 		if (!$rootScope.safeApply) {
 			$rootScope.safeApply = function(fn) {
 				var phase = this.$root.$$phase;
@@ -32,7 +26,6 @@
 				}
 			};
 		}
-
 		var ready = function(dbtype) {
 			var deferred = $q.defer();
 			if (__ready === undefined || __ready === null) {
@@ -57,7 +50,6 @@
 			}
 			return deferred.promise;
 		};
-
 		// don't wrap this in ready() since it's called during init
 		var __replicate = function(from, to, options) {
 			var deferred = $q.defer();
@@ -77,10 +69,8 @@
 			from.replicate.to(to, opts);
 			return deferred.promise;
 		};
-
 		var __startSync = function(from, to, options) {
 			var deferred = $q.defer();
-
 			ready().then(function() {
 				if (from === to) {
 					deferred.reject('Cannot sync to itself!');
@@ -91,11 +81,9 @@
 					return;
 				}
 				log.info('Starting sync.');
-
 				if (__onSyncStart) {
 					__onSyncStart(from, to);
 				}
-
 				var opts = angular.extend({}, {
 					live: true,
 					onChange: function(change) {
@@ -119,18 +107,15 @@
 			});
 			return deferred.promise;
 		};
-
 		var __stopSync = function() {
 			if (__syncing === null) {
 				log.debug('Already stopped!');
 				return;
 			}
 			log.info('Stopping sync.');
-
 			__syncing.cancel();
 			__syncing = null;
 		};
-
 		var __call = function() {
 			var self = this;
 			var args = Array.prototype.slice.call(arguments);
@@ -149,40 +134,31 @@
 			db[method].apply(db, args);
 			return deferred.promise;
 		};
-
 		var __get = function(db, id, options) {
 			return __call(db, 'get', id, options);
 		};
-
 		var __put = function(db, doc, options) {
 			return __call(db, 'put', doc, options);
 		};
-		
 		var __query = function(db, view, options) {
 			return __call(db, 'query', view, options);
 		};
-		
 		var __allDocs = function(db, options) {
 			return __call(db, 'allDocs', options);
 		};
-
 		var __bulkDocs = function(db, options) {
 			return __call(db, 'bulkDocs', options);
 		};
-
 		var __syncInfo = function(db) {
 			return __call(db, 'get', 'syncInfo');
 		};
-
 		var __initializeDatabase = function(from, to, viewOptions, replicationOptions) {
 			var deferred = $q.defer();
-
 			__allDocs(to).then(function(res) {
 				var existingIds = [], i, existingId;
 				for (i=0; i < res.rows.length; i++) {
 					existingIds.push(res.rows[i].id);
 				}
-
 				var opts = {};
 				if (viewOptions.key) {
 					opts.key = viewOptions.key;
@@ -210,7 +186,6 @@
 									newDocs.push(res.rows[i].doc);
 								}
 							}
-
 							log.debug('bulk-saving ' + newDocs.length + ' documents');
 							__bulkDocs(to, {
 								docs: newDocs,
@@ -247,10 +222,8 @@
 			}, function(err) {
 				log.error('allDocs(to) query failed:',err);
 			});
-
 			return deferred.promise;
 		};
-
 		var __initialize = function() {
 			var deferred = $q.defer();
 			__ready = deferred.promise;
@@ -261,18 +234,14 @@
 				});
 				return deferred.promise;
 			}
-
 			if (__syncing) {
 				__stopSync();
 			}
-
 			$timeout(function() {
 				if (__pouchEvents === null || __pouchEvents === undefined) {
 					__pouchEvents = new PouchDB('events');
 				}
-
 				var syncinfoready = $q.defer();
-
 				__syncInfo(__pouchEvents)['finally'](function(res) {
 					console.log('finally args:',arguments);
 					var dirty = false;
@@ -281,7 +250,6 @@
 						'api': __api,
 						'url': __pouchEvents.url
 					};
-
 					console.log('res=',res);
 					if (res) {
 						_syncInfo._rev = res._rev;
@@ -306,7 +274,6 @@
 						syncinfoready.resolve(true);
 					}
 				});
-
 				syncinfoready.promise.then(function() {
 					var promises = [
 						__initializeDatabase(__pouchRemote, __pouchEvents, {
@@ -315,7 +282,6 @@
 							'filter':'cruisemonkey/events'
 						})
 					];
-
 					if (__username && __pouchFavorites) {
 						promises.push(
 							__initializeDatabase(__pouchRemote, __pouchFavorites, {
@@ -329,7 +295,6 @@
 							})
 						);
 					}
-
 					$q.all(promises).then(function(results) {
 						var count = 0, r;
 						for (r=0; r < results.length; r++) {
@@ -344,10 +309,8 @@
 					deferred.reject(err);
 				});
 			}, 10);
-
 			return deferred.promise;
 		};
-
 		var __post = function(db, doc, options) {
 			var deferred = $q.defer();
 			db.post(doc, options, function(err, response) {
@@ -361,7 +324,6 @@
 			});
 			return deferred.promise;
 		};
-		
 		var __bulk = function(db, docs) {
 			var deferred = $q.defer();
 			db.bulkDocs({
@@ -377,7 +339,6 @@
 			});
 			return deferred.promise;
 		};
-		
 		var __remove = function(db, doc) {
 			var deferred = $q.defer();
 			db.remove(doc, function(err,res) {
@@ -391,7 +352,6 @@
 			});
 			return deferred.promise;
 		};
-
 		var __info = function(db) {
 			var deferred = $q.defer();
 			db.info(function(err, info) {
@@ -405,7 +365,6 @@
 			});
 			return deferred.promise;
 		};
-
 		var __db = function(dbtype) {
 			return {
 				'query': function(view, options) {
@@ -520,21 +479,16 @@
 		var __remote = function() {
 			return __db('remote');
 		};
-		
 		var __events = function() {
 			return __db('events');
 		};
-
 		var __favorites = function() {
 			return __db('favorites');
 		};
-
 		var __destroy = function() {
 			var deferred = $q.defer();
-
 			var doDestroy = function(info) {
 				var def = $q.defer();
-
 				if (info.length === 0) {
 					def.resolve();
 				} else {
@@ -553,10 +507,8 @@
 						});
 					});
 				}
-				
 				return def.promise;
 			};
-
 			$q.all([__remote.info(), __events.info(), __favorites.info()]).then(function(res) {
 				doDestroy(res).then(function() {
 					deferred.resolve();
@@ -564,7 +516,6 @@
 					deferred.reject(err);
 				});
 			});
-
 			return deferred.promise;
 		};
 		var __reset = function() {
@@ -584,7 +535,6 @@
 			});
 			return deferred.promise;
 		};
-
 		$rootScope.$on('cm.online', function(ev, isOnline) {
 			if (isOnline) {
 				__startSync(__pouchRemote, __pouchEvents, {filter:'cruisemonkey/events'});
@@ -596,7 +546,6 @@
 			log.debug('Destroying root scope; stopping sync.');
 			__stopSync();
 		});
-
 		return {
 			'setRemoteDatabase': function(db) {
 				if (typeof db === 'string' || db instanceof String) {

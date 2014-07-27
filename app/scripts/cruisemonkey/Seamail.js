@@ -1,6 +1,5 @@
 (function() {
 	'use strict';
-
 	angular.module('cruisemonkey.Seamail', [
 		'angularLocalStorage',
 		'cruisemonkey.Cordova',
@@ -10,22 +9,18 @@
 	])
 	.factory('SeamailService', ['$q', '$rootScope', '$timeout', '$interval', '$http', 'SettingsService', 'NotificationService', 'UserService', '$log', 'storage', 'CordovaService', function($q, $rootScope, $timeout, $interval, $http, SettingsService, notifications, UserService, log, storage, cor) {
 		var interval = null;
-
 		storage.bind($rootScope, 'seamailCount', {
 			'defaultValue': 0,
 			'storeName': 'cm.seamail.count'
 		});
-
 		var getSeamailCount = function() {
 			if (!UserService.loggedIn()) {
 				log.debug('SeamailService: Skipping update, user is not logged in.');
 				return;
 			}
-
 			log.debug('SeamailService: Checking for seamail updates.');
 			var twitarrRoot = SettingsService.getTwitarrRoot();
 			var user = UserService.get();
-
 			$http({
 				method: 'GET',
 				url: twitarrRoot + 'api/v2/user/new_seamail',
@@ -68,29 +63,24 @@
 				*/
 			});
 		};
-
 		var startSynchronization = function() {
 			if (interval) {
 				log.info('SeamailService.startSynchronization(): sync already active.');
 				return;
 			}
-
 			log.info('SeamailService.startSynchronization(): starting synchronization.');
 			interval = $interval(getSeamailCount, (10 * 60 * 1000)); // 10 minutes
 			getSeamailCount();
 		};
-
 		var stopSynchronization = function() {
 			if (!interval) {
 				log.info('SeamailService.startSynchronization(): sync not active.');
 				return;
 			}
-
 			var ret = $interval.cancel(interval);
 			interval = null;
 			return ret;
 		};
-
 		return {
 			'online': startSynchronization,
 			'offline': stopSynchronization

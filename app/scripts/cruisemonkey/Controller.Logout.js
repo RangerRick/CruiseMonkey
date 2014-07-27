@@ -1,6 +1,5 @@
 (function() {
 	'use strict';
-
 	angular.module('cruisemonkey.controllers.Logout', ['cruisemonkey.User'])
 	.controller('CMLogoutCtrl', ['$rootScope', '$location', 'UserService', '$log', function($rootScope, $location, UserService, log) {
 		log.info('Initializing CMLogoutCtrl');

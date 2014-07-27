@@ -1,19 +1,15 @@
 xdescribe('cruisemonkey.DB', function() {
 	var async       = new AsyncSpec(this);
 	jasmine.getEnv().defaultTimeoutInterval = 15000;
-
 	var $q           = null,
 		$timeout     = null,
 		$rootScope   = null,
 		$httpBackend = null,
 		_db          = null;
-
 	var dbCounter = 0;
-
 	var doDbInit = function(done) {
 		_db.setRemoteDatabase(remoteDb);
 		_db.setEventsDatabase(eventsDb);
-
 		_db.init().then(function(res) {
 			expect(res).toBeGreaterThan(-1);
 			done();
@@ -22,7 +18,6 @@ xdescribe('cruisemonkey.DB', function() {
 			$timeout.flush();
 		}
 	};
-
 	async.beforeEach(function(done) {
 		module('cruisemonkey.DB', function($provide) {
 			//$provide.value('config.upgrade', false);
@@ -33,9 +28,7 @@ xdescribe('cruisemonkey.DB', function() {
 			$rootScope = rootScope;
 			$httpBackend = httpBackend;
 			_db = db;
-
 			doDbSetup(done);
-
 			/*
 			backend.when('GET', 'http://jccc4.rccl.com/cruisemonkey-jccc4').respond(500, '');
 			db.initialize().then(function() {
@@ -45,14 +38,11 @@ xdescribe('cruisemonkey.DB', function() {
 			*/
 		}]);
 	});
-
 	describe("Initialize Database", function() {
 		async.it('should return true if able to initialize the database', function(done) {
 			expect(_db).not.toBeNull();
-
 			_db.setRemoteDatabase(remoteDb);
 			_db.setEventsDatabase(eventsDb);
-
 			_db.init().then(function(res) {
 				expect(res).toBeGreaterThan(-1);
 				var db = new PouchDB(eventsDb);
@@ -60,7 +50,6 @@ xdescribe('cruisemonkey.DB', function() {
 					expect(err).toBeNull();
 					expect(doc).not.toBeNull();
 					expect(doc.views).not.toBeUndefined();
-
 					db.allDocs(function(err,res) {
 						expect(err).toBeNull();
 						expect(res).not.toBeNull();
@@ -76,7 +65,6 @@ xdescribe('cruisemonkey.DB', function() {
 			$timeout.flush();
 		});
 	});
-
 	xdescribe("Design Doc: events-all", function() {
 		async.it('should return all 5 events when queried', function(done) {
 			doDbInit(function() {
@@ -92,7 +80,6 @@ xdescribe('cruisemonkey.DB', function() {
 			});
 		});
 	});
-
 	xdescribe("Design Doc: events-official", function() {
 		async.it('should return the 1 official event when queried', function(done) {
 			doDbInit(function() {
@@ -109,7 +96,6 @@ xdescribe('cruisemonkey.DB', function() {
 			});
 		});
 	});
-
 	xdescribe("Design Doc: events-public", function() {
 		async.it('should return the public events when queried', function(done) {
 			doDbInit(function() {
@@ -117,12 +103,10 @@ xdescribe('cruisemonkey.DB', function() {
 					expect(results).toBeDefined();
 					expect(results.rows).toBeDefined();
 					expect(results.rows.length).toEqual(3);
-
 					var ids = [];
 					for (var i = 0; i < results.rows.length; i++) {
 						ids.push(results.rows[i].id);
 					}
-					
 					expect(ids).toContain('official-event');
 					expect(ids).toContain('rangerrick-public');
 					expect(ids).toContain('triluna-public');
@@ -131,7 +115,6 @@ xdescribe('cruisemonkey.DB', function() {
 			});
 		});
 	});
-
 	xdescribe("Design Doc: events-unofficial", function() {
 		async.it('should return the unofficial events when queried', function(done) {
 			doDbInit(function() {
@@ -139,12 +122,10 @@ xdescribe('cruisemonkey.DB', function() {
 					expect(results).toBeDefined();
 					expect(results.rows).toBeDefined();
 					expect(results.rows.length).toEqual(2);
-
 					var ids = [];
 					for (var i = 0; i < results.rows.length; i++) {
 						ids.push(results.rows[i].id);
 					}
-					
 					expect(ids).toContain('rangerrick-public');
 					expect(ids).toContain('triluna-public');
 					done();
@@ -152,8 +133,6 @@ xdescribe('cruisemonkey.DB', function() {
 			});
 		});
 	});
-
-
 	xdescribe("Design Doc: events-user", function() {
 		async.it('should return the events for user "rangerrick" when queried', function(done) {
 			doDbInit(function() {
@@ -161,12 +140,10 @@ xdescribe('cruisemonkey.DB', function() {
 					expect(results).toBeDefined();
 					expect(results.rows).toBeDefined();
 					expect(results.rows.length).toEqual(2);
-
 					var ids = [];
 					for (var i = 0; i < results.rows.length; i++) {
 						ids.push(results.rows[i].id);
 					}
-					
 					expect(ids).toContain('rangerrick-public');
 					expect(ids).toContain('rangerrick-private');
 					done();
@@ -174,7 +151,6 @@ xdescribe('cruisemonkey.DB', function() {
 			});
 		});
 	});
-	
 	xdescribe("Design Doc: replication", function() {
 		async.it('should return all events', function(done) {
 			doDbInit(function() {
@@ -182,12 +158,10 @@ xdescribe('cruisemonkey.DB', function() {
 					expect(results).toBeDefined();
 					expect(results.rows).toBeDefined();
 					expect(results.rows.length).toEqual(defaultEventDocs.length);
-
 					var ids = [];
 					for (var i = 0; i < results.rows.length; i++) {
 						ids.push(results.rows[i].id);
 					}
-					
 					expect(ids).toContain('rangerrick-public');
 					expect(ids).toContain('rangerrick-private');
 					done();
@@ -195,7 +169,6 @@ xdescribe('cruisemonkey.DB', function() {
 			});
 		});
 	});
-	
 	xdescribe("Design Doc: favorites-all", function() {
 		async.it('should fail when no favorites DB is configured', function(done) {
 			_db.setFavoritesDatabase(undefined);
@@ -245,7 +218,6 @@ xdescribe('cruisemonkey.DB', function() {
 			});
 		});
 	})
-
 	xxdescribe("Bulk Sync", function() {
 		var newDocs = [];
 		for (var i = 0; i < 5000; i++) {
@@ -257,7 +229,6 @@ xdescribe('cruisemonkey.DB', function() {
 				'isPublic': true
 			});
 		}
-
 		async.it('should be fast to sync thousands of documents', function(done) {
 			var db = new PouchDB(remoteDb);
 			db.bulkDocs({
@@ -281,7 +252,6 @@ xdescribe('cruisemonkey.DB', function() {
 			});
 		});
 	});
-
 	xxdescribe("Bulk Sync with Existing Documents", function() {
 		var firsthalf = [], secondhalf = [], ev;
 		for (var i = 0; i < 5000; i++) {
@@ -292,14 +262,12 @@ xdescribe('cruisemonkey.DB', function() {
 				'start': '2012-01-01 00:00',
 				'isPublic': true
 			};
-
 			if (i < 2500) {
 				firsthalf.push(ev);
 			} else {
 				secondhalf.push(ev);
 			}
 		}
-
 		async.it('should be fast to sync thousands of documents after thousands are already synced', function(done) {
 			var db = new PouchDB(remoteDb);
 			// dump the first 2500 events
@@ -314,7 +282,6 @@ xdescribe('cruisemonkey.DB', function() {
 					}, function(err, results) {
 						expect(err).toBeNull();
 						expect(results).toBeDefined();
-
 						// this should do batches of 500 at a time
 						var start = moment();
 						doDbInit(function() {
@@ -334,7 +301,6 @@ xdescribe('cruisemonkey.DB', function() {
 			});
 		});
 	});
-
 	xdescribe("Sync with Deleted Documents", function() {
 		async.it('should sync deletes as well as adds', function(done) {
 			_db.setFavoritesDatabase(favoritesDb);
@@ -344,7 +310,6 @@ xdescribe('cruisemonkey.DB', function() {
 					expect(results).toBeDefined();
 					expect(results.rows).toBeDefined();
 					expect(results.rows.length).toEqual(1);
-
 					var db = new PouchDB(remoteDb);
 					db.get('favorite:triluna:rangerrick-public', function(err,res) {
 						expect(err).toBeNull();

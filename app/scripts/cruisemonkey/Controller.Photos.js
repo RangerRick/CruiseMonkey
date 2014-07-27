@@ -1,6 +1,5 @@
 (function() {
 	'use strict';
-
 	angular.module('cruisemonkey.controllers.Photos', [
 		'ionic',
 		'cruisemonkey.Cordova',
@@ -8,7 +7,6 @@
 	])
 	.factory('PhotoService', ['$q', '$rootScope', '$http', '$timeout', 'SettingsService', 'CordovaService', '$log', function($q, $rootScope, $http, $timeout, settings, cordova, log) {
 		var finished, nextPage, nextEntry, entries;
-
 		var reset = function() {
 			finished = false;
 			nextPage = 0;
@@ -16,19 +14,16 @@
 			entries = [];
 		};
 		reset();
-
 		var _gettingMore;
 		var getMoreEntries = function() {
 			if (_gettingMore) {
 				return _gettingMore;
 			}
-
 			var deferred = $q.defer();
 			_gettingMore = deferred.promise;
 			_gettingMore['finally'](function() {
 				_gettingMore = null;
 			});
-
 			var url = settings.getTwitarrRoot() + 'api/v2/photos/list?page=' + nextPage;
 			$http.get(url, {
 				'headers': {
@@ -59,10 +54,8 @@
 				log.debug('status=',status);
 				deferred.reject(data);
 			});
-			
 			return _gettingMore;
 		};
-
 		var _getNextPhoto = function(deferred) {
 			if (finished) {
 				$timeout(function() {
@@ -89,7 +82,6 @@
 				});
 			}
 		};
-
 		var _getNext;
 		var getNextPhoto = function() {
 			if (_getNext) {
@@ -104,7 +96,6 @@
 				return _getNext.promise;
 			}
 		};
-
 		return {
 			reset: reset,
 			getMore: getMoreEntries,
@@ -116,24 +107,20 @@
 		$rootScope.headerTitle = "Twit-Arr Pics";
 		$rootScope.leftButtons = $rootScope.getLeftButtons();
 		$rootScope.rightButtons = [];
-
 		$scope.finished = false;
 		$scope.entries = [];
 		$scope.currentSlide = 0;
-
 		var doneFunc = function() {
 			$ionicSlideBoxDelegate.update();
 			$scope.$broadcast('slideBox.setSlide', $scope.currentSlide);
 			$scope.$broadcast('scroll.refreshComplete');
 		};
-
 		var previous = function() {
 			$scope.$broadcast('slideBox.prevSlide');
 		};
 		var next = function() {
 			$scope.$broadcast('slideBox.nextSlide');
 		};
-
 		var keyListener = function(ev) {
 			if (ev.keyCode === 37) {
 				previous();
@@ -144,30 +131,25 @@
 			}
 			return true;
 		};
-
 		$scope.reload = function() {
 			log.debug('CMPhotoCtrl.reload()');
 			$scope.finished = false;
 			$scope.entries = [];
 			photos.reset();
 			$scope.currentSlide = 0;
-
 			/*
 			function() {
 				$scope.$broadcast('scroll.refreshComplete');
 			}
 			*/
-
 			$scope.loadMore(doneFunc);
 		};
-
 		$scope.loadMore = function(done) {
 			if ($scope.finished) {
 				log.info('CMPhotoCtrl.loadMore(): finished.');
 				done();
 				return;
 			}
-
 			photos.getMore().then(function(entries) {
 				angular.forEach(entries, function(entry, index) {
 					log.debug('CMPhotoCtrl.loadMore(): got new entry: ' + entry.url);
@@ -182,7 +164,6 @@
 				done();
 			});
 		};
-
 		$scope.slideChanged = function(index) {
 			$scope.currentSlide = index;
 			$scope.currentEntry = $scope.entries[index];
@@ -190,13 +171,10 @@
 				$scope.loadMore(doneFunc);
 			}
 		};
-
 		document.addEventListener('keydown', keyListener, true);
 		$scope.$on('$destroy', function() {
 			document.removeEventListener('keydown', keyListener, true);
 		});
-
 		$scope.loadMore(doneFunc);
-
 	}]);
 }());

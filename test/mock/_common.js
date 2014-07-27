@@ -1,5 +1,4 @@
 var isMobile = false;
-
 if (typeof String.prototype.capitalize !== 'function') {
 	String.prototype.capitalize = function() {
 		return this.charAt(0).toUpperCase() + this.slice(1).toLowerCase();
@@ -20,14 +19,12 @@ if (typeof String.prototype.contains !== 'function') {
 		return comparator === undefined? true : (this.toLowerCase().indexOf(comparator.toLowerCase()) > -1);
 	};
 }
-
 var LoggedInUserService = function() {
 	var user = {
 		loggedIn: true,
 		'username': 'rangerrick',
 		'password': 'secret'
 	};
-	
 	this.$get = function() {
 		return {
 			isLoggedIn: function() {
@@ -42,7 +39,6 @@ var LoggedInUserService = function() {
 		};
 	};
 };
-
 var MockPouchWrapper = function() {
 	var events = [
 		{
@@ -67,9 +63,7 @@ var MockPouchWrapper = function() {
 			'description': 'I am totally going to continue living.'
 		}
 	];
-	
 	var favorites = [ '1' ];
-
 	this.$get = function() {
 		return {
 			getEvents: function() {
@@ -90,7 +84,6 @@ var MockPouchWrapper = function() {
 		}
 	};
 };
-
 var defaultEventDocs = [
 	{
 		'_id': 'event:official-event',
@@ -133,7 +126,6 @@ var defaultEventDocs = [
 		'isPublic': false
 	}
 ];
-
 var defaultFavoriteDocs = [
 	{
 		'_id': 'favorite:triluna:event:rangerrick-public',
@@ -148,27 +140,22 @@ var defaultFavoriteDocs = [
 		'eventId': 'event:official-event'
 	}
 ];
-
 var defaultDocs = defaultEventDocs.concat(defaultFavoriteDocs);
-
 var eventsDb    = 'http://localhost:5984/test-events',
 	favoritesDb = 'http://localhost:5984/test-favorites',
 	pristineDb  = 'http://localhost:5984/test-pristine',
 	remoteDb    = 'http://localhost:5984/test-db';
-
 var doDbSetup = function(done) {
 	var eventsDatabase    = new PouchDB(eventsDb);
 	var favoritesDatabase = new PouchDB(favoritesDb);
 	var pristineDatabase  = new PouchDB(pristineDb);
 	var remoteDatabase    = new PouchDB(remoteDb);
-
 	eventsDatabase.destroy(function(err,info) {
 		if (err) {
 			console.log(eventsDb + ' NOT destroyed:', err);
 			done();
 			return;
 		}
-
 		//console.log('eventsDatabase destroyed:',info);
 		favoritesDatabase.destroy(function(err,info) {
 			if (err) {
@@ -176,7 +163,6 @@ var doDbSetup = function(done) {
 				done();
 				return;
 			}
-
 			//console.log('favoritesDatabase destroyed:',info);
 			remoteDatabase.destroy(function(err,info) {
 				if (err) {
@@ -184,9 +170,7 @@ var doDbSetup = function(done) {
 					done();
 					return;
 				}
-				
 				//console.log('remoteDatabase destroyed:',info);
-
 				remoteDatabase = new PouchDB(remoteDb);
 				remoteDatabase.replicate.from(pristineDatabase, {
 					continuous: false,
@@ -208,12 +192,9 @@ var doDbSetup = function(done) {
 		});
 	});
 };
-
 var webroot = 'http://localhost:5984/';
-
 var checkCouch = function() {
 	var deferred = $q.defer();
-
 	$http({method: 'GET', url: 'http://localhost:5984/test-pristine'}).success(function(data) {
 		if (data['db_name'] === 'test-pristine') {
 			deferred.resolve();
@@ -224,6 +205,5 @@ var checkCouch = function() {
 	}).error(function() {
 		deferred.reject();
 	});
-
 	return deferred.promise;
 };
