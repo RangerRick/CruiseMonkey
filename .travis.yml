@@ -1,3 +1,6 @@
+notifications:
+  irc:
+    - "chat.freenode.net#cruisemonkey"
 language: node_js
 node_js:
   - '0.10'
