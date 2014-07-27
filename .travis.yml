@@ -14,5 +14,10 @@ before_install:
   - 'gem install compass'
   - 'sudo pip install couchapp'
 before_script:
-  - cd couchdb; couchapp push http://localhost:5984/test-pristine
-script: grunt test --verbose
+  - 'cd couchdb && couchapp --verbose push http://localhost:5984/test-pristine'
+#script: grunt test --verbose
+script: grunt test
+cache:
+  directories:
+    - node_modules
+    - app/bower_components
