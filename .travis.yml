@@ -9,6 +9,6 @@ before_install:
   - 'npm install'
   - 'bower install'
   - 'gem install compass'
-  - 'pip install couchapp'
+  - 'sudo pip install couchapp'
 before_script:
   - cd couchdb; couchapp push http://localhost:5984/test-pristine
