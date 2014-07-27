@@ -62,8 +62,13 @@ module.exports = function(config) {
     // - Safari (only Mac)
     // - PhantomJS
     // - IE (only Windows)
-    browsers: ['PhantomJS'],
-
+    browsers: ['PhantomJS_large'],
+    customLaunchers: {
+        'PhantomJS_large': {
+            base: 'PhantomJS',
+            flags: ['--local-storage-quota=50000']
+        }
+    },
 
     // Continuous Integration mode
     // if true, it capture browsers, run tests and exit

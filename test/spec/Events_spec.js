@@ -2,11 +2,13 @@ xdescribe('cruisemonkey.Events', function() {
 	var log          = null;
 	var service      = null;
 	var userService  = null;
-	var db           = null;
 	var $q           = null;
 	var $timeout     = null;
 	var $rootScope   = null;
 	var $httpBackend = null;
+	var database     = null;
+
+	//var db           = null;
 
 	var dbName      = 'cmunittest';
 	var async       = new AsyncSpec(this);
@@ -26,6 +28,7 @@ xdescribe('cruisemonkey.Events', function() {
 		return ret;
 	};
 
+	/*
 	var doDbInit = function(done) {
 		db.setRemoteDatabase(remoteDb);
 		db.setEventsDatabase(eventsDb);
@@ -37,9 +40,10 @@ xdescribe('cruisemonkey.Events', function() {
 		});
 		$timeout.flush();
 	};
+	*/
 
 	async.beforeEach(function(done) {
-		module('cruisemonkey.DB', 'cruisemonkey.User', 'cruisemonkey.Events', function($provide) {
+		module('cruisemonkey.Database', 'cruisemonkey.User', 'cruisemonkey.Events', function($provide) {
 			$provide.value('config.logging.useStringAppender', true);
 			$provide.value('config.database.host', 'localhost');
 			$provide.value('config.database.name', dbName);
@@ -48,24 +52,27 @@ xdescribe('cruisemonkey.Events', function() {
 			$provide.value('config.twitarr.root', 'https://twitarr.rylath.net/');
 			$provide.value('config.upgrade', false);
 		});
-		inject(['$log', 'EventService', 'UserService', '_db', '$q', '$timeout', '$rootScope', '$httpBackend', function($log, EventService, UserService, _db, q, timeout, scope, backend) {
+		inject(['$log', 'EventService', 'UserService', '_database', '$q', '$timeout', '$rootScope', '$httpBackend', function($log, EventService, UserService, _database, q, timeout, scope, backend) {
 			log          = $log;
 			service      = EventService;
 			userService  = UserService;
-			db           = _db;
+			database     = _database;
 			$q           = q;
 			$timeout     = timeout;
 			$rootScope   = scope;
 			$httpBackend = backend;
 
 			backend.when('GET', 'http://jccc4.rccl.com/cruisemonkey-jccc4').respond(500, '');
+			
+			/*
 			doDbSetup(function() {
 				doDbInit(done);
 			});
+			*/
 		}]);
 	});
 
-	describe("#getAllEvents", function() {
+	xdescribe("#getAllEvents", function() {
 		async.it('should return all events', function(done) {
 			expect(db).toBeDefined();
 			expect(service.getAllEvents).toBeDefined();
@@ -81,7 +88,7 @@ xdescribe('cruisemonkey.Events', function() {
 		});
 	});
 
-	describe("#getOfficialEvents", function() {
+	xdescribe("#getOfficialEvents", function() {
 		async.it('should return all official events', function(done) {
 			userService.save({'loggedIn': true, 'username':'rangerrick', 'password':'whatever'});
 			expect(db).toBeDefined();
@@ -101,7 +108,7 @@ xdescribe('cruisemonkey.Events', function() {
 		});
 	});
 
-	describe("#getUnofficialEvents", function() {
+	xdescribe("#getUnofficialEvents", function() {
 		async.it('should return only the events marked isPublic which are not official', function(done) {
 			userService.save({'loggedIn': true, 'username':'rangerrick', 'password':'whatever'});
 			expect(db).toBeDefined();
@@ -122,7 +129,7 @@ xdescribe('cruisemonkey.Events', function() {
 		});
 	});
 
-	describe("#getUserEvents", function() {
+	xdescribe("#getUserEvents", function() {
 		async.it('should return only the events for user "rangerrick"', function(done) {
 			userService.save({'loggedIn': true, 'username':'rangerrick', 'password':'whatever'});
 			expect(db).toBeDefined();
@@ -157,7 +164,7 @@ xdescribe('cruisemonkey.Events', function() {
 		});
 	});
 
-	describe("#getMyEvents", function() {
+	xdescribe("#getMyEvents", function() {
 		async.it('should return only the events that user "rangerrick" has created or favorited', function(done) {
 			userService.save({'loggedIn': true, 'username':'rangerrick', 'password':'whatever'});
 			expect(db).toBeDefined();
@@ -191,7 +198,7 @@ xdescribe('cruisemonkey.Events', function() {
 		});
 	});
 
-	describe('#getMyFavorites', function() {
+	xdescribe('#getMyFavorites', function() {
 		async.it('should return a list of favorited ids', function(done) {
 			userService.save({'loggedIn': true, 'username':'rangerrick', 'password':'whatever'});
 			expect(db).toBeDefined();
@@ -221,7 +228,7 @@ xdescribe('cruisemonkey.Events', function() {
 		});
 	});
 
-	describe('#isFavorite', function() {
+	xdescribe('#isFavorite', function() {
 		async.it('should return true if the given id is a favorite while rangerrick is logged in', function(done) {
 			userService.save({'loggedIn': true, 'username':'rangerrick', 'password':'whatever'});
 			expect(db).toBeDefined();
@@ -263,7 +270,7 @@ xdescribe('cruisemonkey.Events', function() {
 		});
 	});
 	
-	describe('#addFavorite', function() {
+	xdescribe('#addFavorite', function() {
 		async.it('should create a new favorite in the database if ther user is logged in', function(done) {
 			userService.save({'loggedIn': true, 'username':'rangerrick', 'password':'whatever'});
 			expect(db).toBeDefined();
@@ -298,7 +305,7 @@ xdescribe('cruisemonkey.Events', function() {
 		});
 	});
 
-	describe('#removeFavorite', function() {
+	xdescribe('#removeFavorite', function() {
 		async.it('should not remove a favorite from the database if the user is not logged in', function(done) {
 			userService.save({'loggedIn': false, 'username':'rangerrick', 'password':'whatever'});
 			expect(db).toBeDefined();
@@ -332,7 +339,7 @@ xdescribe('cruisemonkey.Events', function() {
 		});
 	});
 	
-	describe('#addEvent', function() {
+	xdescribe('#addEvent', function() {
 		async.it('should add a new event', function(done) {
 			userService.save({'loggedIn': true, 'username':'rangerrick', 'password':'whatever'});
 			expect(db).toBeDefined();
@@ -357,7 +364,7 @@ xdescribe('cruisemonkey.Events', function() {
 		});
 	});
 	
-	describe('#updateEvent', function() {
+	xdescribe('#updateEvent', function() {
 		async.it('should update an existing event', function(done) {
 			userService.save({'loggedIn': true, 'username':'rangerrick', 'password':'whatever'});
 			expect(db).toBeDefined();
@@ -391,7 +398,7 @@ xdescribe('cruisemonkey.Events', function() {
 		});
 	});
 
-	describe('#removeEvent', function() {
+	xdescribe('#removeEvent', function() {
 		async.it('should remove an existing event', function(done) {
 			userService.save({'loggedIn': true, 'username':'rangerrick', 'password':'whatever'});
 			expect(db).toBeDefined();
@@ -422,7 +429,7 @@ xdescribe('cruisemonkey.Events', function() {
 		});
 	});
 
-	describe('#getEventForTime', function() {
+	xdescribe('#getEventForTime', function() {
 		it('Should find the next event in a simple list of events with only start times.', function() {
 			var eventList = [
 				new CMEvent({
@@ -664,7 +671,7 @@ xdescribe('cruisemonkey.Events', function() {
 		});
 	});
 
-	describe('CMEvent#toEditableBean', function() {
+	xdescribe('CMEvent#toEditableBean', function() {
 		async.it('should create a bean that matches the event data', function(done) {
 			var ev = new CMEvent();
 			ev.setId('1');
@@ -698,7 +705,7 @@ xdescribe('cruisemonkey.Events', function() {
 		});
 	});
 
-	describe('CMEvent#fromEditableBean', function() {
+	xdescribe('CMEvent#fromEditableBean', function() {
 		async.it('should update the event to have matching bean data', function(done) {
 			var ev = new CMEvent();
 			ev.setId('2');

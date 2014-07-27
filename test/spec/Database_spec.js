@@ -26,6 +26,61 @@ describe('cruisemonkey.Database', function() {
 		}]);
 	});
 
+	var dbs = [
+		webroot + 'test-remote',
+		'test-local',
+		'test-events',
+		'test-favorites'
+	];
+
+	var _doDestroy = function(destroyme, deferred) {
+		if (destroyme.length === 0) {
+			$rootScope.safeApply(function() {
+				deferred.resolve();
+			});
+		} else {
+			console.log('_doDestroy: ' + destroyme.length + ' remaining');
+
+			var nextdb = destroyme.shift();
+			var db = _database.get(nextdb);
+			db.destroy().then(function() {
+				_doDestroy(destroyme, deferred);
+			}, function(err) {
+				console.error('failed to destroy ' + nextdb + ':', err);
+				deferred.reject(err);
+			});
+		}
+	};
+
+	async.beforeEach(function(done) {
+		console.log('beforeEach: starting');
+		var deferred = $q.defer();
+
+		_doDestroy(angular.copy(dbs), deferred);
+		
+		deferred.promise.then(function() {
+			console.debug('beforeEach: finished destroying');
+			done();
+		}, function(err) {
+			console.error('beforeEach: failed destroying:',err);
+			done();
+		});
+	});
+
+	async.afterEach(function(done) {
+		console.debug('afterEach: starting');
+		var deferred = $q.defer();
+
+		_doDestroy(angular.copy(dbs), deferred);
+		deferred.promise.then(function() {
+			console.debug('beforeEach: finished destroying');
+			done();
+		}, function(err) {
+			console.error('beforeEach: failed destroying:',err);
+			done();
+		});
+	});
+
 	var createTestDb = function() {
 		var deferred  = $q.defer();
 
@@ -33,53 +88,19 @@ describe('cruisemonkey.Database', function() {
 
 		var local     = _database.get('test-local');
 		var remote    = _database.get(webroot + 'test-remote');
-		var events    = _database.get('test-events');
-		var favorites = _database.get('test-favorites');
+		//var events    = _database.get('test-events');
+		//var favorites = _database.get('test-favorites');
 
-		var toDestroy = [local, remote, events, favorites];
-		var doDestroy = function(toDestroy) {
-			var def = $q.defer();
-
-			if (toDestroy.length === 0) {
-				def.resolve();
-			} else {
-				var db = toDestroy.shift();
-				//console.debug('doDestroy: ' + db.name);
-				db.destroy().then(function(res) {
-					doDestroy(toDestroy).then(function() {
-						def.resolve();
-					});
-				}, function(err) {
-					console.error('error destroying ' + db.name);
-					def.reject(err);
-				});
-			}
-			
-			return def.promise;
-		};
-
-		doDestroy(toDestroy).then(function() {
-			remote = _database.get(webroot + 'test-remote');
-			remote.syncFrom(pristine).then(function() {
-				remote.pouch().bulkDocs({
-					docs: defaultDocs
-				}, function(err, res) {
-					$rootScope.safeApply(function() {
-						if (err) {
-							console.error('error bulk-adding docs:',err);
-							deferred.reject(err);
-						} else {
-							//console.debug('finished bulk-adding docs to remote');
-							deferred.resolve();
-						}
-					});
-				});
+		remote = _database.get(webroot + 'test-remote');
+		remote.syncFrom(pristine).then(function() {
+			remote.bulkDocs(defaultDocs).then(function() {
+				deferred.resolve();
 			}, function(err) {
-				console.error('failed to sync from ' + pristine.name);
+				console.error('error bulk-adding docs:',err);
 				deferred.reject(err);
 			});
 		}, function(err) {
-			console.error('failed to finish destroying existing databases:',err);
+			console.error('failed to sync from ' + pristine.name);
 			deferred.reject(err);
 		});
 

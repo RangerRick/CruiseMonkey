@@ -23,7 +23,7 @@
 		function Database(name, view, filter) {
 			var self    = this;
 
-			self.db     = new PouchDB(name);
+			self.db     = new PouchDB(name, {size: 50});
 			self.name   = name;
 			self.view   = view;
 			self.filter = filter;
@@ -38,6 +38,7 @@
 			var args = Array.prototype.slice.call(arguments);
 			var deferred = $q.defer();
 			var db = self.pouch();
+
 			var method = args.shift();
 			args.push(function(err,res) {
 				$rootScope.safeApply(function() {
@@ -48,6 +49,7 @@
 					}
 				});
 			});
+
 			db[method].apply(db, args);
 			return deferred.promise;
 		};
@@ -101,10 +103,10 @@
 
 		Database.prototype.getIds = function(opts) {
 			var deferred = $q.defer();
+			var self = this;
 
-			var db = this.pouch();
 			var options = angular.extend({}, opts);
-			db.allDocs(options, function(err,res) {
+			self.pouch().allDocs(options, function(err,res) {
 				$rootScope.safeApply(function() {
 					if (err) {
 						deferred.reject(err);
@@ -123,8 +125,9 @@
 
 		Database.prototype.doesDesignDocExist = function() {
 			var deferred = $q.defer();
+			var self = this;
 
-			this.pouch().get('_design/cruisemonkey', function(err, doc) {
+			self.pouch().get('_design/cruisemonkey', function(err, doc) {
 				$rootScope.safeApply(function() {
 					if (err) {
 						deferred.resolve(false);
@@ -139,7 +142,9 @@
 
 		Database.prototype.isEmpty = function() {
 			var deferred = $q.defer();
-			this.pouch().info(function(err,res) {
+			var self = this;
+
+			self.pouch().info(function(err,res) {
 				$rootScope.safeApply(function() {
 					if (err) {
 						deferred.reject(err);
@@ -148,6 +153,7 @@
 					}
 				});
 			});
+
 			return deferred.promise;
 		};
 
@@ -161,6 +167,10 @@
 
 		Database.prototype.post = function(doc, options) {
 			return this.__call('post', doc, options);
+		};
+
+		Database.prototype.remove = function(doc, options) {
+			return this.__call('remove', doc, options);
 		};
 
 		Database.prototype.query = function(fun, options) {
@@ -217,8 +227,6 @@
 					}
 				}
 
-				//console.debug('new ids:',newIds.length);
-
 				if (newIds.length > 0) {
 					from.allDocs({
 						'include_docs': true,
@@ -229,16 +237,7 @@
 
 						for (i=0; i < res.rows.length; i++) {
 							newDocs.push(res.rows[i].doc);
-							/*
-							if (res.rows[i].doc._deleted) {
-								// skip deleted documents, let them get caught by replication
-							} else {
-								newDocs.push(res.rows[i].doc);
-							}
-							*/
 						}
-
-						// console.debug('bulk-saving ' + newDocs.length + ' documents');
 
 						var doBulk = function(count, deferred, remainingDocs) {
 							if (remainingDocs.length > 0) {
@@ -271,12 +270,6 @@
 
 		Database.prototype.replicateFrom = function(from, options) {
 			var to = this;
-			/*
-			console.debug('cruisemonkey.Database: replicating:');
-			console.debug('cruisemonkey.Database: from=',from.name);
-			console.debug('cruisemonkey.Database: to=',to.name);
-			console.debug('cruisemonkey.Database: options=',options);
-			*/
 
 			var deferred = $q.defer();
 
@@ -303,7 +296,6 @@
 			}
 
 			from.pouch().replicate.to(to.pouch(), opts);
-
 			return deferred.promise;
 		};
 

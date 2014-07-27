@@ -18,7 +18,8 @@
 	.factory('EventService', ['$q', '$rootScope', '$timeout', '$location', 'uuid4', '_database', 'UserService', '$log', 'config.database.name', function($q, $rootScope, $timeout, $location, uuid4, _database, UserService, log, databaseName) {
 		log.info('EventService: Initializing EventService.');
 
-		var localdb = _database.get(databaseName);
+		var eventsdb    = _database.get(databaseName + '.events');
+		var favoritesdb = _database.get(databaseName + '.favorites');
 
 		var promisedResult = function(result) {
 			var deferred = $q.defer();
@@ -87,14 +88,14 @@
 			var promises = [], i;
 
 			for (i=0; i < args.length; i++) {
-				promises.push(localdb.query(args[i], angular.copy(options)));
+				promises.push(eventsdb.query(args[i], angular.copy(options)));
 			}
 			if (username) {
 				var opts = angular.copy(options);
 				angular.extend(opts, {
 					key:username
 				});
-				promises.push(_db.favorites().query('favorites-all', opts));
+				promises.push(favoritesdb.query('favorites-all', opts));
 				//console.log('opts=',opts);
 			}
 
@@ -146,7 +147,7 @@
 			}
 
 			eventToAdd.refreshLastUpdated();
-			_db.events().post(eventToAdd.getRawData()).then(function(response) {
+			eventsdb.post(eventToAdd.getRawData()).then(function(response) {
 				eventToAdd.setId(response.id);
 				eventToAdd.setRevision(response.rev);
 				deferred.resolve(eventToAdd);
@@ -176,7 +177,7 @@
 			}
 
 			ev.refreshLastUpdated();
-			_db.events().put(ev.getRawData()).then(function(response) {
+			eventsdb.put(ev.getRawData()).then(function(response) {
 				ev.setRevision(response.rev);
 				deferred.resolve(ev);
 			}, function(err) {
@@ -197,7 +198,7 @@
 			log.debug('EventService.removeEvent(' + ev.getId() + ')');
 			var deferred = $q.defer();
 
-			_db.events().remove(ev.getRawData()).then(function(response) {
+			eventsdb.remove(ev.getRawData()).then(function(response) {
 				deferred.resolve(response);
 			}, function(err) {
 				deferred.reject(err);
@@ -215,7 +216,7 @@
 
 			var deferred = $q.defer();
 			_allEvents = deferred.promise;
-			_db.events().query('events-all', {include_docs: true}).then(function(results) {
+			eventsdb.query('events-all', {include_docs: true}).then(function(results) {
 				var ret = [];
 				for (var i=0; i < results.rows.length; i++) {
 					ret.push(new CMEvent(results.rows[i].doc));
@@ -240,9 +241,9 @@
 
 			var deferred = $q.defer();
 			_allFavorites = deferred.promise;
-			
+
 			log.debug('EventService.getAllFavorites()');
-			_db.favorites().query('favorites-all', {include_docs:true}).then(function(results) {
+			favoritesdb.query('favorites-all', {include_docs:true}).then(function(results) {
 				var ret = [], i, fav;
 				for (i=0; i < results.rows.length; i++) {
 					fav = results.rows[i].doc;
@@ -436,7 +437,7 @@
 			_isFavorite = deferred.promise;
 
 			var docId = 'favorite:' + username + ':' + eventId;
-			_db.favorites().get(docId).then(function(response) {
+			favoritesdb.get(docId).then(function(response) {
 				deferred.resolve(response && response._id === docId && !response._deleted);
 			}, function(err) {
 				log.warn('error getting ' + docId, err);
@@ -470,7 +471,7 @@
 
 			var checkExisting = $q.defer();
 
-			_db.favorites().get(favId, {
+			favoritesdb.get(favId, {
 				revs: true,
 				open_revs: 'all',
 				conflicts: true
@@ -492,7 +493,7 @@
 			});
 
 			checkExisting.promise.then(function() {
-				_db.favorites().put(fav).then(function(res) {
+				favoritesdb.put(fav).then(function(res) {
 					log.debug('EventService.addFavorite(): favorite added.');
 					fav._rev = res.rev;
 					deferred.resolve(new CMFavorite(fav));
@@ -514,7 +515,7 @@
 
 			var deferred = $q.defer();
 
-			_db.favorites().query('favorites-all', {include_docs:true,key:username}).then(function(results) {
+			favoritesdb.query('favorites-all', {include_docs:true,key:username}).then(function(results) {
 				var remove = [], fav, promises, def, i;
 				for (i=0; i < results.rows.length; i++) {
 					fav = results.rows[i].doc;
@@ -524,7 +525,7 @@
 					}
 				}
 
-				_db.favorites().bulk(remove).then(function(results) {
+				favoritesdb.bulk(remove).then(function(results) {
 					deferred.resolve(results.length);
 				}, function(err) {
 					log.debug('bulk error:',err);
