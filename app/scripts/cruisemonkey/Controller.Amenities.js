@@ -1,5 +1,6 @@
 (function() {
 	'use strict';
+
 	angular.module('cruisemonkey.controllers.Amenities', ['angularLocalStorage', 'cruisemonkey.Decks'])
 	.filter('amenityFilter', function() {
 		return function(input, searchString) {
@@ -17,7 +18,9 @@
 		$rootScope.headerTitle = 'Amenities';
 		$rootScope.leftButtons = $rootScope.getLeftButtons();
 		$rootScope.rightButtons = [];
+
 		$scope.amenities = DeckService.getAmenities();
+
 		$scope.headerAmenities = {};
 		var lastDeck = 0;
 		angular.forEach($scope.amenities, function(amenity, index) {
@@ -26,6 +29,7 @@
 			}
 			lastDeck = amenity.getDeck();
 		});
+
 		$scope.openAmenity = function(ev, amenity) {
 			if (amenity.getId()) {
 				var uniqueId = amenity.getUniqueId();
@@ -35,10 +39,12 @@
 				log.warn('amenity does not have an ID: ' + amenity.toString());
 			}
 		};
+
 		storage.bind($scope, 'searchString', {
 			'storeName': 'cm.amenities'
 		});
 		log.debug('$scope.searchString: ' + $scope.searchString);
+
 		$scope.clearSearchString = function() {
 			log.info('clear search string');
 			var element = document.getElementById('search');

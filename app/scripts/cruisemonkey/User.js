@@ -1,5 +1,6 @@
 (function() {
 	'use strict';
+
 	var moduleName = 'cruisemonkey.User';
 	angular.module(moduleName, ['angularLocalStorage'])
 	.factory('UserService', ['$rootScope', 'storage', function($rootScope, storage) {
@@ -8,10 +9,12 @@
 			'username': '',
 			'password': ''
 		};
+
 		storage.bind($rootScope, '_user', {
 			'defaultValue': defaultValue,
 			'storeName': 'cm.user'
 		});
+
 		return {
 			'loggedIn': function() {
 				return $rootScope._user.loggedIn;
@@ -47,4 +50,5 @@
 			}
 		};
 	}]);
+
 }());

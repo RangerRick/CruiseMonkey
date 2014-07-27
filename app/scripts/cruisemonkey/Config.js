@@ -1,6 +1,8 @@
 (function() {
 	'use strict';
+
 	/*global moment: true*/
+
 	angular.module('cruisemonkey.Config', [])
 	.value('config.logging.useStringAppender', false)
 	.value('config.database.host', 'https://twitarr.rylath.net/db/')
@@ -11,6 +13,7 @@
 	.value('config.twitarr.root', 'https://twitarr.rylath.net/')
 	.value('config.app.version', '4.0.80')
 	.value('config.upgrade', true);
+	
 	angular.module('cruisemonkey.Settings', [
 		'angularLocalStorage',
 		'cruisemonkey.Config',
@@ -23,10 +26,12 @@
 			'urls.openinchrome': openInChrome,
 			'twitarr.root': twitarrRoot
 		};
+
 		storage.bind($rootScope, 'onaboat', {
 			'defaultValue': false,
 			'storeName': 'cm.settings.onaboat'
 		});
+
 		var startCruise = moment('2014-02-23 00:00');
 		var endCruise   = moment('2014-03-02 00:00');
 		var now = moment();
@@ -35,6 +40,7 @@
 			defaultValue['database.name'] = 'cruisemonkey-jccc4';
 			defaultValue['twitarr.root']  = 'http://jccc4.rccl.com/';
 		}
+
 		$rootScope.safeApply = function(fn) {
 			var phase = this.$root.$$phase;
 			if(phase === '$apply' || phase === '$digest') {
@@ -45,16 +51,20 @@
 				this.$apply(fn);
 			}
 		};
+
 		storage.bind($rootScope, '_settings', {
 			'defaultValue': defaultValue,
 			'storeName': 'cm.settings'
 		});
+
 		upgrades.register('4.0.2', 'Database and Twit-Arr Settings Reset', function() {
 			$rootScope._settings = getDefaults();
 		});
+
 		var getDefaults = function() {
 			return angular.copy(defaultValue);
 		};
+
 		if (now.isAfter(startCruise) && now.isBefore(endCruise) && !$rootScope.onaboat) {
 			$rootScope.onaboat = true;
 			var defaults = getDefaults();
@@ -62,21 +72,26 @@
 			$rootScope._settings['database.name'] = defaults['database.name'];
 			$rootScope._settings['twitarr.root']  = defaults['twitarr.root'];
 		}
+
 		var getSettings = function() {
 			var dbHost       = $rootScope._settings['database.host']     || databaseHost;
 			var dbName       = $rootScope._settings['database.name']     || databaseName;
 			var openInChrome = $rootScope._settings['urls.openinchrome'] || openInChrome;
 			var twRoot       = $rootScope._settings['twitarr.root']      || twitarrRoot;
+
 			if (dbHost === dbName) {
 				log.warn('Database host invalid!');
 				dbHost = databaseHost;
 			}
+
 			if (!twRoot.endsWith('/')) {
 				twRoot += '/';
 			}
+
 			if (!openInChrome) {
 				openInChrome = false;
 			}
+
 			return angular.copy({
 				databaseHost: dbHost,
 				databaseName: dbName,
@@ -84,22 +99,27 @@
 				twitarrRoot: twRoot
 			});
 		};
+
 		var getRemoteDatabaseUrl = function() {
 			var host = getSettings().databaseHost;
 			if (!host) {
 				host = 'http://' + $location.host();
 			}
+
 			if (!host.endsWith('/')) {
 				host += '/';
 			}
 			if (!host.startsWith('http')) {
 				host = 'http://' + host;
 			}
+
 			return host + getSettings().databaseName;
 		};
+
 		var getLocalDatabaseUrl = function() {
 			return getSettings().databaseName;
 		};
+
 		return {
 			'getSettings': getSettings,
 			'getDefaults': getDefaults,

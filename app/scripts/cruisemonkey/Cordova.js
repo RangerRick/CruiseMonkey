@@ -1,6 +1,8 @@
 (function() {
 	'use strict';
+
 	/*global isMobile: true*/
+
 	angular.module('cruisemonkey.Cordova', [
 		'ng',
 		'ngAnimate'
@@ -8,10 +10,13 @@
 	.factory('CordovaService', ['$rootScope', '$document', '$window', '$q', '$timeout', '$animate', '$log', function($rootScope, $document, $window, $q, $timeout, $animate, log) {
 		var isCordova = $q.defer();
 		var initWait = 5000;
+
 		var ua = navigator.userAgent;
 		var androidVersion = ua.indexOf('Android') >= 0? parseFloat(ua.slice(ua.indexOf("Android")+8)) : 0;
+
 		var onDeviceReady = function() {
 			log.info('CruiseMonkey Cordova Initialized.');
+
 			if ($window.device) {
 				log.info('Found Cordova Device Information.');
 				log.info('Model:    ' + $window.device.model);
@@ -19,6 +24,7 @@
 				log.info('Platform: ' + $window.device.platform);
 				log.info('UUID:     ' + $window.device.uuid);
 				log.info('Version:  ' + $window.device.version);
+				
 				// if we're on older Android, disable animations
 				if (androidVersion < 4.3) {
 					$animate.enabled(false);
@@ -28,7 +34,9 @@
 			}
 			isCordova.resolve(true);
 		};
+
 		document.addEventListener("deviceready", onDeviceReady, false);
+
 		if (isMobile) {
 			log.info('CordovaService: "isMobile" set.  Assuming Cordova.');
 		} else {
@@ -39,6 +47,7 @@
 				isCordova.resolve(false);
 			}, initWait);
 		}
+
 		var ifNotCordova = {
 			'otherwise': function(callback) {
 				$q.when(isCordova.promise).then(function(cordova) {
@@ -48,6 +57,7 @@
 				});
 			}
 		};
+
 		var ifCordova = function(callback) {
 			$q.when(isCordova.promise).then(function(cordova) {
 				if (cordova) {
@@ -56,6 +66,7 @@
 			});
 			return ifNotCordova;
 		};
+
 		return {
 			'isCordova': function() {
 				return isCordova.promise;

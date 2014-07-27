@@ -1,33 +1,43 @@
 (function() {
 	'use strict';
+
 	/*global moment: true*/
 	/*global Modernizr: true*/
 	/*global CMEvent: true*/
 	/*global CMFavorite: true*/
 	/*global CMDay: true*/
+
 	var attrA, attrB;
+
 	var sortEvent = function(a,b) {
 		attrA = a.getStart();
 		attrB = b.getStart();
+
 		if (attrA.isBefore(attrB)) {
 			return -1;
 		}
 		if (attrA.isAfter(attrB)) {
 			return 1;
 		}
+
 		attrA = a.getSummary().toLowerCase();
 		attrB = b.getSummary().toLowerCase();
+
 		if (attrA > attrB) { return 1; }
 		if (attrA < attrB) { return -1; }
+
 		attrA = a.getEnd();
 		attrB = b.getEnd();
+
 		if (attrA.isBefore(attrB)) { return -1; }
 		if (attrA.isAfter(attrB)) { return 1; }
+
 		return 0;
 	};
 	var sortDay = function(a,b) {
 		attrA = a.day;
 		attrB = b.day;
+		
 		if (attrA.isBefore(attrB)) {
 			return -1;
 		}
@@ -43,6 +53,7 @@
 			return sortEvent(a,b);
 		}
 	};
+
 	angular.module('cruisemonkey.controllers.Events', [
 		'ui.router',
 		'ionic',
@@ -54,9 +65,11 @@
 	])
 	.controller('CMEditEventCtrl', ['$q', '$scope', '$rootScope', 'UserService', '$log', function($q, $scope, $rootScope, UserService, log) {
 		log.info('Initializing CMEditEventCtrl');
+
 		if ($rootScope.editEvent) {
 			$scope.event = $rootScope.editEvent.toEditableBean();
 			delete $rootScope.editEvent;
+
 			log.debug('Found existing event to edit.');
 		} else {
 			var ev = new CMEvent();
@@ -65,20 +78,24 @@
 			ev.setUsername(UserService.getUsername());
 			ev.setPublic(true);
 			$scope.event = ev.toEditableBean();
+
 			log.debug('Created fresh event.');
 		}
 	}])
 	.factory('EventCache', [function() {
 		var cache = {};
+		
 		var getCacheEntry = function(name) {
 			if (cache[name]) {
 				return cache[name];
 			}
 			return [];
 		};
+
 		return {
 			get: function(name, searchString) {
 				var even = false, i, entry = null, ret = [];
+					
 				var cacheEntry = getCacheEntry(name);
 				if (!searchString) {
 					for (i=0; i < cacheEntry.length; i++) {
@@ -92,6 +109,7 @@
 						}
 					}
 				}
+
 				ret.sort(sortEvent);
 				for (i=0; i < ret.length; i++) {
 					ret[i].setEven(even);
@@ -105,6 +123,7 @@
 					entry = data[i];
 					evs[entry.getId()] = entry;
 				}
+
 				angular.forEach(evs, function(e) {
 					entries.push(e);
 				});
@@ -118,21 +137,27 @@
 			$location.path('/events/official');
 			return;
 		}
+
 		var eventType = $stateParams.eventType;
 		log.info('Initializing CMEventCtrl');
 		var refreshInterval = 2; // seconds
+
 		$rootScope.headerTitle = eventType.capitalize() + ' Events';
+
 		$scope.isDisabled = true;
 		$timeout(function() {
 			$scope.isDisabled = false;
 		}, 500);
+
 		var message = 'Updating ' + eventType.capitalize() + ' events...';
 		var scrolled = false;
+
 		var withDays = function(events) {
 			var ret = [],
 				ev, i,
 				lastDay = moment('1970-01-01 00:00'),
 				currentDay = null;
+
 			for (i=0; i < events.length; i++) {
 				ev = events[i];
 				currentDay = ev.getDay();
@@ -142,16 +167,20 @@
 				}
 				ret.push(ev);
 			}
+
 			return ret;
 		};
+
 		storage.bind($scope, 'searchString', {
 			'storeName': 'cm.event.' + eventType
 		});
 		log.debug('$scope.searchString: ' + $scope.searchString);
+
 		$scope.entries = withDays(EventCache.get(eventType, $scope.searchString) || []);
 		if ($scope.entries.length === 0) {
 			notifications.status(message, 2000);
 		}
+
 		var eventMethod = EventService.getOfficialEvents;
 		if (eventType === 'official') {
 			eventMethod = EventService.getOfficialEvents;
@@ -160,7 +189,9 @@
 		} else if (eventType === 'my') {
 			eventMethod = EventService.getMyEvents;
 		}
+
 		var timeout = null;
+
 		var getTextForElement = function(el) {
 			var ret = '<' + el.nodeName.toLowerCase(),
 				i, attr;
@@ -173,6 +204,7 @@
 			ret += '>';
 			return ret;
 		};
+
 		var goToHash = function(hash) {
 			var elm, scrollEl, position = 0;
 			elm = document.getElementById(hash);
@@ -194,12 +226,14 @@
 				log.debug("can't find element " + hash);
 			}
 		};
+
 		var updateEntries = function() {
 			var cached = withDays(EventCache.get(eventType, $scope.searchString));
 			log.debug('cached events:',cached);
 			$scope.entries = cached;
 			$scope.$broadcast('scroll.resize');
 		};
+
 		var delayTimeout = null;
 		var updateDelayed = function(delay) {
 			if (delayTimeout) {
@@ -211,22 +245,27 @@
 				updateEntries();
 			}, delay || 300);
 		};
+
 		$scope.searchChanged = function(newSearchString) {
 			$scope.searchString = newSearchString;
 			updateDelayed();
 		};
+
 		var refreshing = null;
 		var doRefresh = function() {
 			if (refreshing) {
 				return refreshing;
 			}
+
 			var deferred = $q.defer();
 			refreshing = deferred.promise;
+
 			log.debug('CMEventCtrl.doRefresh(): refreshing.');
 			$q.when(eventMethod()).then(function(e) {
 				log.debug('CMEventCtrl: got ' + e.length + ' ' + eventType + ' events');
 				notifications.removeStatus(message);
 				deferred.resolve(true);
+
 				e.sort(sortEvent);
 				EventCache.put(eventType, e);
 				updateEntries();
@@ -235,12 +274,16 @@
 				notifications.removeStatus(message);
 				deferred.resolve(false);
 			});
+
 			refreshing['finally'](function() {
 				refreshing = null;
 			});
+
 			return refreshing;
 		};
+
 		doRefresh();
+
 		var refreshEvents = function(immediately) {
 			if (timeout) {
 				//log.debug('CMEventCtrl.refreshEvents(): Refresh already in-flight.  Skipping.');
@@ -256,6 +299,7 @@
 				}, refreshInterval * 1000);
 			}
 		};
+
 		var removeEventFromDisplay = function(ev) {
 			var eventId = ev.getId(),
 				i, entry, removeDay = false, previousEntry, nextEntry;
@@ -264,6 +308,7 @@
 				if (entry.getId() === eventId) {
 					// remove the event from the list
 					$scope.entries.splice(i,1);
+
 					previousEntry = $scope.entries[i-1];
 					nextEntry     = $scope.entries[i+1];
 					log.debug('previousEntry=',previousEntry);
@@ -279,6 +324,7 @@
 							// ...and the next entry is a new day, remove the day
 							removeDay = true;
 						}
+
 						if (removeDay) {
 							$scope.entries.splice(i-1, 1);
 						}
@@ -287,12 +333,14 @@
 				}
 			}
 		};
+
 		$ionicModal.fromTemplateUrl('template/event-edit.html', function(modal) {
 			$scope.modal = modal;
 		}, {
 			scope: $scope,
 			animation: 'slide-in-up'
 		});
+
 		$scope.$on('cm.main.refreshEvents', function() {
 			log.debug('CMEventCtrl: Manual refresh triggered.');
 			$timeout(function() {
@@ -324,6 +372,7 @@
 				refreshEvents(true);
 			}, 100);
 		});
+
 		$scope.clearSearchString = function() {
 			log.info('clear search string');
 			var element = document.getElementById('search');
@@ -336,21 +385,27 @@
 				element.fireEvent('change');
 			}
 		};
+
 		$scope.getDateId = function(date) {
 			return 'date-' + date.unix();
 		};
+
 		$scope.isDay = function(entry) {
 			return entry && entry.day !== undefined;
 		};
+
 		$scope.prettyDate = function(date) {
 			return date? date.format('dddd, MMMM Do') : undefined;
 		};
+
 		$scope.fuzzy = function(date) {
 			return date? date.fromNow() : undefined;
 		};
+
 		$scope.justTime = function(date) {
 			return date? date.format('hh:mma') : undefined;
 		};
+
 		$scope.goToNow = function() {
 			var nextEvent = EventService.getNextEvent($scope.events);
 			if (nextEvent) {
@@ -359,6 +414,7 @@
 				goToHash('the-end');
 			}
 		};
+
 		$scope.trash = function(ev) {
 			if (window.confirm('Are you sure you want to delete "' + ev.getSummary() + '"?')) {
 				removeEventFromDisplay(ev);
@@ -367,17 +423,21 @@
 				});
 			}
 		};
+
 		$scope.onFavoriteChanged = function(ev) {
 			$scope.safeApply(function() {
 				var i, entry, eventId = ev.getId();
 				log.debug('CMEventCtrl.onFavoriteChanged(' + eventId + ')');
+
 				if (ev.isFavorite()) {
 					// Event was favorited, unfavorite it
 					ev.setFavorite(undefined);
+
 					// If we're in the 'my' browser, it should disappear from the list
 					if (eventType === 'my') {
 						removeEventFromDisplay(ev);
 					}
+
 					EventService.removeFavorite(eventId).then(function() {
 						refreshEvents(true);
 					});
@@ -390,12 +450,15 @@
 							break;
 						}
 					}
+
 					if (!existing) {
 						log.warn('Somehow favorited an event that does not exist! (' + eventId + ')');
 						return;
 					}
+
 					// Add a temporary favorite object so the UI updates
 					existing.setFavorite(new CMFavorite());
+
 					EventService.addFavorite(eventId).then(function(fav) {
 						refreshEvents(true);
 						/*
@@ -412,6 +475,7 @@
 				}
 			});
 		};
+
 		$scope.onPublicChanged = function(ev) {
 			log.debug('onPublicChanged(' + ev.getId() + ')');
 			$scope.safeApply(function() {
@@ -421,33 +485,43 @@
 				EventService.updateEvent(ev);
 			});
 		};
+
 		$scope.edit = function(ev) {
 			$scope.safeApply(function() {
 				$scope.event = ev;
 				$scope.eventData = ev.toEditableBean();
+
 				$scope.modal.show();
 			});
 		};
+
 		$scope.cancelModal = function(e) {
 			e.preventDefault();
 			e.stopPropagation();
+
 			log.debug('closing modal (cancel)');
 			$scope.event = undefined;
 			$scope.eventData = undefined;
 			$scope.modal.hide();
 		};
+
 		$scope.saveModal = function(data) {
 			log.debug('closing modal (save)');
+
 			var username = UserService.getUsername();
+
 			if (!username) {
 				log.error('No username!');
 				$scope.modal.hide();
 				return;
 			}
+
 			var ev = $scope.event;
 			ev.fromEditableBean(data);
 			ev.setUsername(username);
+
 			log.debug('saving=', ev.getRawData());
+
 			if (ev.getRevision() && $scope.entries) {
 				// update the existing event in the UI
 				var eventId = ev.getId(), i, existing;
@@ -460,17 +534,20 @@
 					}
 				}
 			}
+
 			$q.when(EventService.addEvent(ev)).then(function(res) {
 				log.debug('event added:', res);
 				$scope.modal.hide();
 				refreshEvents(true);
 			});
 		};
+
 		$scope.$on('$stateChangeStart', function(event, toState, toParams, fromState, fromParams){
 			if ($scope.modal) {
 				$scope.modal.remove();
 			}
 		});
+
 		$rootScope.leftButtons = $rootScope.getLeftButtons();
 		$rootScope.leftButtons.push({
 			type: 'button-clear',
@@ -478,6 +555,7 @@
 			tap: $scope.goToNow
 		});
 		$rootScope.rightButtons = [];
+
 		if (UserService.getUsername() && UserService.getUsername() !== '') {
 			$rootScope.rightButtons.push({
 				type: 'button-clear',
@@ -485,14 +563,17 @@
 				tap: function(e) {
 					e.preventDefault();
 					e.stopPropagation();
+
 					var ev = new CMEvent();
 					ev.setStart(moment());
 					ev.setEnd(ev.getStart().clone());
 					ev.setEnd(ev.getEnd().add('hours', 1));
 					ev.setUsername(UserService.getUsername());
 					ev.setPublic(true);
+
 					$scope.event = ev;
 					$scope.eventData = ev.toEditableBean();
+
 					$scope.modal.show();
 				}
 			});

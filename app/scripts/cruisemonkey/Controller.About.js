@@ -1,5 +1,6 @@
 (function() {
 	'use strict';
+
 	angular.module('cruisemonkey.controllers.About', [
 		'cruisemonkey.Config'
 	])
@@ -9,13 +10,16 @@
 		$rootScope.leftButtons = $rootScope.getLeftButtons();
 		$rootScope.rightButtons = [];
 		$scope.version = version;
+		
 		$scope.goToSite = function(site) {
 			$rootScope.openUrl(site, '_system');
 		};
+
 		/*global moment: true*/
 		var newest = moment(0),
 			currentEvent = null,
 			currentFavorite = null;
+
 		EventService.getAllEvents().then(function(events) {
 			angular.forEach(events, function(ev) {
 				currentEvent = ev.getLastUpdated();
@@ -23,6 +27,7 @@
 					newest = currentEvent;
 				}
 			});
+
 			$scope.lastUpdatedEvent = newest;
 		});
 	}]);

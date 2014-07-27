@@ -1,9 +1,11 @@
 (function () {
 	'use strict';
+
 	/*global Connection: true*/
 	/*global isMobile: true*/
 	/*global ionic: true*/
 	/*global Offline: true*/
+
 	angular.module('cruisemonkey',
 	[
 		'ionic',
@@ -35,10 +37,14 @@
 		if (isMobile) {
 			ionic.Platform.fullScreen(false,true);
 		}
+
 		$compileProvider.aHrefSanitizationWhitelist(/^\s*(https?|ftp|mailto|file|tel):/);
 		$compileProvider.imgSrcSanitizationWhitelist(/^\s*(https?|file):/);
+
 		cfpLoadingBarProvider.includeSpinner = false;
+
 		$urlRouterProvider.otherwise('/events/official');
+
 		$stateProvider
 			.state('login', {
 				url: '/login',
@@ -169,27 +175,33 @@
 	}])
 	.run(['$q', '$rootScope', '$window', '$location', '$interval', '$urlRouter', '$log', 'UserService', 'storage', 'CordovaService', 'UpgradeService', '_db', 'NotificationService', 'SettingsService', 'SeamailService', function($q, $rootScope, $window, $location, $interval, $urlRouter, log, UserService, storage, cor, upgrades, _db, notifications, SettingsService, SeamailService) {
 		log.debug('CruiseMonkey run() called.');
+
 		/*global moment: true*/
 		$rootScope.lastModified = moment();
+
 		upgrades.register('3.9.3', 'Old Cookies Cleaned Up', function() {
 			// remove old cm.db.sync cookie
 			storage.remove('cm.db.sync');
+
 			// update deck to be a number, if it isn't
 			var deck = storage.get('cm.deck');
 			if (deck !== undefined && (typeof deck === 'string' || deck instanceof String)) {
 				storage.set('cm.deck', parseInt(deck, 10));
 			}
 		});
+
 		storage.bind($rootScope, 'firstInitialization', {
 			'defaultValue': true,
 			'storeName': 'cm.firstInitialization'
 		});
+
 		$window.handleOpenURL = function(url) {
 			var translated = url.replace('cruisemonkey://','/');
 			$rootScope.safeApply(function() {
 				$location.path(translated);
 			});
 		};
+
 		$rootScope.openLeft = function(evt) {
 			log.info('Opening Sidebar.');
 			if ($rootScope.sideMenuController) {
@@ -199,6 +211,7 @@
 			}
 			return false;
 		};
+
 		$rootScope.closeLeft = function(evt) {
 			log.info('Closing Sidebar.');
 			if ($rootScope.sideMenuController) {
@@ -208,6 +221,7 @@
 			}
 			return false;
 		};
+
 		$rootScope.getLeftButtons = function() {
 			return [{
 				type: 'button-clear',
@@ -215,6 +229,7 @@
 				tap: $rootScope.openLeft
 			}];
 		};
+
 		$rootScope.openUrl = function(url, target) {
 			var oic = SettingsService.getOpenInChrome();
 			if (oic) {
@@ -224,12 +239,16 @@
 			}
 			$window.open(url, target);
 		};
+
 		$rootScope.openSeamail = function() {
 			$rootScope.openUrl(SettingsService.getTwitarrRoot() + '#/seamail/inbox', '_system');
 		};
+
 		$rootScope.$on('$locationChangeSuccess', function(evt, newUrl, oldUrl) {
 			$rootScope.user = UserService.get();
+
 			evt.preventDefault();
+
 			if (UserService.loggedIn()) {
 				$urlRouter.sync();
 				angular.noop();
@@ -237,6 +256,7 @@
 				$rootScope.closeLeft();
 				return;
 			}
+
 			if (newUrl.endsWith('/events') || newUrl.endsWith('/events/')) {
 				$location.path('/events/official');
 				angular.noop();
@@ -244,6 +264,7 @@
 				$rootScope.closeLeft();
 				return;
 			}
+
 			if (newUrl.endsWith('/events/my')) {
 				$location.path('/login');
 				angular.noop();
@@ -251,26 +272,33 @@
 				$rootScope.closeLeft();
 				return;
 			}
+
 			$urlRouter.sync();
 			storage.set('cm.lasturl', newUrl);
 			angular.noop();
 			$rootScope.closeLeft();
+
 			return;
 		});
+
+
 		$rootScope.$on('$viewContentLoaded', function(evt, toState, toParams, fromState, fromParams) {
 			$rootScope.closeLeft();
 		});
+
 		$rootScope.$on('cm.foreground', function(evt, isForeground) {
 			if (isForeground) {
 				$rootScope.closeLeft();
 			}
 		});
+
 		var savedUrl = storage.get('cm.lasturl');
 		if (savedUrl) {
 			log.info('main: lasturl = ' + savedUrl);
 			var index = savedUrl.indexOf('#');
 			if (index > -1) {
 				savedUrl = decodeURIComponent(savedUrl.substring(savedUrl.indexOf('#') + 1));
+
 				// remove the goToHash hash from event URLs
 				if (savedUrl.contains('/events/') || savedUrl.indexOf('#') > -1) {
 					savedUrl = savedUrl.substring(0,savedUrl.indexOf('#'));
@@ -279,9 +307,11 @@
 				$location.url(savedUrl);
 			}
 		}
+
 		var databaseInitialized = $q.defer();
 		$rootScope.foreground = true;
 		$rootScope.online     = undefined;
+
 		$rootScope.$watch('foreground', function(newValue, oldValue) {
 			if (newValue === undefined) {return;}
 			if (newValue === oldValue) {
@@ -300,6 +330,7 @@
 			log.debug('online status is now ' + $rootScope.online);
 			$rootScope.$broadcast('cm.online', newValue);
 		});
+
 		var onOnline = function() {
 			$rootScope.safeApply(function() {
 				$rootScope.online = true;
@@ -310,6 +341,7 @@
 				$rootScope.online = false;
 			});
 		};
+
 		document.addEventListener('pause', function() {
 			$rootScope.safeApply(function() {
 				$rootScope.foreground = false;
@@ -323,16 +355,19 @@
 				});
 			});
 		}, false);
+		
 		var initializeOffline = function() {
 			Offline.options.checks = {
 				xhr: {
 					url: SettingsService.getRemoteDatabaseUrl()
 				}
 			};
+
 			if (Offline.options.reconnect) {
 				log.debug('initializeOffline() called, but options already initialized.');
 				return;
 			}
+
 			Offline.options.reconnect = {
 				initialDelay: 3,
 				delay: 10
@@ -343,6 +378,7 @@
 			Offline.on('confirmed-down', onOffline, $rootScope);
 			Offline.check();
 		};
+
 		var doDbInit = function() {
 			_db.setUserDatabase(SettingsService.getLocalDatabaseUrl());
 			_db.setRemoteDatabase(SettingsService.getRemoteDatabaseUrl());
@@ -361,9 +397,11 @@
 				databaseInitialized.reject(err);
 			});
 		};
+
 		$q.when(upgrades.upgrade()).then(function() {
 			doDbInit();
 		});
+
 		$rootScope.$on('cm.loggedIn', function(event) {
 			log.info('User "' + UserService.getUsername() + '" logged in.');
 		});

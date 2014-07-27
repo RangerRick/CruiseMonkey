@@ -2,6 +2,7 @@ var MockDeviceResource = function($q, $rootScope) {
 	return {		
 		get: function(params) {
 			var deferred = $q.defer();
+
 			setTimeout(function() {
 				$rootScope.$apply(function() {
 					if(params.id == "fcf8f8ba-49d1-4f93-beb6-fae6850603cf") {
@@ -11,6 +12,7 @@ var MockDeviceResource = function($q, $rootScope) {
 					}
 				});
 			}, 0);
+
 			return deferred.promise;
 		}
 	}

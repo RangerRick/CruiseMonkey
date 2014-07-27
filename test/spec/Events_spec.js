@@ -7,9 +7,12 @@ describe('cruisemonkey.Events', function() {
 	var $rootScope   = null;
 	var $httpBackend = null;
 	var database     = null;
+
 	jasmine.getEnv().defaultTimeoutInterval = 5000;
+
 	var dbName      = 'cmunittest';
 	var async       = new AsyncSpec(this);
+
 	var getEvents = function(results) {
 		var ret = {};
 		if (!results) {
@@ -24,14 +27,18 @@ describe('cruisemonkey.Events', function() {
 		});
 		return ret;
 	};
+
 	var doSync = function() {
 		var deferred = $q.defer();
+
 		var remote = database.get(webroot + dbName);
 		service.syncFrom(remote).then(function() {
 			deferred.resolve();
 		});
+
 		return deferred.promise;
 	};
+
 	async.beforeEach(function(done) {
 		module('cruisemonkey.Database', 'cruisemonkey.User', 'cruisemonkey.Events', function($provide) {
 			$provide.value('config.logging.useStringAppender', true);
@@ -51,11 +58,14 @@ describe('cruisemonkey.Events', function() {
 			$timeout     = timeout;
 			$rootScope   = scope;
 			$httpBackend = backend;
+
 			backend.when('GET', 'http://jccc4.rccl.com/cruisemonkey-jccc4').respond(500, '');
+
 			var pristine  = database.get(webroot + 'test-pristine');
 			var remote    = database.get(webroot + dbName);
 			var events    = database.get(dbName + '.events');
 			var favorites = database.get(dbName + '.favorites');
+
 			var destroyed = [remote.destroy(), events.destroy(), favorites.destroy()];
 			$q.all(destroyed).then(function() {
 				remote.syncFrom(pristine).then(function() {
@@ -68,6 +78,7 @@ describe('cruisemonkey.Events', function() {
 			});
 		}]);
 	});
+
 	describe("#getAllEvents", function() {
 		async.it('should return all events', function(done) {
 			expect(service.getAllEvents).toBeDefined();
@@ -82,10 +93,12 @@ describe('cruisemonkey.Events', function() {
 			$rootScope.$apply();
 		});
 	});
+
 	describe("#getOfficialEvents", function() {
 		async.it('should return all official events', function(done) {
 			userService.save({'loggedIn': true, 'username':'rangerrick', 'password':'whatever'});
 			expect(service.getOfficialEvents).toBeDefined();
+
 			doSync().then(function() {
 				service.getOfficialEvents().then(function(result) {
 					expect(result.length).toEqual(1);
@@ -98,13 +111,16 @@ describe('cruisemonkey.Events', function() {
 					console.debug('failed:',err);
 				});
 			});
+
 			$rootScope.$apply();
 		});
 	});
+
 	describe("#getUnofficialEvents", function() {
 		async.it('should return only the events marked isPublic which are not official', function(done) {
 			userService.save({'loggedIn': true, 'username':'rangerrick', 'password':'whatever'});
 			expect(service.getUnofficialEvents).toBeDefined();
+
 			doSync().then(function() {
 				service.getUnofficialEvents().then(function(result) {
 					var items = getEvents(result);
@@ -116,13 +132,16 @@ describe('cruisemonkey.Events', function() {
 					done();
 				});
 			});
+
 			$rootScope.$apply();
 		});
 	});
+
 	describe("#getUserEvents", function() {
 		async.it('should return only the events for user "rangerrick"', function(done) {
 			userService.save({'loggedIn': true, 'username':'rangerrick', 'password':'whatever'});
 			expect(service.getUserEvents).toBeDefined();
+
 			doSync().then(function() {
 				service.getUserEvents().then(function(result) {
 					expect(result.length).toEqual(2);
@@ -136,11 +155,14 @@ describe('cruisemonkey.Events', function() {
 					done();
 				});
 			});
+
 			$rootScope.$apply();
 		});
+
 		async.it('should not return any events if the user is not logged in', function(done) {
 			userService.save({'loggedIn': false, 'username':'rangerrick', 'password':'whatever'});
 			expect(service.getUserEvents).toBeDefined();
+
 			doSync().then(function() {
 				service.getUserEvents().then(function(result) {
 					console.debug('result=',result);
@@ -150,13 +172,16 @@ describe('cruisemonkey.Events', function() {
 				});
 				$timeout.flush();
 			})
+
 			$rootScope.$apply();
 		});
 	});
+
 	describe("#getMyEvents", function() {
 		async.it('should return only the events that user "rangerrick" has created or favorited', function(done) {
 			userService.save({'loggedIn': true, 'username':'rangerrick', 'password':'whatever'});
 			expect(service.getMyEvents).toBeDefined();
+
 			doSync().then(function() {
 				service.getMyEvents().then(function(result) {
 					expect(result.length).toEqual(3);
@@ -170,11 +195,14 @@ describe('cruisemonkey.Events', function() {
 					done();
 				});
 			});
+
 			$rootScope.$apply();
 		});
+
 		async.it('should return nothing when the user is not logged in', function(done) {
 			userService.save({'loggedIn': false, 'username':'rangerrick', 'password':'whatever'});
 			expect(service.getMyEvents).toBeDefined();
+			
 			doSync().then(function() {
 				service.getMyEvents().then(function() {
 				}, function(err) {
@@ -183,13 +211,16 @@ describe('cruisemonkey.Events', function() {
 				});
 				$timeout.flush();
 			});
+			
 			$rootScope.$apply();
 		});
 	});
+
 	describe('#getMyFavorites', function() {
 		async.it('should return a list of favorited ids', function(done) {
 			userService.save({'loggedIn': true, 'username':'rangerrick', 'password':'whatever'});
 			expect(service.getMyFavorites).toBeDefined();
+
 			doSync().then(function() {
 				service.getMyFavorites().then(function(result) {
 					expect(result.length).toEqual(1);
@@ -199,11 +230,14 @@ describe('cruisemonkey.Events', function() {
 					done();
 				});
 			});
+
 			$rootScope.$apply();
 		});
+
 		async.it('should return nothing when the user is not logged in', function(done) {
 			userService.save({'loggedIn': false, 'username':'rangerrick', 'password':'whatever'});
 			expect(service.getMyFavorites).toBeDefined();
+			
 			doSync().then(function() {
 				service.getMyFavorites().then(function() {
 				}, function(err) {
@@ -212,13 +246,16 @@ describe('cruisemonkey.Events', function() {
 				});
 				$timeout.flush();
 			});
+
 			$rootScope.$apply();
 		});
 	});
+
 	describe('#isFavorite', function() {
 		async.it('should return true if the given id is a favorite while rangerrick is logged in', function(done) {
 			userService.save({'loggedIn': true, 'username':'rangerrick', 'password':'whatever'});
 			expect(service.isFavorite).toBeDefined();
+
 			doSync().then(function() {
 				service.isFavorite('event:official-event').then(function(result) {
 					console.debug('checking official-event');
@@ -230,11 +267,14 @@ describe('cruisemonkey.Events', function() {
 					});
 				});
 			});
+
 			$rootScope.$apply();
 		});
+
 		async.it('should return false if the given id is a favorite while rangerrick is not logged in', function(done) {
 			userService.save({'loggedIn': false, 'username':'rangerrick', 'password':'whatever'});
 			expect(service.isFavorite).toBeDefined();
+
 			doSync().then(function() {
 				service.isFavorite('event:official-event').then(function() {
 				}, function(err) {
@@ -243,20 +283,25 @@ describe('cruisemonkey.Events', function() {
 				});
 				$timeout.flush();
 			});
+
 			$rootScope.$apply();
 		});
+
 		async.it('should return false if the given id is a favorite of another user', function(done) {
 			userService.save({'loggedIn': true, 'username':'bob', 'password':'whatever'});
 			expect(service.isFavorite).toBeDefined();
+
 			doSync().then(function() {
 				service.isFavorite('event:rangerrick-public').then(function(result) {
 					expect(result).toBeFalsy();
 					done();
 				});
 			});
+
 			$rootScope.$apply();
 		});
 	});
+
 	describe('#addFavorite', function() {
 		async.it('should create a new favorite in the database if ther user is logged in', function(done) {
 			userService.save({'loggedIn': true, 'username':'rangerrick', 'password':'whatever'});
@@ -276,9 +321,11 @@ describe('cruisemonkey.Events', function() {
 			});
 			$rootScope.$apply();
 		});
+
 		async.it('should not create a new favorite in the database if the user is not logged in', function(done) {
 			userService.save({'loggedIn': false, 'username':'rangerrick', 'password':'whatever'});
 			expect(service.addFavorite).toBeDefined();
+			
 			doSync().then(function() {
 				service.addFavorite('17').then(function(result) {
 				}, function(err) {
@@ -287,13 +334,16 @@ describe('cruisemonkey.Events', function() {
 				});
 				$timeout.flush();
 			});
+
 			$rootScope.$apply();
 		});
 	});
+
 	describe('#removeFavorite', function() {
 		async.it('should not remove a favorite from the database if the user is not logged in', function(done) {
 			userService.save({'loggedIn': false, 'username':'rangerrick', 'password':'whatever'});
 			expect(service.removeFavorite).toBeDefined();
+
 			doSync().then(function() {
 				service.removeFavorite('event:official-event').then(function(result) {
 				}, function(err) {
@@ -302,11 +352,13 @@ describe('cruisemonkey.Events', function() {
 				});
 				$timeout.flush();
 			});
+
 			$rootScope.$apply();
 		});
 		async.it('should remove a favorite from the database if the user is logged in', function(done) {
 			userService.save({'loggedIn': true, 'username':'rangerrick', 'password':'whatever'});
 			expect(service.removeFavorite).toBeDefined();
+
 			doSync().then(function() {
 				service.removeFavorite('event:official-event').then(function(result) {
 					expect(result).toBeDefined();
@@ -318,13 +370,16 @@ describe('cruisemonkey.Events', function() {
 					});
 				});
 			});
+
 			$rootScope.$apply();
 		});
 	});
+
 	describe('#addEvent', function() {
 		async.it('should add a new event', function(done) {
 			userService.save({'loggedIn': true, 'username':'rangerrick', 'password':'whatever'});
 			expect(service.addEvent).toBeDefined();
+
 			doSync().then(function() {
 				service.addEvent({
 					'summary': 'This is a test.',
@@ -339,14 +394,17 @@ describe('cruisemonkey.Events', function() {
 					done();
 				});
 			});
+
 			$rootScope.$apply();
 		});
 	});
+
 	describe('#updateEvent', function() {
 		async.it('should update an existing event', function(done) {
 			userService.save({'loggedIn': true, 'username':'rangerrick', 'password':'whatever'});
 			expect(service.addEvent).toBeDefined();
 			expect(service.updateEvent).toBeDefined();
+
 			doSync().then(function() {
 				service.addEvent({
 					'summary': 'This is a test.',
@@ -369,16 +427,20 @@ describe('cruisemonkey.Events', function() {
 					});
 				});
 			});
+
 			$rootScope.$apply();
 		});
 	});
+
 	describe('#removeEvent', function() {
 		async.it('should remove an existing event', function(done) {
 			userService.save({'loggedIn': true, 'username':'rangerrick', 'password':'whatever'});
 			expect(service.addEvent).toBeDefined();
+
 			doSync().then(function() {
 				service.getAllEvents().then(function(result) {
 					var items = getEvents(result);
+
 					var existingId = 'event:rangerrick-private';
 					var existingRev = parseInt(items[existingId].getRevision().split('-')[0]);
 					expect(existingRev).toBeGreaterThan(0);
@@ -387,15 +449,19 @@ describe('cruisemonkey.Events', function() {
 						expect(result.ok).toBeTruthy();
 						expect(result.id).toBe(existingId);
 						expect(result.rev).toBeDefined();
+
 						var newRev = parseInt(result.rev.split('-')[0]);
 						expect(newRev).toBe(existingRev + 1);
+
 						done();
 					});
 				});
 			});
+
 			$rootScope.$apply();
 		});
 	});
+
 	describe('#getEventForTime', function() {
 		it('Should find the next event in a simple list of events with only start times.', function() {
 			var eventList = [
@@ -418,15 +484,19 @@ describe('cruisemonkey.Events', function() {
 			var ev = service.getEventForTime(moment('2009-01-01 00:00'), eventList);
 			expect(ev).toBeDefined();
 			expect(ev.getSummary()).toBe('A');
+
 			ev = service.getEventForTime(moment('2010-01-01 00:00'), eventList);
 			expect(ev).toBeDefined();
 			expect(ev.getSummary()).toBe('A');
+
 			ev = service.getEventForTime(moment('2010-01-01 00:01'), eventList);
 			expect(ev).toBeDefined();
 			expect(ev.getSummary()).toBe('B');
+
 			ev = service.getEventForTime(moment('2010-05-01 00:00'), eventList);
 			expect(ev).not.toBeDefined();
 		});
+
 		it('Should find the next event in a simple list of events with start and end times.', function() {
 			var eventList = [
 				new CMEvent({
@@ -451,16 +521,20 @@ describe('cruisemonkey.Events', function() {
 			ev = service.getEventForTime(moment('2010-01-01 00:01'), eventList);
 			expect(ev).toBeDefined();
 			expect(ev.getSummary()).toBe('A');
+
 			ev = service.getEventForTime(moment('2010-01-01 00:59'), eventList);
 			expect(ev).toBeDefined();
 			expect(ev.getSummary()).toBe('A');
+
 			ev = service.getEventForTime(moment('2010-01-01 01:00'), eventList);
 			expect(ev).toBeDefined();
 			expect(ev.getSummary()).toBe('A');
+
 			ev = service.getEventForTime(moment('2010-01-01 01:01'), eventList);
 			expect(ev).toBeDefined();
 			expect(ev.getSummary()).toBe('B');
 		});
+
 		it('Should find the first event that matches when multiple events match the given time.', function() {
 			var eventList = [
 				new CMEvent({
@@ -497,28 +571,36 @@ describe('cruisemonkey.Events', function() {
 			ev = service.getEventForTime(moment('2010-01-01 00:00'), eventList);
 			expect(ev).toBeDefined();
 			expect(ev.getSummary()).toBe('A');
+
 			ev = service.getEventForTime(moment('2010-01-01 11:59'), eventList);
 			expect(ev).toBeDefined();
 			expect(ev.getSummary()).toBe('A');
+
 			ev = service.getEventForTime(moment('2010-01-01 12:00'), eventList);
 			expect(ev).toBeDefined();
 			expect(ev.getSummary()).toBe('A');
+
 			ev = service.getEventForTime(moment('2010-01-01 12:01'), eventList);
 			expect(ev).toBeDefined();
 			expect(ev.getSummary()).toBe('A');
+
 			ev = service.getEventForTime(moment('2010-01-01 23:59'), eventList);
 			expect(ev).toBeDefined();
 			expect(ev.getSummary()).toBe('A');
+
 			ev = service.getEventForTime(moment('2010-01-02 00:00'), eventList);
 			expect(ev).toBeDefined();
 			expect(ev.getSummary()).toBe('A');
+
 			ev = service.getEventForTime(moment('2010-01-02 00:01'), eventList);
 			expect(ev).toBeDefined();
 			expect(ev.getSummary()).toBe('B');
+
 			ev = service.getEventForTime(moment('2010-01-03 04:00'), eventList);
 			expect(ev).toBeDefined();
 			expect(ev.getSummary()).toBe('D');
 		});
+
 		it('Should go to the day if the event is the first for the day.', function() {
 			var eventList = [
 				new CMDay(moment('2010-01-01 00:00')),
@@ -560,56 +642,67 @@ describe('cruisemonkey.Events', function() {
 			expect(ev).toBeDefined();
 			expect(ev instanceof CMDay).toBe(true);
 			expect(ev.day.isSame(moment('2010-01-01 00:00'))).toBe(true);
+
 			// during a event, should match first day
 			ev = service.getEventForTime(moment('2010-01-01 01:00'), eventList);
 			expect(ev).toBeDefined();
 			expect(ev instanceof CMDay).toBe(true);
 			expect(ev.day.isSame(moment('2010-01-01 00:00'))).toBe(true);
+
 			// after a event, should match second day
 			ev = service.getEventForTime(moment('2010-01-01 02:00'), eventList);
 			expect(ev).toBeDefined();
 			expect(ev instanceof CMDay).toBe(true);
 			expect(ev.day.isSame(moment('2010-02-01 00:00'))).toBe(true);
+
 			// during b event, should match second day
 			ev = service.getEventForTime(moment('2010-02-01 00:30'), eventList);
 			expect(ev).toBeDefined();
 			expect(ev instanceof CMDay).toBe(true);
 			expect(ev.day.isSame(moment('2010-02-01 00:00'))).toBe(true);
+
 			// during c event, should match c
 			ev = service.getEventForTime(moment('2010-02-01 01:30'), eventList);
 			expect(ev).toBeDefined();
 			expect(ev instanceof CMEvent).toBe(true);
 			expect(ev.getSummary()).toBe('C');
+
 			// after c event, should match d
 			ev = service.getEventForTime(moment('2010-02-01 02:30'), eventList);
 			expect(ev).toBeDefined();
 			expect(ev instanceof CMEvent).toBe(true);
 			expect(ev.getSummary()).toBe('D');
+
 			// during d event, should match d
 			ev = service.getEventForTime(moment('2010-02-01 23:30'), eventList);
 			expect(ev).toBeDefined();
 			expect(ev instanceof CMEvent).toBe(true);
 			expect(ev.getSummary()).toBe('D');
+
 			// during d event after midnight, should still match d
 			ev = service.getEventForTime(moment('2010-02-02 00:30'), eventList);
 			expect(ev).toBeDefined();
 			expect(ev instanceof CMEvent).toBe(true);
 			expect(ev.getSummary()).toBe('D');
+
 			// after d event, before e, should match third day
 			ev = service.getEventForTime(moment('2010-02-02 01:30'), eventList);
 			expect(ev).toBeDefined();
 			expect(ev instanceof CMDay).toBe(true);
 			expect(ev.day.isSame(moment('2010-02-02 00:00'))).toBe(true);
+
 			// during e event, should match third day
 			ev = service.getEventForTime(moment('2010-02-02 09:30'), eventList);
 			expect(ev).toBeDefined();
 			expect(ev instanceof CMDay).toBe(true);
 			expect(ev.day.isSame(moment('2010-02-02 00:00'))).toBe(true);
+
 			// after e event, should match nothing
 			ev = service.getEventForTime(moment('2010-02-02 10:30'), eventList);
 			expect(ev).not.toBeDefined();
 		});
 	});
+
 	describe('CMEvent#toEditableBean', function() {
 		async.it('should create a bean that matches the event data', function(done) {
 			var ev = new CMEvent();
@@ -622,6 +715,7 @@ describe('cruisemonkey.Events', function() {
 			ev.setUsername('ranger');
 			ev.setLocation('here');
 			ev.setPublic(false);
+
 			var bean = ev.toEditableBean();
 			expect(bean.id).toBe('1');
 			expect(bean.revision).toBe('12345');
@@ -631,14 +725,18 @@ describe('cruisemonkey.Events', function() {
 			expect(bean.endDate).toBe('2010-01-02 00:00');
 			expect(bean.location).toBe('here');
 			expect(bean.isPublic).toBe(false);
+
 			ev.setStart(moment('2010-01-01 00:00'));
 			ev.setEnd(moment('2010-01-01 01:00'));
+
 			bean = ev.toEditableBean();
 			expect(bean.startDate).toBe('2010-01-01 00:00');
 			expect(bean.endDate).toBe('2010-01-01 01:00');
+
 			done();
 		});
 	});
+
 	describe('CMEvent#fromEditableBean', function() {
 		async.it('should update the event to have matching bean data', function(done) {
 			var ev = new CMEvent();
@@ -651,6 +749,7 @@ describe('cruisemonkey.Events', function() {
 			ev.setUsername('ranger');
 			ev.setLocation('there');
 			ev.setPublic(true);
+
 			ev.fromEditableBean({
 				id: '1',
 				revision: '12345',
@@ -661,6 +760,7 @@ describe('cruisemonkey.Events', function() {
 				location: 'here',
 				isPublic: false
 			});
+
 			expect(ev.getId()).toBe('1');
 			expect(ev.getRevision()).toBe('12345');
 			expect(ev.getSummary()).toBe('foo');
@@ -670,6 +770,7 @@ describe('cruisemonkey.Events', function() {
 			expect(ev.getUsername()).toBe('ranger');
 			expect(ev.getLocation()).toBe('here');
 			expect(ev.isPublic()).toBe(false);
+
 			done();
 		});
 	});

@@ -1,5 +1,6 @@
 (function() {
 	'use strict';
+
 	/*global PouchDB: true*/
 	angular.module('cruisemonkey.Database', [
 	])
@@ -16,22 +17,29 @@
 				}
 			};
 		}
+
 		var databases = {};
+
 		function Database(name, view, replication) {
 			var self         = this;
+
 			self.name        = name;
 			self.view        = view;
 			self.replication = replication;
+
 			self.createDb();
 		}
+
 		Database.prototype.pouch = function() {
 			return this.db;
 		};
+
 		Database.prototype.__call = function() {
 			var self = this;
 			var args = Array.prototype.slice.call(arguments);
 			var deferred = $q.defer();
 			var db = self.pouch();
+
 			var method = args.shift();
 			args.push(function(err,res) {
 				$rootScope.safeApply(function() {
@@ -42,26 +50,33 @@
 					}
 				});
 			});
+
 			db[method].apply(db, args);
 			return deferred.promise;
 		};
+		
 		Database.prototype.createDb = function() {
 			this.db = new PouchDB(this.name, {size:50});
 		};
+
 		Database.prototype.getView = function() {
 			return this.view;
 		};
+		
 		Database.prototype.getReplication = function() {
 			return this.replication;
 		};
+
 		Database.prototype.destroy = function() {
 			var deferred = $q.defer();
 			var self = this;
+
 			var resolveDeleted = function() {
 				deferred.resolve({ok:true});
 				// recreate a fresh PouchDB
 				self.createDb();
 			};
+
 			self.isEmpty().then(function(isEmpty) {
 				if (isEmpty) {
 					console.debug('database ' + self.name + ' is already empty, skipping destroy');
@@ -85,11 +100,14 @@
 					});
 				}
 			});
+
 			return deferred.promise;
 		};
+
 		Database.prototype.getIds = function(opts) {
 			var deferred = $q.defer();
 			var self = this;
+
 			var options = angular.extend({}, opts);
 			self.pouch().allDocs(options, function(err,res) {
 				$rootScope.safeApply(function() {
@@ -104,11 +122,14 @@
 					}
 				});
 			});
+
 			return deferred.promise;
 		};
+
 		Database.prototype.doesDesignDocExist = function() {
 			var deferred = $q.defer();
 			var self = this;
+
 			self.pouch().get('_design/cruisemonkey', function(err, doc) {
 				$rootScope.safeApply(function() {
 					if (err) {
@@ -118,11 +139,14 @@
 					}
 				});
 			});
+
 			return deferred.promise;
 		};
+
 		Database.prototype.isEmpty = function() {
 			var deferred = $q.defer();
 			var self = this;
+
 			self.pouch().info(function(err,res) {
 				$rootScope.safeApply(function() {
 					if (err) {
@@ -132,38 +156,51 @@
 					}
 				});
 			});
+
 			return deferred.promise;
 		};
+
 		Database.prototype.get = function(docId, options) {
 			return this.__call('get', docId, options || {});
 		};
+
 		Database.prototype.put = function(doc, options) {
 			return this.__call('put', doc, options);
 		};
+
 		Database.prototype.post = function(doc, options) {
 			return this.__call('post', doc, options);
 		};
+
 		Database.prototype.remove = function(doc, options) {
 			return this.__call('remove', doc, options);
 		};
+
 		Database.prototype.query = function(fun, options) {
 			return this.__call('query', fun, options);
 		};
+
 		Database.prototype.allDocs = function(options) {
 			return this.__call('allDocs', options);
 		};
+
 		Database.prototype.bulkDocs = function(docs, options) {
 			return this.__call('bulkDocs', docs, options);
 		};
+
 		Database.prototype.updateFrom = function(from, options) {
 			var to = this;
+
 			var deferred = $q.defer(), fromQuery;
+			
 			var viewOptions = to.getView();
 			var doQuery = ((viewOptions && viewOptions.view)? true : false);
+
 			if (doQuery) {
 				var opts = angular.copy(viewOptions);
 				var view = opts.view;
 				delete opts.view;
+
 				fromQuery = from.query(view, opts);
 			} else {
 				fromQuery = from.getIds({
@@ -171,11 +208,13 @@
 					'endkey': 'event:\uffff'
 				});
 			}
+
 			$q.all([to.getIds(), fromQuery, from.doesDesignDocExist()]).then(function(res) {
 				var newIds = [], i;
 				if (res[2]) {
 					newIds.push('_design/cruisemonkey');
 				}
+
 				if (doQuery) {
 					console.debug('querying IDs from the remote database using view options:', to.getView());
 					// we get back a .query result with rows
@@ -195,6 +234,7 @@
 						}
 					}
 				}
+
 				if (newIds.length > 0) {
 					from.allDocs({
 						'include_docs': true,
@@ -202,9 +242,11 @@
 					}).then(function(res) {
 						// console.debug('allDocs got ' + res.rows.length + ' documents');
 						var newDocs = [];
+
 						for (i=0; i < res.rows.length; i++) {
 							newDocs.push(res.rows[i].doc);
 						}
+
 						var doBulk = function(count, deferred, remainingDocs) {
 							if (remainingDocs.length > 0) {
 								console.debug('doing bulk-save of documents #' + (count + Math.min(remainingDocs.length,1)) + ' to #' + (count + Math.min(remainingDocs.length, 500)));
@@ -221,6 +263,7 @@
 								deferred.resolve(count);
 							}
 						};
+
 						doBulk(0, deferred, newDocs);
 					}, function(err) {
 						deferred.reject(err);
@@ -229,11 +272,15 @@
 					deferred.resolve(0);
 				}
 			});
+
 			return deferred.promise;
 		};
+
 		Database.prototype.replicateFrom = function(from, options) {
 			var to = this;
+
 			var deferred = $q.defer();
+
 			var replication = to.getReplication() || {};
 			console.debug('performing a replication from ' + from.name + ' to ' + to.name + ' using options:',replication);
 			var opts = angular.extend({}, {
@@ -250,12 +297,15 @@
 					});
 				}
 			}, replication, options);
+
 			from.pouch().replicate.to(to.pouch(), opts);
 			return deferred.promise;
 		};
+
 		Database.prototype.syncFrom = function(from) {
 			var self = this,
 			deferred = $q.defer();
+
 			self.isEmpty().then(function(isEmpty) {
 				if (isEmpty) {
 					self.updateFrom(from).then(function(res) {
@@ -281,14 +331,18 @@
 					deferred.reject(err);
 				});
 			});
+
 			return deferred.promise;
 		};
+
 		var getdb = function(db, options) {
 			var view        = options? options.view        : undefined,
 				replication = options? options.replication : undefined;
+
 			if (!(db in databases)) {
 				databases[db] = new Database(db, view, replication);
 			}
+
 			var ret = databases[db];
 			if (ret && (ret.getView() !== view || ret.getReplication() !== replication)) {
 				console.warn('database ' + db + ' has already been created, but the view or replication options do not match!');
@@ -296,8 +350,10 @@
 				console.warn('requested replication options:', replication);
 				databases[db] = new Database(db, view, replication);
 			}
+
 			return databases[db];
 		};
+
 		return {
 			get: getdb
 		};

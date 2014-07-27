@@ -2,6 +2,7 @@ var MockUserResource = function($q, $rootScope) {
 	return {
 		get: function() {
 			var deferred = $q.defer();
+
 			setTimeout(function() {
 				$rootScope.$apply(function() {
 					deferred.resolve({
@@ -12,8 +13,10 @@ var MockUserResource = function($q, $rootScope) {
 						"contactGiven":"Arnold",
 						"contactSurname":"User"
 					});
+
 				});
 			}, 0);
+
 			return deferred.promise;
 		}
 	}

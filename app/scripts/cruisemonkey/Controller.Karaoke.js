@@ -1,9 +1,12 @@
 (function() {
 	'use strict';
+
 	/*global karaokeList: true*/
+
 	var sortByArtist = function(a,b) {
 		var aArtist = a.artist.toLowerCase(),
 			bArtist = b.artist.toLowerCase();
+
 		if (aArtist < bArtist) {
 			return -1;
 		} else if (aArtist > bArtist) {
@@ -11,9 +14,11 @@
 		}
 		return 0;
 	};
+
 	for (var i = 0; i < karaokeList.length; i++) {
 		karaokeList[i].songs.sort();
 	}
+
 	angular.module('cruisemonkey.controllers.Karaoke', [
 		'angularLocalStorage',
 		'pasvaz.bindonce'
@@ -24,10 +29,12 @@
 			sortFunction = null,
 			updating = false,
 			delayTimeout = null;
+
 		var doUpdate = function() {
 			if (updating) {
 				return;
 			}
+
 			log.debug('doUpdate: starting');
 			updating = true;
 			var entries = updateFunction();
@@ -37,6 +44,7 @@
 			scope.$broadcast('scroll.resize');
 			log.debug('doUpdate: finished');
 		};
+
 		var doUpdateDelayed = function(delay) {
 			if (delayTimeout) {
 				$timeout.cancel(delayTimeout);
@@ -47,12 +55,14 @@
 				doUpdate();
 			}, delay || 500);
 		};
+
 		var initialize = function() {
 			if (sortFunction) {
 				karaokeList.sort(sortFunction);
 			}
 			doUpdate();
 		};
+
 		return {
 			'initialize': initialize,
 			'setScope': function(s) {
@@ -82,17 +92,22 @@
 			}
 		});
 		$rootScope.rightButtons = [];
+
 		var entryLimit = 50;
+
 		KaraokeService.setScope($scope);
 		KaraokeService.setSortFunction(sortByArtist);
 		KaraokeService.setUpdateFunction(function() {
 			var entries = [],
 				artist, song, matched,
 				i, j, s;
+
 			if ($scope.searchString === undefined || !$scope.searchString) {
 				return entries;
 			}
+
 			var searchFor = $scope.searchString.split(/\s+/);
+
 			for (i=0; i < karaokeList.length; i++) {
 				artist = karaokeList[i].artist;
 				matched = true;
@@ -128,21 +143,26 @@
 					}
 				}
 			}
+
 			if (entries.length > entryLimit) {
 				log.debug('Too many matches: ' + entries.length);
 				var remainder = entries.length - 50;
 				entries = entries.slice(0,50);
 				entries.push(remainder);
 			}
+
 			return entries;
 		});
+
 		storage.bind($scope, 'searchString', {
 			'storeName': 'cm.karaoke-search'
 		});
+
 		$scope.searchUpdated = function(searchString) {
 			$scope.searchString = searchString;
 			KaraokeService.doUpdateDelayed();
 		};
+
 		$scope.clearSearchString = function() {
 			log.info('clear search string');
 			var element = document.getElementById('search');
@@ -155,6 +175,7 @@
 				element.fireEvent('change');
 			}
 		};
+
 		KaraokeService.initialize();
 	}])
 	.controller('CMKaraokePrefixListCtrl', ['$rootScope', '$scope', '$state', 'KaraokeService', '$log', function($rootScope, $scope, $state, KaraokeService, log) {
@@ -171,6 +192,7 @@
 			}
 		});
 		$rootScope.rightButtons = [];
+
 		KaraokeService.setScope($scope);
 		KaraokeService.setSortFunction(sortByArtist);
 		KaraokeService.setUpdateFunction(function() {
@@ -180,6 +202,7 @@
 				artists,
 				addEntry,
 				i, j, obj;
+
 			addEntry = function(entry) {
 				firstChar = entry.artist.charAt(0).toUpperCase();
 				if (firstChar !== previousChar) {
@@ -192,19 +215,24 @@
 				}
 				entries[entries.length - 1].artist_count++;
 			};
+			
 			for (i = 0; i < karaokeList.length; i++) {
 				addEntry(karaokeList[i]);
 			}
+
 			return entries;
 		});
+
 		KaraokeService.initialize();
 	}])
 	.controller('CMKaraokeArtistListCtrl', ['storage', '$rootScope', '$scope', '$stateParams', '$state', '$location', 'KaraokeService', '$log', function(storage, $rootScope, $scope, $stateParams, $state, $location, KaraokeService, log) {
 		log.info('Initializing CMKaraokeArtistListCtrl');
+		
 		var prefix = $stateParams.prefix;
 		if (prefix) {
 			prefix = prefix.toUpperCase();
 		}
+
 		$rootScope.headerTitle = 'Artists: ' + prefix;
 		$rootScope.leftButtons = $rootScope.getLeftButtons();
 		$rootScope.leftButtons.push({
@@ -217,10 +245,12 @@
 			}
 		});
 		$rootScope.rightButtons = [];
+
 		KaraokeService.setScope($scope);
 		KaraokeService.setSortFunction(sortByArtist);
 		KaraokeService.setUpdateFunction(function() {
 			var entries = [], i, j, obj;
+
 			if ((!$scope.searchString) || $scope.searchString === '') {
 				for (i = 0; i < karaokeList.length; i++) {
 					if (karaokeList[i].artist.charAt(0).toUpperCase() === prefix) {
@@ -229,11 +259,13 @@
 				}
 				return entries;
 			}
+
 			for (i = 0; i < karaokeList.length; i++) {
 				obj = karaokeList[i];
 				if (obj.artist.charAt(0).toUpperCase() !== prefix) {
 					continue; // skip if artist doesn't start with given prefix
 				}
+
 				if (obj.artist.contains($scope.searchString)) {
 					entries.push(obj);
 					continue; // next artist entry
@@ -241,17 +273,21 @@
 			}
 			return entries;
 		});
+
 		$scope.go = function(entry) {
 			var url = '/karaoke/by-artist/' + entry.artist;
 			$location.url(url);
 		};
+
 		storage.bind($scope, 'searchString', {
 			'storeName': 'cm.karaoke-prefix.' + prefix
 		});
+
 		$scope.searchUpdated = function(searchString) {
 			$scope.searchString = searchString;
 			KaraokeService.doUpdateDelayed();
 		};
+
 		$scope.clearSearchString = function() {
 			log.info('clear search string');
 			var element = document.getElementById('search');
@@ -264,6 +300,7 @@
 				element.fireEvent('change');
 			}
 		};
+
 		KaraokeService.initialize();
 	}])
 	.controller('CMKaraokeArtistCtrl', ['storage', '$rootScope', '$scope', '$stateParams', '$state', 'KaraokeService', '$log', function(storage, $rootScope, $scope, $stateParams, $state, KaraokeService, log) {
@@ -273,6 +310,7 @@
 		if ($stateParams.artist.length > 12) {
 			$rootScope.headerTitle = $stateParams.artist.substring(0,12) + '...';
 		}
+
 		$rootScope.leftButtons = $rootScope.getLeftButtons();
 		$rootScope.leftButtons.push({
 			'type': 'button-clear',
@@ -286,13 +324,16 @@
 			}
 		});
 		$rootScope.rightButtons = [];
+
 		var songList = [];
+
 		for (var i = 0; i < karaokeList.length; i++) {
 			if (karaokeList[i].artist === $stateParams.artist) {
 				songList = karaokeList[i].songs;
 				break;
 			}
 		}
+
 		KaraokeService.setScope($scope);
 		KaraokeService.setSortFunction(null);
 		KaraokeService.setUpdateFunction(function() {
@@ -300,6 +341,7 @@
 				log.info('searchString is unset');
 				return songList;
 			}
+
 			var entries = [], i;
 			for (i = 0; i < songList.length; i++) {
 				if (songList[i].contains($scope.searchString)) {
@@ -309,13 +351,16 @@
 			}
 			return entries;
 		});
+
 		storage.bind($scope, 'searchString', {
 			'storeName': 'cm.karaoke.' + $stateParams.artist
 		});
+
 		$scope.searchUpdated = function(searchString) {
 			$scope.searchString = searchString;
 			KaraokeService.doUpdateDelayed();
 		};
+
 		$scope.clearSearchString = function() {
 			log.info('clear search string');
 			var element = document.getElementById('search');
@@ -328,6 +373,7 @@
 				element.fireEvent('change');
 			}
 		};
+
 		KaraokeService.initialize();
 	}]);
 }());
