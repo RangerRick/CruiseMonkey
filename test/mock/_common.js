@@ -208,3 +208,20 @@ var doDbSetup = function(done) {
 		});
 	});
 };
+
+var checkCouch = function() {
+	var deferred = $q.defer();
+
+	$http({method: 'GET', url: 'http://localhost:5984/test-pristine'}).success(function(data) {
+		if (data['db_name'] === 'test-pristine') {
+			deferred.resolve();
+		} else {
+			console.debug('received a "success" response, but could not get a db name');
+			deferred.reject();
+		}
+	}).error(function() {
+		deferred.reject();
+	});
+
+	return deferred.promise;
+};

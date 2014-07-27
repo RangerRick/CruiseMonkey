@@ -2,6 +2,10 @@ language: node_js
 node_js:
   - '0.10'
   - '0.11'
+services:
+  - couchdb
+before_script:
+  - cd couchdb; couchapp push http://localhost:5984/test-pristine
 before_install:
   - 'npm install -g bower grunt-cli'
   - 'npm install'

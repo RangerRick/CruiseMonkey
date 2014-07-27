@@ -21,7 +21,7 @@ describe('cruisemonkey.Database', function() {
 			$rootScope = rootScope;
 			$httpBackend = httpBackend;
 			_database = database;
-			
+
 			done();
 		}]);
 	});
@@ -57,7 +57,7 @@ describe('cruisemonkey.Database', function() {
 		var deferred = $q.defer();
 
 		_doDestroy(angular.copy(dbs), deferred);
-		
+
 		deferred.promise.then(function() {
 			console.debug('beforeEach: finished destroying');
 			done();
@@ -130,7 +130,7 @@ describe('cruisemonkey.Database', function() {
 			db.destroy().then(function(res) {
 				expect(res).toBeDefined();
 				expect(res['ok']).toEqual(true);
-				
+
 				// destroy it a second time
 				db.destroy().then(function(res) {
 					expect(res).toBeDefined();
@@ -171,7 +171,7 @@ describe('cruisemonkey.Database', function() {
 				});
 			});
 		});
-		
+
 		async.it('should copy only the things that match the given view', function(done) {
 			createTestDb().then(function() {
 				var remote = _database.get(webroot + 'test-remote');
@@ -226,7 +226,7 @@ describe('cruisemonkey.Database', function() {
 				});
 			});
 		});
-		
+
 		async.it('should copy only the things that match the given view', function(done) {
 			createTestDb().then(function() {
 				var remote = _database.get(webroot + 'test-remote');
