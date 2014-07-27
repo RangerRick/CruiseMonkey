@@ -15,9 +15,7 @@ before_install:
   - 'gem install compass'
   - 'sudo pip install couchapp'
 before_script:
-  - 'node_modules/.bin/pouchdb-server -m &'
-  - 'cd couchdb && couchapp --verbose push http://localhost:5984/test-pristine'
-#script: grunt test --verbose
+  - 'node_modules/.bin/pouchdb-server -m & sleep 5 && cd couchdb && couchapp --verbose push http://localhost:5984/test-pristine'
 script: grunt test
 cache:
   directories:
