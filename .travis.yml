@@ -6,3 +6,4 @@ before_install:
   - 'npm install -g bower grunt-cli'
   - 'npm install'
   - 'bower install'
+  - 'gem install compass'
