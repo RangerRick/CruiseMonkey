@@ -147,7 +147,7 @@
 			self.pouch().info(function(err,res) {
 				$rootScope.safeApply(function() {
 					if (err) {
-						deferred.reject(err);
+						deferred.resolve(0);
 					} else {
 						deferred.resolve(res.doc_count === 0);
 					}
@@ -320,7 +320,7 @@
 					});
 				}
 			}, function(err) {
-				console.error('unable to determine if database is empty, falling back to replication:',err);
+				console.error('unable to determine if database ' + self.name + ' is empty, falling back to replication:',err);
 				self.replicateFrom(from).then(function() {
 					deferred.resolve(true);
 				}, function(err) {
