@@ -287,7 +287,7 @@ describe('cruisemonkey.Database', function() {
 		});
 	});
 
-	describe('Syncing', function() {
+	xdescribe('Syncing', function() {
 		var objs = [];
 		for (var i=0; i < 30000; i++) {
 			objs.push({

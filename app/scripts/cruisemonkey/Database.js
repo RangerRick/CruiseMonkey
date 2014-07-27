@@ -273,7 +273,7 @@
 				complete: function(err, response) {
 					$rootScope.safeApply(function() {
 						if (err) {
-							console.debug('cruisemonkey.Database: failed to replicate',err);
+							console.debug('cruisemonkey.Database: failed to replicate from ' + from.name + ' to ' + to.name + ':',err);
 							deferred.reject(err);
 						} else {
 							deferred.resolve(response.docs_written);

@@ -5,15 +5,17 @@ language: node_js
 node_js:
   - '0.10'
   - '0.11'
-services:
-  - couchdb
+#services:
+#  - couchdb
 before_install:
   - 'npm install -g bower grunt-cli'
   - 'npm install'
+  - 'npm install pouchdb-server'
   - 'bower install'
   - 'gem install compass'
   - 'sudo pip install couchapp'
 before_script:
+  - 'node_modules/.bin/pouchdb-server -m &'
   - 'cd couchdb && couchapp --verbose push http://localhost:5984/test-pristine'
 #script: grunt test --verbose
 script: grunt test
