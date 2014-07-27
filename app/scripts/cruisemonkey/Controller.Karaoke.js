@@ -215,7 +215,7 @@
 				}
 				entries[entries.length - 1].artist_count++;
 			};
-			
+
 			for (i = 0; i < karaokeList.length; i++) {
 				addEntry(karaokeList[i]);
 			}
@@ -227,7 +227,7 @@
 	}])
 	.controller('CMKaraokeArtistListCtrl', ['storage', '$rootScope', '$scope', '$stateParams', '$state', '$location', 'KaraokeService', '$log', function(storage, $rootScope, $scope, $stateParams, $state, $location, KaraokeService, log) {
 		log.info('Initializing CMKaraokeArtistListCtrl');
-		
+
 		var prefix = $stateParams.prefix;
 		if (prefix) {
 			prefix = prefix.toUpperCase();

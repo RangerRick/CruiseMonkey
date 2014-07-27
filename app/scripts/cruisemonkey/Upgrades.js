@@ -53,7 +53,7 @@
 			var def = $q.defer();
 
 			log.debug('UpgradeService.upgrade(): previous version = ' + previousVersion + ', current version = ' + currentVersion);
-			
+
 			if (!shouldUpgrade) {
 				log.info('Upgrades disabled.');
 				$timeout(function() {

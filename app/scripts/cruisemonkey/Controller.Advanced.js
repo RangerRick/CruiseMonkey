@@ -37,7 +37,7 @@
 			$scope.settings = updated;
 			$scope.saveSettings();
 		};
-		
+
 		$scope.saveSettings = function() {
 			log.info('saving=', $scope.settings);
 			var before = angular.copy(SettingsService.getSettings());

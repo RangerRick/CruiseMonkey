@@ -122,7 +122,7 @@ xdescribe('cruisemonkey.DB', function() {
 					for (var i = 0; i < results.rows.length; i++) {
 						ids.push(results.rows[i].id);
 					}
-					
+
 					expect(ids).toContain('official-event');
 					expect(ids).toContain('rangerrick-public');
 					expect(ids).toContain('triluna-public');
@@ -144,7 +144,7 @@ xdescribe('cruisemonkey.DB', function() {
 					for (var i = 0; i < results.rows.length; i++) {
 						ids.push(results.rows[i].id);
 					}
-					
+
 					expect(ids).toContain('rangerrick-public');
 					expect(ids).toContain('triluna-public');
 					done();
@@ -166,7 +166,7 @@ xdescribe('cruisemonkey.DB', function() {
 					for (var i = 0; i < results.rows.length; i++) {
 						ids.push(results.rows[i].id);
 					}
-					
+
 					expect(ids).toContain('rangerrick-public');
 					expect(ids).toContain('rangerrick-private');
 					done();
@@ -174,7 +174,7 @@ xdescribe('cruisemonkey.DB', function() {
 			});
 		});
 	});
-	
+
 	xdescribe("Design Doc: replication", function() {
 		async.it('should return all events', function(done) {
 			doDbInit(function() {
@@ -187,7 +187,7 @@ xdescribe('cruisemonkey.DB', function() {
 					for (var i = 0; i < results.rows.length; i++) {
 						ids.push(results.rows[i].id);
 					}
-					
+
 					expect(ids).toContain('rangerrick-public');
 					expect(ids).toContain('rangerrick-private');
 					done();
@@ -195,7 +195,7 @@ xdescribe('cruisemonkey.DB', function() {
 			});
 		});
 	});
-	
+
 	xdescribe("Design Doc: favorites-all", function() {
 		async.it('should fail when no favorites DB is configured', function(done) {
 			_db.setFavoritesDatabase(undefined);

@@ -6,7 +6,7 @@
 	function isNumber(n) {
 	  return !isNaN(parseFloat(n)) && isFinite(n);
 	}
-	
+
 	angular.module('cruisemonkey.Notifications', [
 		'cruisemonkey.Config',
 		'cruisemonkey.Cordova'
@@ -40,7 +40,7 @@
 					}
 				});
 			});
-			
+
 			return deferred.promise;
 		};
 

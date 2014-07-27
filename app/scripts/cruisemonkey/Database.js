@@ -54,7 +54,7 @@
 			db[method].apply(db, args);
 			return deferred.promise;
 		};
-		
+
 		Database.prototype.createDb = function() {
 			this.db = new PouchDB(this.name, {size:50});
 		};
@@ -62,7 +62,7 @@
 		Database.prototype.getView = function() {
 			return this.view;
 		};
-		
+
 		Database.prototype.getReplication = function() {
 			return this.replication;
 		};
@@ -192,7 +192,7 @@
 			var to = this;
 
 			var deferred = $q.defer(), fromQuery;
-			
+
 			var viewOptions = to.getView();
 			var doQuery = ((viewOptions && viewOptions.view)? true : false);
 

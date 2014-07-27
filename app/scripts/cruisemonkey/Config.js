@@ -13,7 +13,7 @@
 	.value('config.twitarr.root', 'https://twitarr.rylath.net/')
 	.value('config.app.version', '4.0.80')
 	.value('config.upgrade', true);
-	
+
 	angular.module('cruisemonkey.Settings', [
 		'angularLocalStorage',
 		'cruisemonkey.Config',

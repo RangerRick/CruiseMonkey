@@ -289,7 +289,7 @@ describe('cruisemonkey.Database', function() {
 				});
 			});
 		});
-		
+
 		async.it('should use the username as key when querying', function(done) {
 			createTestDb().then(function() {
 				var remote    = _database.get(webroot + 'test-remote');

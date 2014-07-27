@@ -37,7 +37,7 @@
 	var sortDay = function(a,b) {
 		attrA = a.day;
 		attrB = b.day;
-		
+
 		if (attrA.isBefore(attrB)) {
 			return -1;
 		}
@@ -84,7 +84,7 @@
 	}])
 	.factory('EventCache', [function() {
 		var cache = {};
-		
+
 		var getCacheEntry = function(name) {
 			if (cache[name]) {
 				return cache[name];
@@ -95,7 +95,7 @@
 		return {
 			get: function(name, searchString) {
 				var even = false, i, entry = null, ret = [];
-					
+
 				var cacheEntry = getCacheEntry(name);
 				if (!searchString) {
 					for (i=0; i < cacheEntry.length; i++) {

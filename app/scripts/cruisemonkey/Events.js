@@ -51,7 +51,7 @@
 		var syncFrom = function(fromDb) {
 			var syncs = [],
 				deferred = $q.defer();
-			
+
 			syncs.push(eventsdb.syncFrom(fromDb));
 			if (favoritesdb) {
 				syncs.push(favoritesdb.syncFrom(fromDb));

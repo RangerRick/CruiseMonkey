@@ -355,7 +355,7 @@
 				});
 			});
 		}, false);
-		
+
 		var initializeOffline = function() {
 			Offline.options.checks = {
 				xhr: {

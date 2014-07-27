@@ -10,7 +10,7 @@
 		$rootScope.leftButtons = $rootScope.getLeftButtons();
 		$rootScope.rightButtons = [];
 		$scope.version = version;
-		
+
 		$scope.goToSite = function(site) {
 			$rootScope.openUrl(site, '_system');
 		};

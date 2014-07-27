@@ -63,7 +63,7 @@
 
 		var updateUI = function() {
 			$rootScope.headerTitle = "Deck " + $scope.deck;
-			
+
 			cor.ifCordova(function() {
 			}).otherwise(function() {
 				var newButtons = [

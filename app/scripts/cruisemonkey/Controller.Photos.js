@@ -59,7 +59,7 @@
 				log.debug('status=',status);
 				deferred.reject(data);
 			});
-			
+
 			return _gettingMore;
 		};
 

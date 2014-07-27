@@ -202,7 +202,7 @@ describe('cruisemonkey.Events', function() {
 		async.it('should return nothing when the user is not logged in', function(done) {
 			userService.save({'loggedIn': false, 'username':'rangerrick', 'password':'whatever'});
 			expect(service.getMyEvents).toBeDefined();
-			
+
 			doSync().then(function() {
 				service.getMyEvents().then(function() {
 				}, function(err) {
@@ -211,7 +211,7 @@ describe('cruisemonkey.Events', function() {
 				});
 				$timeout.flush();
 			});
-			
+
 			$rootScope.$apply();
 		});
 	});
@@ -237,7 +237,7 @@ describe('cruisemonkey.Events', function() {
 		async.it('should return nothing when the user is not logged in', function(done) {
 			userService.save({'loggedIn': false, 'username':'rangerrick', 'password':'whatever'});
 			expect(service.getMyFavorites).toBeDefined();
-			
+
 			doSync().then(function() {
 				service.getMyFavorites().then(function() {
 				}, function(err) {
@@ -325,7 +325,7 @@ describe('cruisemonkey.Events', function() {
 		async.it('should not create a new favorite in the database if the user is not logged in', function(done) {
 			userService.save({'loggedIn': false, 'username':'rangerrick', 'password':'whatever'});
 			expect(service.addFavorite).toBeDefined();
-			
+
 			doSync().then(function() {
 				service.addFavorite('17').then(function(result) {
 				}, function(err) {

@@ -24,7 +24,7 @@
 				log.info('Platform: ' + $window.device.platform);
 				log.info('UUID:     ' + $window.device.uuid);
 				log.info('Version:  ' + $window.device.version);
-				
+
 				// if we're on older Android, disable animations
 				if (androidVersion < 4.3) {
 					$animate.enabled(false);

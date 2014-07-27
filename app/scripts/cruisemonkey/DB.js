@@ -17,7 +17,7 @@
 			__onSyncStart = null,
 			__onSyncEnd = null,
 			__onChange = null;
-			
+
 		var __ready = null;
 
 		if (!$rootScope.safeApply) {
@@ -157,11 +157,11 @@
 		var __put = function(db, doc, options) {
 			return __call(db, 'put', doc, options);
 		};
-		
+
 		var __query = function(db, view, options) {
 			return __call(db, 'query', view, options);
 		};
-		
+
 		var __allDocs = function(db, options) {
 			return __call(db, 'allDocs', options);
 		};
@@ -361,7 +361,7 @@
 			});
 			return deferred.promise;
 		};
-		
+
 		var __bulk = function(db, docs) {
 			var deferred = $q.defer();
 			db.bulkDocs({
@@ -377,7 +377,7 @@
 			});
 			return deferred.promise;
 		};
-		
+
 		var __remove = function(db, doc) {
 			var deferred = $q.defer();
 			db.remove(doc, function(err,res) {
@@ -520,7 +520,7 @@
 		var __remote = function() {
 			return __db('remote');
 		};
-		
+
 		var __events = function() {
 			return __db('events');
 		};
@@ -553,7 +553,7 @@
 						});
 					});
 				}
-				
+
 				return def.promise;
 			};
 

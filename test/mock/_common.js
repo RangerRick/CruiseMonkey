@@ -27,7 +27,7 @@ var LoggedInUserService = function() {
 		'username': 'rangerrick',
 		'password': 'secret'
 	};
-	
+
 	this.$get = function() {
 		return {
 			isLoggedIn: function() {
@@ -67,7 +67,7 @@ var MockPouchWrapper = function() {
 			'description': 'I am totally going to continue living.'
 		}
 	];
-	
+
 	var favorites = [ '1' ];
 
 	this.$get = function() {
@@ -184,7 +184,7 @@ var doDbSetup = function(done) {
 					done();
 					return;
 				}
-				
+
 				//console.log('remoteDatabase destroyed:',info);
 
 				remoteDatabase = new PouchDB(remoteDb);
