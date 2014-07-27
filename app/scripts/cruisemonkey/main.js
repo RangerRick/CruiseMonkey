@@ -26,7 +26,7 @@
 		'cruisemonkey.controllers.Logout',
 		'cruisemonkey.controllers.Navigation',
 		'cruisemonkey.controllers.Photos',
-		'cruisemonkey.DB',
+		'cruisemonkey.Database',
 		'cruisemonkey.Notifications',
 		'cruisemonkey.Seamail',
 		'cruisemonkey.Settings',
@@ -173,7 +173,7 @@
 			}
 		};
 	}])
-	.run(['$q', '$rootScope', '$window', '$location', '$interval', '$urlRouter', '$log', 'UserService', 'storage', 'CordovaService', 'UpgradeService', '_db', 'NotificationService', 'SettingsService', 'SeamailService', function($q, $rootScope, $window, $location, $interval, $urlRouter, log, UserService, storage, cor, upgrades, _db, notifications, SettingsService, SeamailService) {
+	.run(['$q', '$rootScope', '$window', '$location', '$interval', '$timeout', '$urlRouter', '$log', 'UserService', 'storage', 'CordovaService', 'UpgradeService', '_database', 'NotificationService', 'SettingsService', 'SeamailService', function($q, $rootScope, $window, $location, $interval, $timeout, $urlRouter, log, UserService, storage, cor, upgrades, _database, notifications, SettingsService, SeamailService) {
 		log.debug('CruiseMonkey run() called.');
 
 		/*global moment: true*/
@@ -380,6 +380,7 @@
 		};
 
 		var doDbInit = function() {
+			/*
 			_db.setUserDatabase(SettingsService.getLocalDatabaseUrl());
 			_db.setRemoteDatabase(SettingsService.getRemoteDatabaseUrl());
 			_db.onChange(function(change) {
@@ -395,6 +396,15 @@
 			}, function(err) {
 				log.error('Failed to initialize database!');
 				databaseInitialized.reject(err);
+			});
+			*/
+			$timeout(function() {
+				databaseInitialized.resolve();
+				cor.ifCordova(function() {
+					navigator.splashscreen.hide();
+				});
+				$rootScope.$broadcast('cm.main.database-initialized');
+				initializeOffline();
 			});
 		};
 
