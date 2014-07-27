@@ -10,14 +10,20 @@
   @include box-sizing(border-box);
 }
 
-body, .ionic-body {
+html {
+  overflow: hidden;
+  -ms-touch-action: pan-y;
+  touch-action: pan-y;
+}
+
+body,
+.ionic-body {
   @include touch-callout(none);
   @include font-smoothing(antialiased);
   @include text-size-adjust(none);
   @include tap-highlight-transparent();
   @include user-select(none);
 
-  position: fixed;
   top: 0;
   right: 0;
   bottom: 0;
@@ -63,13 +69,18 @@ body.grade-c {
   height: auto;
 }
 
+.scroll-content-false,
+.menu .scroll-content.scroll-content-false{
+  z-index: $z-index-scroll-content-false;
+}
+
 .scroll-view {
   position: relative;
+  display: block;
   overflow: hidden;
 
   // Hide the top border if any
   margin-top: -1px;
-  height: 100%;
 }
 
 /**
@@ -81,7 +92,11 @@ body.grade-c {
   @include touch-callout(none);
   @include text-size-adjust(none);
   @include transform-origin(left, top);
-  -webkit-backface-visibility: hidden;
+}
+
+// hide webkit scrollbars
+::-webkit-scrollbar {
+  display:none;
 }
 
 // Scroll bar styles
@@ -137,6 +152,25 @@ body.grade-c {
   }
 }
 
+@keyframes refresh-spin {
+  0% { transform: translate3d(0,0,0) rotate(0); }
+  100% { transform: translate3d(0,0,0) rotate(-180deg); }
+}
+
+@-webkit-keyframes refresh-spin {
+  0% {-webkit-transform: translate3d(0,0,0) rotate(0); }
+  100% {-webkit-transform: translate3d(0,0,0) rotate(-180deg); }
+}
+
+@keyframes refresh-spin-back {
+  0% { transform: translate3d(0,0,0) rotate(-180deg); }
+  100% { transform: translate3d(0,0,0) rotate(0); }
+}
+
+@-webkit-keyframes refresh-spin-back {
+  0% {-webkit-transform: translate3d(0,0,0) rotate(-180deg); }
+  100% {-webkit-transform: translate3d(0,0,0) rotate(0); }
+}
 
 // Scroll refresher (for pull to refresh)
 .scroll-refresher {
@@ -148,9 +182,66 @@ body.grade-c {
   margin: auto;
   height: 60px;
 
+  .ionic-refresher-content {
+    position: absolute;
+    bottom: 15px;
+    left: 0;
+    width: 100%;
+    color: $scroll-refresh-icon-color;
+    text-align: center;
+
+    font-size: 30px;
+
+    .text-refreshing,
+    .text-pulling {
+      font-size: 16px;
+      line-height: 16px;
+    }
+    &.ionic-refresher-with-text {
+      bottom: 10px;
+    }
+  }
+
+  .icon-refreshing,
+  .icon-pulling {
+    width: 100%;
+    -webkit-backface-visibility: hidden;
+    -webkit-transform-style: preserve-3d;
+    backface-visibility: hidden;
+    transform-style: preserve-3d;
+  }
+  .icon-pulling {
+    @include animation-name(refresh-spin-back);
+    @include animation-duration(200ms);
+    @include animation-timing-function(linear);
+    @include animation-fill-mode(none);
+    -webkit-transform: translate3d(0,0,0) rotate(0deg);
+    transform: translate3d(0,0,0) rotate(0deg);
+  }
+  .icon-refreshing,
+  .text-refreshing {
+    display: none;
+  }
   .icon-refreshing {
     @include animation-duration(1.5s);
-    display: none;
+  }
+
+  &.active {
+    .icon-pulling {
+      @include animation-name(refresh-spin);
+      -webkit-transform: translate3d(0,0,0) rotate(-180deg);
+      transform: translate3d(0,0,0) rotate(-180deg);
+    }
+    &.refreshing {
+      .icon-pulling,
+      .text-pulling {
+        display: none;
+      }
+      .icon-refreshing,
+      .text-refreshing {
+        display: block;
+      }
+    }
   }
 }
 
@@ -165,58 +256,6 @@ body.grade-c {
   font-size: 30px;
 }
 
-.ionic-refresher-content {
-  position: absolute;
-  bottom: 15px;
-  left: 0;
-  width: 100%;
-  color: $scroll-refresh-icon-color;
-  text-align: center;
-
-  font-size: 30px;
-
-  .icon-pulling {
-    @include animation-duration(200ms);
-    @include animation-timing-function(linear);
-    @include animation-fill-mode(both);
-  }
-}
-
-@keyframes refresh-spin {
-  0% { transform: rotate(0); }
-  100% { transform: rotate(-180deg); }
-}
-
-@-webkit-keyframes refresh-spin {
-  0% {-webkit-transform: rotate(0); }
-  100% {-webkit-transform: rotate(-180deg); }
-}
-
-.scroll-refresher.active {
-
-  .icon-pulling {
-    display: block;
-  }
-  .icon-refreshing {
-    display: none;
-  }
-
-  &.refreshing {
-    .icon-pulling {
-      display: none;
-    }
-    .icon-refreshing {
-      display: block;
-    }
-  }
-
-  .ionic-refresher-content {
-    .icon-pulling {
-      @include animation-name(refresh-spin);
-    }
-  }
-}
-
 // Infinite scroll
 ion-infinite-scroll .scroll-infinite {
   position: relative;
@@ -227,7 +266,7 @@ ion-infinite-scroll .scroll-infinite {
 
 .scroll-infinite-content {
   position: absolute;
-  bottom: 15px;
+  bottom: -1px;
   left: 0;
   width: 100%;
   color: #666666;
@@ -246,38 +285,46 @@ ion-infinite-scroll.active .scroll-infinite {
   .scroll {
     position: static;
     height: 100%;
+    -webkit-transform: translate3d(0, 0, 0);   // fix iOS bug where relative children of scroller disapear while scrolling.  see: http://stackoverflow.com/questions/9807620/ipad-safari-scrolling-causes-html-elements-to-disappear-and-reappear-with-a-dela
   }
 }
 
-
-.overflow-scroll {
-  overflow-x: hidden;
-  overflow-y: scroll;
-  -webkit-overflow-scrolling: touch;
-
-  .scroll {
-    position: static;
-    height: 100%;
-  }
-}
 
 // Pad top/bottom of content so it doesn't hide behind .bar-title and .bar-tab.
 // Note: For these to work, content must come after both bars in the markup
+/* If you change these, change platform.scss as well */
 .has-header {
   top: $bar-height;
+}
+// Force no header
+.no-header {
+  top: 0;
 }
 
 .has-subheader {
   top: $bar-height * 2;
 }
+.has-tabs-top {
+  top: $bar-height + $tabs-height;
+}
+.has-header.has-subheader.has-tabs-top {
+  top: 2 * $bar-height + $tabs-height;
+}
 
 .has-footer {
   bottom: $bar-height;
 }
+.has-subfooter {
+  bottom: $bar-height * 2;
+}
 
-// Specify that a content area will have tabs
-.has-tabs {
-  bottom: 49px;
+.has-tabs,
+.bar-footer.has-tabs {
+  bottom: $tabs-height;
+}
+
+.has-footer.has-tabs {
+  bottom: $tabs-height + $bar-height;
 }
 
 // A full screen section with a solid background
@@ -288,7 +335,8 @@ ion-infinite-scroll.active .scroll-infinite {
 .view {
   z-index: $z-index-view;
 }
-.pane, .view {
+.pane,
+.view {
   position: absolute;
   top: 0;
   right: 0;
@@ -296,5 +344,6 @@ ion-infinite-scroll.active .scroll-infinite {
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: #fff;
+  background-color: $base-background-color;
+  overflow: hidden;
 }
