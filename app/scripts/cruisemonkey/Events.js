@@ -18,8 +18,50 @@
 	.factory('EventService', ['$q', '$rootScope', '$timeout', '$location', 'uuid4', '_database', 'UserService', '$log', 'config.database.name', function($q, $rootScope, $timeout, $location, uuid4, _database, UserService, log, databaseName) {
 		log.info('EventService: Initializing EventService.');
 
-		var eventsdb    = _database.get(databaseName + '.events');
-		var favoritesdb = _database.get(databaseName + '.favorites');
+		var eventsdb    = _database.get(databaseName + '.events', {
+			'view': {
+				'view': 'cruisemonkey/events-replication'
+			},
+			'replication': {
+				'filter': 'cruisemonkey/events'
+			}
+		});
+		var favoritesdb = null;
+
+		$rootScope.$on('cruisemonkey.user.updated', function(ev, user) {
+			console.debug('user updated:',user);
+			if (user.loggedIn) {
+				favoritesdb = _database.get(databaseName + '.favorites', {
+					'view': {
+						'view': 'cruisemonkey/favorites-all',
+						'key': user.username
+					},
+					'replication': {
+						'filter': 'cruisemonkey/favorites',
+						'query_parms': {
+							'username': user.username
+						}
+					}
+				});
+			} else {
+				favoritesdb = null;
+			}
+		});
+
+		var syncFrom = function(fromDb) {
+			var syncs = [],
+				deferred = $q.defer();
+			
+			syncs.push(eventsdb.syncFrom(fromDb));
+			if (favoritesdb) {
+				syncs.push(favoritesdb.syncFrom(fromDb));
+			}
+			$q.all(syncs).then(function(res) {
+				deferred.resolve();
+			});
+
+			return deferred.promise;
+		};
 
 		var promisedResult = function(result) {
 			var deferred = $q.defer();
@@ -90,12 +132,12 @@
 			for (i=0; i < args.length; i++) {
 				promises.push(eventsdb.query(args[i], angular.copy(options)));
 			}
-			if (username) {
+			if (username && favoritesdb) {
 				var opts = angular.copy(options);
 				angular.extend(opts, {
 					key:username
 				});
-				promises.push(favoritesdb.query('favorites-all', opts));
+				promises.push(favoritesdb.query('cruisemonkey/favorites-all', opts));
 				//console.log('opts=',opts);
 			}
 
@@ -216,7 +258,7 @@
 
 			var deferred = $q.defer();
 			_allEvents = deferred.promise;
-			eventsdb.query('events-all', {include_docs: true}).then(function(results) {
+			eventsdb.query('cruisemonkey/events-all', {include_docs: true}).then(function(results) {
 				var ret = [];
 				for (var i=0; i < results.rows.length; i++) {
 					ret.push(new CMEvent(results.rows[i].doc));
@@ -243,7 +285,7 @@
 			_allFavorites = deferred.promise;
 
 			log.debug('EventService.getAllFavorites()');
-			favoritesdb.query('favorites-all', {include_docs:true}).then(function(results) {
+			favoritesdb.query('cruisemonkey/favorites-all', {include_docs:true}).then(function(results) {
 				var ret = [], i, fav;
 				for (i=0; i < results.rows.length; i++) {
 					fav = results.rows[i].doc;
@@ -272,7 +314,7 @@
 			var deferred = $q.defer();
 			_officialEvents = deferred.promise;
 
-			queryEventView('events-official').then(function(events) {
+			queryEventView('cruisemonkey/events-official').then(function(events) {
 				deferred.resolve(events);
 			}, function(err) {
 				deferred.reject(err);
@@ -296,7 +338,7 @@
 			var deferred = $q.defer();
 			_unofficialEvents = deferred.promise;
 
-			queryEventView('events-unofficial').then(function(events) {
+			queryEventView('cruisemonkey/events-unofficial').then(function(events) {
 				deferred.resolve(events);
 			}, function(err) {
 				deferred.reject(err);
@@ -325,7 +367,7 @@
 			var deferred = $q.defer();
 			_userEvents = deferred.promise;
 
-			queryEventView('events-user', {
+			queryEventView('cruisemonkey/events-user', {
 				key: username
 			}).then(function(events) {
 				deferred.resolve(events);
@@ -355,8 +397,8 @@
 			var deferred = $q.defer();
 			_myEvents = deferred.promise;
 
-			var publicPromise = queryEventView('events-public');
-			var userPromise   = queryEventView('events-user', {
+			var publicPromise = queryEventView('cruisemonkey/events-public');
+			var userPromise   = queryEventView('cruisemonkey/events-user', {
 				key: username
 			});
 
@@ -400,7 +442,7 @@
 			var deferred = $q.defer();
 			_myFavorites = deferred.promise;
 
-			queryEventView('events-all').then(function(events) {
+			queryEventView('cruisemonkey/events-all').then(function(events) {
 				var ret = [], ev;
 				for (var i=0; i < events.length; i++) {
 					ev = events[i];
@@ -437,10 +479,12 @@
 			_isFavorite = deferred.promise;
 
 			var docId = 'favorite:' + username + ':' + eventId;
+			console.debug('docId=',docId);
 			favoritesdb.get(docId).then(function(response) {
+				console.debug('response=',response);
 				deferred.resolve(response && response._id === docId && !response._deleted);
 			}, function(err) {
-				log.warn('error getting ' + docId, err);
+				console.warn('error getting ' + docId, err);
 				deferred.resolve(false);
 			});
 
@@ -515,7 +559,7 @@
 
 			var deferred = $q.defer();
 
-			favoritesdb.query('favorites-all', {include_docs:true,key:username}).then(function(results) {
+			favoritesdb.query('cruisemonkey/favorites-all', {include_docs:true,key:username}).then(function(results) {
 				var remove = [], fav, promises, def, i;
 				for (i=0; i < results.rows.length; i++) {
 					fav = results.rows[i].doc;
@@ -525,7 +569,7 @@
 					}
 				}
 
-				favoritesdb.bulk(remove).then(function(results) {
+				favoritesdb.bulkDocs(remove).then(function(results) {
 					deferred.resolve(results.length);
 				}, function(err) {
 					log.debug('bulk error:',err);
@@ -622,6 +666,7 @@
 		};
 
 		return {
+			'syncFrom': syncFrom,
 			'addEvent': addEvent,
 			'updateEvent': updateEvent,
 			'removeEvent': removeEvent,

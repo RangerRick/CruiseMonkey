@@ -136,16 +136,16 @@ var defaultEventDocs = [
 
 var defaultFavoriteDocs = [
 	{
-		'_id': 'favorite:triluna:rangerrick-public',
+		'_id': 'favorite:triluna:event:rangerrick-public',
 		'type': 'favorite',
 		'username': 'triluna',
-		'eventId': 'rangerrick-public'
+		'eventId': 'event:rangerrick-public'
 	},
 	{
-		'_id': 'favorite:rangerrick:official-event',
+		'_id': 'favorite:rangerrick:event:official-event',
 		'type': 'favorite',
 		'username': 'rangerrick',
-		'eventId': 'official-event'
+		'eventId': 'event:official-event'
 	}
 ];
 
@@ -208,6 +208,8 @@ var doDbSetup = function(done) {
 		});
 	});
 };
+
+var webroot = 'http://localhost:5984/';
 
 var checkCouch = function() {
 	var deferred = $q.defer();

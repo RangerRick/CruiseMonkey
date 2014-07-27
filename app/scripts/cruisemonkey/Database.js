@@ -20,13 +20,14 @@
 
 		var databases = {};
 
-		function Database(name, view, filter) {
-			var self    = this;
+		function Database(name, view, replication) {
+			var self         = this;
 
-			self.db     = new PouchDB(name, {size: 50});
-			self.name   = name;
-			self.view   = view;
-			self.filter = filter;
+			self.name        = name;
+			self.view        = view;
+			self.replication = replication;
+
+			self.createDb();
 		}
 
 		Database.prototype.pouch = function() {
@@ -53,39 +54,47 @@
 			db[method].apply(db, args);
 			return deferred.promise;
 		};
+		
+		Database.prototype.createDb = function() {
+			this.db = new PouchDB(this.name, {size:50});
+		};
 
 		Database.prototype.getView = function() {
 			return this.view;
 		};
 		
-		Database.prototype.getFilter = function() {
-			return this.filter;
+		Database.prototype.getReplication = function() {
+			return this.replication;
 		};
 
 		Database.prototype.destroy = function() {
 			var deferred = $q.defer();
 			var self = this;
-			
+
+			var resolveDeleted = function() {
+				deferred.resolve({ok:true});
+				// recreate a fresh PouchDB
+				self.createDb();
+			};
+
 			self.isEmpty().then(function(isEmpty) {
 				if (isEmpty) {
 					console.debug('database ' + self.name + ' is already empty, skipping destroy');
-					deferred.resolve({ok: true});
+					resolveDeleted();
 				} else {
 					self.pouch().destroy(function(err, res) {
 						$rootScope.safeApply(function() {
 							if (err) {
 								if (err.message && err.message.indexOf('no such table') >= 0) {
 									console.warn('cruisemonkey.Database: destroy called on database that already does not exist.');
-									delete databases[self.name];
-									deferred.resolve({ok: true});
+									resolveDeleted();
 								} else {
 									console.error('cruisemonkey.Database: failed to destroy ' + self.name,err);
 									deferred.reject(err);
 								}
 							} else {
 								console.debug('destroyed ' + self.name);
-								delete databases[self.name];
-								deferred.resolve(res);
+								resolveDeleted();
 							}
 						});
 					});
@@ -152,7 +161,7 @@
 		};
 
 		Database.prototype.get = function(docId, options) {
-			return this.__call('get', docId, options);
+			return this.__call('get', docId, options || {});
 		};
 
 		Database.prototype.put = function(doc, options) {
@@ -184,10 +193,15 @@
 
 			var deferred = $q.defer(), fromQuery;
 			
-			var doQuery = (to.getView()? true : false);
+			var viewOptions = to.getView();
+			var doQuery = ((viewOptions && viewOptions.view)? true : false);
 
 			if (doQuery) {
-				fromQuery = from.query(to.getView());
+				var opts = angular.copy(viewOptions);
+				var view = opts.view;
+				delete opts.view;
+
+				fromQuery = from.query(view, opts);
 			} else {
 				fromQuery = from.getIds({
 					'startkey': 'event:',
@@ -202,7 +216,7 @@
 				}
 
 				if (doQuery) {
-					console.debug('using view (' + to.getView() + ') for querying IDs from the remote database');
+					console.debug('querying IDs from the remote database using view options:', to.getView());
 					// we get back a .query result with rows
 					for (i=0; i < res[1].rows.length; i++) {
 						if (res[0].indexOf(res[1].rows[i].id) === -1) {
@@ -267,7 +281,8 @@
 
 			var deferred = $q.defer();
 
-			console.debug('performing a replication from ' + from.name + ' to ' + to.name);
+			var replication = to.getReplication() || {};
+			console.debug('performing a replication from ' + from.name + ' to ' + to.name + ' using options:',replication);
 			var opts = angular.extend({}, {
 				batch_size: 500,
 				complete: function(err, response) {
@@ -276,18 +291,12 @@
 							console.debug('cruisemonkey.Database: failed to replicate from ' + from.name + ' to ' + to.name + ':',err);
 							deferred.reject(err);
 						} else {
+							console.debug('finished replication from ' + from.name + ' to ' + to.name);
 							deferred.resolve(response.docs_written);
 						}
 					});
 				}
-			}, options);
-
-			if (to.getFilter()) {
-				console.debug('using filter ' + to.getFilter() + ' during replication');
-				opts.filter = to.getFilter();
-			} else {
-				console.debug('NOT using filter during replication');
-			}
+			}, replication, options);
 
 			from.pouch().replicate.to(to.pouch(), opts);
 			return deferred.promise;
@@ -326,17 +335,20 @@
 			return deferred.promise;
 		};
 
-		var getdb = function(db, view, filter) {
+		var getdb = function(db, options) {
+			var view        = options? options.view        : undefined,
+				replication = options? options.replication : undefined;
+
 			if (!(db in databases)) {
-				databases[db] = new Database(db, view, filter);
+				databases[db] = new Database(db, view, replication);
 			}
-			
+
 			var ret = databases[db];
-			if (ret && (ret.getView() !== view || ret.getFilter() !== filter)) {
-				console.warn('database ' + db + ' has already been created, but views or filters do not match!');
-				console.warn('requested view: ' + view + ', existing view: ' + ret.getView());
-				console.warn('requested filter: ' + filter + ', existing filter: ' + ret.getFilter());
-				databases[db] = new Database(db, view, filter);
+			if (ret && (ret.getView() !== view || ret.getReplication() !== replication)) {
+				console.warn('database ' + db + ' has already been created, but the view or replication options do not match!');
+				console.warn('requested view options:', view);
+				console.warn('requested replication options:', replication);
+				databases[db] = new Database(db, view, replication);
 			}
 
 			return databases[db];

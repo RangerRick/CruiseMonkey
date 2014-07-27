@@ -1,7 +1,8 @@
 (function() {
 	'use strict';
 
-	angular.module('cruisemonkey.User', ['angularLocalStorage'])
+	var moduleName = 'cruisemonkey.User';
+	angular.module(moduleName, ['angularLocalStorage'])
 	.factory('UserService', ['$rootScope', 'storage', function($rootScope, storage) {
 		var defaultValue = {
 			'loggedIn': false,
@@ -41,6 +42,7 @@
 			'save': function(newUser) {
 				newUser.username = newUser.username.toLowerCase();
 				$rootScope._user = angular.copy(newUser);
+				$rootScope.$broadcast('cruisemonkey.user.updated', $rootScope._user);
 			},
 			'reset': function() {
 				$rootScope._user = angular.copy(defaultValue);

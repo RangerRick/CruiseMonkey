@@ -1,6 +1,5 @@
 describe('cruisemonkey.Database', function() {
 	var async       = new AsyncSpec(this);
-	var webroot     = 'http://localhost:5984/';
 
 	jasmine.getEnv().defaultTimeoutInterval = 30000;
 
@@ -39,7 +38,7 @@ describe('cruisemonkey.Database', function() {
 				deferred.resolve();
 			});
 		} else {
-			console.log('_doDestroy: ' + destroyme.length + ' remaining');
+			console.debug('_doDestroy: ' + destroyme.length + ' remaining');
 
 			var nextdb = destroyme.shift();
 			var db = _database.get(nextdb);
@@ -53,7 +52,7 @@ describe('cruisemonkey.Database', function() {
 	};
 
 	async.beforeEach(function(done) {
-		console.log('beforeEach: starting');
+		console.debug('beforeEach: starting');
 		var deferred = $q.defer();
 
 		_doDestroy(angular.copy(dbs), deferred);
@@ -107,7 +106,7 @@ describe('cruisemonkey.Database', function() {
 		return deferred.promise;
 	};
 
-	describe('#get(test-local)', function() {
+	describe('service#get(test-local)', function() {
 		async.it('should pass if we could get a local database', function(done) {
 			var db = _database.get('test-local');
 			expect(db).toBeDefined();
@@ -123,7 +122,7 @@ describe('cruisemonkey.Database', function() {
 		});
 	});
 
-	describe('#destroy(test-local)', function() {
+	describe('db#destroy(test-local)', function() {
 		async.it('should pass if we got no failures destroying a database', function(done) {
 			var db = _database.get('test-local');
 			expect(db).toBeDefined();
@@ -141,7 +140,7 @@ describe('cruisemonkey.Database', function() {
 		});
 	});
 
-	describe('#updateFrom()', function() {
+	describe('db#updateFrom()', function() {
 		async.it('should pass if we can batch-sync one database to another', function(done) {
 			var local = _database.get('test-local');
 			var other = _database.get('test-other');
@@ -175,11 +174,16 @@ describe('cruisemonkey.Database', function() {
 		async.it('should copy only the things that match the given view', function(done) {
 			createTestDb().then(function() {
 				var remote = _database.get(webroot + 'test-remote');
-				var events = _database.get('test-events', 'cruisemonkey/events-public', 'cruisemonkey/events');
+				var events = _database.get('test-events', {
+					'view': {
+						'view': 'cruisemonkey/events-public'
+					},
+					'replication': {
+						'filter':'cruisemonkey/events'
+					}
+				});
 
-				expect(events.getView()).toEqual('cruisemonkey/events-public');
-				expect(events.getFilter()).toEqual('cruisemonkey/events');
-
+				console.debug('events.updateFrom(remote)');
 				events.updateFrom(remote).then(function() {
 					events.allDocs({'include_docs': true}).then(function(docs) {
 						expect(docs.rows.length).toEqual(4); // # of public events + design doc
@@ -194,9 +198,40 @@ describe('cruisemonkey.Database', function() {
 				});
 			});
 		});
+
+		async.it('should use the username as key when querying', function(done) {
+			createTestDb().then(function() {
+				var remote    = _database.get(webroot + 'test-remote');
+				var favorites = _database.get('test-favorites', {
+					'view': {
+						'view': 'cruisemonkey/favorites-all',
+						'key': 'rangerrick'
+					},
+					'replication': {
+						'filter':'cruisemonkey/favorites',
+						'query_params': {
+							'username': 'rangerrick'
+						}
+					}
+				});
+
+				favorites.updateFrom(remote).then(function() {
+					favorites.allDocs({'include_docs': true}).then(function(docs) {
+						expect(docs.rows.length).toEqual(2); // # of rangerrick favorites + design doc
+						for (var i=0; i < docs.rows.length; i++) {
+							if (docs.rows[i].id.indexOf('_design/') === 0) {
+								continue;
+							}
+							expect(docs.rows[i].doc.eventId).toEqual('event:official-event');
+						}
+						done();
+					});
+				});
+			});
+		});
 	});
 
-	describe('#replicateFrom()', function() {
+	describe('db#replicateFrom()', function() {
 		async.it('should pass if we can batch-replicate one database to another', function(done) {
 			var local = _database.get('test-local');
 			var other = _database.get('test-other');
@@ -230,10 +265,14 @@ describe('cruisemonkey.Database', function() {
 		async.it('should copy only the things that match the given view', function(done) {
 			createTestDb().then(function() {
 				var remote = _database.get(webroot + 'test-remote');
-				var events = _database.get('test-events', 'cruisemonkey/events-public', 'cruisemonkey/events-public');
-
-				expect(events.getView()).toEqual('cruisemonkey/events-public');
-				expect(events.getFilter()).toEqual('cruisemonkey/events-public');
+				var events = _database.get('test-events', {
+					'view': {
+						'view': 'cruisemonkey/events-public'
+					},
+					'replication': {
+						'filter':'cruisemonkey/events-public'
+					}
+				});
 
 				events.replicateFrom(remote).then(function() {
 					events.allDocs({'include_docs': true}).then(function(docs) {
@@ -244,6 +283,37 @@ describe('cruisemonkey.Database', function() {
 								continue;
 							}
 							expect(docs.rows[i].doc.isPublic).toEqual(true);
+						}
+						done();
+					});
+				});
+			});
+		});
+		
+		async.it('should use the username as key when querying', function(done) {
+			createTestDb().then(function() {
+				var remote    = _database.get(webroot + 'test-remote');
+				var favorites = _database.get('test-favorites', {
+					'view': {
+						'view': 'cruisemonkey/favorites-all',
+						'key': 'username'
+					},
+					'replication': {
+						'filter':'cruisemonkey/favorites',
+						'query_params': {
+							'username': 'rangerrick'
+						}
+					}
+				});
+
+				favorites.replicateFrom(remote).then(function() {
+					favorites.allDocs({'include_docs': true}).then(function(docs) {
+						expect(docs.rows.length).toEqual(2); // # of rangerrick favorites + design doc
+						for (var i=0; i < docs.rows.length; i++) {
+							if (docs.rows[i].id.indexOf('_design/') === 0) {
+								continue;
+							}
+							expect(docs.rows[i].doc.eventId).toEqual('event:official-event');
 						}
 						done();
 					});
@@ -262,7 +332,7 @@ describe('cruisemonkey.Database', function() {
 		return null;
 	};
 
-	describe('#query()', function() {
+	describe('db#query()', function() {
 		async.it('should pass if we can get all test events with a query', function(done) {
 			createTestDb().then(function() {
 				var remote = _database.get(webroot + 'test-remote');
@@ -286,6 +356,25 @@ describe('cruisemonkey.Database', function() {
 			});
 		});
 	});
+
+	describe('db#get()', function() {
+		async.it('should get the specific document we ask for', function(done) {
+			createTestDb().then(function() {
+				var remote = _database.get(webroot + 'test-remote');
+
+				expect(remote).toBeDefined();
+
+				remote.get('favorite:rangerrick:event:official-event').then(function(res) {
+					expect(res).toBeDefined();
+					expect(res.username).toEqual('rangerrick');
+					done();
+				});
+			}, function(err) {
+				console.debug('failed to create test db:',err);
+			});
+		});
+	});
+
 
 	xdescribe('Syncing', function() {
 		var objs = [];

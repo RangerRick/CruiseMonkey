@@ -16,7 +16,7 @@ module.exports = function(config) {
       'app/bower_components/log4javascript/log4javascript.js',
       'app/bower_components/momentjs/moment.js',
       'app/bower_components/lie/dist/lie.noConflict.js',
-      'app/scripts/3rdparty/pouchdb-nightly.js',
+      'app/bower_components/pouchdb/dist/pouchdb-nightly.js',
       'app/scripts/angular-3rdparty/ionic.js',
       'app/bower_components/angular/angular.js',
       'app/bower_components/angular-loader/angular-loader.js',

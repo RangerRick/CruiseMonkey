@@ -7,7 +7,7 @@ function(doc, req) {
 		// my favorite, sync it
 		return true;
 	}
-	if (doc._id.indexOf('_design') === 0) {
+	if (doc._id.indexOf('_design/') === 0) {
 		// also sync the design doc
 		return true;
 	}

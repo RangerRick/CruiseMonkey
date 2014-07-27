@@ -1,4 +1,4 @@
-xdescribe('cruisemonkey.Events', function() {
+describe('cruisemonkey.Events', function() {
 	var log          = null;
 	var service      = null;
 	var userService  = null;
@@ -8,7 +8,7 @@ xdescribe('cruisemonkey.Events', function() {
 	var $httpBackend = null;
 	var database     = null;
 
-	//var db           = null;
+	jasmine.getEnv().defaultTimeoutInterval = 5000;
 
 	var dbName      = 'cmunittest';
 	var async       = new AsyncSpec(this);
@@ -28,19 +28,16 @@ xdescribe('cruisemonkey.Events', function() {
 		return ret;
 	};
 
-	/*
-	var doDbInit = function(done) {
-		db.setRemoteDatabase(remoteDb);
-		db.setEventsDatabase(eventsDb);
-		db.setFavoritesDatabase(favoritesDb);
+	var doSync = function() {
+		var deferred = $q.defer();
 
-		db.init().then(function(res) {
-			expect(res).toBeGreaterThan(-1);
-			done();
+		var remote = database.get(webroot + dbName);
+		service.syncFrom(remote).then(function() {
+			deferred.resolve();
 		});
-		$timeout.flush();
+
+		return deferred.promise;
 	};
-	*/
 
 	async.beforeEach(function(done) {
 		module('cruisemonkey.Database', 'cruisemonkey.User', 'cruisemonkey.Events', function($provide) {
@@ -63,226 +60,259 @@ xdescribe('cruisemonkey.Events', function() {
 			$httpBackend = backend;
 
 			backend.when('GET', 'http://jccc4.rccl.com/cruisemonkey-jccc4').respond(500, '');
-			
-			/*
-			doDbSetup(function() {
-				doDbInit(done);
+
+			var pristine  = database.get(webroot + 'test-pristine');
+			var remote    = database.get(webroot + dbName);
+			var events    = database.get(dbName + '.events');
+			var favorites = database.get(dbName + '.favorites');
+
+			var destroyed = [remote.destroy(), events.destroy(), favorites.destroy()];
+			$q.all(destroyed).then(function() {
+				remote.syncFrom(pristine).then(function() {
+					remote.bulkDocs(defaultDocs).then(function() {
+						doSync().then(function() {
+							done();
+						});
+					});
+				});
 			});
-			*/
 		}]);
 	});
 
-	xdescribe("#getAllEvents", function() {
+	describe("#getAllEvents", function() {
 		async.it('should return all events', function(done) {
-			expect(db).toBeDefined();
 			expect(service.getAllEvents).toBeDefined();
 			service.getAllEvents().then(function(result) {
 				var items = getEvents(result);
 				expect(result.length).toEqual(5);
 				expect(items).toBeDefined();
-				expect(items['official-event']).toBeDefined();
-				expect(items['official-event'].getSummary()).toBe('official event');
+				expect(items['event:official-event']).toBeDefined();
+				expect(items['event:official-event'].getSummary()).toBe('official event');
 				done();
 			});
-			$timeout.flush();
+			$rootScope.$apply();
 		});
 	});
 
-	xdescribe("#getOfficialEvents", function() {
+	describe("#getOfficialEvents", function() {
 		async.it('should return all official events', function(done) {
 			userService.save({'loggedIn': true, 'username':'rangerrick', 'password':'whatever'});
-			expect(db).toBeDefined();
 			expect(service.getOfficialEvents).toBeDefined();
 
-			db.setUsername('rangerrick');
-			doDbInit(function() {
+			doSync().then(function() {
 				service.getOfficialEvents().then(function(result) {
 					expect(result.length).toEqual(1);
 					var items = getEvents(result);
-					expect(items['official-event']).toBeDefined();
-					expect(items['official-event'].getSummary()).toBe('official event');
-					expect(items['official-event'].isFavorite()).toBeTruthy();
+					expect(items['event:official-event']).toBeDefined();
+					expect(items['event:official-event'].getSummary()).toBe('official event');
+					expect(items['event:official-event'].isFavorite()).toBeTruthy();
 					done();
+				}, function(err) {
+					console.debug('failed:',err);
 				});
 			});
+
+			$rootScope.$apply();
 		});
 	});
 
-	xdescribe("#getUnofficialEvents", function() {
+	describe("#getUnofficialEvents", function() {
 		async.it('should return only the events marked isPublic which are not official', function(done) {
 			userService.save({'loggedIn': true, 'username':'rangerrick', 'password':'whatever'});
-			expect(db).toBeDefined();
 			expect(service.getUnofficialEvents).toBeDefined();
 
-			db.setUsername('rangerrick');
-			doDbInit(function() {
+			doSync().then(function() {
 				service.getUnofficialEvents().then(function(result) {
 					var items = getEvents(result);
 					expect(result.length).toEqual(2);
-					expect(items['rangerrick-public']).toBeDefined();
-					expect(items['triluna-public']).toBeDefined();
-					expect(items['rangerrick-public'].isFavorite()).toBeFalsy();
-					expect(items['triluna-public'].isFavorite()).toBeFalsy();
+					expect(items['event:rangerrick-public']).toBeDefined();
+					expect(items['event:triluna-public']).toBeDefined();
+					expect(items['event:rangerrick-public'].isFavorite()).toBeFalsy();
+					expect(items['event:triluna-public'].isFavorite()).toBeFalsy();
 					done();
 				});
 			});
+
+			$rootScope.$apply();
 		});
 	});
 
-	xdescribe("#getUserEvents", function() {
+	describe("#getUserEvents", function() {
 		async.it('should return only the events for user "rangerrick"', function(done) {
 			userService.save({'loggedIn': true, 'username':'rangerrick', 'password':'whatever'});
-			expect(db).toBeDefined();
 			expect(service.getUserEvents).toBeDefined();
 
-			db.setUsername('rangerrick');
-			doDbInit(function() {
+			doSync().then(function() {
 				service.getUserEvents().then(function(result) {
 					expect(result.length).toEqual(2);
 					var items = getEvents(result);
-					expect(items['rangerrick-public']).toBeDefined();
-					expect(items['rangerrick-public'].isFavorite()).toBeFalsy();
-					expect(items['rangerrick-public'].isPublic()).toBeTruthy();
-					expect(items['rangerrick-private']).toBeDefined();
-					expect(items['rangerrick-private'].isFavorite()).toBeFalsy();
-					expect(items['rangerrick-private'].isPublic()).toBeFalsy();
+					expect(items['event:rangerrick-public']).toBeDefined();
+					expect(items['event:rangerrick-public'].isFavorite()).toBeFalsy();
+					expect(items['event:rangerrick-public'].isPublic()).toBeTruthy();
+					expect(items['event:rangerrick-private']).toBeDefined();
+					expect(items['event:rangerrick-private'].isFavorite()).toBeFalsy();
+					expect(items['event:rangerrick-private'].isPublic()).toBeFalsy();
 					done();
 				});
 			});
+
+			$rootScope.$apply();
 		});
+
 		async.it('should not return any events if the user is not logged in', function(done) {
 			userService.save({'loggedIn': false, 'username':'rangerrick', 'password':'whatever'});
-			expect(db).toBeDefined();
 			expect(service.getUserEvents).toBeDefined();
 
-			service.getUserEvents().then(function(result) {
-			}, function(err) {
-				expect(err).toBe('EventService.getUserEvent(): user not logged in');
-				done();
-			});
-			$timeout.flush();
+			doSync().then(function() {
+				service.getUserEvents().then(function(result) {
+					console.debug('result=',result);
+				}, function(err) {
+					expect(err).toBe('EventService.getUserEvent(): user not logged in');
+					done();
+				});
+				$timeout.flush();
+			})
+
+			$rootScope.$apply();
 		});
 	});
 
-	xdescribe("#getMyEvents", function() {
+	describe("#getMyEvents", function() {
 		async.it('should return only the events that user "rangerrick" has created or favorited', function(done) {
 			userService.save({'loggedIn': true, 'username':'rangerrick', 'password':'whatever'});
-			expect(db).toBeDefined();
 			expect(service.getMyEvents).toBeDefined();
 
-			db.setUsername('rangerrick');
-			doDbInit(function() {
+			doSync().then(function() {
 				service.getMyEvents().then(function(result) {
 					expect(result.length).toEqual(3);
 					var items = getEvents(result);
-					expect(items['official-event']).toBeDefined();
-					expect(items['official-event'].isFavorite()).toBeTruthy();
-					expect(items['rangerrick-public']).toBeDefined();
-					expect(items['rangerrick-public'].isFavorite()).toBeFalsy();
-					expect(items['rangerrick-private']).toBeDefined();
-					expect(items['rangerrick-private'].isFavorite()).toBeFalsy();
+					expect(items['event:official-event']).toBeDefined();
+					expect(items['event:official-event'].isFavorite()).toBeTruthy();
+					expect(items['event:rangerrick-public']).toBeDefined();
+					expect(items['event:rangerrick-public'].isFavorite()).toBeFalsy();
+					expect(items['event:rangerrick-private']).toBeDefined();
+					expect(items['event:rangerrick-private'].isFavorite()).toBeFalsy();
 					done();
 				});
 			});
+
+			$rootScope.$apply();
 		});
+
 		async.it('should return nothing when the user is not logged in', function(done) {
 			userService.save({'loggedIn': false, 'username':'rangerrick', 'password':'whatever'});
-			expect(db).toBeDefined();
 			expect(service.getMyEvents).toBeDefined();
-			service.getMyEvents().then(function() {
-			}, function(err) {
-				expect(err).toBe('EventService.getMyEvents(): user not logged in');
-				done();
+			
+			doSync().then(function() {
+				service.getMyEvents().then(function() {
+				}, function(err) {
+					expect(err).toBe('EventService.getMyEvents(): user not logged in');
+					done();
+				});
+				$timeout.flush();
 			});
-			$timeout.flush();
+			
+			$rootScope.$apply();
 		});
 	});
 
-	xdescribe('#getMyFavorites', function() {
+	describe('#getMyFavorites', function() {
 		async.it('should return a list of favorited ids', function(done) {
 			userService.save({'loggedIn': true, 'username':'rangerrick', 'password':'whatever'});
-			expect(db).toBeDefined();
 			expect(service.getMyFavorites).toBeDefined();
 
-			db.setUsername('rangerrick');
-			doDbInit(function() {
+			doSync().then(function() {
 				service.getMyFavorites().then(function(result) {
 					expect(result.length).toEqual(1);
 					var items = getEvents(result);
-					expect(items['official-event']).toBeDefined();
-					expect(items['official-event']).toBeDefined();
+					expect(items['event:official-event']).toBeDefined();
+					expect(items['event:official-event']).toBeDefined();
 					done();
 				});
 			});
+
+			$rootScope.$apply();
 		});
+
 		async.it('should return nothing when the user is not logged in', function(done) {
 			userService.save({'loggedIn': false, 'username':'rangerrick', 'password':'whatever'});
-			expect(db).toBeDefined();
 			expect(service.getMyFavorites).toBeDefined();
-			service.getMyFavorites().then(function() {
-			}, function(err) {
-				expect(err).toBe('EventService.getMyFavorites(): user not logged in');
-				done();
+			
+			doSync().then(function() {
+				service.getMyFavorites().then(function() {
+				}, function(err) {
+					expect(err).toBe('EventService.getMyFavorites(): user not logged in');
+					done();
+				});
+				$timeout.flush();
 			});
-			$timeout.flush();
+
+			$rootScope.$apply();
 		});
 	});
 
-	xdescribe('#isFavorite', function() {
+	describe('#isFavorite', function() {
 		async.it('should return true if the given id is a favorite while rangerrick is logged in', function(done) {
 			userService.save({'loggedIn': true, 'username':'rangerrick', 'password':'whatever'});
-			expect(db).toBeDefined();
 			expect(service.isFavorite).toBeDefined();
 
-			db.setUsername('rangerrick');
-			doDbInit(function() {
-				service.isFavorite('official-event').then(function(result) {
+			doSync().then(function() {
+				service.isFavorite('event:official-event').then(function(result) {
+					console.debug('checking official-event');
 					expect(result).toBeTruthy();
-					service.isFavorite('triluna-public').then(function(result) {
+					service.isFavorite('event:triluna-public').then(function(result) {
+						console.debug('checking triluna-public');
 						expect(result).toBeFalsy();
 						done();
 					});
 				});
 			});
+
 			$rootScope.$apply();
 		});
+
 		async.it('should return false if the given id is a favorite while rangerrick is not logged in', function(done) {
 			userService.save({'loggedIn': false, 'username':'rangerrick', 'password':'whatever'});
-			expect(db).toBeDefined();
 			expect(service.isFavorite).toBeDefined();
-			service.isFavorite('official-event').then(function() {
-			}, function(err) {
-				expect(err).toBe('EventService.isFavorite(): user not logged in');
-				done();
+
+			doSync().then(function() {
+				service.isFavorite('event:official-event').then(function() {
+				}, function(err) {
+					expect(err).toBe('EventService.isFavorite(): user not logged in');
+					done();
+				});
+				$timeout.flush();
 			});
+
 			$rootScope.$apply();
-			$timeout.flush();
 		});
+
 		async.it('should return false if the given id is a favorite of another user', function(done) {
 			userService.save({'loggedIn': true, 'username':'bob', 'password':'whatever'});
-			expect(db).toBeDefined();
 			expect(service.isFavorite).toBeDefined();
-			service.isFavorite('rangerrick-public').then(function(result) {
-				expect(result).toBeFalsy();
-				done();
+
+			doSync().then(function() {
+				service.isFavorite('event:rangerrick-public').then(function(result) {
+					expect(result).toBeFalsy();
+					done();
+				});
 			});
+
 			$rootScope.$apply();
 		});
 	});
-	
-	xdescribe('#addFavorite', function() {
+
+	describe('#addFavorite', function() {
 		async.it('should create a new favorite in the database if ther user is logged in', function(done) {
 			userService.save({'loggedIn': true, 'username':'rangerrick', 'password':'whatever'});
-			expect(db).toBeDefined();
 			expect(service.addFavorite).toBeDefined();
-			db.setUsername('rangerrick');
-			doDbInit(function() {
-				service.isFavorite('triluna-public').then(function(result) {
+			doSync().then(function() {
+				service.isFavorite('event:triluna-public').then(function(result) {
 					expect(result).toBeDefined();
 					expect(result).toBeFalsy();
-					service.addFavorite('triluna-public').then(function(result) {
+					service.addFavorite('event:triluna-public').then(function(result) {
 						expect(result).toBeDefined();
-						service.isFavorite('triluna-public').then(function(result) {
+						service.isFavorite('event:triluna-public').then(function(result) {
 							expect(result).toBeTruthy();
 							done();
 						});
@@ -291,62 +321,66 @@ xdescribe('cruisemonkey.Events', function() {
 			});
 			$rootScope.$apply();
 		});
+
 		async.it('should not create a new favorite in the database if the user is not logged in', function(done) {
 			userService.save({'loggedIn': false, 'username':'rangerrick', 'password':'whatever'});
-			expect(db).toBeDefined();
 			expect(service.addFavorite).toBeDefined();
-			service.addFavorite('17').then(function(result) {
-			}, function(err) {
-				expect(err).toBe('EventService.addFavorite(): user not logged in, or no eventId passed');
-				done();
+			
+			doSync().then(function() {
+				service.addFavorite('17').then(function(result) {
+				}, function(err) {
+					expect(err).toBe('EventService.addFavorite(): user not logged in, or no eventId passed');
+					done();
+				});
+				$timeout.flush();
 			});
+
 			$rootScope.$apply();
-			$timeout.flush();
 		});
 	});
 
-	xdescribe('#removeFavorite', function() {
+	describe('#removeFavorite', function() {
 		async.it('should not remove a favorite from the database if the user is not logged in', function(done) {
 			userService.save({'loggedIn': false, 'username':'rangerrick', 'password':'whatever'});
-			expect(db).toBeDefined();
 			expect(service.removeFavorite).toBeDefined();
-			service.removeFavorite('official-event').then(function(result) {
-			}, function(err) {
-				expect(err).toBe('EventService.removeFavorite(): user not logged in, or no eventId passed');
-				done();
+
+			doSync().then(function() {
+				service.removeFavorite('event:official-event').then(function(result) {
+				}, function(err) {
+					expect(err).toBe('EventService.removeFavorite(): user not logged in, or no eventId passed');
+					done();
+				});
+				$timeout.flush();
 			});
+
 			$rootScope.$apply();
-			$timeout.flush();
 		});
 		async.it('should remove a favorite from the database if the user is logged in', function(done) {
 			userService.save({'loggedIn': true, 'username':'rangerrick', 'password':'whatever'});
-			expect(db).toBeDefined();
 			expect(service.removeFavorite).toBeDefined();
 
-			db.setUsername('rangerrick');
-			doDbInit(function() {
-				service.removeFavorite('official-event').then(function(result) {
+			doSync().then(function() {
+				service.removeFavorite('event:official-event').then(function(result) {
 					expect(result).toBeDefined();
 					expect(result).toEqual(1);
-					service.isFavorite('official-event').then(function(result) {
+					service.isFavorite('event:official-event').then(function(result) {
 						expect(result).toBeDefined();
 						expect(result).toBe(false);
 						done();
 					});
 				});
 			});
+
 			$rootScope.$apply();
 		});
 	});
-	
-	xdescribe('#addEvent', function() {
+
+	describe('#addEvent', function() {
 		async.it('should add a new event', function(done) {
 			userService.save({'loggedIn': true, 'username':'rangerrick', 'password':'whatever'});
-			expect(db).toBeDefined();
 			expect(service.addEvent).toBeDefined();
 
-			db.setUsername('rangerrick');
-			doDbInit(function() {
+			doSync().then(function() {
 				service.addEvent({
 					'summary': 'This is a test.',
 					'description': 'A TEST, I SAY',
@@ -360,19 +394,18 @@ xdescribe('cruisemonkey.Events', function() {
 					done();
 				});
 			});
+
 			$rootScope.$apply();
 		});
 	});
-	
-	xdescribe('#updateEvent', function() {
+
+	describe('#updateEvent', function() {
 		async.it('should update an existing event', function(done) {
 			userService.save({'loggedIn': true, 'username':'rangerrick', 'password':'whatever'});
-			expect(db).toBeDefined();
 			expect(service.addEvent).toBeDefined();
 			expect(service.updateEvent).toBeDefined();
 
-			db.setUsername('rangerrick');
-			doDbInit(function() {
+			doSync().then(function() {
 				service.addEvent({
 					'summary': 'This is a test.',
 					'description': 'A TEST, I SAY',
@@ -394,22 +427,21 @@ xdescribe('cruisemonkey.Events', function() {
 					});
 				});
 			});
+
 			$rootScope.$apply();
 		});
 	});
 
-	xdescribe('#removeEvent', function() {
+	describe('#removeEvent', function() {
 		async.it('should remove an existing event', function(done) {
 			userService.save({'loggedIn': true, 'username':'rangerrick', 'password':'whatever'});
-			expect(db).toBeDefined();
 			expect(service.addEvent).toBeDefined();
 
-			db.setUsername('rangerrick');
-			doDbInit(function() {
+			doSync().then(function() {
 				service.getAllEvents().then(function(result) {
 					var items = getEvents(result);
 
-					var existingId = 'rangerrick-private';
+					var existingId = 'event:rangerrick-private';
 					var existingRev = parseInt(items[existingId].getRevision().split('-')[0]);
 					expect(existingRev).toBeGreaterThan(0);
 					service.removeEvent(items[existingId]).then(function(result) {
@@ -425,11 +457,12 @@ xdescribe('cruisemonkey.Events', function() {
 					});
 				});
 			});
+
 			$rootScope.$apply();
 		});
 	});
 
-	xdescribe('#getEventForTime', function() {
+	describe('#getEventForTime', function() {
 		it('Should find the next event in a simple list of events with only start times.', function() {
 			var eventList = [
 				new CMEvent({
@@ -459,7 +492,7 @@ xdescribe('cruisemonkey.Events', function() {
 			ev = service.getEventForTime(moment('2010-01-01 00:01'), eventList);
 			expect(ev).toBeDefined();
 			expect(ev.getSummary()).toBe('B');
-			
+
 			ev = service.getEventForTime(moment('2010-05-01 00:00'), eventList);
 			expect(ev).not.toBeDefined();
 		});
@@ -501,7 +534,6 @@ xdescribe('cruisemonkey.Events', function() {
 			expect(ev).toBeDefined();
 			expect(ev.getSummary()).toBe('B');
 		});
-
 
 		it('Should find the first event that matches when multiple events match the given time.', function() {
 			var eventList = [
@@ -671,7 +703,7 @@ xdescribe('cruisemonkey.Events', function() {
 		});
 	});
 
-	xdescribe('CMEvent#toEditableBean', function() {
+	describe('CMEvent#toEditableBean', function() {
 		async.it('should create a bean that matches the event data', function(done) {
 			var ev = new CMEvent();
 			ev.setId('1');
@@ -705,7 +737,7 @@ xdescribe('cruisemonkey.Events', function() {
 		});
 	});
 
-	xdescribe('CMEvent#fromEditableBean', function() {
+	describe('CMEvent#fromEditableBean', function() {
 		async.it('should update the event to have matching bean data', function(done) {
 			var ev = new CMEvent();
 			ev.setId('2');
@@ -717,7 +749,7 @@ xdescribe('cruisemonkey.Events', function() {
 			ev.setUsername('ranger');
 			ev.setLocation('there');
 			ev.setPublic(true);
-			
+
 			ev.fromEditableBean({
 				id: '1',
 				revision: '12345',
