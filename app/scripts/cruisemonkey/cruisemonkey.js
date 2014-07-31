@@ -56,85 +56,128 @@
 					}
 				}
 			})
-		;
-		/*
-
-		$stateProvider
-			.state('login', {
+			.state('app.login', {
 				url: '/login',
-				templateUrl: 'template/login.html',
-				controller: 'CMLoginCtrl'
+				views: {
+					'menuContent': {
+						templateUrl: 'template/login.html',
+						controller: 'CMLoginCtrl'
+					}
+				}
 			})
-			.state('logout', {
+			.state('app.logout', {
 				url: '/logout',
-				templateUrl: 'template/logout.html',
-				controller: 'CMLogoutCtrl'
+				views: {
+					'menuContent': {
+						templateUrl: 'template/logout.html',
+						controller: 'CMLogoutCtrl'
+					}
+				}
 			})
-			.state('amenities', {
+			.state('app.amenities', {
 				url: '/amenities',
-				templateUrl: 'template/amenities.html',
-				controller: 'CMAmenitiesCtrl'
+				views: {
+					'menuContent': {
+						templateUrl: 'template/amenities.html',
+						controller: 'CMAmenitiesCtrl'
+					}
+				}
 			})
-			.state('events', {
-				url: '/events/:eventType',
-				templateUrl: 'template/event-list.html',
-				controller: 'CMEventCtrl'
-			})
-			.state('deck-plans', {
+			.state('app.deck-plans', {
 				url: '/deck-plans/:deck',
-				templateUrl: 'template/deck-plans.html',
-				controller: 'CMDeckListCtrl'
+				views: {
+					'menuContent': {
+						templateUrl: 'template/deck-plans.html',
+						controller: 'CMDeckListCtrl'
+					}
+				}
 			})
-			.state('photos', {
+			.state('app.photos', {
 				url: '/photos',
-				templateUrl: 'template/photos.html',
-				controller: 'CMPhotoCtrl'
+				views: {
+					'menuContent': {
+						templateUrl: 'template/photos.html',
+						controller: 'CMPhotoCtrl'
+					}
+				}
 			})
-			.state('help', {
+			.state('app.help', {
 				url: '/help',
-				templateUrl: 'template/help.html',
-				controller: 'CMHelpCtrl'
+				views: {
+					'menuContent': {
+						templateUrl: 'template/help.html',
+						controller: 'CMHelpCtrl'
+					}
+				}
 			})
-			.state('karaoke', {
+			.state('app.karaoke', {
 				url: '/karaoke',
-				templateUrl: 'template/karaoke.html',
-				controller: ['$rootScope', function($rootScope) {
-					$rootScope.headerTitle = 'Karaoke';
-					$rootScope.leftButtons = $rootScope.getLeftButtons();
-					$rootScope.rightButtons = [];
-				}]
+				views: {
+					'menuContent': {
+						templateUrl: 'template/karaoke.html',
+						controller: ['$rootScope', function($rootScope) {
+							$rootScope.headerTitle = 'Karaoke';
+							$rootScope.leftButtons = $rootScope.getLeftButtons();
+							$rootScope.rightButtons = [];
+						}]
+					}
+				}
 			})
-			.state('karaoke-search', {
+			.state('app.karaoke-search', {
 				url: '/karaoke/search',
-				templateUrl: 'template/karaoke.search.html',
-				controller: 'CMKaraokeSearchCtrl'
+				views: {
+					'menuContent': {
+						templateUrl: 'template/karaoke.search.html',
+						controller: 'CMKaraokeSearchCtrl'
+					}
+				}
 			})
-			.state('karaoke-list', {
+			.state('app.karaoke-list', {
 				url: '/karaoke/list',
-				templateUrl: 'template/karaoke.list.html',
-				controller: 'CMKaraokePrefixListCtrl'
+				views: {
+					'menuContent': {
+						templateUrl: 'template/karaoke.list.html',
+						controller: 'CMKaraokePrefixListCtrl'
+					}
+				}
 			})
-			.state('karaoke-by-prefix', {
+			.state('app.karaoke-by-prefix', {
 				url: '/karaoke/by-prefix/:prefix',
-				templateUrl: 'template/karaoke.by-prefix.html',
-				controller: 'CMKaraokeArtistListCtrl'
+				views: {
+					'menuContent': {
+						templateUrl: 'template/karaoke.by-prefix.html',
+						controller: 'CMKaraokeArtistListCtrl'
+					}
+				}
 			})
-			.state('karaoke-by-artist', {
+			.state('app.karaoke-by-artist', {
 				url: '/karaoke/by-artist/:artist',
-				templateUrl: 'template/karaoke.by-artist.html',
-				controller: 'CMKaraokeArtistCtrl'
+				views: {
+					'menuContent': {
+						templateUrl: 'template/karaoke.by-artist.html',
+						controller: 'CMKaraokeArtistCtrl'
+					}
+				}
 			})
-			.state('about', {
+			.state('app.about', {
 				url: '/about',
-				templateUrl: 'template/about.html',
-				controller: 'CMAboutCtrl'
+				views: {
+					'menuContent': {
+						templateUrl: 'template/about.html',
+						controller: 'CMAboutCtrl'
+					}
+				}
 			})
-			.state('advanced', {
+			.state('app.advanced', {
 				url: '/advanced',
-				templateUrl: 'template/advanced.html',
-				controller: 'CMAdvancedCtrl'
+				views: {
+					'menuContent': {
+						templateUrl: 'template/advanced.html',
+						controller: 'CMAdvancedCtrl'
+					}
+				}
 			});
-			*/
+		;
 	}])
 	.run(['$rootScope', '$ionicPlatform', 'UserService', 'SettingsService', 'EventService', '_database', function($rootScope, $ionicPlatform, UserService, SettingsService, EventService, database) {
 		console.debug('CruiseMonkey run() called.');

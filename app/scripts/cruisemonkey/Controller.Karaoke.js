@@ -87,7 +87,7 @@
 			'content': '<i class="icon icon-cm ion-arrow-left-b"></i>',
 			tap: function(e) {
 				e.preventDefault();
-				$state.go('karaoke');
+				$state.go('app.karaoke');
 				return false;
 			}
 		});
@@ -187,7 +187,7 @@
 			'content': '<i class="icon icon-cm ion-arrow-left-b"></i>',
 			tap: function(e) {
 				e.preventDefault();
-				$state.go('karaoke');
+				$state.go('app.karaoke');
 				return false;
 			}
 		});
@@ -240,7 +240,7 @@
 			'content': '<i class="icon icon-cm ion-arrow-left-b"></i>',
 			tap: function(e) {
 				e.preventDefault();
-				$state.go('karaoke-list');
+				$state.go('app.karaoke-list');
 				return false;
 			}
 		});
@@ -275,7 +275,7 @@
 		});
 
 		$scope.go = function(entry) {
-			var url = '/karaoke/by-artist/' + entry.artist;
+			var url = '/app/karaoke/by-artist/' + entry.artist;
 			$location.url(url);
 		};
 
@@ -317,7 +317,7 @@
 			'content': '<i class="icon icon-cm ion-arrow-left-b"></i>',
 			tap: function(e) {
 				e.preventDefault();
-				$state.go('karaoke-by-prefix', {
+				$state.go('app.karaoke-by-prefix', {
 					prefix: $stateParams.artist.charAt(0).toUpperCase()
 				});
 				return false;

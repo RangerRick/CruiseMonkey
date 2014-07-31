@@ -105,7 +105,7 @@
 		};
 
 		$scope.$watch('deck', function(newValue, oldValue) {
-			$state.transitionTo('deck-plans', {
+			$state.transitionTo('app.deck-plans', {
 				deck: $scope.deck
 			}, {
 				location: true,
