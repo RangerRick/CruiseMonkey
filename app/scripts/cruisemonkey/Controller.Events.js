@@ -63,14 +63,14 @@
 		'cruisemonkey.Events',
 		'cruisemonkey.Notifications'
 	])
-	.controller('CMEditEventCtrl', ['$q', '$scope', '$rootScope', 'UserService', '$log', function($q, $scope, $rootScope, UserService, log) {
-		log.info('Initializing CMEditEventCtrl');
+	.controller('CMEditEventCtrl', ['$q', '$scope', '$rootScope', 'UserService', function($q, $scope, $rootScope, UserService) {
+		console.info('Initializing CMEditEventCtrl');
 
 		if ($rootScope.editEvent) {
 			$scope.event = $rootScope.editEvent.toEditableBean();
 			delete $rootScope.editEvent;
 
-			log.debug('Found existing event to edit.');
+			console.debug('Found existing event to edit.');
 		} else {
 			var ev = new CMEvent();
 			ev.setStart(moment());
@@ -79,7 +79,7 @@
 			ev.setPublic(true);
 			$scope.event = ev.toEditableBean();
 
-			log.debug('Created fresh event.');
+			console.debug('Created fresh event.');
 		}
 	}])
 	.factory('EventCache', [function() {
@@ -133,13 +133,14 @@
 		};
 	}])
 	.controller('CMEventCtrl', [ 'storage', '$scope', '$rootScope', '$interval', '$timeout', '$stateParams', '$location', '$q', '$ionicModal', '$ionicScrollDelegate', '$window', 'UserService', 'EventService', 'EventCache', '$log', 'NotificationService', function(storage, $scope, $rootScope, $interval, $timeout, $stateParams, $location, $q, $ionicModal, $ionicScrollDelegate, $window, UserService, EventService, EventCache, log, notifications) {
+		console.info('Initializing CMEventCtrl');
+
 		if (!$stateParams.eventType) {
-			$location.path('/events/official');
+			$location.path('/app/events/official');
 			return;
 		}
 
 		var eventType = $stateParams.eventType;
-		log.info('Initializing CMEventCtrl');
 		var refreshInterval = 2; // seconds
 
 		$rootScope.headerTitle = eventType.capitalize() + ' Events';
@@ -174,7 +175,7 @@
 		storage.bind($scope, 'searchString', {
 			'storeName': 'cm.event.' + eventType
 		});
-		log.debug('$scope.searchString: ' + $scope.searchString);
+		console.debug('$scope.searchString: ' + $scope.searchString);
 
 		$scope.entries = withDays(EventCache.get(eventType, $scope.searchString) || []);
 		if ($scope.entries.length === 0) {
@@ -220,16 +221,16 @@
 					position += (offsetTop - scrollTop + clientTop);
 					scrollEl = scrollEl.parent();
 				}
-				log.debug('offset='+position);
+				console.debug('offset='+position);
 				$scope.$broadcast('scroll.scrollTo', 0, position, true);
 			} else {
-				log.debug("can't find element " + hash);
+				console.debug("can't find element " + hash);
 			}
 		};
 
 		var updateEntries = function() {
 			var cached = withDays(EventCache.get(eventType, $scope.searchString));
-			log.debug('cached events:',cached);
+			console.debug('cached events:',cached);
 			$scope.entries = cached;
 			$scope.$broadcast('scroll.resize');
 		};
@@ -240,7 +241,7 @@
 				$timeout.cancel(delayTimeout);
 			}
 			delayTimeout = $timeout(function() {
-				log.debug('CMEventCtrl.doUpdateDelayed()');
+				console.debug('CMEventCtrl.doUpdateDelayed()');
 				delayTimeout = null;
 				updateEntries();
 			}, delay || 300);
@@ -253,6 +254,7 @@
 
 		var refreshing = null;
 		var doRefresh = function() {
+			console.debug('doRefresh()');
 			if (refreshing) {
 				return refreshing;
 			}
@@ -260,9 +262,9 @@
 			var deferred = $q.defer();
 			refreshing = deferred.promise;
 
-			log.debug('CMEventCtrl.doRefresh(): refreshing.');
+			console.debug('CMEventCtrl.doRefresh(): refreshing.');
 			$q.when(eventMethod()).then(function(e) {
-				log.debug('CMEventCtrl: got ' + e.length + ' ' + eventType + ' events');
+				console.debug('CMEventCtrl: got ' + e.length + ' ' + eventType + ' events');
 				notifications.removeStatus(message);
 				deferred.resolve(true);
 
@@ -270,7 +272,7 @@
 				EventCache.put(eventType, e);
 				updateEntries();
 			}, function(err) {
-				log.warn('CMEventCtrl: failed to get ' + eventType + ' events: ' + err);
+				console.warn('CMEventCtrl: failed to get ' + eventType + ' events: ' + err);
 				notifications.removeStatus(message);
 				deferred.resolve(false);
 			});
@@ -286,13 +288,13 @@
 
 		var refreshEvents = function(immediately) {
 			if (timeout) {
-				//log.debug('CMEventCtrl.refreshEvents(): Refresh already in-flight.  Skipping.');
+				console.debug('CMEventCtrl.refreshEvents(): Refresh already in-flight.  Skipping.');
 				return;
 			} else if (immediately) {
-				log.debug('CMEventCtrl.refreshEvents(): Refreshing immediately.');
+				console.debug('CMEventCtrl.refreshEvents(): Refreshing immediately.');
 				doRefresh();
 			} else {
-				log.debug('CMEventCtrl.refreshEvents(): Refreshing in ' + refreshInterval + ' seconds.');
+				console.debug('CMEventCtrl.refreshEvents(): Refreshing in ' + refreshInterval + ' seconds.');
 				timeout = $timeout(function() {
 					timeout = null;
 					doRefresh();
@@ -311,10 +313,10 @@
 
 					previousEntry = $scope.entries[i-1];
 					nextEntry     = $scope.entries[i+1];
-					log.debug('previousEntry=',previousEntry);
-					log.debug('nextEntry=',nextEntry);
-					log.debug('i=',i);
-					log.debug('length=',$scope.entries.length);
+					console.debug('previousEntry=',previousEntry);
+					console.debug('nextEntry=',nextEntry);
+					console.debug('i=',i);
+					console.debug('length=',$scope.entries.length);
 					// if this is the first entry of the day...
 					if (previousEntry && previousEntry.getId().indexOf('day-') === 0) {
 						if ((i+1) === $scope.entries.length) {
@@ -341,40 +343,15 @@
 			animation: 'slide-in-up'
 		});
 
-		$scope.$on('cm.main.refreshEvents', function() {
-			log.debug('CMEventCtrl: Manual refresh triggered.');
-			$timeout(function() {
-				refreshEvents(true);
-			}, 100);
-		});
-		$scope.$on('cm.database.change', function(ev, change) {
-			refreshEvents();
-		});
-		$scope.$on('cm.database.changesprocessed', function() {
-			log.debug('CMEventCtrl: Changes processed.');
-			refreshEvents();
-		});
 		$scope.$on('cm.main.database-initialized', function() {
-			log.debug('CMEventCtrl: Database initialized.');
-			$timeout(function() {
-				refreshEvents(true);
-			}, 100);
-		});
-		$scope.$on('cm.localDatabaseSynced', function() {
-			log.debug('CMEventCtrl: Local database synced, refreshing.');
-			$timeout(function() {
-				refreshEvents(true);
-			}, 100);
-		});
-		$scope.$on('cm.EventService.remoteDocsUpdated', function() {
-			log.debug('CMEventCtrl: Remote docs fetched, refreshing.');
+			console.debug('CMEventCtrl: Database initialized.');
 			$timeout(function() {
 				refreshEvents(true);
 			}, 100);
 		});
 
 		$scope.clearSearchString = function() {
-			log.info('clear search string');
+			console.info('clear search string');
 			var element = document.getElementById('search');
 			element.value = '';
 			if ("createEvent" in document) {
@@ -406,6 +383,15 @@
 			return date? date.format('hh:mma') : undefined;
 		};
 
+		$scope.getEntryHeight = function(entry, index) {
+			console.debug('getEntryHeight:', entry, index);
+			if ($scope.isDay(entry)) {
+				return 40;
+			} else {
+				return 60;
+			}
+		};
+
 		$scope.goToNow = function() {
 			var nextEvent = EventService.getNextEvent($scope.events);
 			if (nextEvent) {
@@ -427,7 +413,7 @@
 		$scope.onFavoriteChanged = function(ev) {
 			$scope.safeApply(function() {
 				var i, entry, eventId = ev.getId();
-				log.debug('CMEventCtrl.onFavoriteChanged(' + eventId + ')');
+				console.debug('CMEventCtrl.onFavoriteChanged(' + eventId + ')');
 
 				if (ev.isFavorite()) {
 					// Event was favorited, unfavorite it
@@ -452,7 +438,7 @@
 					}
 
 					if (!existing) {
-						log.warn('Somehow favorited an event that does not exist! (' + eventId + ')');
+						console.warn('Somehow favorited an event that does not exist! (' + eventId + ')');
 						return;
 					}
 
@@ -477,7 +463,7 @@
 		};
 
 		$scope.onPublicChanged = function(ev) {
-			log.debug('onPublicChanged(' + ev.getId() + ')');
+			console.debug('onPublicChanged(' + ev.getId() + ')');
 			$scope.safeApply(function() {
 				ev.setPublic(!ev.isPublic());
 				$scope.$broadcast('scroll.resize');
@@ -499,19 +485,19 @@
 			e.preventDefault();
 			e.stopPropagation();
 
-			log.debug('closing modal (cancel)');
+			console.debug('closing modal (cancel)');
 			$scope.event = undefined;
 			$scope.eventData = undefined;
 			$scope.modal.hide();
 		};
 
 		$scope.saveModal = function(data) {
-			log.debug('closing modal (save)');
+			console.debug('closing modal (save)');
 
 			var username = UserService.getUsername();
 
 			if (!username) {
-				log.error('No username!');
+				console.error('No username!');
 				$scope.modal.hide();
 				return;
 			}
@@ -520,7 +506,7 @@
 			ev.fromEditableBean(data);
 			ev.setUsername(username);
 
-			log.debug('saving=', ev.getRawData());
+			console.debug('saving=', ev.getRawData());
 
 			if (ev.getRevision() && $scope.entries) {
 				// update the existing event in the UI
@@ -536,7 +522,7 @@
 			}
 
 			$q.when(EventService.addEvent(ev)).then(function(res) {
-				log.debug('event added:', res);
+				console.debug('event added:', res);
 				$scope.modal.hide();
 				refreshEvents(true);
 			});

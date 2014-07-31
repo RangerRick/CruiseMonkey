@@ -27,6 +27,7 @@
 
 <!-- build:css(.tmp) styles/cm.css -->
 <link rel="stylesheet" href="styles/cruisemonkey.css" />
+<!--<link rel="stylesheet" href="styles/ionic.css" />-->
 <!-- endbuild -->
 
 <style>
@@ -107,51 +108,8 @@ if (typeof String.prototype.contains !== 'function') {
 
 <title ng-bind="'CruiseMonkey - ' + $root.headerTitle">CruiseMonkey</title>
 </head>
-<body class="antialiased off-canvas hide-extras" ng-cloak>
-	<ion-side-menus>
-		<!-- animation="slide-left-right-ios7" -->
-		<ion-pane ion-side-menu-content drag-content="false">
-			<ion-header-bar title="{{headerTitle}}" left-buttons="leftButtons" right-buttons="rightButtons" type="bar-dark" align-title="center">
-			</ion-header-bar>
-			<span close-menu>
-			<ion-nav-view></ion-nav-view>
-			</span>
-		</ion-pane>
-		<ion-side-menu side="left" close-menu>
-			<header class="bar bar-header bar-dark">
-				<h1 class="title bar-bold">CruiseMonkey</h1>
-			</header>
-			<ion-content has-header="true" class="nav" scroll="false">
-				<ul id="nav">
-					<li class="item item-complex" go-to="/events/official"><a>Official Events</a></li>
-					<li class="item item-complex" go-to="/events/unofficial"><a>Unofficial Events</a></li>
-					<li class="item item-complex" ng-if="user.loggedIn" go-to="/events/my"><a>My Events</a></li>
-
-					<li class="item item-complex" go-to="/deck-plans/"><a>Deck Plans</a></li>
-					<li class="item item-complex" go-to="/amenities"><a>Amenities</a></li>
-					<li class="item item-complex" go-to="/karaoke"><a>Karaoke</a></li>
-
-					<li class="item item-complex" go-to="/photos"><a>Twit-Arr Pics</a></li>
-					<li class="item item-complex item-icon-left" ng-if="user.loggedIn">
-						<a ng-click="openSeamail()">
-							Seamail
-							<span class="badge badge-assertive" ng-if="seamailCount > 0">{{seamailCount}}</span>
-						</a>
-					</li>
-
-					<li class="item item-complex" ng-if="user.loggedIn" go-to="/logout"><a>Log Out ({{user.username}})</a></li>
-					<li class="item item-complex" ng-if="!user.loggedIn" go-to="/login"><a>Log In</a></li>
-					<li class="item item-complex bottom" go-to="/advanced"><a>Advanced</a></li>
-					<li class="item item-complex" go-to="/help"><a>Help</a></li>
-					<li class="item item-complex" go-to="/about"><a>About</a></li>
-				</ul>
-			</ion-content>
-		</ion-side-menu>
-	</ion-side-menus>
-	<div class="cm-notification" ng-if="statusNotification">
-		<div id="notification" class="cm-notification-inner" bind-html-unsafe="statusNotification"></div>
-		<div class="cm-notification-spinner"><i class="icon ion-loading-a icon-refreshing"></i></div>
-	</div>
+<body class="antialiased off-canvas hide-extras" ng-cloak animation="slide-left-right-ios7">
+	<ion-nav-view></ion-nav-view>
 
 	<!-- build:js scripts/3rdparty.js -->
 	<script src="scripts/3rdparty/modernizr-latest.js"></script>
@@ -200,9 +158,10 @@ if (typeof String.prototype.contains !== 'function') {
 	<script src="scripts/cruisemonkey/Seamail.js"></script>
 	<script src="scripts/cruisemonkey/Upgrades.js"></script>
 	<script src="scripts/cruisemonkey/User.js"></script>
-	<script src="scripts/cruisemonkey/main.js"></script>
+	<script src="scripts/cruisemonkey/cruisemonkey.js"></script>
 	<!-- endbuild -->
 
+	<script src="bower_components/ngCordova/dist/ng-cordova.min.js"></script>
 	<script src="cordova.js"></script>
 	<script>
 		var isMobile = false;

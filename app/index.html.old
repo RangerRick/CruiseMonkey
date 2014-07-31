@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<!-- paulirish.com/2008/conditional-stylesheets-vs-css-hacks-answer-neither/ -->
+<!--[if lt IE 7]> <html class="no-js lt-ie9 lt-ie8 lt-ie7" lang="en"> <![endif]-->
+<!--[if IE 7]>    <html class="no-js lt-ie9 lt-ie8" lang="en"> <![endif]-->
+<!--[if IE 8]>    <html class="no-js lt-ie9" lang="en"> <![endif]-->
+<!--[if gt IE 8]><!-->
+<html xmlns:ng="http://angularjs.org" lang="en">
+<!--<![endif]-->
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no, width=device-width">
+<meta name="format-detection" content="telephone=no" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<link rel="apple-touch-icon" href="Icon.png" />
+<link rel="apple-touch-icon" sizes="29x29" href="Icon-Small.png" />
+<link rel="apple-touch-icon" sizes="57x57" href="Icon-57.png" />
+<link rel="apple-touch-icon" sizes="50x50" href="Icon-Small-50.png" />
+<link rel="apple-touch-icon" sizes="58x58" href="Icon-Small@2x.png" />
+<link rel="apple-touch-icon" sizes="72x72" href="Icon-72.png" />
+<link rel="apple-touch-icon" sizes="100x100" href="Icon-Small-50@2x.png" />
+<link rel="apple-touch-icon" sizes="114x114" href="Icon@2x.png" />
+<link rel="apple-touch-icon" sizes="144x144" href="Icon-72@2x.png" />
+
+<!-- build:css(.tmp) styles/3rdparty.css -->
+<link rel="stylesheet" href="styles/normalize.css" />
+<!-- endbuild -->
+
+<!-- build:css(.tmp) styles/cm.css -->
+<link rel="stylesheet" href="styles/cruisemonkey.css" />
+<!-- endbuild -->
+
+<style>
+	 [ng\:cloak], [ng-cloak], .ng-cloak {
+		display: none !important;
+	}
+	.cmloading.hidden {
+		display: none !important;
+	}
+	.cmloading {
+		z-index: 10000;
+		background-color: white;
+		display: block !important;
+		position: fixed;
+		top: 0;
+		bottom: 0;
+		left: 0;
+		right: 0;
+		width: 100%;
+		height: 100%;
+		min-width: 100%;
+		min-height: 100%;
+	}
+	.cmloading .container {
+		position: relative;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 100%;
+	}
+	.cmloading .centered {
+		width: 300px;
+		height: 300px;
+		overflow: auto;
+		margin: auto;
+		position: absolute;
+		top: 0;
+		bottom: 0;
+		left: 0;
+		right: 0;
+		text-align: center;
+	}
+	.cmloading .spinner {
+		display: inline-block !important;
+		width: 16px;
+		height: 16px;
+		background-image: url('images/spinner.gif');
+	}
+</style>
+
+<!-- IE Fix for HTML5 Tags -->
+<!--[if lt IE 9]>
+<script src="bower_components/html5shiv/dist/html5shiv.js"></script>
+<![endif]-->
+
+<script>
+if (typeof String.prototype.capitalize !== 'function') {
+	String.prototype.capitalize = function() {
+		return this.charAt(0).toUpperCase() + this.slice(1).toLowerCase();
+	};
+}
+if (typeof String.prototype.startsWith !== 'function') {
+	String.prototype.startsWith = function(str) {
+		return this.lastIndexOf(str, 0) === 0;
+	};
+}
+if (typeof String.prototype.endsWith !== 'function') {
+	String.prototype.endsWith = function(suffix) {
+		return this.indexOf(suffix, this.length - suffix.length) !== -1;
+	};
+}
+if (typeof String.prototype.contains !== 'function') {
+	String.prototype.contains = function(comparator) {
+		return comparator === undefined? true : (this.toLowerCase().indexOf(comparator.toLowerCase()) > -1);
+	};
+}
+</script>
+
+<title ng-bind="'CruiseMonkey - ' + $root.headerTitle">CruiseMonkey</title>
+</head>
+<body class="antialiased off-canvas hide-extras" ng-cloak>
+	<ion-side-menus>
+		<!-- animation="slide-left-right-ios7" -->
+		<ion-pane ion-side-menu-content drag-content="false">
+			<ion-header-bar title="{{headerTitle}}" left-buttons="leftButtons" right-buttons="rightButtons" type="bar-dark" align-title="center">
+			</ion-header-bar>
+			<span close-menu>
+			<ion-nav-view></ion-nav-view>
+			</span>
+		</ion-pane>
+		<ion-side-menu side="left" close-menu>
+			<header class="bar bar-header bar-dark">
+				<h1 class="title bar-bold">CruiseMonkey</h1>
+			</header>
+			<ion-content has-header="true" class="nav" scroll="false">
+				<ul id="nav">
+					<li class="item item-complex" go-to="/events/official"><a>Official Events</a></li>
+					<li class="item item-complex" go-to="/events/unofficial"><a>Unofficial Events</a></li>
+					<li class="item item-complex" ng-if="user.loggedIn" go-to="/events/my"><a>My Events</a></li>
+
+					<li class="item item-complex" go-to="/deck-plans/"><a>Deck Plans</a></li>
+					<li class="item item-complex" go-to="/amenities"><a>Amenities</a></li>
+					<li class="item item-complex" go-to="/karaoke"><a>Karaoke</a></li>
+
+					<li class="item item-complex" go-to="/photos"><a>Twit-Arr Pics</a></li>
+					<li class="item item-complex item-icon-left" ng-if="user.loggedIn">
+						<a ng-click="openSeamail()">
+							Seamail
+							<span class="badge badge-assertive" ng-if="seamailCount > 0">{{seamailCount}}</span>
+						</a>
+					</li>
+
+					<li class="item item-complex" ng-if="user.loggedIn" go-to="/logout"><a>Log Out ({{user.username}})</a></li>
+					<li class="item item-complex" ng-if="!user.loggedIn" go-to="/login"><a>Log In</a></li>
+					<li class="item item-complex bottom" go-to="/advanced"><a>Advanced</a></li>
+					<li class="item item-complex" go-to="/help"><a>Help</a></li>
+					<li class="item item-complex" go-to="/about"><a>About</a></li>
+				</ul>
+			</ion-content>
+		</ion-side-menu>
+	</ion-side-menus>
+	<div class="cm-notification" ng-if="statusNotification">
+		<div id="notification" class="cm-notification-inner" bind-html-unsafe="statusNotification"></div>
+		<div class="cm-notification-spinner"><i class="icon ion-loading-a icon-refreshing"></i></div>
+	</div>
+
+	<!-- build:js scripts/3rdparty.js -->
+	<script src="scripts/3rdparty/modernizr-latest.js"></script>
+	<script src="bower_components/classlist/classList.js"></script>
+	<script src="bower_components/es5-shim/es5-shim.js"></script>
+	<script src="bower_components/offline/offline.min.js"></script>
+	<script src="scripts/3rdparty/pouchdb-nightly.js"></script>
+	<script src="bower_components/momentjs/moment.js"></script>
+	<script src="bower_components/base64/base64.js"></script>
+	<script src="scripts/angular-3rdparty/ionic.js"></script>
+	<script src="bower_components/angular/angular.js"></script>
+	<script src="bower_components/angular-animate/angular-animate.js"></script>
+	<script src="bower_components/angular-sanitize/angular-sanitize.js"></script>
+	<script src="bower_components/angular-cookies/angular-cookies.js"></script>
+	<script src="bower_components/angular-loader/angular-loader.js"></script>
+	<script src="bower_components/angular-resource/angular-resource.js"></script>
+	<script src="bower_components/angular-bindonce/bindonce.js"></script>
+	<script src="bower_components/angular-ui-router/release/angular-ui-router.js"></script>
+	<script src="scripts/angular-3rdparty/ionic-angular.js"></script>
+	<script src="bower_components/angularLocalStorage/src/angularLocalStorage.js"></script>
+	<script src="scripts/angular-3rdparty/angular-loading-bar/build/loading-bar.js"></script>
+	<script src="bower_components/angular-uuid4/angular-uuid4.js"></script>
+	<!-- endbuild -->
+
+	<!-- build:js scripts/cm.js -->
+	<script src="scripts/cruisemonkey/karaoke-list.js"></script>
+	<script src="scripts/cruisemonkey/model.js"></script>
+	<script src="scripts/cruisemonkey/Config.js"></script>
+	<script src="scripts/cruisemonkey/Controller.About.js"></script>
+	<script src="scripts/cruisemonkey/Controller.Advanced.js"></script>
+	<script src="scripts/cruisemonkey/Controller.Amenities.js"></script>
+	<script src="scripts/cruisemonkey/Controller.DeckList.js"></script>
+	<script src="scripts/cruisemonkey/Controller.Events.js"></script>
+	<script src="scripts/cruisemonkey/Controller.Help.js"></script>
+	<script src="scripts/cruisemonkey/Controller.Karaoke.js"></script>
+	<script src="scripts/cruisemonkey/Controller.Login.js"></script>
+	<script src="scripts/cruisemonkey/Controller.Logout.js"></script>
+	<script src="scripts/cruisemonkey/Controller.Navigation.js"></script>
+	<script src="scripts/cruisemonkey/Controller.Photos.js"></script>
+	<script src="scripts/cruisemonkey/Cordova.js"></script>
+	<script src="scripts/cruisemonkey/DB.js"></script>
+	<script src="scripts/cruisemonkey/Database.js"></script>
+	<script src="scripts/cruisemonkey/Decks.js"></script>
+	<script src="scripts/cruisemonkey/Events.js"></script>
+	<script src="scripts/cruisemonkey/Notifications.js"></script>
+	<script src="scripts/cruisemonkey/Seamail.js"></script>
+	<script src="scripts/cruisemonkey/Upgrades.js"></script>
+	<script src="scripts/cruisemonkey/User.js"></script>
+	<script src="scripts/cruisemonkey/main.js"></script>
+	<!-- endbuild -->
+
+	<script src="cordova.js"></script>
+	<script>
+		var isMobile = false;
+
+		Offline.options = {
+			checkOnLoad: false,
+			interceptRequests: true,
+			reconnect: false,
+			requests: false,
+			checks: {}
+		};
+
+		if (isMobile) {
+			console.log('Mobile.  Bootstrapping when "deviceready" event fires.');
+			document.addEventListener("deviceready", function() {
+				angular.bootstrap(document, ['cruisemonkey']);
+			}, false);
+		} else {
+			console.log('Not mobile.  Bootstrapping immediately.');
+			angular.bootstrap(document, ['cruisemonkey']);
+		}
+	</script>
+</body>
+</html>

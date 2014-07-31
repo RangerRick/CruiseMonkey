@@ -4,24 +4,70 @@
         "uninstalled": []
     },
     "config_munge": {
-        "www/config.xml": {
-            "/widget": {
-                "<feature name=\"File\" value=\"File\" />": 1,
-                "<feature name=\"Camera\" value=\"Camera\" />": 1,
-                "<feature name=\"Device\" value=\"Device\" />": 1,
-                "<feature name=\"Compass\" value=\"Compass\" />": 1,
-                "<feature name=\"Notification\" value=\"Notification\" />": 1,
-                "<feature name=\"Geolocation\" value=\"Geolocation\" />": 1,
-                "<feature name=\"Media\" value=\"Media\" />": 1,
-                "<feature name=\"media-capture\" value=\"Capture\" />": 1,
-                "<feature name=\"NetworkStatus\" value=\"NetworkStatus\" />": 1,
-                "<feature name=\"SplashScreen\" value=\"SplashScreen\" />": 1,
-                "<feature name=\"Vibration\" value=\"Vibration\" />": 1
-            },
-            "/widget/rim:permissions": {
-                "<rim:permit>access_shared</rim:permit>": 2,
-                "<rim:permit>read_device_identifying_information</rim:permit>": 1,
-                "<rim:permit>read_geolocation</rim:permit>": 1
+        "files": {
+            "www/config.xml": {
+                "parents": {
+                    "/widget": [
+                        {
+                            "xml": "<feature name=\"File\" value=\"File\" />",
+                            "count": 1
+                        },
+                        {
+                            "xml": "<feature name=\"Camera\" value=\"Camera\" />",
+                            "count": 1
+                        },
+                        {
+                            "xml": "<feature name=\"Device\" value=\"Device\" />",
+                            "count": 1
+                        },
+                        {
+                            "xml": "<feature name=\"Compass\" value=\"Compass\" />",
+                            "count": 1
+                        },
+                        {
+                            "xml": "<feature name=\"Notification\" value=\"Notification\" />",
+                            "count": 1
+                        },
+                        {
+                            "xml": "<feature name=\"Geolocation\" value=\"Geolocation\" />",
+                            "count": 1
+                        },
+                        {
+                            "xml": "<feature name=\"Media\" value=\"Media\" />",
+                            "count": 1
+                        },
+                        {
+                            "xml": "<feature name=\"media-capture\" value=\"Capture\" />",
+                            "count": 1
+                        },
+                        {
+                            "xml": "<feature name=\"NetworkStatus\" value=\"NetworkStatus\" />",
+                            "count": 1
+                        },
+                        {
+                            "xml": "<feature name=\"SplashScreen\" value=\"SplashScreen\" />",
+                            "count": 1
+                        },
+                        {
+                            "xml": "<feature name=\"Vibration\" value=\"Vibration\" />",
+                            "count": 1
+                        }
+                    ],
+                    "/widget/rim:permissions": [
+                        {
+                            "xml": "<rim:permit>access_shared</rim:permit>",
+                            "count": 4
+                        },
+                        {
+                            "xml": "<rim:permit>read_device_identifying_information</rim:permit>",
+                            "count": 1
+                        },
+                        {
+                            "xml": "<rim:permit>read_geolocation</rim:permit>",
+                            "count": 1
+                        }
+                    ]
+                }
             }
         }
     },
@@ -66,6 +112,12 @@
             "PACKAGE_NAME": "com.raccoonfink.cruisemonkey"
         },
         "org.apache.cordova.statusbar": {
+            "PACKAGE_NAME": "com.raccoonfink.cruisemonkey"
+        },
+        "hu.dpal.phonegap.plugins.SpinnerDialog": {
+            "PACKAGE_NAME": "com.raccoonfink.cruisemonkey"
+        },
+        "com.ionic.keyboard": {
             "PACKAGE_NAME": "com.raccoonfink.cruisemonkey"
         }
     },

@@ -5,8 +5,8 @@
 
 	angular.module('cruisemonkey.Config', [])
 	.value('config.logging.useStringAppender', false)
-	.value('config.database.host', 'https://twitarr.rylath.net/db/')
-	.value('config.database.name', 'cmtest')
+	.value('config.database.host', 'http://localhost:5984/')
+	.value('config.database.name', 'cruisemonkey')
 	.value('config.database.replicate', true)
 	.value('config.urls.openinchrome', false)
 	.value('config.notifications.timeout', 5000)

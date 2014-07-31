@@ -46,3 +46,22 @@
 
 ### 0.2.7 (Feb 05, 2014)
 * Initial implementation of Tizen plugin.
+
+### 0.2.8 (Apr 17, 2014)
+* CB-6342: [iOS] iOS reports a cellular connection even when in Airplane mode
+* CB-6422: [windows8] use cordova/exec/proxy
+* CB-6460: Update license headers
+* CB-6465: Add license headers to Tizen code
+* Add NOTICE file
+
+### 0.2.9 (Jun 05, 2014)
+* updated notice file to include missing license
+* Cached extra info to better detect changes.
+* CB-6809 Add license to CONTRIBUTING.md
+* CB-6491 add CONTRIBUTING.md
+* CB-6350 - Fix networkStatusForFlags return value type to work with 64-bit iOS (closes #8)
+* Initial version of firefox os network information plugin
+* there was an error in the object definition
+
+### 0.2.10 (Jun 24, 2014)
+* CB-6907: [android] Don't crash on startup if no networks available

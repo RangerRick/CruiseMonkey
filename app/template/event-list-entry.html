@@ -1,0 +1,5 @@
+<div class="summary">{{entry.getSummary()}}</div>
+<div class="time">Time: {{entry.getDisplayTime()}}</div>
+<div class="createdBy" ng-show="entry.getUsername() != 'official'" ng-text="'Created By: ' + entry.getUsername()"></div>
+<div class="location" ng-show="entry.getLocation()">Location: {{entry.getLocation()}}</div>
+<div class="description" ng-show="entry.getDescription()">{{entry.getDescription()}}</div>

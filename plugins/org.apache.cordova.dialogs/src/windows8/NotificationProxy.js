@@ -71,9 +71,11 @@ module.exports = {
         var _title = args[1];
         var _buttonLabels = args[2];
 
+        var result;
+
         var btnList = [];
         function commandHandler (command) {
-            win && win(btnList[command.label]);
+            result = btnList[command.label];
         }
 
         var md = new Windows.UI.Popups.MessageDialog(message, _title);
@@ -85,6 +87,7 @@ module.exports = {
         }
         md.showAsync().then(function() {
             isAlertShowing = false;
+            win && win(result);
             if (alertStack.length) {
                 setTimeout(alertStack.shift(), 0);
             }
@@ -117,4 +120,4 @@ module.exports = {
     }
 };
 
-require("cordova/windows8/commandProxy").add("Notification",module.exports);
+require("cordova/exec/proxy").add("Notification",module.exports);

@@ -49,6 +49,9 @@
 		4DAF3D988A9242019E75330F /* CDVCapture.bundle in Resources */ = {isa = PBXBuildFile; fileRef = C7540B1CF931476FAEB50BE5 /* CDVCapture.bundle */; };
 		429791BE54C24C3AA9D52D8D /* CDVConnection.m in Sources */ = {isa = PBXBuildFile; fileRef = FE4FECA6A8264F57A111F588 /* CDVConnection.m */; };
 		548A5B45A101442AB519ADBC /* CDVReachability.m in Sources */ = {isa = PBXBuildFile; fileRef = EAD21AB860624736878778BD /* CDVReachability.m */; };
+		AA81A9268FC2446DA7DB8F27 /* CDVSpinnerDialog.m in Sources */ = {isa = PBXBuildFile; fileRef = D95E01C809944107A156EF6E /* CDVSpinnerDialog.m */; };
+		44FDD61EE59B41BE901682FF /* IonicKeyboard.m in Sources */ = {isa = PBXBuildFile; fileRef = AC59637392694CC68B52D514 /* IonicKeyboard.m */; };
+		EFE31ACF54A0463BB2E35BB3 /* UIWebViewExtension.m in Sources */ = {isa = PBXBuildFile; fileRef = BD9F4706F3334F0285F133D7 /* UIWebViewExtension.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -175,6 +178,12 @@
 		EAD21AB860624736878778BD /* CDVReachability.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = "CDVReachability.m"; path = "org.apache.cordova.network-information/CDVReachability.m"; sourceTree = "<group>"; fileEncoding = 4; };
 		DBD8C62211E54D2CB0F870D1 /* CDVConnection.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "CDVConnection.h"; path = "org.apache.cordova.network-information/CDVConnection.h"; sourceTree = "<group>"; fileEncoding = 4; };
 		4AE0B634036B4B0D994E515C /* CDVReachability.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "CDVReachability.h"; path = "org.apache.cordova.network-information/CDVReachability.h"; sourceTree = "<group>"; fileEncoding = 4; };
+		D95E01C809944107A156EF6E /* CDVSpinnerDialog.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = "CDVSpinnerDialog.m"; path = "hu.dpal.phonegap.plugins.SpinnerDialog/CDVSpinnerDialog.m"; sourceTree = "<group>"; fileEncoding = 4; };
+		795B66A06C704854ADFBB56B /* CDVSpinnerDialog.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "CDVSpinnerDialog.h"; path = "hu.dpal.phonegap.plugins.SpinnerDialog/CDVSpinnerDialog.h"; sourceTree = "<group>"; fileEncoding = 4; };
+		AC59637392694CC68B52D514 /* IonicKeyboard.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = "IonicKeyboard.m"; path = "com.ionic.keyboard/IonicKeyboard.m"; sourceTree = "<group>"; fileEncoding = 4; };
+		BD9F4706F3334F0285F133D7 /* UIWebViewExtension.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = "UIWebViewExtension.m"; path = "com.ionic.keyboard/UIWebViewExtension.m"; sourceTree = "<group>"; fileEncoding = 4; };
+		952E912503F1460BB056CDBF /* IonicKeyboard.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "IonicKeyboard.h"; path = "com.ionic.keyboard/IonicKeyboard.h"; sourceTree = "<group>"; fileEncoding = 4; };
+		F702359FA1504DC09D356610 /* UIWebViewExtension.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "UIWebViewExtension.h"; path = "com.ionic.keyboard/UIWebViewExtension.h"; sourceTree = "<group>"; fileEncoding = 4; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -342,6 +351,12 @@
 				EAD21AB860624736878778BD /* CDVReachability.m */,
 				DBD8C62211E54D2CB0F870D1 /* CDVConnection.h */,
 				4AE0B634036B4B0D994E515C /* CDVReachability.h */,
+				D95E01C809944107A156EF6E /* CDVSpinnerDialog.m */,
+				795B66A06C704854ADFBB56B /* CDVSpinnerDialog.h */,
+				AC59637392694CC68B52D514 /* IonicKeyboard.m */,
+				BD9F4706F3334F0285F133D7 /* UIWebViewExtension.m */,
+				952E912503F1460BB056CDBF /* IonicKeyboard.h */,
+				F702359FA1504DC09D356610 /* UIWebViewExtension.h */,
 			);
 			name = Plugins;
 			path = CruiseMonkey/Plugins;
@@ -574,6 +589,9 @@
 				8CA0C79C753B433A8CC2893B /* CDVCapture.m in Sources */,
 				429791BE54C24C3AA9D52D8D /* CDVConnection.m in Sources */,
 				548A5B45A101442AB519ADBC /* CDVReachability.m in Sources */,
+				AA81A9268FC2446DA7DB8F27 /* CDVSpinnerDialog.m in Sources */,
+				44FDD61EE59B41BE901682FF /* IonicKeyboard.m in Sources */,
+				EFE31ACF54A0463BB2E35BB3 /* UIWebViewExtension.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
