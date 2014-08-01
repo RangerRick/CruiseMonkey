@@ -6,7 +6,7 @@
 	<author href="https://github.com/RangerRick/CruiseMonkey.git" email="ranger@befunk.com">Benjamin Reed</author>
 
 	<!-- general preferences -->
-	<preference name="phonegap-version" value="3.3.0" />
+	<preference name="phonegap-version" value="3.5.0" />
 
 	<preference name="orientation" value="portrait" />
 	<!-- <preference name="fullscreen" value="true" /> use default=false -->

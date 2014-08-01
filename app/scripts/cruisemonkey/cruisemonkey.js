@@ -183,7 +183,7 @@
 			})
 		;
 	}])
-	.run(['$rootScope', '$ionicPlatform', '$cordovaDialogs', 'UserService', 'SettingsService', 'EventService', '_database', function($rootScope, $ionicPlatform, $cordovaDialogs, UserService, SettingsService, EventService, database) {
+	.run(['$rootScope', '$timeout', '$ionicPlatform', '$cordovaDialogs', 'UserService', 'SettingsService', 'EventService', '_database', function($rootScope, $timeout, $ionicPlatform, $cordovaDialogs, UserService, SettingsService, EventService, database) {
 		console.debug('CruiseMonkey run() called.');
 
 		$ionicPlatform.ready(function() {
