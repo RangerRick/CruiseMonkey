@@ -1,6 +1,10 @@
 (function () {
 	'use strict';
 
+	/* global isMobile: true */
+	/* global ionic: true */
+	/* global cordova: true */
+	/* global StatusBar: true */
 	angular.module('cruisemonkey',
 	[
 		'ionic',
@@ -176,7 +180,7 @@
 						controller: 'CMAdvancedCtrl'
 					}
 				}
-			});
+			})
 		;
 	}])
 	.run(['$rootScope', '$ionicPlatform', 'UserService', 'SettingsService', 'EventService', '_database', function($rootScope, $ionicPlatform, UserService, SettingsService, EventService, database) {
@@ -191,6 +195,12 @@
 				// org.apache.cordova.statusbar required
 				StatusBar.styleDefault();
 			}
+			document.addEventListener("pause", function() {
+				console.warn('CruiseMonkey paused:', Array.prototype.slice.call(arguments));
+			}, false);
+			document.addEventListener("resume", function() {
+				console.warn('CruiseMonkey resumed:', Array.prototype.slice.call(arguments));
+			}, false);
 		});
 
 		$rootScope.getLeftButtons = function() {
