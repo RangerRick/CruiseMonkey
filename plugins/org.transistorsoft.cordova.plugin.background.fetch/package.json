@@ -1,0 +1,17 @@
+{
+    "version": "2.0.0",
+    "name": "org.transistorsoft.cordova.plugin.background.fetch",
+    "cordova_name": "CDVBackgroundFetch",
+    "description": "Cordova Background Fetch Plugin",
+    "license": "MIT",
+    "keywords": [
+        "phonegap",
+        "background fetch"
+    ],
+    "engines": [
+        {
+            "name": "cordova",
+            "version": ">=3.0.0"
+        }
+    ]
+}

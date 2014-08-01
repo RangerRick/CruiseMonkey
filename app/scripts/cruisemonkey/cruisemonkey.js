@@ -183,7 +183,7 @@
 			})
 		;
 	}])
-	.run(['$rootScope', '$ionicPlatform', 'UserService', 'SettingsService', 'EventService', '_database', function($rootScope, $ionicPlatform, UserService, SettingsService, EventService, database) {
+	.run(['$rootScope', '$ionicPlatform', '$cordovaDialogs', 'UserService', 'SettingsService', 'EventService', '_database', function($rootScope, $ionicPlatform, $cordovaDialogs, UserService, SettingsService, EventService, database) {
 		console.debug('CruiseMonkey run() called.');
 
 		$ionicPlatform.ready(function() {
@@ -198,9 +198,24 @@
 			document.addEventListener("pause", function() {
 				console.warn('CruiseMonkey paused:', Array.prototype.slice.call(arguments));
 			}, false);
+			document.addEventListener("resign", function() {
+				console.warn('CruiseMonkey locked while in foreground:', Array.prototype.slice.call(arguments));
+			}, false);
 			document.addEventListener("resume", function() {
 				console.warn('CruiseMonkey resumed:', Array.prototype.slice.call(arguments));
 			}, false);
+
+			if (window.plugins && window.plugins.backgroundFetch) {
+				window.plugins.backgroundFetch.configure(function() {
+					console.warn('Background Fetch Initiated');
+					$cordovaDialogs.alert('Background fetch happened!', function() {
+						console.warn('Alert callback was called!  Hellz yeah!');
+					}, 'Alert', 'Awesome!');
+					$timeout(function() {
+						window.plugins.backgroundFetch.finish();
+					});
+				});
+			}
 		});
 
 		$rootScope.getLeftButtons = function() {

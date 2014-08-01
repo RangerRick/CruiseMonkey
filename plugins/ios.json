@@ -83,8 +83,13 @@
                         {
                             "xml": "<feature name=\"Vibration\"><param name=\"ios-package\" value=\"CDVVibration\" /></feature>",
                             "count": 1
+                        },
+                        {
+                            "xml": "<feature name=\"BackgroundFetch\"><param name=\"ios-package\" value=\"CDVBackgroundFetch\" /><param name=\"onload\" value=\"true\" /></feature>",
+                            "count": 1
                         }
-                    ]
+                    ],
+                    "/widget": []
                 }
             },
             "framework": {
@@ -128,6 +133,22 @@
                     "SystemConfiguration.framework": [
                         {
                             "xml": "true",
+                            "count": 1
+                        }
+                    ],
+                    "libsqlite3.dylib": [],
+                    "libstdc++.dylib": [],
+                    "libicucore.dylib": [],
+                    "libz.dylib": [],
+                    "Security.framework": [],
+                    "CFNetwork.framework": []
+                }
+            },
+            "*-Info.plist": {
+                "parents": {
+                    "UIBackgroundModes": [
+                        {
+                            "xml": "<array><string>fetch</string></array>",
                             "count": 1
                         }
                     ]
@@ -183,7 +204,14 @@
         },
         "org.apache.cordova.vibration": {
             "PACKAGE_NAME": "com.raccoonfink.cruisemonkey"
+        },
+        "org.transistorsoft.cordova.plugin.background.fetch": {
+            "PACKAGE_NAME": "com.raccoonfink.cruisemonkey"
         }
     },
-    "dependent_plugins": {}
+    "dependent_plugins": {
+        "com.red_folder.phonegap.plugin.backgroundservice": {
+            "PACKAGE_NAME": "com.raccoonfink.cruisemonkey"
+        }
+    }
 }
