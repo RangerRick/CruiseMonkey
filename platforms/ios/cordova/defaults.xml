@@ -1,123 +1,45 @@
-<?xml version='1.0' encoding='utf-8'?>
-<widget id="com.raccoonfink.cruisemonkey" version="4.0.0" xmlns="http://www.w3.org/ns/widgets" xmlns:gap="http://phonegap.com/ns/1.0">
-    <name>Hello Cordova</name>
-    <description>
-        A sample Apache Cordova application that responds to the deviceready event.
-    </description>
-    <content src="index.html" />
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one
+ or more contributor license agreements.  See the NOTICE file
+ distributed with this work for additional information
+ regarding copyright ownership.  The ASF licenses this file
+ to you under the Apache License, Version 2.0 (the
+ "License"); you may not use this file except in compliance
+ with the License.  You may obtain a copy of the License at
+
+ http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing,
+ software distributed under the License is distributed on an
+ "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ KIND, either express or implied.  See the License for the
+ specific language governing permissions and limitations
+ under the License.
+-->
+<widget xmlns     = "http://www.w3.org/ns/widgets"
+        id        = "io.cordova.helloCordova"
+        version   = "2.0.0">
+
+    <!-- Preferences for iOS -->
     <preference name="AllowInlineMediaPlayback" value="false" />
+    <preference name="AutoHideSplashScreen" value="true" />
     <preference name="BackupWebStorage" value="cloud" />
     <preference name="DisallowOverscroll" value="false" />
     <preference name="EnableViewportScale" value="false" />
+    <preference name="FadeSplashScreen" value="true" />
+    <preference name="FadeSplashScreenDuration" value=".25" />
     <preference name="KeyboardDisplayRequiresUserAction" value="true" />
     <preference name="MediaPlaybackRequiresUserAction" value="false" />
+    <preference name="ShowSplashScreenSpinner" value="true" />
     <preference name="SuppressesIncrementalRendering" value="false" />
     <preference name="TopActivityIndicator" value="gray" />
     <preference name="GapBetweenPages" value="0" />
     <preference name="PageLength" value="0" />
-    <preference name="PaginationBreakingMode" value="page" />
-    <preference name="PaginationMode" value="unpaginated" />
+    <preference name="PaginationBreakingMode" value="page" /> <!-- page, column -->
+    <preference name="PaginationMode" value="unpaginated" /> <!-- unpaginated, leftToRight, topToBottom, bottomToTop, rightToLeft -->
+
     <feature name="LocalStorage">
-        <param name="ios-package" value="CDVLocalStorage" />
+        <param name="ios-package" value="CDVLocalStorage"/>
     </feature>
-    <feature name="TestFlightSDK">
-        <param name="ios-package" value="CDVTestFlight" />
-    </feature>
-    <feature name="Camera">
-        <param name="ios-package" value="CDVCamera" />
-    </feature>
-    <feature name="Console">
-        <param name="ios-package" value="CDVLogger" />
-    </feature>
-    <feature name="Device">
-        <param name="ios-package" value="CDVDevice" />
-    </feature>
-    <feature name="Compass">
-        <param name="ios-package" value="CDVCompass" />
-    </feature>
-    <feature name="Notification">
-        <param name="ios-package" value="CDVNotification" />
-    </feature>
-    <feature name="File">
-        <param name="ios-package" value="CDVFile" />
-    </feature>
-    <feature name="Geolocation">
-        <param name="ios-package" value="CDVLocation" />
-    </feature>
-    <feature name="InAppBrowser">
-        <param name="ios-package" value="CDVInAppBrowser" />
-    </feature>
-    <feature name="Media">
-        <param name="ios-package" value="CDVSound" />
-    </feature>
-    <feature name="Capture">
-        <param name="ios-package" value="CDVCapture" />
-    </feature>
-    <feature name="NetworkStatus">
-        <param name="ios-package" value="CDVConnection" />
-    </feature>
-    <feature name="SplashScreen">
-        <param name="ios-package" value="CDVSplashScreen" />
-        <param name="onload" value="true" />
-    </feature>
-    <feature name="StatusBar">
-        <param name="ios-package" onload="true" value="CDVStatusBar" />
-    </feature>
-    <preference name="StatusBarOverlaysWebView" value="true" />
-    <preference name="StatusBarBackgroundColor" value="#000000" />
-    <feature name="Vibration">
-        <param name="ios-package" value="CDVVibration" />
-    </feature>
-    <name>CruiseMonkey</name>
-    <description>Keep Track of Your Cruise</description>
-    <gap:platform minVersion="6.0" name="ios" />
-    <gap:platform minVersion="4.0" name="android" />
-    <gap:url-scheme name="com.raccoonfink.cruisemonkey" role="None">
-        <scheme>cruisemonkey</scheme>
-    </gap:url-scheme>
-    <icon src="Icon.png" />
-    <icon gap:platform="ios" height="29" src="Icon-Small.png" width="29" />
-    <icon gap:platform="ios" height="50" src="Icon-Small-50.png" width="50" />
-    <icon gap:platform="ios" height="57" src="Icon-57.png" width="57" />
-    <icon gap:platform="ios" height="58" src="Icon-Small@2x.png" width="58" />
-    <icon gap:platform="ios" height="72" src="Icon.png" width="72" />
-    <icon gap:platform="ios" height="100" src="Icon-Small-50@2x.png" width="100" />
-    <icon gap:platform="ios" height="114" src="Icon@2x.png" width="114" />
-    <icon gap:platform="ios" height="144" src="Icon-72@2x.png" width="144" />
-    <icon gap:platform="ios" height="320" src="Icon-320.png" width="320" />
-    <icon gap:platform="android" height="36" src="Icon-36.png" width="36" />
-    <icon gap:platform="android" height="48" src="Icon-48.png" width="48" />
-    <icon gap:platform="android" height="72" src="Icon-72.png" width="72" />
-    <icon gap:platform="android" height="96" src="Icon-96.png" width="96" />
-    <gap:splash gap:platform="ios" height="1024" src="cruise-monkey-768x1024.png" width="768" />
-    <gap:splash gap:platform="ios" height="2048" src="cruise-monkey-1536x2048.png" width="1536" />
-    <gap:splash gap:platform="ios" height="480" src="cruise-monkey-320x480.png" width="320" />
-    <gap:splash gap:platform="ios" height="960" src="cruise-monkey-640x960.png" width="640" />
-    <gap:splash gap:platform="ios" height="1136" src="cruise-monkey-640x1136.png" width="640" />
-    <gap:plugin name="org.apache.cordova.camera" />
-    <gap:plugin name="org.apache.cordova.console" />
-    <gap:plugin name="org.apache.cordova.device" />
-    <gap:plugin name="org.apache.cordova.device-orientation" />
-    <gap:plugin name="org.apache.cordova.network-information" />
-    <gap:plugin name="org.apache.cordova.dialogs" />
-    <gap:plugin name="org.apache.cordova.splashscreen" />
-    <gap:plugin name="org.apache.cordova.vibration" />
-    <gap:plugin name="org.apache.cordova.inappbrowser" />
-    <preference name="phonegap-version" value="3.1.0" />
-    <name>CruiseMonkey</name>
-    <description>Keep Track of Your Cruise</description>
-    <author email="ranger@befunk.com" href="https://github.com/RangerRick/CruiseMonkey.git">Benjamin Reed</author>
-    <preference name="phonegap-version" value="3.3.0" />
-    <preference name="orientation" value="portrait" />
-    <preference name="ios-statusbarstyle" value="black-opaque" />
-    <preference name="detect-data-types" value="false" />
-    <preference name="exit-on-suspend" value="true" />
-    <preference name="webviewbounce" value="false" />
-    <preference name="android-minSdkVersion" value="10" />
-    <preference name="android-targetSdkVersion" value="16" />
-    <preference name="android-installLocation" value="auto" />
-    <preference name="splash-screen-duration" value="20000" />
-    <preference name="DisallowOverscroll" value="true" />
-    <preference name="SplashScreen" value="splash" />
-    <access origin="*" />
 </widget>
