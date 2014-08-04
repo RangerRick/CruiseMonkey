@@ -118,48 +118,8 @@
 				url: '/karaoke',
 				views: {
 					'menuContent': {
-						templateUrl: 'template/karaoke.html',
-						controller: ['$rootScope', function($rootScope) {
-							$rootScope.headerTitle = 'Karaoke';
-							$rootScope.leftButtons = $rootScope.getLeftButtons();
-							$rootScope.rightButtons = [];
-						}]
-					}
-				}
-			})
-			.state('app.karaoke-search', {
-				url: '/karaoke/search',
-				views: {
-					'menuContent': {
 						templateUrl: 'template/karaoke.search.html',
 						controller: 'CMKaraokeSearchCtrl'
-					}
-				}
-			})
-			.state('app.karaoke-list', {
-				url: '/karaoke/list',
-				views: {
-					'menuContent': {
-						templateUrl: 'template/karaoke.list.html',
-						controller: 'CMKaraokePrefixListCtrl'
-					}
-				}
-			})
-			.state('app.karaoke-by-prefix', {
-				url: '/karaoke/by-prefix/:prefix',
-				views: {
-					'menuContent': {
-						templateUrl: 'template/karaoke.by-prefix.html',
-						controller: 'CMKaraokeArtistListCtrl'
-					}
-				}
-			})
-			.state('app.karaoke-by-artist', {
-				url: '/karaoke/by-artist/:artist',
-				views: {
-					'menuContent': {
-						templateUrl: 'template/karaoke.by-artist.html',
-						controller: 'CMKaraokeArtistCtrl'
 					}
 				}
 			})

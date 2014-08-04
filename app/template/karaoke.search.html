@@ -2,21 +2,29 @@
 <ion-nav-buttons side="left">
   <button menu-toggle="left" class="button button-icon icon ion-navicon"></button>
 </ion-nav-buttons>
-<ion-content has-header="true" overflow-scroll="true" scroll="true">
-	<header class="bar bar-header item-input-inset">
-		<label class="item-input-wrapper">
-			<i class="icon ion-ios7-search placeholder-icon"></i>
-			<input id="search" type="search" placeholder="Search Artists &amp; Songs" ng-model="searchString" ng-change="searchUpdated(searchString)" />
-		</label>
-		<button class="button button-clear" ng-if="searchString">
-			<i class="icon ion-close-circled" ng-click="clearSearchString()"></i>
-		</button>
-	</header>
+<style>
+.artist-entry {
+	left: 0;
+	right: 0;
+}
+</style>
+<ion-header-bar class="bar-subheader item-input-inset">
+	<label class="item-input-wrapper">
+		<i class="icon ion-ios7-search placeholder-icon"></i>
+		<input id="search" type="search" placeholder="Search Artists &amp; Songs" ng-model="searchString" ng-change="searchUpdated(searchString)" />
+	</label>
+	<button class="button button-clear" ng-if="searchString" ng-click="clearSearchString()">
+		<i class="icon ion-close-circled"></i>
+	</button>
+</ion-header-bar>
+<ion-content has-header="true" scroll="true">
 	<ion-list>
-		<div bindonce class="item" ng-repeat="entry in entries">
-			<span bo-if="entry.artist" bo-text="entry.artist + ' - ' + entry.song" class="item-text-wrap"></span>
-			<span bo-if="!entry.artist" class="disabled" bo-text="entry + ' more matches...'"></span>
-		</div>
+		<ion-item class="artist-entry"
+			collection-repeat="entry in entries"
+			collection-item-width="'100%'"
+			collection-item-height="50">
+			{{entry.artist}} - {{entry.song}}
+		</ion-item>
 	</ion-list>
 </ion-content>
 </ion-view>
