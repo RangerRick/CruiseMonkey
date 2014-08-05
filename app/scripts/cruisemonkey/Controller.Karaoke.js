@@ -1,7 +1,7 @@
 (function() {
 	'use strict';
 
-	/*global karaokeList: true*/
+	var _karaokeList;
 
 	var sortByArtist = function(a,b) {
 		var aArtist = a.artist.toLowerCase(),
@@ -15,15 +15,11 @@
 		return 0;
 	};
 
-	for (var i = 0; i < karaokeList.length; i++) {
-		karaokeList[i].songs.sort();
-	}
-
 	angular.module('cruisemonkey.controllers.Karaoke', [
 		'angularLocalStorage',
 		'pasvaz.bindonce'
 	])
-	.factory('KaraokeService', ['$timeout', '$log', function($timeout, log) {
+	.factory('KaraokeService', ['$timeout', '$http', function($timeout, $http) {
 		var scope = null,
 			updateFunction = null,
 			sortFunction = null,
@@ -35,14 +31,14 @@
 				return;
 			}
 
-			log.debug('doUpdate: starting');
+			console.debug('doUpdate: starting');
 			updating = true;
-			var entries = updateFunction();
-			log.debug('doUpdate: matched ' + entries.length + ' entries');
+			var entries = updateFunction(_karaokeList);
+			console.debug('doUpdate: matched ' + entries.length + ' entries');
 			updating = false;
 			scope.entries = entries;
 			scope.$broadcast('scroll.resize');
-			log.debug('doUpdate: finished');
+			console.debug('doUpdate: finished');
 		};
 
 		var doUpdateDelayed = function(delay) {
@@ -50,21 +46,35 @@
 				$timeout.cancel(delayTimeout);
 			}
 			delayTimeout = $timeout(function() {
-				log.info('KaraokeService.doUpdateDelayed()');
+				console.info('KaraokeService.doUpdateDelayed()');
 				delayTimeout = null;
 				doUpdate();
 			}, delay || 500);
 		};
 
 		var initialize = function() {
-			if (sortFunction) {
-				karaokeList.sort(sortFunction);
-			}
-			doUpdate();
+			$http.get('scripts/cruisemonkey/karaoke-list.js').success(function(data, status, headers, config) {
+				_karaokeList = data;
+				for (var i = 0; i < _karaokeList.length; i++) {
+					_karaokeList[i].songs.sort();
+				}
+				if (sortFunction) {
+					_karaokeList.sort(sortFunction);
+				}
+				doUpdate();
+			}).error(function(data, status, headers, config) {
+				_karaokeList = [];
+				doUpdate();
+			});
+		};
+
+		var reset = function() {
+			_karaokeList = [];
 		};
 
 		return {
 			'initialize': initialize,
+			'reset': reset,
 			'setScope': function(s) {
 				scope = s;
 			},
@@ -78,15 +88,15 @@
 			'doUpdateDelayed': doUpdateDelayed
 		};
 	}])
-	.controller('CMKaraokeSearchCtrl', ['storage', '$rootScope', '$scope', '$state', 'KaraokeService', '$log', function(storage, $rootScope, $scope, $state, KaraokeService, log) {
-		log.info('Initializing CMKaraokeSearchCtrl');
+	.controller('CMKaraokeSearchCtrl', ['storage', '$rootScope', '$scope', '$state', 'KaraokeService', function(storage, $rootScope, $scope, $state, KaraokeService) {
+		console.info('Initializing CMKaraokeSearchCtrl');
 		$rootScope.headerTitle = 'Karaoke Search';
 		$rootScope.leftButtons = $rootScope.getLeftButtons();
 		$rootScope.rightButtons = [];
 
 		KaraokeService.setScope($scope);
 		KaraokeService.setSortFunction(sortByArtist);
-		KaraokeService.setUpdateFunction(function() {
+		KaraokeService.setUpdateFunction(function(karaokeList) {
 			var entries = [],
 				artist, song, matched,
 				i, j, s;
@@ -167,6 +177,10 @@
 				element.fireEvent('change');
 			}
 		};
+
+		$scope.$on('$destroy', function() {
+			KaraokeService.reset();
+		});
 
 		KaraokeService.initialize();
 	}])

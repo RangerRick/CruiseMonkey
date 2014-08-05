@@ -59,5 +59,5 @@ my $json = JSON::PP->new();
 my $json_text = $json->encode($json_list);
 
 open (FILEOUT, '>app/scripts/cruisemonkey/karaoke-list.js') or die "Can't write to karaoke-list.js: $!\n";
-print FILEOUT "var karaokeList = " . $json_text . ";";
+print FILEOUT $json_text;
 close (FILEOUT);
