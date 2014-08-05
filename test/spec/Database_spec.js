@@ -17,7 +17,8 @@ describe('cruisemonkey.Database', function() {
 		$timeout     = null,
 		$rootScope   = null,
 		$httpBackend = null,
-		_database    = null;
+		_database    = null,
+		_dbnum       = 0;
 
 	async.beforeEach(function(done) {
 		module('cruisemonkey.Database', function() {
@@ -44,28 +45,25 @@ describe('cruisemonkey.Database', function() {
 
 	var _doDestroy = function(destroyme, deferred) {
 		if (destroyme.length === 0) {
-			window.setTimeout(function() {
-				$rootScope.safeApply(function() {
-					deferred.resolve();
-				});
-			}, 500);
+			$rootScope.safeApply(function() {
+				deferred.resolve();
+			});
 		} else {
 			console.debug('_doDestroy: ' + destroyme.length + ' remaining');
 
-			window.setTimeout(function() {
-				var nextdb = destroyme.shift();
-				var db = _database.get(nextdb);
-				db.destroy().then(function() {
-					_doDestroy(destroyme, deferred);
-				}, function(err) {
-					console.warn('failed to destroy ' + nextdb + ':', err);
-					_doDestroy(destroyme, deferred);
-				});
-			}, 500);
+			var nextdb = destroyme.shift();
+			var db = _database.get(nextdb);
+			db.destroy().then(function() {
+				_doDestroy(destroyme, deferred);
+			}, function(err) {
+				console.warn('failed to destroy ' + nextdb + ':', err);
+				_doDestroy(destroyme, deferred);
+			});
 		}
 	};
 
 	async.beforeEach(function(done) {
+		_dbnum++;
 		console.debug('beforeEach: starting');
 		var deferred = $q.defer();
 
@@ -98,12 +96,9 @@ describe('cruisemonkey.Database', function() {
 		var deferred  = $q.defer();
 
 		var pristine  = _database.get(webroot + 'test-pristine');
-
 		var remote    = _database.get(webroot + 'test-remote');
 		//var events    = _database.get('test-events');
 		//var favorites = _database.get('test-favorites');
-
-		remote = _database.get(webroot + 'test-remote');
 		remote.syncFrom(pristine).then(function() {
 			remote.bulkDocs(defaultDocs).then(function() {
 				deferred.resolve();
