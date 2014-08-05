@@ -1,7 +1,16 @@
+/* global describe: true */
+/* global xdescribe: true */
 describe('cruisemonkey.Database', function() {
-	var async       = new AsyncSpec(this);
+	'use strict';
+	
+	/* global AsyncSpec: true */
+	/* global jasmine: true */
+	/* global webroot: true */
+	/* global defaultDocs: true */
+	/* global CMEvent: true */
+	/* global moment: true */
 
-	jasmine.getEnv().defaultTimeoutInterval = 30000;
+	var async       = new AsyncSpec(this);
 
 	var $q           = null,
 		$timeout     = null,
@@ -10,7 +19,7 @@ describe('cruisemonkey.Database', function() {
 		_database    = null;
 
 	async.beforeEach(function(done) {
-		module('cruisemonkey.Database', function($provide) {
+		module('cruisemonkey.Database', function() {
 			//$provide.value('config.upgrade', false);
 		});
 
@@ -85,7 +94,6 @@ describe('cruisemonkey.Database', function() {
 
 		var pristine  = _database.get(webroot + 'test-pristine');
 
-		var local     = _database.get('test-local');
 		var remote    = _database.get(webroot + 'test-remote');
 		//var events    = _database.get('test-events');
 		//var favorites = _database.get('test-favorites');
@@ -111,11 +119,12 @@ describe('cruisemonkey.Database', function() {
 			var db = _database.get('test-local');
 			expect(db).toBeDefined();
 			db.pouch().allDocs(function(err, res) {
+				/*jshint camelcase: false */
 				$rootScope.safeApply(function() {
 					expect(err).toBeNull();
 					expect(res).toBeDefined();
-					expect(res['total_rows']).toBeDefined();
-					expect(res['total_rows']).toEqual(jasmine.any(Number));
+					expect(res.total_rows).toBeDefined();
+					expect(res.total_rows).toEqual(jasmine.any(Number));
 					done();
 				});
 			});
@@ -128,12 +137,12 @@ describe('cruisemonkey.Database', function() {
 			expect(db).toBeDefined();
 			db.destroy().then(function(res) {
 				expect(res).toBeDefined();
-				expect(res['ok']).toEqual(true);
+				expect(res.ok).toEqual(true);
 
 				// destroy it a second time
 				db.destroy().then(function(res) {
 					expect(res).toBeDefined();
-					expect(res['ok']).toEqual(true);
+					expect(res.ok).toEqual(true);
 					done();
 				});
 			});
@@ -325,7 +334,7 @@ describe('cruisemonkey.Database', function() {
 	var findEvent = function(events, id) {
 		for (var i=0; i < events.length; i++) {
 			var ev = events[i];
-			if (ev['id'] === id) {
+			if (ev.id === id) {
 				return ev;
 			}
 		}
@@ -339,6 +348,7 @@ describe('cruisemonkey.Database', function() {
 
 				expect(remote).toBeDefined();
 
+				/*jshint camelcase: false */
 				remote.query('cruisemonkey/events-all', {include_docs: true}).then(function(res) {
 					expect(res).toBeDefined();
 					expect(res.rows.length).toEqual(5);
@@ -346,7 +356,7 @@ describe('cruisemonkey.Database', function() {
 					var official = findEvent(res.rows, 'event:official-event');
 					expect(official).toBeDefined();
 
-					officialEvent = new CMEvent(official.doc);
+					var officialEvent = new CMEvent(official.doc);
 					expect(officialEvent.getSummary()).toBe('official event');
 
 					done();
@@ -392,7 +402,7 @@ describe('cruisemonkey.Database', function() {
 				var remote = _database.get(webroot + 'test-remote');
 				var beginning = moment();
 
-				remote.bulkDocs(objs).then(function(res) {
+				remote.bulkDocs(objs).then(function() {
 					console.info('finished bulk-adding 30k docs; deleting 20k docs');
 					remote.allDocs().then(function(res) {
 						objs = [];
@@ -403,7 +413,7 @@ describe('cruisemonkey.Database', function() {
 								'_deleted': true
 							});
 						}
-						remote.bulkDocs(objs).then(function(res) {
+						remote.bulkDocs(objs).then(function() {
 							console.info('finished bulk-deleting 20k documents; syncing');
 							$rootScope.safeApply(function() {
 								var start = moment();

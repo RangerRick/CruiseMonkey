@@ -1,3 +1,5 @@
+jasmine.getEnv().defaultTimeoutInterval = 30000;
+
 var isMobile = false;
 
 if (typeof String.prototype.capitalize !== 'function') {

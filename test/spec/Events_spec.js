@@ -8,8 +8,6 @@ describe('cruisemonkey.Events', function() {
 	var $httpBackend = null;
 	var database     = null;
 
-	jasmine.getEnv().defaultTimeoutInterval = 5000;
-
 	var dbName      = 'cmunittest';
 	var async       = new AsyncSpec(this);
 
