@@ -44,6 +44,14 @@
 			$scope.$broadcast('slideBox.nextSlide');
 		};
 
+		$scope.previous = function() {
+			previous();
+		};
+		
+		$scope.next = function() {
+			next();
+		};
+
 		var keyListener = function(ev) {
 			if (ev.keyCode === 37) {
 				previous();
@@ -64,43 +72,21 @@
 		var updateUI = function() {
 			$rootScope.headerTitle = "Deck " + $scope.deck;
 
-			cor.ifCordova(function() {
-			}).otherwise(function() {
-				var newButtons = [
-					{
-						'type': 'button-clear',
-						'content': '<i class="icon icon-cm ion-arrow-left-b"></i>',
-						tap: function(e) {
-							e.preventDefault();
-							previous();
-							return false;
-						}
-					},
-					{
-						'type': 'button-clear',
-						'content': '<i class="icon icon-cm ion-arrow-right-b"></i>',
-						tap: function(e) {
-							e.preventDefault();
-							next();
-							return false;
-						}
-					}
-				];
+			if ($scope.deck === 2) {
+				$scope.hasPrevious = false;
+				$scope.hasNext = true;
+			} else if ($scope.deck === 15) {
+				$scope.hasPrevious = true;
+				$scope.hasNext = false;
+			} else {
+				$scope.hasPrevious = true;
+				$scope.hasNext = true;
+			}
 
-				if ($scope.deck === 2) {
-					newButtons[0] = {
-						'type': 'button-clear',
-						'content': '<i class="icon icon-blank"></i>',
-						tap: function() {}
-					};
-				} else if ($scope.deck === 15) {
-					newButtons[1] = {
-						'type': 'button-clear',
-						'content': '<i class="icon icon-blank"></i>',
-						tap: function() {}
-					};
-				}
-				$rootScope.rightButtons = newButtons;
+			cor.ifCordova(function() {
+				$scope.showButtons = false;
+			}).otherwise(function() {
+				$scope.showButtons = true;
 			});
 		};
 
