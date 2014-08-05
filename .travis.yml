@@ -5,8 +5,8 @@ language: node_js
 node_js:
   - '0.10'
 #  - '0.11'
-services:
-  - couchdb
+#services:
+#  - couchdb
 before_install:
   - 'npm install -g bower grunt-cli'
   - 'npm install'
@@ -15,7 +15,8 @@ before_install:
   - 'gem install compass'
   - 'sudo pip install couchapp'
 before_script:
-  - 'node_modules/.bin/pouchdb-server -m & sleep 5 && cd couchdb && couchapp --verbose push http://localhost:5984/test-pristine'
+  - 'node_modules/.bin/pouchdb-server -m -p 5999 & sleep 5 && cd couchdb && couchapp --verbose push http://localhost:5999/test-pristine'
+  - 'perl -pi -e "s/5984/5999/g" test/mock/_common.js'
 script: grunt test
 cache:
   directories:
