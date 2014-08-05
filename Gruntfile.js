@@ -289,13 +289,17 @@ module.exports = function (grunt) {
         html: ['<%= yeoman.dist %>/{,**/}*.html']
       }
     },
-    ngmin: {
+    ngAnnotate: {
+      options: {
+        singleQuotes: true
+      },
       dist: {
         files: [{
           expand: true,
-          cwd: '<%= yeoman.dist %>/scripts',
           src: '*.js',
-          dest: '<%= yeoman.dist %>/scripts'
+          cwd: '<%= yeoman.dist %>/scripts',
+          ext: '.annotated.js',
+          extDot: 'last'
         }]
       }
     },
@@ -347,7 +351,7 @@ module.exports = function (grunt) {
     'concat',
     'copy:dist',
     'cdnify',
-    'ngmin',
+    'ngAnnotate',
     'cssmin',
     'uglify',
     'rev',
