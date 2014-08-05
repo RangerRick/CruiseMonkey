@@ -44,20 +44,24 @@ describe('cruisemonkey.Database', function() {
 
 	var _doDestroy = function(destroyme, deferred) {
 		if (destroyme.length === 0) {
-			$rootScope.safeApply(function() {
-				deferred.resolve();
-			});
+			window.setTimeout(function() {
+				$rootScope.safeApply(function() {
+					deferred.resolve();
+				});
+			}, 500);
 		} else {
 			console.debug('_doDestroy: ' + destroyme.length + ' remaining');
 
-			var nextdb = destroyme.shift();
-			var db = _database.get(nextdb);
-			db.destroy().then(function() {
-				_doDestroy(destroyme, deferred);
-			}, function(err) {
-				console.warn('failed to destroy ' + nextdb + ':', err);
-				_doDestroy(destroyme, deferred);
-			});
+			window.setTimeout(function() {
+				var nextdb = destroyme.shift();
+				var db = _database.get(nextdb);
+				db.destroy().then(function() {
+					_doDestroy(destroyme, deferred);
+				}, function(err) {
+					console.warn('failed to destroy ' + nextdb + ':', err);
+					_doDestroy(destroyme, deferred);
+				});
+			}, 500);
 		}
 	};
 

@@ -1,7 +1,7 @@
 /* global jasmine: true */
 /*jshint unused: false */
 
-jasmine.getEnv().defaultTimeoutInterval = 30000;
+jasmine.getEnv().defaultTimeoutInterval = 40000;
 
 var isMobile = false;
 
