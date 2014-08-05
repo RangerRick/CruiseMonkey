@@ -1,5 +1,6 @@
 /* global describe: true */
 /* global xdescribe: true */
+
 describe('cruisemonkey.Database', function() {
 	'use strict';
 	

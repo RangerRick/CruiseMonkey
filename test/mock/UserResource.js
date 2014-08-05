@@ -1,4 +1,8 @@
+/*jshint unused: false */
+
 var MockUserResource = function($q, $rootScope) {
+	'use strict';
+
 	return {
 		get: function() {
 			var deferred = $q.defer();
@@ -6,12 +10,12 @@ var MockUserResource = function($q, $rootScope) {
 			setTimeout(function() {
 				$rootScope.$apply(function() {
 					deferred.resolve({
-						"organizations":["fcf8f8ba-49d1-4f93-beb6-fae6850603cf"],
-						"password":null,
-						"login":"aUser",
-						"contactEmail":"user@example.com",
-						"contactGiven":"Arnold",
-						"contactSurname":"User"
+						'organizations':['fcf8f8ba-49d1-4f93-beb6-fae6850603cf'],
+						'password':null,
+						'login':'aUser',
+						'contactEmail':'user@example.com',
+						'contactGiven':'Arnold',
+						'contactSurname':'User'
 					});
 
 				});
@@ -19,5 +23,5 @@ var MockUserResource = function($q, $rootScope) {
 
 			return deferred.promise;
 		}
-	}
+	};
 };

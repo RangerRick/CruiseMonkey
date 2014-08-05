@@ -1,29 +1,38 @@
+/* global jasmine: true */
+/*jshint unused: false */
+
 jasmine.getEnv().defaultTimeoutInterval = 30000;
 
 var isMobile = false;
 
 if (typeof String.prototype.capitalize !== 'function') {
 	String.prototype.capitalize = function() {
+		'use strict';
 		return this.charAt(0).toUpperCase() + this.slice(1).toLowerCase();
 	};
 }
 if (typeof String.prototype.startsWith !== 'function') {
 	String.prototype.startsWith = function(str) {
+		'use strict';
 		return this.lastIndexOf(str, 0) === 0;
 	};
 }
 if (typeof String.prototype.endsWith !== 'function') {
 	String.prototype.endsWith = function(suffix) {
+		'use strict';
 		return this.indexOf(suffix, this.length - suffix.length) !== -1;
 	};
 }
 if (typeof String.prototype.contains !== 'function') {
 	String.prototype.contains = function(comparator) {
+		'use strict';
 		return comparator === undefined? true : (this.toLowerCase().indexOf(comparator.toLowerCase()) > -1);
 	};
 }
 
 var LoggedInUserService = function() {
+	'use strict';
+
 	var user = {
 		loggedIn: true,
 		'username': 'rangerrick',
@@ -46,6 +55,8 @@ var LoggedInUserService = function() {
 };
 
 var MockPouchWrapper = function() {
+	'use strict';
+
 	var events = [
 		{
 			'_id': '1',
@@ -85,11 +96,11 @@ var MockPouchWrapper = function() {
 				angular.forEach(events, function(event) {
 					var userEvent = {
 						'event': event,
-						'isFavorite': (favorites !== undefined && favorites.indexOf(event._id) != -1)
+						'isFavorite': (favorites !== undefined && favorites.indexOf(event._id) !== -1)
 					};
 				});
 			}
-		}
+		};
 	};
 };
 
@@ -159,6 +170,9 @@ var eventsDb    = 'http://localhost:5984/test-events',
 	remoteDb    = 'http://localhost:5984/test-db';
 
 var doDbSetup = function(done) {
+	'use strict';
+
+	/* global PouchDB: true */
 	var eventsDatabase    = new PouchDB(eventsDb);
 	var favoritesDatabase = new PouchDB(favoritesDb);
 	var pristineDatabase  = new PouchDB(pristineDb);
@@ -214,10 +228,15 @@ var doDbSetup = function(done) {
 var webroot = 'http://localhost:5984/';
 
 var checkCouch = function() {
+	'use strict';
+
+	/* global $q: true */
+	/* global $http: true */
 	var deferred = $q.defer();
 
 	$http({method: 'GET', url: 'http://localhost:5984/test-pristine'}).success(function(data) {
-		if (data['db_name'] === 'test-pristine') {
+		/*jshint camelcase: false */
+		if (data.db_name === 'test-pristine') {
 			deferred.resolve();
 		} else {
 			console.debug('received a "success" response, but could not get a db name');

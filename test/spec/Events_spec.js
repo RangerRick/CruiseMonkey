@@ -1,5 +1,15 @@
+/* global describe: true */
+
 describe('cruisemonkey.Events', function() {
-	var log          = null;
+	'use strict';
+
+	/* global AsyncSpec: true */
+	/* global webroot: true */
+	/* global defaultDocs: true */
+	/* global CMEvent: true */
+	/* global CMDay: true */
+	/* global moment: true */
+
 	var service      = null;
 	var userService  = null;
 	var $q           = null;
@@ -47,8 +57,7 @@ describe('cruisemonkey.Events', function() {
 			$provide.value('config.twitarr.root', 'https://twitarr.rylath.net/');
 			$provide.value('config.upgrade', false);
 		});
-		inject(['$log', 'EventService', 'UserService', '_database', '$q', '$timeout', '$rootScope', '$httpBackend', function($log, EventService, UserService, _database, q, timeout, scope, backend) {
-			log          = $log;
+		inject(['EventService', 'UserService', '_database', '$q', '$timeout', '$rootScope', '$httpBackend', function(EventService, UserService, _database, q, timeout, scope, backend) {
 			service      = EventService;
 			userService  = UserService;
 			database     = _database;
@@ -77,7 +86,7 @@ describe('cruisemonkey.Events', function() {
 		}]);
 	});
 
-	describe("#getAllEvents", function() {
+	describe('#getAllEvents', function() {
 		async.it('should return all events', function(done) {
 			expect(service.getAllEvents).toBeDefined();
 			service.getAllEvents().then(function(result) {
@@ -92,7 +101,7 @@ describe('cruisemonkey.Events', function() {
 		});
 	});
 
-	describe("#getOfficialEvents", function() {
+	describe('#getOfficialEvents', function() {
 		async.it('should return all official events', function(done) {
 			userService.save({'loggedIn': true, 'username':'rangerrick', 'password':'whatever'});
 			expect(service.getOfficialEvents).toBeDefined();
@@ -114,7 +123,7 @@ describe('cruisemonkey.Events', function() {
 		});
 	});
 
-	describe("#getUnofficialEvents", function() {
+	describe('#getUnofficialEvents', function() {
 		async.it('should return only the events marked isPublic which are not official', function(done) {
 			userService.save({'loggedIn': true, 'username':'rangerrick', 'password':'whatever'});
 			expect(service.getUnofficialEvents).toBeDefined();
@@ -135,7 +144,7 @@ describe('cruisemonkey.Events', function() {
 		});
 	});
 
-	describe("#getUserEvents", function() {
+	describe('#getUserEvents', function() {
 		async.it('should return only the events for user "rangerrick"', function(done) {
 			userService.save({'loggedIn': true, 'username':'rangerrick', 'password':'whatever'});
 			expect(service.getUserEvents).toBeDefined();
@@ -169,13 +178,13 @@ describe('cruisemonkey.Events', function() {
 					done();
 				});
 				$timeout.flush();
-			})
+			});
 
 			$rootScope.$apply();
 		});
 	});
 
-	describe("#getMyEvents", function() {
+	describe('#getMyEvents', function() {
 		async.it('should return only the events that user "rangerrick" has created or favorited', function(done) {
 			userService.save({'loggedIn': true, 'username':'rangerrick', 'password':'whatever'});
 			expect(service.getMyEvents).toBeDefined();
@@ -325,7 +334,7 @@ describe('cruisemonkey.Events', function() {
 			expect(service.addFavorite).toBeDefined();
 
 			doSync().then(function() {
-				service.addFavorite('17').then(function(result) {
+				service.addFavorite('17').then(function() {
 				}, function(err) {
 					expect(err).toBe('EventService.addFavorite(): user not logged in, or no eventId passed');
 					done();
@@ -343,7 +352,7 @@ describe('cruisemonkey.Events', function() {
 			expect(service.removeFavorite).toBeDefined();
 
 			doSync().then(function() {
-				service.removeFavorite('event:official-event').then(function(result) {
+				service.removeFavorite('event:official-event').then(function() {
 				}, function(err) {
 					expect(err).toBe('EventService.removeFavorite(): user not logged in, or no eventId passed');
 					done();
@@ -516,7 +525,7 @@ describe('cruisemonkey.Events', function() {
 					'end': '2010-03-01 01:00'
 				})
 			];
-			ev = service.getEventForTime(moment('2010-01-01 00:01'), eventList);
+			var ev = service.getEventForTime(moment('2010-01-01 00:01'), eventList);
 			expect(ev).toBeDefined();
 			expect(ev.getSummary()).toBe('A');
 
@@ -566,7 +575,8 @@ describe('cruisemonkey.Events', function() {
 					'end': '2010-01-04 00:00'
 				}),
 			];
-			ev = service.getEventForTime(moment('2010-01-01 00:00'), eventList);
+
+			var ev = service.getEventForTime(moment('2010-01-01 00:00'), eventList);
 			expect(ev).toBeDefined();
 			expect(ev.getSummary()).toBe('A');
 

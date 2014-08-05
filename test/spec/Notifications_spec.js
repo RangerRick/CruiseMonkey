@@ -1,4 +1,12 @@
+/* global describe: true */
+/* global xdescribe: true */
+
 xdescribe('Notifications', function() {
+	'use strict';
+
+	/* global AsyncSpec: true */
+	/* global jasmine: true */
+
 	var notifications = null;
 	var q             = null;
 	var rootScope     = null;
@@ -24,14 +32,14 @@ xdescribe('Notifications', function() {
 		}]);
 	});
 
-	describe("#alert", function() {
+	describe('#alert', function() {
 		async.it('should return true after 500ms', function(done) {
 			var notified = false;
-			var ret = undefined;
+			var ret;
 
 			var promise = notifications.alert('This is a test.', function() {
 				notified = true;
-				return "booga";
+				return 'booga';
 			});
 			q.when(promise).then(function(value) {
 				ret = value;
@@ -44,7 +52,7 @@ xdescribe('Notifications', function() {
 			rootScope.$digest();
 			timeout.flush();
 
-			expect(ret).toBe("booga");
+			expect(ret).toBe('booga');
 			expect(notified).toBeTruthy();
 
 			expect(mockWindow.alert).toHaveBeenCalledWith('This is a test.');
