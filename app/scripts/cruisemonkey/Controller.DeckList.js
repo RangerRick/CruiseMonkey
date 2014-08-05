@@ -6,8 +6,8 @@
 		'angularLocalStorage',
 		'cruisemonkey.Cordova'
 	])
-	.controller('CMDeckListCtrl', ['storage', '$scope', '$rootScope', '$timeout', '$state', '$stateParams', '$location', '$document', 'CordovaService', '$log', function(storage, $scope, $rootScope, $timeout, $state, $stateParams, $location, $document, cor, log) {
-		log.info('Initializing CMDeckListCtrl');
+	.controller('CMDeckListCtrl', ['storage', '$scope', '$rootScope', '$timeout', '$state', '$stateParams', '$location', '$document', 'CordovaService', function(storage, $scope, $rootScope, $timeout, $state, $stateParams, $location, $document, cor) {
+		console.info('Initializing CMDeckListCtrl');
 		$rootScope.headerTitle = "Deck Plans";
 		$rootScope.leftButtons = $rootScope.getLeftButtons();
 		$rootScope.rightButtons = [];
@@ -22,7 +22,7 @@
 		}
 
 		if ($stateParams.deck) {
-			log.info('$stateParams.deck: ' + $stateParams.deck);
+			console.info('$stateParams.deck: ' + $stateParams.deck);
 			var passedDeck = 0;
 			if ($stateParams.deck.indexOf('-') > -1) {
 				var parts = $stateParams.deck.split('-');
@@ -31,7 +31,7 @@
 				passedDeck = parseInt($stateParams.deck, 10);
 			}
 			if (passedDeck && passedDeck > 0) {
-				log.info('passedDeck = ' + passedDeck);
+				console.info('passedDeck = ' + passedDeck);
 				$scope.deck = passedDeck;
 			}
 		}
@@ -103,7 +103,7 @@
 		});
 
 		$scope.slideChanged = function(index) {
-			log.info('slideBox.slideChanged: ' + index);
+			console.info('slideBox.slideChanged: ' + index);
 			$scope.deck = index + 2;
 		};
 

@@ -19,7 +19,7 @@
 		'cruisemonkey.Config',
 		'cruisemonkey.Upgrades'
 	])
-	.factory('SettingsService', ['$log', 'storage', '$rootScope', '$location', 'config.database.host', 'config.database.name', 'config.urls.openinchrome', 'config.twitarr.root', 'UpgradeService', function(log, storage, $rootScope, $location, databaseHost, databaseName, openInChrome, twitarrRoot, upgrades) {
+	.factory('SettingsService', ['storage', '$rootScope', '$location', 'config.database.host', 'config.database.name', 'config.urls.openinchrome', 'config.twitarr.root', 'UpgradeService', function(storage, $rootScope, $location, databaseHost, databaseName, openInChrome, twitarrRoot, upgrades) {
 		var defaultValue = {
 			'database.host': databaseHost,
 			'database.name': databaseName,
@@ -80,7 +80,7 @@
 			var twRoot       = $rootScope._settings['twitarr.root']      || twitarrRoot;
 
 			if (dbHost === dbName) {
-				log.warn('Database host invalid!');
+				console.warn('Database host invalid!');
 				dbHost = databaseHost;
 			}
 

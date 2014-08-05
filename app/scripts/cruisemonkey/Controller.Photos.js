@@ -6,7 +6,7 @@
 		'cruisemonkey.Cordova',
 		'cruisemonkey.Settings'
 	])
-	.factory('PhotoService', ['$q', '$rootScope', '$http', '$timeout', 'SettingsService', 'CordovaService', '$log', function($q, $rootScope, $http, $timeout, settings, cordova, log) {
+	.factory('PhotoService', ['$q', '$rootScope', '$http', '$timeout', 'SettingsService', 'CordovaService', function($q, $rootScope, $http, $timeout, settings, cordova) {
 		var finished, nextPage, nextEntry, entries;
 
 		var reset = function() {
@@ -36,27 +36,27 @@
 				}
 			})
 			.success(function(data, status, headers, config) {
-				log.debug('PhotoService.getNextPhoto(): data=',data);
-				log.debug('PhotoService.getNextPhoto(): status=',status);
+				console.debug('PhotoService.getNextPhoto(): data=',data);
+				console.debug('PhotoService.getNextPhoto(): status=',status);
 				if (data && data.status === 'ok') {
 					if (data.photos.length > 0) {
 						angular.forEach(data.photos, function(entry, index) {
 							entry.url = settings.getTwitarrRoot() + 'img/photos/md_' + entry.photo;
 						});
 						nextPage++;
-						log.debug('photos=',data.photos);
+						console.debug('photos=',data.photos);
 						deferred.resolve(data.photos);
 					} else {
 						deferred.reject(data);
 					}
 				} else {
-					log.warn('Successful response, but status was ' + data.status);
+					console.warn('Successful response, but status was ' + data.status);
 					deferred.reject(data);
 				}
 			})
 			.error(function(data, status, headers, config) {
-				log.warn('Bad response: ' + data);
-				log.debug('status=',status);
+				console.warn('Bad response: ' + data);
+				console.debug('status=',status);
 				deferred.reject(data);
 			});
 
@@ -112,7 +112,7 @@
 		};
 	}])
 	.controller('CMPhotoCtrl', ['$rootScope', '$scope', '$ionicSlideBoxDelegate', '$http', '$log', 'PhotoService', function($rootScope, $scope, $ionicSlideBoxDelegate, $http, log, photos) {
-		log.info('Initializing CMPhotoCtrl');
+		console.info('Initializing CMPhotoCtrl');
 		$rootScope.headerTitle = "Twit-Arr Pics";
 		$rootScope.leftButtons = $rootScope.getLeftButtons();
 		$rootScope.rightButtons = [];
@@ -146,7 +146,7 @@
 		};
 
 		$scope.reload = function() {
-			log.debug('CMPhotoCtrl.reload()');
+			console.debug('CMPhotoCtrl.reload()');
 			$scope.finished = false;
 			$scope.entries = [];
 			photos.reset();
@@ -163,14 +163,14 @@
 
 		$scope.loadMore = function(done) {
 			if ($scope.finished) {
-				log.info('CMPhotoCtrl.loadMore(): finished.');
+				console.info('CMPhotoCtrl.loadMore(): finished.');
 				done();
 				return;
 			}
 
 			photos.getMore().then(function(entries) {
 				angular.forEach(entries, function(entry, index) {
-					log.debug('CMPhotoCtrl.loadMore(): got new entry: ' + entry.url);
+					console.debug('CMPhotoCtrl.loadMore(): got new entry: ' + entry.url);
 					this.push(entry);
 				}, $scope.entries);
 				if (!$scope.currentEntry) {

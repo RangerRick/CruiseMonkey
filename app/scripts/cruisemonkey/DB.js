@@ -4,7 +4,7 @@
 	/*global PouchDB: true*/
 	angular.module('cruisemonkey.DB', [
 	])
-	.factory('_db', ['$log', '$q', '$rootScope', '$timeout', function(log, $q, $rootScope, $timeout) {
+	.factory('_db', ['$q', '$rootScope', '$timeout', function($q, $rootScope, $timeout) {
 		var __pouchEvents = null,
 			__pouchFavorites = null,
 			__pouchRemote = null;
@@ -73,7 +73,7 @@
 					});
 				}
 			}, options);
-			log.debug('__replicate:',opts);
+			console.debug('__replicate:',opts);
 			from.replicate.to(to, opts);
 			return deferred.promise;
 		};
@@ -90,7 +90,7 @@
 					deferred.reject('Already syncing!');
 					return;
 				}
-				log.info('Starting sync.');
+				console.info('Starting sync.');
 
 				if (__onSyncStart) {
 					__onSyncStart(from, to);
@@ -122,10 +122,10 @@
 
 		var __stopSync = function() {
 			if (__syncing === null) {
-				log.debug('Already stopped!');
+				console.debug('Already stopped!');
 				return;
 			}
-			log.info('Stopping sync.');
+			console.info('Stopping sync.');
 
 			__syncing.cancel();
 			__syncing = null;
@@ -197,7 +197,7 @@
 						}
 					}
 					if (newIds.length > 0) {
-						log.debug('existing items found, fetching only new documents');
+						console.debug('existing items found, fetching only new documents');
 						__allDocs(from, {
 							include_docs: true,
 							keys: newIds
@@ -211,41 +211,41 @@
 								}
 							}
 
-							log.debug('bulk-saving ' + newDocs.length + ' documents');
+							console.debug('bulk-saving ' + newDocs.length + ' documents');
 							__bulkDocs(to, {
 								docs: newDocs,
 								new_edits: false
 							}).then(function(res) {
-								log.debug('bulk-save complete. replicating:',replicationOptions);
+								console.debug('bulk-save complete. replicating:',replicationOptions);
 								__replicate(from, to, replicationOptions).then(function(res) {
-									log.debug('replication complete: ' + res);
+									console.debug('replication complete: ' + res);
 									deferred.resolve(res);
 								}, function(err) {
 									deferred.reject(err);
 								});
 							}, function(err) {
-								log.error('bulkDocs(to) query failed:',err);
+								console.error('bulkDocs(to) query failed:',err);
 								deferred.reject(err);
 							});
 						}, function(err) {
-							log.error('allDocs(from) query failed:',err);
+							console.error('allDocs(from) query failed:',err);
 							deferred.reject(err);
 						});
 					} else {
-						log.debug('no new items found. replicating:',replicationOptions);
+						console.debug('no new items found. replicating:',replicationOptions);
 						__replicate(from, to, replicationOptions).then(function(res) {
-							log.debug('replication complete: ' + res);
+							console.debug('replication complete: ' + res);
 							deferred.resolve(res);
 						}, function(err) {
 							deferred.reject(err);
 						});
 					}
 				}, function(err) {
-					log.error(viewOptions.view + ' query failed:',err);
+					console.error(viewOptions.view + ' query failed:',err);
 					deferred.reject(err);
 				});
 			}, function(err) {
-				log.error('allDocs(to) query failed:',err);
+				console.error('allDocs(to) query failed:',err);
 			});
 
 			return deferred.promise;
@@ -255,7 +255,7 @@
 			var deferred = $q.defer();
 			__ready = deferred.promise;
 			if (__pouchRemote === null) {
-				log.debug('You must set a remote database!');
+				console.debug('You must set a remote database!');
 				$timeout(function() {
 					deferred.reject();
 				});
@@ -570,16 +570,16 @@
 		var __reset = function() {
 			var deferred = $q.defer();
 			__destroy().then(function(results) {
-				log.debug('destroyed:',results);
+				console.debug('destroyed:',results);
 				__ready = null;
 				__initialize().then(function(init) {
 					deferred.resolve(init);
 				}, function(err) {
-					log.debug('failed to initialize: ' + err);
+					console.debug('failed to initialize: ' + err);
 					deferred.reject(err);
 				});
 			}, function(err) {
-				log.debug('failed to destroy existing database: ' + err);
+				console.debug('failed to destroy existing database: ' + err);
 				deferred.reject(err);
 			});
 			return deferred.promise;
@@ -593,7 +593,7 @@
 			}
 		});
 		$rootScope.$on('$destroy', function() {
-			log.debug('Destroying root scope; stopping sync.');
+			console.debug('Destroying root scope; stopping sync.');
 			__stopSync();
 		});
 

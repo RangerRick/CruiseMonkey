@@ -2,8 +2,8 @@
 	'use strict';
 
 	angular.module('cruisemonkey.controllers.Logout', ['cruisemonkey.User'])
-	.controller('CMLogoutCtrl', ['$rootScope', '$location', 'UserService', '$log', function($rootScope, $location, UserService, log) {
-		log.info('Initializing CMLogoutCtrl');
+	.controller('CMLogoutCtrl', ['$rootScope', '$location', 'UserService', function($rootScope, $location, UserService) {
+		console.info('Initializing CMLogoutCtrl');
 		$rootScope.headerTitle = "Logging Out";
 		$rootScope.leftButtons = $rootScope.getLeftButtons();
 		$rootScope.rightButtons = [];

@@ -2,8 +2,8 @@
 	'use strict';
 
 	angular.module('cruisemonkey.controllers.Help', [])
-	.controller('CMHelpCtrl', ['$rootScope', '$log', function($rootScope, log) {
-		log.info('Initializing CMHelpCtrl');
+	.controller('CMHelpCtrl', ['$rootScope', function($rootScope) {
+		console.info('Initializing CMHelpCtrl');
 		$rootScope.headerTitle = 'Help';
 		$rootScope.leftButtons = $rootScope.getLeftButtons();
 		$rootScope.rightButtons = [];

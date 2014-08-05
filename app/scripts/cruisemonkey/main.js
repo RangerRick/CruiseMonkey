@@ -173,8 +173,8 @@
 			}
 		};
 	}])
-	.run(['$q', '$rootScope', '$window', '$location', '$interval', '$timeout', '$urlRouter', '$log', 'UserService', 'storage', 'CordovaService', 'UpgradeService', '_database', 'NotificationService', 'SettingsService', 'SeamailService', function($q, $rootScope, $window, $location, $interval, $timeout, $urlRouter, log, UserService, storage, cor, upgrades, _database, notifications, SettingsService, SeamailService) {
-		log.debug('CruiseMonkey run() called.');
+	.run(['$q', '$rootScope', '$window', '$location', '$interval', '$timeout', '$urlRouter', 'UserService', 'storage', 'CordovaService', 'UpgradeService', '_database', 'NotificationService', 'SettingsService', 'SeamailService', function($q, $rootScope, $window, $location, $interval, $timeout, $urlRouter, UserService, storage, cor, upgrades, _database, notifications, SettingsService, SeamailService) {
+		console.debug('CruiseMonkey run() called.');
 
 		/*global moment: true*/
 		$rootScope.lastModified = moment();
@@ -203,21 +203,21 @@
 		};
 
 		$rootScope.openLeft = function(evt) {
-			log.info('Opening Sidebar.');
+			console.info('Opening Sidebar.');
 			if ($rootScope.sideMenuController) {
 				$rootScope.sideMenuController.toggleLeft();
 			} else {
-				log.warn('Side menu controller not initialized yet!');
+				console.warn('Side menu controller not initialized yet!');
 			}
 			return false;
 		};
 
 		$rootScope.closeLeft = function(evt) {
-			log.info('Closing Sidebar.');
+			console.info('Closing Sidebar.');
 			if ($rootScope.sideMenuController) {
 				$rootScope.sideMenuController.close();
 			} else {
-				log.warn('Side menu controller not initialized yet!');
+				console.warn('Side menu controller not initialized yet!');
 			}
 			return false;
 		};
@@ -294,7 +294,7 @@
 
 		var savedUrl = storage.get('cm.lasturl');
 		if (savedUrl) {
-			log.info('main: lasturl = ' + savedUrl);
+			console.info('main: lasturl = ' + savedUrl);
 			var index = savedUrl.indexOf('#');
 			if (index > -1) {
 				savedUrl = decodeURIComponent(savedUrl.substring(savedUrl.indexOf('#') + 1));
@@ -303,7 +303,7 @@
 				if (savedUrl.contains('/events/') || savedUrl.indexOf('#') > -1) {
 					savedUrl = savedUrl.substring(0,savedUrl.indexOf('#'));
 				}
-				log.info('main: setting path to: ' + savedUrl);
+				console.info('main: setting path to: ' + savedUrl);
 				$location.url(savedUrl);
 			}
 		}
@@ -315,19 +315,19 @@
 		$rootScope.$watch('foreground', function(newValue, oldValue) {
 			if (newValue === undefined) {return;}
 			if (newValue === oldValue) {
-				log.warn('foreground status unchanged: ' + newValue);
+				console.warn('foreground status unchanged: ' + newValue);
 				return;
 			}
-			log.debug('foreground status is now ' + $rootScope.foreground);
+			console.debug('foreground status is now ' + $rootScope.foreground);
 			$rootScope.$broadcast('cm.foreground', $rootScope.foreground);
 		});
 		$rootScope.$watch('online', function(newValue, oldValue) {
 			if (newValue === undefined) {return;}
 			if (newValue === oldValue) {
-				log.warn('online status unchanged: ' + newValue);
+				console.warn('online status unchanged: ' + newValue);
 				return;
 			}
-			log.debug('online status is now ' + $rootScope.online);
+			console.debug('online status is now ' + $rootScope.online);
 			$rootScope.$broadcast('cm.online', newValue);
 		});
 
@@ -364,7 +364,7 @@
 			};
 
 			if (Offline.options.reconnect) {
-				log.debug('initializeOffline() called, but options already initialized.');
+				console.debug('initializeOffline() called, but options already initialized.');
 				return;
 			}
 
@@ -394,7 +394,7 @@
 				$rootScope.$broadcast('cm.main.database-initialized');
 				initializeOffline();
 			}, function(err) {
-				log.error('Failed to initialize database!');
+				console.error('Failed to initialize database!');
 				databaseInitialized.reject(err);
 			});
 			*/
@@ -413,10 +413,10 @@
 		});
 
 		$rootScope.$on('cm.loggedIn', function(event) {
-			log.info('User "' + UserService.getUsername() + '" logged in.');
+			console.info('User "' + UserService.getUsername() + '" logged in.');
 		});
 		$rootScope.$on('cm.loggedOut', function(event) {
-			log.info('User logged out.');
+			console.info('User logged out.');
 		});
 		$rootScope.$on('cm.settings-changed', function() {
 			doDbInit();

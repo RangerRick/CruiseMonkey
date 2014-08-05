@@ -4,7 +4,7 @@
 	/*global PouchDB: true*/
 	angular.module('cruisemonkey.Database', [
 	])
-	.factory('_database', ['$log', '$q', '$rootScope', '$timeout', function(log, $q, $rootScope, $timeout) {
+	.factory('_database', ['$q', '$rootScope', '$timeout', function($q, $rootScope, $timeout) {
 		if (!$rootScope.safeApply) {
 			$rootScope.safeApply = function(fn) {
 				var phase = this.$root.$$phase;

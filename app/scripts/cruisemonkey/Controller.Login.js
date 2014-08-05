@@ -8,8 +8,8 @@
 		'cruisemonkey.Settings',
 		'cruisemonkey.User'
 	])
-	.controller('CMLoginCtrl', ['$scope', '$rootScope', '$location', '$http', 'UserService', '$log', 'SettingsService', 'CordovaService', 'NotificationService', function($scope, $rootScope, $location, $http, UserService, log, SettingsService, cor, notifications) {
-		log.info('Initializing CMLoginCtrl');
+	.controller('CMLoginCtrl', ['$scope', '$rootScope', '$location', '$http', 'UserService', 'SettingsService', 'CordovaService', 'NotificationService', function($scope, $rootScope, $location, $http, UserService, SettingsService, cor, notifications) {
+		console.info('Initializing CMLoginCtrl');
 		$rootScope.headerTitle = "Log In";
 		$rootScope.leftButtons = $rootScope.getLeftButtons();
 
@@ -55,8 +55,8 @@
 			if (user.username) {
 				user.username = user.username.toLowerCase();
 			}
-			log.info('saving user');
-			log.debug(user);
+			console.info('saving user');
+			console.debug(user);
 			UserService.save(user);
 			$rootScope.user = UserService.get();
 		};
@@ -87,7 +87,7 @@
 				return;
 			}
 			var url = twitarrRoot + 'api/v2/user/auth';
-			log.debug('Logging in to ' + url);
+			console.debug('Logging in to ' + url);
 
 			$http({
 				method: 'POST',
@@ -103,7 +103,7 @@
 				}
 			})
 			.success(function(data, status, headers, config) {
-				log.debug('success:',data);
+				console.debug('success:',data);
 				notifications.removeStatus('Logging in...');
 				user.key = data.key;
 				$scope.saveUser(user);
@@ -112,12 +112,12 @@
 			})
 			.error(function(data, status, headers, config) {
 				notifications.removeStatus('Logging in...');
-				log.warn('failure!');
-				log.debug('url:',url);
-				log.debug('data:', data);
-				log.debug('status:',status);
-				log.debug('headers:',headers);
-				log.debug('config:',config);
+				console.warn('failure!');
+				console.debug('url:',url);
+				console.debug('data:', data);
+				console.debug('status:',status);
+				console.debug('headers:',headers);
+				console.debug('config:',config);
 				notifications.alert('Failed to log in to twit-arr! You may need to import the twit-arr certificate in "Advanced" before login will work.');
 			});
 

@@ -11,23 +11,23 @@
 		'cruisemonkey.Config',
 		'cruisemonkey.Cordova'
 	])
-	.factory('NotificationService', ['$q', '$rootScope', '$timeout', '$window', 'config.notifications.timeout', '$log', 'CordovaService', function($q, $rootScope, $timeout, $window, notificationTimeout, log, cor) {
+	.factory('NotificationService', ['$q', '$rootScope', '$timeout', '$window', 'config.notifications.timeout', 'CordovaService', function($q, $rootScope, $timeout, $window, notificationTimeout, cor) {
 		var notificationQueue = [];
 		var nextId = 0;
 
 		var doAlert = function(message, callback) {
 			cor.ifCordova(function() {
-				log.info('NotificationService.doAlert(): native cordova: ' + message);
+				console.info('NotificationService.doAlert(): native cordova: ' + message);
 				navigator.notification.alert(message, callback);
 			}).otherwise(function() {
-				log.info('NotificationService.doAlert(): not native cordova: ' + message);
+				console.info('NotificationService.doAlert(): not native cordova: ' + message);
 				$window.alert(message);
 				callback();
 			});
 		};
 
 		var alert = function(message, alertCallback) {
-			log.info('NotificationService.alert(): message = "' + message + '"');
+			console.info('NotificationService.alert(): message = "' + message + '"');
 
 			var deferred = $q.defer();
 
@@ -59,13 +59,13 @@
 			for (var i = notificationQueue.length; i >= 0; --i) {
 				var queueEntry = notificationQueue[i];
 				if (queueEntry === message) {
-					log.debug('Removing message "' + message + '" from the queue.');
+					console.debug('Removing message "' + message + '" from the queue.');
 					notificationQueue.splice(i, 1);
 					updateStatusNotification();
 					break;
 				}
 			}
-			log.debug('Unable to remove notification for message "' + message + '".');
+			console.debug('Unable to remove notification for message "' + message + '".');
 		};
 
 		var statusNotification = function(message, arg) {
@@ -82,7 +82,7 @@
 						removeStatusNotification(message);
 					});
 				} else {
-					log.warn('No timeout specified for message "' + message + '", you had better clear it yourself!');
+					console.warn('No timeout specified for message "' + message + '", you had better clear it yourself!');
 				}
 			}
 		};
