@@ -12,11 +12,15 @@ fi
 
 COMMIT="unknown"
 CMDIR="$1"
+BRANCH="$2"
+if [ -z "$BRANCH" ]; then
+	BRANCH=master
+fi
 echo "CruiseMonkey is '$CMDIR'."
 
 pushd "${CMDIR}/ionic"
 	rm -rf dist
-	git checkout master
+	git checkout "$BRANCH"
 	git pull
 	npm install && sudo npm install -g gulp protractor
 	gulp build --release
