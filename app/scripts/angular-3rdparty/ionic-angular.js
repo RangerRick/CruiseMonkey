@@ -2,7 +2,7 @@
  * Copyright 2014 Drifty Co.
  * http://drifty.com/
  *
- * Ionic, v1.0.0-beta.10
+ * Ionic, v1.0.0-beta.13
  * A powerful HTML5 mobile app framework.
  * http://ionicframework.com/
  *
@@ -63,6 +63,7 @@ var IonicModule = angular.module('ionic', ['ngAnimate', 'ngSanitize', 'ui.router
   extend = angular.extend,
   forEach = angular.forEach,
   isDefined = angular.isDefined,
+  isNumber = angular.isNumber,
   isString = angular.isString,
   jqLite = angular.element;
 
@@ -120,13 +121,13 @@ var IonicModule = angular.module('ionic', ['ngAnimate', 'ngSanitize', 'ui.router
 IonicModule
 .factory('$ionicActionSheet', [
   '$rootScope',
-  '$document',
   '$compile',
   '$animate',
   '$timeout',
   '$ionicTemplateLoader',
   '$ionicPlatform',
-function($rootScope, $document, $compile, $animate, $timeout, $ionicTemplateLoader, $ionicPlatform) {
+  '$ionicBody',
+function($rootScope, $compile, $animate, $timeout, $ionicTemplateLoader, $ionicPlatform, $ionicBody) {
 
   return {
     show: actionSheet
@@ -188,7 +189,11 @@ function($rootScope, $document, $compile, $animate, $timeout, $ionicTemplateLoad
 
       scope.removed = true;
       sheetEl.removeClass('action-sheet-up');
-      $document[0].body.classList.remove('action-sheet-open');
+      $timeout(function(){
+        // wait to remove this due to a 300ms delay native
+        // click which would trigging whatever was underneath this
+        $ionicBody.removeClass('action-sheet-open');
+      }, 400);
       scope.$deregisterBackButton();
       stateChangeListenDone();
 
@@ -204,8 +209,8 @@ function($rootScope, $document, $compile, $animate, $timeout, $ionicTemplateLoad
     scope.showSheet = function(done) {
       if (scope.removed) return;
 
-      $document[0].body.appendChild(element[0]);
-      $document[0].body.classList.add('action-sheet-open');
+      $ionicBody.append(element)
+                .addClass('action-sheet-open');
 
       $animate.addClass(element, 'active', function() {
         if (scope.removed) return;
@@ -219,7 +224,9 @@ function($rootScope, $document, $compile, $animate, $timeout, $ionicTemplateLoad
 
     // registerBackButtonAction returns a callback to deregister the action
     scope.$deregisterBackButton = $ionicPlatform.registerBackButtonAction(
-      scope.cancel,
+      function() {
+        $timeout(scope.cancel);
+      },
       PLATFORM_BACK_BUTTON_PRIORITY_ACTION_SHEET
     );
 
@@ -263,7 +270,7 @@ jqLite.prototype.addClass = function(cssClasses) {
       el = this[x];
       if(el.setAttribute) {
 
-        if(cssClasses.indexOf(' ') < 0) {
+        if(cssClasses.indexOf(' ') < 0 && el.classList.add) {
           el.classList.add(cssClasses);
         } else {
           existingClasses = (' ' + (el.getAttribute('class') || '') + ' ')
@@ -290,7 +297,7 @@ jqLite.prototype.removeClass = function(cssClasses) {
     for(x=0; x<this.length; x++) {
       el = this[x];
       if(el.getAttribute) {
-        if(cssClasses.indexOf(' ') < 0) {
+        if(cssClasses.indexOf(' ') < 0 && el.classList.remove) {
           el.classList.remove(cssClasses);
         } else {
           splitClasses = cssClasses.split(' ');
@@ -312,69 +319,76 @@ jqLite.prototype.removeClass = function(cssClasses) {
 
 
 /**
- * @ngdoc service
- * @name $ionicAnimation
- * @module ionic
- * @description
- *
- * A powerful animation and transition system for Ionic apps.
- *
- * @usage
- *
- * ```js
- * angular.module('mySuperApp', ['ionic'])
- * .controller(function($scope, $ionicAnimation) {
- *    var anim = $ionicAnimation({
- *     // A unique, reusable name
- *     name: 'popIn',
- *
- *     // The duration of an auto playthrough
- *     duration: 0.5,
- *
- *     // How long to wait before running the animation
- *     delay: 0,
- *
- *     // Whether to reverse after doing one run through
- *     autoReverse: false,
- *
- *     // How many times to repeat? -1 or null for infinite
- *     repeat: -1,
- *
- *     // Timing curve to use (same as CSS timing functions), or a function of time "t" to handle it yourself
- *     curve: 'ease-in-out'
- *
- *     onStart: function() {
- *       // Callback on start
- *     },
- *     onEnd: function() {
- *       // Callback on end
- *     },
- *     step: function(amt) {
- *
- *     }
- *   })
- * });
- * ```
- *
+ * @private
  */
 IonicModule
-.provider('$ionicAnimation', function() {
-  var useSlowAnimations = false;
-  this.setSlowAnimations = function(isSlow) {
-    useSlowAnimations = isSlow;
-  };
+.factory('$$ionicAttachDrag', [function() {
 
-  this.create = function(animation) {
-    return ionic.Animation.create(animation);
-  };
+  return attachDrag;
 
-  this.$get = [function() {
-    return function(opts) {
-      opts.useSlowAnimations = useSlowAnimations;
-      return ionic.Animation.create(opts);
-    };
-  }];
-});
+  function attachDrag(scope, element, options) {
+    var opts = extend({}, {
+      getDistance: function() { return opts.element.prop('offsetWidth'); },
+      onDragStart: angular.noop,
+      onDrag: angular.noop,
+      onDragEnd: angular.noop,
+    }, options);
+
+    var dragStartGesture = ionic.onGesture('dragstart', handleDragStart, element[0]);
+    var dragGesture = ionic.onGesture('drag', handleDrag, element[0]);
+    var dragEndGesture = ionic.onGesture('dragend', handleDragEnd, element[0]);
+
+    scope.$on('$destroy', function() {
+      ionic.offGesture(dragStartGesture, 'dragstart', handleDragStart);
+      ionic.offGesture(dragGesture, 'drag', handleDrag);
+      ionic.offGesture(dragEndGesture, 'dragend', handleDragEnd);
+    });
+
+    element.on('touchmove pointermove mousemove', function(ev) {
+      if (dragState && dragState.dragging) ev.preventDefault();
+    });
+
+    var dragState;
+    function handleDragStart(ev) {
+      if (dragState) return;
+      dragState = {
+        startX: ev.gesture.center.pageX,
+        startY: ev.gesture.center.pageY,
+        distance: opts.getDistance()
+      };
+      opts.onDragStart();
+    }
+    function handleDrag(ev) {
+      if (!dragState) return;
+      var deltaX = dragState.startX - ev.gesture.center.pageX;
+      var deltaY = dragState.startY - ev.gesture.center.pageY;
+      var isVertical = ev.gesture.direction === 'up' || ev.gesture.direction === 'down';
+
+      if (isVertical && Math.abs(deltaY) > Math.abs(deltaX) * 2) {
+        handleDragEnd(ev);
+        return;
+      }
+      dragState.dragging = true;
+
+      var percent = getDragPercent(ev.gesture.center.pageX);
+      opts.onDrag(percent);
+    }
+    function handleDragEnd(ev) {
+      if (!dragState) return;
+      var percent = getDragPercent(ev.gesture.center.pageX);
+      options.onDragEnd(percent, ev.gesture.velocityX);
+
+      dragState = null;
+    }
+
+    function getDragPercent(x) {
+      var delta = dragState.startX - x;
+      var percent = delta / dragState.distance;
+      return percent;
+    }
+  }
+
+}]);
 
 /**
  * @ngdoc service
@@ -412,8 +426,8 @@ IonicModule
  */
 IonicModule
 .factory('$ionicBackdrop', [
-  '$document',
-function($document) {
+  '$document', '$timeout',
+function($document, $timeout) {
 
   var el = jqLite('<div class="backdrop">');
   var backdropHolds = 0;
@@ -452,9 +466,9 @@ function($document) {
   function release() {
     if ( (--backdropHolds) === 0 ) {
       el.removeClass('active');
-      setTimeout(function() {
+      $timeout(function() {
         !backdropHolds && el.removeClass('visible');
-      }, 100);
+      }, 400, false);
     }
   }
 
@@ -521,18 +535,140 @@ IonicModule
   };
 }]);
 
+/**
+ * @ngdoc service
+ * @name $ionicBody
+ * @module ionic
+ * @description An angular utility service to easily and efficiently
+ * add and remove CSS classes from the document's body element.
+ */
+IonicModule
+.factory('$ionicBody', ['$document', function($document) {
+  return {
+    /**
+     * @ngdoc method
+     * @name $ionicBody#add
+     * @description Add a class to the document's body element.
+     * @param {string} class Each argument will be added to the body element.
+     * @returns {$ionicBody} The $ionicBody service so methods can be chained.
+     */
+    addClass: function() {
+      for(var x=0; x<arguments.length; x++) {
+        $document[0].body.classList.add(arguments[x]);
+      }
+      return this;
+    },
+    /**
+     * @ngdoc method
+     * @name $ionicBody#removeClass
+     * @description Remove a class from the document's body element.
+     * @param {string} class Each argument will be removed from the body element.
+     * @returns {$ionicBody} The $ionicBody service so methods can be chained.
+     */
+    removeClass: function() {
+      for(var x=0; x<arguments.length; x++) {
+        $document[0].body.classList.remove(arguments[x]);
+      }
+      return this;
+    },
+    /**
+     * @ngdoc method
+     * @name $ionicBody#enableClass
+     * @description Similar to the `add` method, except the first parameter accepts a boolean
+     * value determining if the class should be added or removed. Rather than writing user code,
+     * such as "if true then add the class, else then remove the class", this method can be
+     * given a true or false value which reduces redundant code.
+     * @param {boolean} shouldEnableClass A true/false value if the class should be added or removed.
+     * @param {string} class Each remaining argument would be added or removed depending on
+     * the first argument.
+     * @returns {$ionicBody} The $ionicBody service so methods can be chained.
+     */
+    enableClass: function(shouldEnableClass) {
+      var args = Array.prototype.slice.call(arguments).slice(1);
+      if(shouldEnableClass) {
+        this.addClass.apply(this, args);
+      } else {
+        this.removeClass.apply(this, args);
+      }
+      return this;
+    },
+    /**
+     * @ngdoc method
+     * @name $ionicBody#append
+     * @description Append a child to the document's body.
+     * @param {element} element The element to be appended to the body. The passed in element
+     * can be either a jqLite element, or a DOM element.
+     * @returns {$ionicBody} The $ionicBody service so methods can be chained.
+     */
+    append: function(ele) {
+      $document[0].body.appendChild( ele.length ? ele[0] : ele );
+      return this;
+    },
+    /**
+     * @ngdoc method
+     * @name $ionicBody#get
+     * @description Get the document's body element.
+     * @returns {element} Returns the document's body element.
+     */
+    get: function() {
+      return $document[0].body;
+    }
+  };
+}]);
+
+IonicModule
+.factory('$ionicClickBlock', [
+  '$document',
+  '$ionicBody',
+  '$timeout',
+function($document, $ionicBody, $timeout) {
+  var fallbackTimer;
+
+  var cb = $document[0].createElement('div');
+  cb.className = 'click-block';
+
+  return {
+    show: function() {
+      // cancel the fallback timer
+      $timeout.cancel( fallbackTimer );
+
+      if(cb.parentElement) {
+        cb.classList.remove('hide');
+      } else {
+        $ionicBody.append(cb);
+      }
+      fallbackTimer = $timeout(function(){
+        cb.classList.add('hide');
+      }, 500);
+    },
+    hide: function() {
+      // cancel the fallback timer
+      $timeout.cancel( fallbackTimer );
+
+      // should be a minimum time it should hide
+      ionic.requestAnimationFrame(function(){
+        cb.classList.add('hide');
+      });
+    }
+  };
+}]);
+
 IonicModule
 .factory('$collectionDataSource', [
   '$cacheFactory',
   '$parse',
   '$rootScope',
 function($cacheFactory, $parse, $rootScope) {
+  function hideWithTransform(element) {
+    element.css(ionic.CSS.TRANSFORM, 'translate3d(-2000px,-2000px,0)');
+  }
 
   function CollectionRepeatDataSource(options) {
     var self = this;
     this.scope = options.scope;
     this.transcludeFn = options.transcludeFn;
     this.transcludeParent = options.transcludeParent;
+    this.element = options.element;
 
     this.keyExpr = options.keyExpr;
     this.listExpr = options.listExpr;
@@ -544,26 +680,14 @@ function($cacheFactory, $parse, $rootScope) {
     this.dimensions = [];
     this.data = [];
 
-    if (this.trackByExpr) {
-      var trackByGetter = $parse(this.trackByExpr);
-      var hashFnLocals = {$id: hashKey};
-      this.itemHashGetter = function(index, value) {
-        hashFnLocals[self.keyExpr] = value;
-        hashFnLocals.$index = index;
-        return trackByGetter(self.scope, hashFnLocals);
-      };
-    } else {
-      this.itemHashGetter = function(index, value) {
-        return hashKey(value);
-      };
-    }
-
     this.attachedItems = {};
-    this.BACKUP_ITEMS_LENGTH = 10;
+    this.BACKUP_ITEMS_LENGTH = 20;
     this.backupItemsArray = [];
   }
   CollectionRepeatDataSource.prototype = {
     setup: function() {
+      if (this.isSetup) return;
+      this.isSetup = true;
       for (var i = 0; i < this.BACKUP_ITEMS_LENGTH; i++) {
         this.detachItem(this.createItem());
       }
@@ -584,38 +708,50 @@ function($cacheFactory, $parse, $rootScope) {
           height: this.heightGetter(this.scope, locals)
         };
       }, this);
+      this.dimensions = this.beforeSiblings.concat(this.dimensions).concat(this.afterSiblings);
+      this.dataStartIndex = this.beforeSiblings.length;
     },
     createItem: function() {
       var item = {};
-      item.scope = this.scope.$new();
 
+      item.scope = this.scope.$new();
       this.transcludeFn(item.scope, function(clone) {
         clone.css('position', 'absolute');
         item.element = clone;
       });
-
       this.transcludeParent.append(item.element);
 
       return item;
     },
-    getItem: function(hash) {
-      if ( (item = this.attachedItems[hash]) ) {
+    getItem: function(index) {
+      var item;
+      if ( (item = this.attachedItems[index]) ) {
         //do nothing, the item is good
       } else if ( (item = this.backupItemsArray.pop()) ) {
-        reconnectScope(item.scope);
+        ionic.Utils.reconnectScope(item.scope);
       } else {
         item = this.createItem();
       }
       return item;
     },
     attachItemAtIndex: function(index) {
-      var value = this.data[index];
-      var hash = this.itemHashGetter(index, value);
-      var item = this.getItem(hash);
+      if (index < this.dataStartIndex) {
+        return this.beforeSiblings[index];
+      }
+      // Subtract so we start at the beginning of this.data, after
+      // this.beforeSiblings.
+      index -= this.dataStartIndex;
 
-      if (item.scope.$index !== index || item.scope[this.keyExpr] !== value) {
+      if (index > this.data.length - 1) {
+        return this.afterSiblings[index - this.dataStartIndex];
+      }
+
+      var item = this.getItem(index);
+      var value = this.data[index];
+
+      if (item.index !== index || item.scope[this.keyExpr] !== value) {
+        item.index = item.scope.$index = index;
         item.scope[this.keyExpr] = value;
-        item.scope.$index = index;
         item.scope.$first = (index === 0);
         item.scope.$last = (index === (this.getLength() - 1));
         item.scope.$middle = !(item.scope.$first || item.scope.$last);
@@ -626,9 +762,7 @@ function($cacheFactory, $parse, $rootScope) {
           item.scope.$digest();
         }
       }
-
-      item.hash = hash;
-      this.attachedItems[hash] = item;
+      this.attachedItems[index] = item;
 
       return item;
     },
@@ -639,101 +773,42 @@ function($cacheFactory, $parse, $rootScope) {
       item.element = null;
     },
     detachItem: function(item) {
-      delete this.attachedItems[item.hash];
+      delete this.attachedItems[item.index];
 
+      //If it's an outside item, only hide it. These items aren't part of collection
+      //repeat's list, only sit outside
+      if (item.isOutside) {
+        hideWithTransform(item.element);
       // If we are at the limit of backup items, just get rid of the this element
-      if (this.backupItemsArray.length >= this.BACKUP_ITEMS_LENGTH) {
+      } else if (this.backupItemsArray.length >= this.BACKUP_ITEMS_LENGTH) {
         this.destroyItem(item);
       // Otherwise, add it to our backup items
       } else {
         this.backupItemsArray.push(item);
-        item.element.css(ionic.CSS.TRANSFORM, 'translate3d(-2000px,-2000px,0)');
+        hideWithTransform(item.element);
         //Don't .$destroy(), just stop watchers and events firing
-        disconnectScope(item.scope);
+        ionic.Utils.disconnectScope(item.scope);
       }
+
     },
     getLength: function() {
-      return this.data && this.data.length || 0;
+      return this.dimensions && this.dimensions.length || 0;
     },
-    setData: function(value) {
+    setData: function(value, beforeSiblings, afterSiblings) {
       this.data = value || [];
+      this.beforeSiblings = beforeSiblings || [];
+      this.afterSiblings = afterSiblings || [];
       this.calculateDataDimensions();
+
+      this.afterSiblings.forEach(function(item) {
+        item.element.css({position: 'absolute', top: '0', left: '0' });
+        hideWithTransform(item.element);
+      });
     },
   };
 
   return CollectionRepeatDataSource;
 }]);
-
-/**
-* Computes a hash of an 'obj'.
- * Hash of a:
- *  string is string
- *  number is number as string
- *  object is either result of calling $$hashKey function on the object or uniquely generated id,
- *         that is also assigned to the $$hashKey property of the object.
- *
- * @param obj
- * @returns {string} hash string such that the same input will have the same hash string.
- *         The resulting string key is in 'type:hashKey' format.
- */
-function hashKey(obj) {
-  var objType = typeof obj,
-      key;
-
-  if (objType == 'object' && obj !== null) {
-    if (typeof (key = obj.$$hashKey) == 'function') {
-      // must invoke on object to keep the right this
-      key = obj.$$hashKey();
-    } else if (key === undefined) {
-      key = obj.$$hashKey = ionic.Utils.nextUid();
-    }
-  } else {
-    key = obj;
-  }
-
-  return objType + ':' + key;
-}
-
-function disconnectScope(scope) {
-  if (scope.$root === scope) {
-    return; // we can't disconnect the root node;
-  }
-  var parent = scope.$parent;
-  scope.$$disconnected = true;
-  // See Scope.$destroy
-  if (parent.$$childHead === scope) {
-    parent.$$childHead = scope.$$nextSibling;
-  }
-  if (parent.$$childTail === scope) {
-    parent.$$childTail = scope.$$prevSibling;
-  }
-  if (scope.$$prevSibling) {
-    scope.$$prevSibling.$$nextSibling = scope.$$nextSibling;
-  }
-  if (scope.$$nextSibling) {
-    scope.$$nextSibling.$$prevSibling = scope.$$prevSibling;
-  }
-  scope.$$nextSibling = scope.$$prevSibling = null;
-}
-
-function reconnectScope(scope) {
-  if (scope.$root === scope) {
-    return; // we can't disconnect the root node;
-  }
-  if (!scope.$$disconnected) {
-    return;
-  }
-  var parent = scope.$parent;
-  scope.$$disconnected = false;
-  // See Scope.$new for this logic...
-  scope.$$prevSibling = parent.$$childTail;
-  if (parent.$$childHead) {
-    parent.$$childTail.$$nextSibling = scope;
-    parent.$$childTail = scope;
-  } else {
-    parent.$$childHead = parent.$$childTail = scope;
-  }
-}
 
 
 IonicModule
@@ -837,7 +912,23 @@ function($rootScope, $timeout) {
       var secondaryScrollSize = this.secondaryScrollSize();
       var previousItem;
 
-      return this.dataSource.dimensions.map(function(dim) {
+      this.dataSource.beforeSiblings && this.dataSource.beforeSiblings.forEach(calculateSize, this);
+      var beforeSize = primaryPos + (previousItem ? previousItem.primarySize : 0);
+
+      primaryPos = secondaryPos = 0;
+      previousItem = null;
+
+      var dimensions = this.dataSource.dimensions.map(calculateSize, this);
+      var totalSize = primaryPos + (previousItem ? previousItem.primarySize : 0);
+
+      return {
+        beforeSize: beforeSize,
+        totalSize: totalSize,
+        dimensions: dimensions
+      };
+
+      function calculateSize(dim) {
+
         //Each dimension is an object {width: Number, height: Number} provided by
         //the dataSource
         var rect = {
@@ -866,17 +957,16 @@ function($rootScope, $timeout) {
 
         previousItem = rect;
         return rect;
-      }, this);
+      }
     },
     resize: function() {
-      this.dimensions = this.calculateDimensions();
-      var lastItem = this.dimensions[this.dimensions.length - 1];
-      this.viewportSize = lastItem ? lastItem.primaryPos + lastItem.primarySize : 0;
+      var result = this.calculateDimensions();
+      this.dimensions = result.dimensions;
+      this.viewportSize = result.totalSize;
+      this.beforeSize = result.beforeSize;
       this.setCurrentIndex(0);
       this.render(true);
-      if (!this.dataSource.backupItemsArray.length) {
-        this.dataSource.setup();
-      }
+      this.dataSource.setup();
     },
     /*
      * setCurrentIndex sets the index in the list that matches the scroller's position.
@@ -913,6 +1003,7 @@ function($rootScope, $timeout) {
       }
       return this.scrollView.__$callback(transformLeft, transformTop, zoom, wasResize);
     }),
+
     renderIfNeeded: function(scrollPos) {
       if ((this.hasNextIndex && scrollPos >= this.nextPos) ||
           (this.hasPrevIndex && scrollPos < this.previousPos)) {
@@ -956,6 +1047,7 @@ function($rootScope, $timeout) {
      * the data source to render the correct items into the DOM.
      */
     render: function(shouldRedrawAll) {
+      var self = this;
       var i;
       var isOutOfBounds = ( this.currentIndex >= this.dataSource.getLength() );
       // We want to remove all the items and redraw everything if we're out of bounds
@@ -995,23 +1087,41 @@ function($rootScope, $timeout) {
       // Keep rendering items, adding them until we are past the end of the visible scroll area
       i = renderStartIndex;
       while ((rect = this.dimensions[i]) && (rect.primaryPos - rect.primarySize < scrollSizeEnd)) {
-        this.renderItem(i, rect.primaryPos, rect.secondaryPos);
+        doRender(i, rect);
         i++;
       }
-      var renderEndIndex = i - 1;
+
+      // Render two extra items at the end as a buffer
+      if (self.dimensions[i]) {
+        doRender(i, self.dimensions[i]);
+        i++;
+      }
+      if (self.dimensions[i]) {
+        doRender(i, self.dimensions[i]);
+      }
+      var renderEndIndex = i;
 
       // Remove any items that were rendered and aren't visible anymore
-      for (i in this.renderedItems) {
-        if (i < renderStartIndex || i > renderEndIndex) {
-          this.removeItem(i);
+      for (var renderIndex in this.renderedItems) {
+        if (renderIndex < renderStartIndex || renderIndex > renderEndIndex) {
+          this.removeItem(renderIndex);
         }
       }
 
       this.setCurrentIndex(startIndex);
+
+      function doRender(dataIndex, rect) {
+        if (dataIndex < self.dataSource.dataStartIndex) {
+          // do nothing
+        } else {
+          self.renderItem(dataIndex, rect.primaryPos - self.beforeSize, rect.secondaryPos);
+        }
+      }
     },
     renderItem: function(dataIndex, primaryPos, secondaryPos) {
       // Attach an item, and set its transform position to the required value
       var item = this.dataSource.attachItemAtIndex(dataIndex);
+      //console.log(dataIndex, item);
       if (item && item.element) {
         if (item.primaryPos !== primaryPos || item.secondaryPos !== secondaryPos) {
           item.element.css(ionic.CSS.TRANSFORM, this.transformString(
@@ -1174,8 +1284,8 @@ IonicModule
      * @param {element} $element The angular element to listen for the event on.
      * @returns {ionic.Gesture} The gesture object (use this to remove the gesture later on).
      */
-    on: function(eventType, cb, $element) {
-      return window.ionic.onGesture(eventType, cb, $element[0]);
+    on: function(eventType, cb, $element, options) {
+      return window.ionic.onGesture(eventType, cb, $element[0], options);
     },
     /**
      * @ngdoc method
@@ -1190,6 +1300,67 @@ IonicModule
     }
   };
 }]);
+
+/**
+ * @ngdoc provider
+ * @name $ionicConfigProvider
+ * @module ionic
+ * @description $ionicConfigProvider can be used during the configuration phase of your app
+ * to change how Ionic works.
+ *
+ * @usage
+ * ```js
+ * var myApp = angular.module('reallyCoolApp', ['ionic']);
+ *
+ * myApp.config(function($ionicConfigProvider) {
+ *   $ionicConfigProvider.prefetchTemplates(false);
+ * });
+ * ```
+ */
+IonicModule
+.provider('$ionicConfig', function() {
+
+  // container of all ionic configs
+  // The angular world should use $ionicConfig
+  var config = ionic.config = {};
+
+
+  /**
+   * @ngdoc method
+   * @name $ionicConfigProvider#prefetchTemplates
+   * @description Set whether Ionic should prefetch all templateUrls defined in
+   * $stateProvider.state. If set to false, the user will have to wait
+   * for a template to be fetched the first time when navigating to a new page. Default `true`.
+   * @param {boolean} shouldPrefetch Whether Ionic should prefetch templateUrls defined in
+   * `$stateProvider.state()`.
+   * @returns {boolean} Whether Ionic will prefetch templateUrls defined in $stateProvider.state.
+   */
+  config.prefetchTemplates = true;
+
+
+
+  // private: create methods for each config to get/set
+  var provider = this;
+  forEach(config, function(defaultValue, configMethod) {
+    provider[configMethod] = function(newValue) {
+      if (arguments.length) {
+        config[configMethod] = newValue;
+      }
+      return config[configMethod];
+    };
+  });
+
+  // private: Service definition for internal Ionic use
+  /**
+   * @ngdoc service
+   * @name $ionicConfig
+   * @module ionic
+   * @private
+   */
+  this.$get = function() {
+    return config;
+  };
+});
 
 
 var LOADING_TPL =
@@ -1247,11 +1418,11 @@ var LOADING_SET_DEPRECATED = '$ionicLoading instance.setContent() has been depre
  */
 IonicModule
 .constant('$ionicLoadingConfig', {
-  template: '<i class="ion-loading-d"></i>'
+  template: '<i class="icon ion-loading-d"></i>'
 })
 .factory('$ionicLoading', [
   '$ionicLoadingConfig',
-  '$document',
+  '$ionicBody',
   '$ionicTemplateLoader',
   '$ionicBackdrop',
   '$timeout',
@@ -1259,7 +1430,7 @@ IonicModule
   '$log',
   '$compile',
   '$ionicPlatform',
-function($ionicLoadingConfig, $document, $ionicTemplateLoader, $ionicBackdrop, $timeout, $q, $log, $compile, $ionicPlatform) {
+function($ionicLoadingConfig, $ionicBody, $ionicTemplateLoader, $ionicBackdrop, $timeout, $q, $log, $compile, $ionicPlatform) {
 
   var loaderInstance;
   //default values
@@ -1297,7 +1468,7 @@ function($ionicLoadingConfig, $document, $ionicTemplateLoader, $ionicBackdrop, $
     if (!loaderInstance) {
       loaderInstance = $ionicTemplateLoader.compile({
         template: LOADING_TPL,
-        appendTo: $document[0].body
+        appendTo: $ionicBody.get()
       })
       .then(function(loader) {
         var self = loader;
@@ -1307,6 +1478,9 @@ function($ionicLoadingConfig, $document, $ionicTemplateLoader, $ionicBackdrop, $
             $ionicTemplateLoader.load(options.templateUrl) :
             //options.content: deprecated
             $q.when(options.template || options.content || '');
+            
+        
+          self.scope = options.scope || self.scope;
 
 
           if (!this.isShown) {
@@ -1326,6 +1500,13 @@ function($ionicLoadingConfig, $document, $ionicTemplateLoader, $ionicBackdrop, $
             );
           }
 
+          deregisterBackAction();
+          //Disable hardware back button while loading
+          deregisterBackAction = $ionicPlatform.registerBackButtonAction(
+            angular.noop,
+            PLATFORM_BACK_BUTTON_PRIORITY_LOADING
+          );
+
           templatePromise.then(function(html) {
             if (html) {
               var loading = self.element.children();
@@ -1337,8 +1518,10 @@ function($ionicLoadingConfig, $document, $ionicTemplateLoader, $ionicBackdrop, $
             if (self.isShown) {
               self.element.addClass('visible');
               ionic.requestAnimationFrame(function() {
-                self.isShown && self.element.addClass('active');
-                $document[0].body.classList.add('loading-active');
+                if(self.isShown) {
+                  self.element.addClass('active');
+                  $ionicBody.addClass('loading-active');
+                }
               });
             }
           });
@@ -1346,13 +1529,15 @@ function($ionicLoadingConfig, $document, $ionicTemplateLoader, $ionicBackdrop, $
           this.isShown = true;
         };
         loader.hide = function() {
+
+          deregisterBackAction();
           if (this.isShown) {
             if (this.hasBackdrop) {
               $ionicBackdrop.release();
               $ionicBackdrop.getElement().removeClass('backdrop-loading');
             }
             self.element.removeClass('active');
-            $document[0].body.classList.remove('loading-active');
+            $ionicBody.removeClass('loading-active');
             setTimeout(function() {
               !self.isShown && self.element.removeClass('visible');
             }, 200);
@@ -1368,7 +1553,7 @@ function($ionicLoadingConfig, $document, $ionicTemplateLoader, $ionicBackdrop, $
   }
 
   function showLoader(options) {
-    options = extend($ionicLoadingConfig || {}, options || {});
+    options = extend({}, $ionicLoadingConfig || {}, options || {});
     var delay = options.delay || options.showDelay || 0;
 
     //If loading.show() was called previously, cancel it and show with our new options
@@ -1376,12 +1561,6 @@ function($ionicLoadingConfig, $document, $ionicTemplateLoader, $ionicBackdrop, $
     loadingShowDelay = $timeout(angular.noop, delay);
 
     loadingShowDelay.then(getLoader).then(function(loader) {
-      deregisterBackAction();
-      //Disable hardware back button while loading
-      deregisterBackAction = $ionicPlatform.registerBackButtonAction(
-        angular.noop,
-        PLATFORM_BACK_BUTTON_PRIORITY_LOADING
-      );
       return loader.show(options);
     });
 
@@ -1399,7 +1578,6 @@ function($ionicLoadingConfig, $document, $ionicTemplateLoader, $ionicBackdrop, $
   }
 
   function hideLoader() {
-    deregisterBackAction();
     $timeout.cancel(loadingShowDelay);
     getLoader().then(function(loader) {
       loader.hide();
@@ -1420,10 +1598,14 @@ function($ionicLoadingConfig, $document, $ionicTemplateLoader, $ionicBackdrop, $
  *
  * Put the content of the modal inside of an `<ion-modal-view>` element.
  *
- * Note: a modal will broadcast 'modal.shown', 'modal.hidden', and 'modal.removed' events from its originating
+ * **Notes:**
+ * - A modal will broadcast 'modal.shown', 'modal.hidden', and 'modal.removed' events from its originating
  * scope, passing in itself as an event argument. Both the modal.removed and modal.hidden events are
  * called when the modal is removed.
  *
+ * - This example assumes your modal is in your main index file or another template file. If it is in its own
+ * template file, remove the script tags and call it by file name.
+ * 
  * @usage
  * ```html
  * <script id="my-modal.html" type="text/ng-template">
@@ -1470,14 +1652,14 @@ function($ionicLoadingConfig, $document, $ionicTemplateLoader, $ionicBackdrop, $
 IonicModule
 .factory('$ionicModal', [
   '$rootScope',
-  '$document',
+  '$ionicBody',
   '$compile',
   '$timeout',
   '$ionicPlatform',
   '$ionicTemplateLoader',
   '$q',
   '$log',
-function($rootScope, $document, $compile, $timeout, $ionicPlatform, $ionicTemplateLoader, $q, $log) {
+function($rootScope, $ionicBody, $compile, $timeout, $ionicPlatform, $ionicTemplateLoader, $q, $log) {
 
   /**
    * @ngdoc controller
@@ -1521,11 +1703,11 @@ function($rootScope, $document, $compile, $timeout, $ionicPlatform, $ionicTempla
      * @description Show this modal instance.
      * @returns {promise} A promise which is resolved when the modal is finished animating in.
      */
-    show: function() {
+    show: function(target) {
       var self = this;
 
       if(self.scope.$$destroyed) {
-        $log.error('Cannot call modal.show() after remove(). Please create a new modal instance using $ionicModal.');
+        $log.error('Cannot call ' +  self.viewType + '.show() after remove(). Please create a new ' +  self.viewType + ' instance.');
         return;
       }
 
@@ -1533,13 +1715,21 @@ function($rootScope, $document, $compile, $timeout, $ionicPlatform, $ionicTempla
 
       self.el.classList.remove('hide');
       $timeout(function(){
-        $document[0].body.classList.add('modal-open');
+        $ionicBody.addClass(self.viewType + '-open');
       }, 400);
-
 
       if(!self.el.parentElement) {
         modalEl.addClass(self.animation);
-        $document[0].body.appendChild(self.el);
+        $ionicBody.append(self.el);
+      }
+
+      if(target && self.positionView) {
+        self.positionView(target, modalEl);
+        // set up a listener for in case the window size changes
+        ionic.on('resize',function(){
+          ionic.off('resize',null,window);
+          self.positionView(target,modalEl);
+        },window);
       }
 
       modalEl.addClass('ng-enter active')
@@ -1558,7 +1748,7 @@ function($rootScope, $document, $compile, $timeout, $ionicPlatform, $ionicTempla
       $timeout(function(){
         modalEl.addClass('ng-enter-active');
         ionic.trigger('resize');
-        self.scope.$parent && self.scope.$parent.$broadcast('modal.shown', self);
+        self.scope.$parent && self.scope.$parent.$broadcast(self.viewType + '.shown', self);
         self.el.classList.add('active');
       }, 20);
 
@@ -1592,15 +1782,20 @@ function($rootScope, $document, $compile, $timeout, $ionicPlatform, $ionicTempla
 
       self.$el.off('click');
       self._isShown = false;
-      self.scope.$parent && self.scope.$parent.$broadcast('modal.hidden', self);
+      self.scope.$parent && self.scope.$parent.$broadcast(self.viewType + '.hidden', self);
       self._deregisterBackButton && self._deregisterBackButton();
 
       ionic.views.Modal.prototype.hide.call(self);
 
+      // clean up event listeners
+      if(self.positionView) {
+        ionic.off('resize',null,window);
+      }
+
       return $timeout(function(){
-        $document[0].body.classList.remove('modal-open');
+        $ionicBody.removeClass(self.viewType + '-open');
         self.el.classList.add('hide');
-      }, 500);
+      }, self.hideDelay || 320);
     },
 
     /**
@@ -1611,7 +1806,7 @@ function($rootScope, $document, $compile, $timeout, $ionicPlatform, $ionicTempla
      */
     remove: function() {
       var self = this;
-      self.scope.$parent && self.scope.$parent.$broadcast('modal.removed', self);
+      self.scope.$parent && self.scope.$parent.$broadcast(self.viewType + '.removed', self);
 
       return self.hide().then(function() {
         self.scope.$destroy();
@@ -1633,6 +1828,8 @@ function($rootScope, $document, $compile, $timeout, $ionicPlatform, $ionicTempla
     // Create a new scope for the modal
     var scope = options.scope && options.scope.$new() || $rootScope.$new(true);
 
+    options.viewType = options.viewType || 'modal';
+
     extend(scope, {
       $hasHeader: false,
       $hasSubheader: false,
@@ -1643,19 +1840,19 @@ function($rootScope, $document, $compile, $timeout, $ionicPlatform, $ionicTempla
     });
 
     // Compile the template
-    var element = $compile('<ion-modal>' + templateString + '</ion-modal>')(scope);
+    var element = $compile('<ion-' + options.viewType + '>' + templateString + '</ion-' + options.viewType + '>')(scope);
 
     options.$el = element;
     options.el = element[0];
-    options.modalEl = options.el.querySelector('.modal');
+    options.modalEl = options.el.querySelector('.' + options.viewType);
     var modal = new ModalView(options);
 
     modal.scope = scope;
 
-    // If this wasn't a defined scope, we can assign 'modal' to the isolated scope
+    // If this wasn't a defined scope, we can assign the viewType to the isolated scope
     // we created
     if(!options.scope) {
-      scope.modal = modal;
+      scope[ options.viewType ] = modal;
     }
 
     return modal;
@@ -1820,12 +2017,13 @@ IonicModule
 .constant('$ionicPlatformDefaults', {
   'ios': {
     '$ionicNavBarConfig': {
-      transition: 'nav-title-slide-ios7',
+      transition: 'nav-title-slide-ios',//nav-title-slide-ios7',
       alignTitle: 'center',
       backButtonIcon: 'ion-ios7-arrow-back'
     },
     '$ionicNavViewConfig': {
-      transition: 'slide-left-right-ios7'
+      //transition: 'slide-left-right-ios'
+      transition: 'slide-ios'
     },
     '$ionicTabsConfig': {
       type: '',
@@ -1834,12 +2032,12 @@ IonicModule
   },
   'android': {
     '$ionicNavBarConfig': {
-      transition: 'nav-title-slide-ios7',
+      transition: 'nav-title-slide-full',
       alignTitle: 'center',
       backButtonIcon: 'ion-ios7-arrow-back'
     },
     '$ionicNavViewConfig': {
-      transition: 'slide-left-right-ios7'
+      transition: 'slide-full'
     },
     '$ionicTabsConfig': {
       type: 'tabs-striped',
@@ -1984,6 +2182,28 @@ IonicModule
 
         /**
          * @ngdoc method
+         * @name $ionicPlatform#on
+         * @description
+         * Add Cordova event listeners, such as `pause`, `resume`, `volumedownbutton`, `batterylow`,
+         * `offline`, etc. More information about available event types can be found in
+         * [Cordova's event documentation](https://cordova.apache.org/docs/en/edge/cordova_events_events.md.html#Events).
+         * @param {string} type Cordova [event type](https://cordova.apache.org/docs/en/edge/cordova_events_events.md.html#Events).
+         * @param {function} callback Called when the Cordova event is fired.
+         * @returns {function} Returns a deregistration function to remove the event listener.
+         */
+        on: function(type, cb) {
+          ionic.Platform.ready(function(){
+            document.addEventListener(type, cb, false);
+          });
+          return function() {
+            ionic.Platform.ready(function(){
+              document.removeEventListener(type, cb);
+            });
+          };
+        },
+
+        /**
+         * @ngdoc method
          * @name $ionicPlatform#ready
          * @description
          * Trigger a callback once the device is ready,
@@ -2009,17 +2229,229 @@ IonicModule
 });
 
 
+/**
+ * @ngdoc service
+ * @name $ionicPopover
+ * @module ionic
+ * @description
+ *
+ * Related: {@link ionic.controller:ionicPopover ionicPopover controller}.
+ *
+ * The Popover is a view that floats above an app’s content. Popovers provide an
+ * easy way to present or gather information from the user and are
+ * commonly used in the following situations:
+ *
+ * - Show more info about the current view
+ * - Select a commonly used tool or configuration
+ * - Present a list of actions to perform inside one of your views
+ *
+ * Put the content of the popover inside of an `<ion-popover-view>` element.
+ *
+ * @usage
+ * ```html
+ * <p>
+ *   <button ng-click="openPopover($event)">Open Popover</button>
+ * </p>
+ *
+ * <script id="my-popover.html" type="text/ng-template">
+ *   <ion-popover-view>
+ *     <ion-header-bar>
+ *       <h1 class="title">My Popover Title</h1>
+ *     </ion-header-bar>
+ *     <ion-content>
+ *       Hello!
+ *     </ion-content>
+ *   </ion-popover-view>
+ * </script>
+ * ```
+ * ```js
+ * angular.module('testApp', ['ionic'])
+ * .controller('MyController', function($scope, $ionicPopover) {
+ *   $ionicPopover.fromTemplateUrl('my-popover.html', {
+ *     scope: $scope,
+ *   }).then(function(popover) {
+ *     $scope.popover = popover;
+ *   });
+ *   $scope.openPopover = function($event) {
+ *     $scope.popover.show($event);
+ *   };
+ *   $scope.closePopover = function() {
+ *     $scope.popover.hide();
+ *   };
+ *   //Cleanup the popover when we're done with it!
+ *   $scope.$on('$destroy', function() {
+ *     $scope.popover.remove();
+ *   });
+ *   // Execute action on hide popover
+ *   $scope.$on('popover.hidden', function() {
+ *     // Execute action
+ *   });
+ *   // Execute action on remove popover
+ *   $scope.$on('popover.removed', function() {
+ *     // Execute action
+ *   });
+ * });
+ * ```
+ */
+
+
+IonicModule
+.factory('$ionicPopover', ['$ionicModal', '$ionicPosition', '$document', '$window',
+function($ionicModal, $ionicPosition, $document, $window) {
+
+  var POPOVER_BODY_PADDING = 6;
+
+  var POPOVER_OPTIONS = {
+    viewType: 'popover',
+    hideDelay: 1,
+    animation: 'none',
+    positionView: positionView
+  };
+
+  function positionView(target, popoverEle) {
+    var targetEle = angular.element(target.target || target);
+    var buttonOffset = $ionicPosition.offset( targetEle );
+    var popoverWidth = popoverEle.prop('offsetWidth');
+    var popoverHeight = popoverEle.prop('offsetHeight');
+    var bodyWidth = $document[0].body.clientWidth;
+    // clientHeight doesn't work on all platforms for body
+    var bodyHeight = $window.innerHeight;
+
+    var popoverCSS = {
+      left: buttonOffset.left + buttonOffset.width / 2 - popoverWidth / 2
+    };
+    var arrowEle = jqLite(popoverEle[0].querySelector('.popover-arrow'));
+
+    if (popoverCSS.left < POPOVER_BODY_PADDING) {
+      popoverCSS.left = POPOVER_BODY_PADDING;
+    } else if(popoverCSS.left + popoverWidth + POPOVER_BODY_PADDING > bodyWidth) {
+      popoverCSS.left = bodyWidth - popoverWidth - POPOVER_BODY_PADDING;
+    }
+
+    // If the popover when popped down stretches past bottom of screen,
+    // make it pop up
+    if (buttonOffset.top + buttonOffset.height + popoverHeight > bodyHeight) {
+      popoverCSS.top = buttonOffset.top - popoverHeight;
+      popoverEle.addClass('popover-bottom');
+    } else {
+      popoverCSS.top = buttonOffset.top + buttonOffset.height;
+      popoverEle.removeClass('popover-bottom');
+    }
+
+    arrowEle.css({
+      left: buttonOffset.left + buttonOffset.width / 2 -
+        arrowEle.prop('offsetWidth') / 2 - popoverCSS.left + 'px'
+    });
+
+    popoverEle.css({
+      top: popoverCSS.top + 'px',
+      left: popoverCSS.left + 'px',
+      marginLeft: '0',
+      opacity: '1'
+    });
+
+  }
+
+  /**
+   * @ngdoc controller
+   * @name ionicPopover
+   * @module ionic
+   * @description
+   * Instantiated by the {@link ionic.service:$ionicPopover} service.
+   *
+   * Be sure to call [remove()](#remove) when you are done with each popover
+   * to clean it up and avoid memory leaks.
+   *
+   * Note: a popover will broadcast 'popover.shown', 'popover.hidden', and 'popover.removed' events from its originating
+   * scope, passing in itself as an event argument. Both the popover.removed and popover.hidden events are
+   * called when the popover is removed.
+   */
+
+  /**
+   * @ngdoc method
+   * @name ionicPopover#initialize
+   * @description Creates a new popover controller instance.
+   * @param {object} options An options object with the following properties:
+   *  - `{object=}` `scope` The scope to be a child of.
+   *    Default: creates a child of $rootScope.
+   *  - `{boolean=}` `focusFirstInput` Whether to autofocus the first input of
+   *    the popover when shown.  Default: false.
+   *  - `{boolean=}` `backdropClickToClose` Whether to close the popover on clicking the backdrop.
+   *    Default: true.
+   *  - `{boolean=}` `hardwareBackButtonClose` Whether the popover can be closed using the hardware
+   *    back button on Android and similar devices.  Default: true.
+   */
+
+  /**
+   * @ngdoc method
+   * @name ionicPopover#show
+   * @description Show this popover instance.
+   * @param {$event} $event The $event or target element which the popover should align
+   * itself next to.
+   * @returns {promise} A promise which is resolved when the popover is finished animating in.
+   */
+
+  /**
+   * @ngdoc method
+   * @name ionicPopover#hide
+   * @description Hide this popover instance.
+   * @returns {promise} A promise which is resolved when the popover is finished animating out.
+   */
+
+  /**
+   * @ngdoc method
+   * @name ionicPopover#remove
+   * @description Remove this popover instance from the DOM and clean up.
+   * @returns {promise} A promise which is resolved when the popover is finished animating out.
+   */
+
+  /**
+   * @ngdoc method
+   * @name ionicPopover#isShown
+   * @returns boolean Whether this popover is currently shown.
+   */
+
+  return {
+    /**
+     * @ngdoc method
+     * @name $ionicPopover#fromTemplate
+     * @param {string} templateString The template string to use as the popovers's
+     * content.
+     * @param {object} options Options to be passed to the initialize method.
+     * @returns {object} An instance of an {@link ionic.controller:ionicPopover}
+     * controller (ionicPopover is built on top of $ionicPopover).
+     */
+    fromTemplate: function(templateString, options) {
+      return $ionicModal.fromTemplate(templateString, ionic.Utils.extend(options || {}, POPOVER_OPTIONS) );
+    },
+    /**
+     * @ngdoc method
+     * @name $ionicPopover#fromTemplateUrl
+     * @param {string} templateUrl The url to load the template from.
+     * @param {object} options Options to be passed to the initialize method.
+     * @returns {promise} A promise that will be resolved with an instance of
+     * an {@link ionic.controller:ionicPopover} controller (ionicPopover is built on top of $ionicPopover).
+     */
+    fromTemplateUrl: function(url, options, _) {
+      return $ionicModal.fromTemplateUrl(url, options, ionic.Utils.extend(options || {}, POPOVER_OPTIONS) );
+    }
+  };
+
+}]);
+
 
 var POPUP_TPL =
-  '<div class="popup">' +
-    '<div class="popup-head">' +
-      '<h3 class="popup-title" ng-bind-html="title"></h3>' +
-      '<h5 class="popup-sub-title" ng-bind-html="subTitle" ng-if="subTitle"></h5>' +
-    '</div>' +
-    '<div class="popup-body">' +
-    '</div>' +
-    '<div class="popup-buttons row">' +
-      '<button ng-repeat="button in buttons" ng-click="$buttonTapped(button, $event)" class="button col" ng-class="button.type || \'button-default\'" ng-bind-html="button.text"></button>' +
+  '<div class="popup-container">' +
+    '<div class="popup">' +
+      '<div class="popup-head">' +
+        '<h3 class="popup-title" ng-bind-html="title"></h3>' +
+        '<h5 class="popup-sub-title" ng-bind-html="subTitle" ng-if="subTitle"></h5>' +
+      '</div>' +
+      '<div class="popup-body">' +
+      '</div>' +
+      '<div class="popup-buttons" ng-show="buttons.length">' +
+        '<button ng-repeat="button in buttons" ng-click="$buttonTapped(button, $event)" class="button" ng-class="button.type || \'button-default\'" ng-bind-html="button.text"></button>' +
+      '</div>' +
     '</div>' +
   '</div>';
 
@@ -2037,6 +2469,11 @@ var POPUP_TPL =
  * The popup system has support for more flexible versions of the built in `alert()`, `prompt()`,
  * and `confirm()` functions that users are used to, in addition to allowing popups with completely
  * custom content and look.
+ *
+ * An input can be given an `autofocus` attribute so it automatically receives focus when
+ * the popup first shows. However, depending on certain use-cases this can cause issues with
+ * the tap/click system, which is why Ionic prefers using the `autofocus` attribute as
+ * an opt-in feature and not the default.
  *
  * @usage
  * A few basic examples, see below for details about all of the options available.
@@ -2068,7 +2505,7 @@ var POPUP_TPL =
  *             return $scope.data.wifi;
  *           }
  *         }
- *       },
+ *       }
  *     ]
  *   });
  *   myPopup.then(function(res) {
@@ -2114,13 +2551,13 @@ IonicModule
   '$q',
   '$timeout',
   '$rootScope',
-  '$document',
+  '$ionicBody',
   '$compile',
   '$ionicPlatform',
-function($ionicTemplateLoader, $ionicBackdrop, $q, $timeout, $rootScope, $document, $compile, $ionicPlatform) {
+function($ionicTemplateLoader, $ionicBackdrop, $q, $timeout, $rootScope, $ionicBody, $compile, $ionicPlatform) {
   //TODO allow this to be configured
   var config = {
-    stackPushDelay: 50
+    stackPushDelay: 75
   };
   var popupStack = [];
   var $ionicPopup = {
@@ -2131,7 +2568,7 @@ function($ionicTemplateLoader, $ionicBackdrop, $q, $timeout, $rootScope, $docume
      *
      * A complex popup has a `buttons` array, with each button having a `text` and `type`
      * field, in addition to an `onTap` function.  The `onTap` function, called when
-     * the correspondingbutton on the popup is tapped, will by default close the popup
+     * the corresponding button on the popup is tapped, will by default close the popup
      * and resolve the popup promise with its return value.  If you wish to prevent the
      * default and keep the popup open on button tap, call `event.preventDefault()` on the
      * passed in tap event.  Details below.
@@ -2146,7 +2583,7 @@ function($ionicTemplateLoader, $ionicBackdrop, $q, $timeout, $rootScope, $docume
      *   template: '', // String (optional). The html template to place in the popup body.
      *   templateUrl: '', // String (optional). The URL of an html template to place in the popup   body.
      *   scope: null, // Scope (optional). A scope to link to the popup content.
-     *   buttons: [{ //Array[Object] (optional). Buttons to place in the popup footer.
+     *   buttons: [{ // Array[Object] (optional). Buttons to place in the popup footer.
      *     text: 'Cancel',
      *     type: 'button-default',
      *     onTap: function(e) {
@@ -2282,7 +2719,7 @@ function($ionicTemplateLoader, $ionicBackdrop, $q, $timeout, $rootScope, $docume
     var popupPromise = $ionicTemplateLoader.compile({
       template: POPUP_TPL,
       scope: options.scope && options.scope.$new(),
-      appendTo: $document[0].body
+      appendTo: $ionicBody.get()
     });
     var contentPromise = options.templateUrl ?
       $ionicTemplateLoader.load(options.templateUrl) :
@@ -2328,21 +2765,9 @@ function($ionicTemplateLoader, $ionicBackdrop, $q, $timeout, $rootScope, $docume
           //if hidden while waiting for raf, don't show
           if (!self.isShown) return;
 
-          //if the popup is taller than the window, make the popup body scrollable
-          if(self.element[0].offsetHeight > window.innerHeight - 20){
-            self.element[0].style.height = window.innerHeight - 20+'px';
-            popupBody = self.element[0].querySelectorAll('.popup-body');
-            popupHead = self.element[0].querySelectorAll('.popup-head');
-            popupButtons = self.element[0].querySelectorAll('.popup-buttons');
-            self.element.addClass('popup-tall');
-            newHeight = window.innerHeight - popupHead[0].offsetHeight - popupButtons[0].offsetHeight -20;
-            popupBody[0].style.height =  newHeight + 'px';
-          }
-
           self.element.removeClass('popup-hidden');
           self.element.addClass('popup-showing active');
-          ionic.DomUtil.centerElementByMarginTwice(self.element[0]);
-          focusInputOrButton(self.element);
+          focusInput(self.element);
         });
       };
       self.hide = function(callback) {
@@ -2386,8 +2811,9 @@ function($ionicTemplateLoader, $ionicBackdrop, $q, $timeout, $rootScope, $docume
     .then(function(popup) {
       if (!previousPopup) {
         //Add popup-open & backdrop if this is first popup
-        document.body.classList.add('popup-open');
+        $ionicBody.addClass('popup-open');
         $ionicBackdrop.retain();
+        //only show the backdrop on the first popup
         $ionicPopup._backButtonActionDone = $ionicPlatform.registerBackButtonAction(
           onHardwareBackButton,
           PLATFORM_BACK_BUTTON_PRIORITY_POPUP
@@ -2413,11 +2839,16 @@ function($ionicTemplateLoader, $ionicBackdrop, $q, $timeout, $rootScope, $docume
           previousPopup.show();
         } else {
           //Remove popup-open & backdrop if this is last popup
-          document.body.classList.remove('popup-open');
-          $ionicBackdrop.release();
+          $timeout(function(){
+            // wait to remove this due to a 300ms delay native
+            // click which would trigging whatever was underneath this
+            $ionicBody.removeClass('popup-open');
+          }, 400);
+          $timeout(function(){
+            if(popupStack.length === 0)$ionicBackdrop.release();
+          }, config.stackPushDelay || 0);
           ($ionicPopup._backButtonActionDone || angular.noop)();
         }
-
         return result;
       });
     });
@@ -2434,16 +2865,9 @@ function($ionicTemplateLoader, $ionicBackdrop, $q, $timeout, $rootScope, $docume
     return resultPromise;
   }
 
-  function focusInputOrButton(element) {
-    var focusOn = element[0].querySelector('input[autofocus]');
-    if (!focusOn) {
-      focusOn = element[0].querySelector('input');
-      if (!focusOn) {
-        var buttons = element[0].querySelectorAll('button');
-        focusOn = buttons[buttons.length-1];
-      }
-    }
-    if(focusOn) {
+  function focusInput(element) {
+    var focusOn = element[0].querySelector('[autofocus]');
+    if (focusOn) {
       focusOn.focus();
     }
   }
@@ -2477,8 +2901,13 @@ function($ionicTemplateLoader, $ionicBackdrop, $q, $timeout, $rootScope, $docume
   function showPrompt(opts) {
     var scope = $rootScope.$new(true);
     scope.data = {};
+    var text = '';
+    if(opts.template && /<[a-z][\s\S]*>/i.test(opts.template) === false){
+      text = '<span>'+opts.template+'</span>';
+      delete opts.template;
+    }
     return showPopup( extend({
-      template: '<input ng-model="data.response" type="' + (opts.inputType || 'text') +
+      template: text+'<input ng-model="data.response" type="' + (opts.inputType || 'text') +
         '" placeholder="' + (opts.inputPlaceholder || '') + '">',
       scope: scope,
       buttons: [{
@@ -2496,6 +2925,101 @@ function($ionicTemplateLoader, $ionicBackdrop, $q, $timeout, $rootScope, $docume
   }
 }]);
 
+
+/**
+ * @ngdoc service
+ * @name $ionicPosition
+ * @module ionic
+ * @description
+ * A set of utility methods that can be use to retrieve position of DOM elements.
+ * It is meant to be used where we need to absolute-position DOM elements in
+ * relation to other, existing elements (this is the case for tooltips, popovers, etc.).
+ *
+ * Adapted from [AngularUI Bootstrap](https://github.com/angular-ui/bootstrap/blob/master/src/position/position.js),
+ * ([license](https://github.com/angular-ui/bootstrap/blob/master/LICENSE))
+ */
+IonicModule
+.factory('$ionicPosition', ['$document', '$window', function ($document, $window) {
+
+  function getStyle(el, cssprop) {
+    if (el.currentStyle) { //IE
+      return el.currentStyle[cssprop];
+    } else if ($window.getComputedStyle) {
+      return $window.getComputedStyle(el)[cssprop];
+    }
+    // finally try and get inline style
+    return el.style[cssprop];
+  }
+
+  /**
+   * Checks if a given element is statically positioned
+   * @param element - raw DOM element
+   */
+  function isStaticPositioned(element) {
+    return (getStyle(element, 'position') || 'static' ) === 'static';
+  }
+
+  /**
+   * returns the closest, non-statically positioned parentOffset of a given element
+   * @param element
+   */
+  var parentOffsetEl = function (element) {
+    var docDomEl = $document[0];
+    var offsetParent = element.offsetParent || docDomEl;
+    while (offsetParent && offsetParent !== docDomEl && isStaticPositioned(offsetParent) ) {
+      offsetParent = offsetParent.offsetParent;
+    }
+    return offsetParent || docDomEl;
+  };
+
+  return {
+    /**
+     * @ngdoc method
+     * @name $ionicPosition#position
+     * @description Get the current coordinates of the element, relative to the offset parent.
+     * Read-only equivalent of [jQuery's position function](http://api.jquery.com/position/).
+     * @param {element} element The element to get the position of.
+     * @returns {object} Returns an object containing the properties top, left, width and height.
+     */
+    position: function (element) {
+      var elBCR = this.offset(element);
+      var offsetParentBCR = { top: 0, left: 0 };
+      var offsetParentEl = parentOffsetEl(element[0]);
+      if (offsetParentEl != $document[0]) {
+        offsetParentBCR = this.offset(angular.element(offsetParentEl));
+        offsetParentBCR.top += offsetParentEl.clientTop - offsetParentEl.scrollTop;
+        offsetParentBCR.left += offsetParentEl.clientLeft - offsetParentEl.scrollLeft;
+      }
+
+      var boundingClientRect = element[0].getBoundingClientRect();
+      return {
+        width: boundingClientRect.width || element.prop('offsetWidth'),
+        height: boundingClientRect.height || element.prop('offsetHeight'),
+        top: elBCR.top - offsetParentBCR.top,
+        left: elBCR.left - offsetParentBCR.left
+      };
+    },
+
+    /**
+     * @ngdoc method
+     * @name $ionicPosition#offset
+     * @description Get the current coordinates of the element, relative to the document.
+     * Read-only equivalent of [jQuery's offset function](http://api.jquery.com/offset/).
+     * @param {element} element The element to get the offset of.
+     * @returns {object} Returns an object containing the properties top, left, width and height.
+     */
+    offset: function (element) {
+      var boundingClientRect = element[0].getBoundingClientRect();
+      return {
+        width: boundingClientRect.width || element.prop('offsetWidth'),
+        height: boundingClientRect.height || element.prop('offsetHeight'),
+        top: boundingClientRect.top + ($window.pageYOffset || $document[0].documentElement.scrollTop),
+        left: boundingClientRect.left + ($window.pageXOffset || $document[0].documentElement.scrollLeft)
+      };
+    }
+
+  };
+}]);
 
 
 /**
@@ -2592,6 +3116,24 @@ IonicModule
    * @param {boolean=} shouldAnimate Whether the scroll should animate.
    */
   'scrollBy',
+  /**
+   * @ngdoc method
+   * @name $ionicScrollDelegate#zoomTo
+   * @param {number} level Level to zoom to.
+   * @param {boolean=} animate Whether to animate the zoom.
+   * @param {number=} originLeft Zoom in at given left coordinate.
+   * @param {number=} originTop Zoom in at given top coordinate.
+   */
+  'zoomTo',
+  /**
+   * @ngdoc method
+   * @name $ionicScrollDelegate#zoomBy
+   * @param {number} factor The factor to zoom by.
+   * @param {boolean=} animate Whether to animate the zoom.
+   * @param {number=} originLeft Zoom in at given left coordinate.
+   * @param {number=} originTop Zoom in at given top coordinate.
+   */
+  'zoomBy',
   /**
    * @ngdoc method
    * @name $ionicScrollDelegate#getScrollPosition
@@ -2837,7 +3379,7 @@ IonicModule
  * ```js
  * function MyCtrl($scope, $ionicSlideBoxDelegate) {
  *   $scope.nextSlide = function() {
- *     $ionicSlideBoxDelegate.next();
+ *     $ionicSlideBoxDelegate.select( $ionicSlideBoxDelegate.next() );
  *   }
  * }
  * ```
@@ -2846,63 +3388,67 @@ IonicModule
 .service('$ionicSlideBoxDelegate', delegateService([
   /**
    * @ngdoc method
-   * @name $ionicSlideBoxDelegate#update
-   * @description
-   * Update the slidebox (for example if using Angular with ng-repeat,
-   * resize it for the elements inside).
+   * @name $ionicSlideBoxDelegate#select
+   * @param {number} slideIndex The index to select.
    */
-  'update',
+  'select',
   /**
    * @ngdoc method
-   * @name $ionicSlideBoxDelegate#slide
-   * @param {number} to The index to slide to.
-   * @param {number=} speed The number of milliseconds for the change to take.
+   * @name $ionicSlideBoxDelegate#selected
+   * @returns `slideIndex` The index of the currently selected slide.
    */
-  'slide',
+  'selected',
   /**
    * @ngdoc method
-   * @name $ionicSlideBoxDelegate#enableSlide
-   * @param {boolean=} shouldEnable Whether to enable sliding the slidebox.
-   * @returns {boolean} Whether sliding is enabled.
+   * @name $ionicSlideBoxDelegate#loop
+   * @description Sets/gets the looping state of the slidebox (whether going next from the last slide will go back to the first slide, and vice versa).
+   * @param {boolean=} shouldLoop Set whether the slidebox should loop.
+   * @returns `isLoop` Whether looping is currently enabled.
    */
-  'enableSlide',
+ 'loop',
   /**
    * @ngdoc method
    * @name $ionicSlideBoxDelegate#previous
-   * @description Go to the previous slide. Wraps around if at the beginning.
+   * @returns `slideIndex` The index of the previous slide. Wraps around if loop is enabled.
    */
   'previous',
   /**
    * @ngdoc method
    * @name $ionicSlideBoxDelegate#next
-   * @description Go to the next slide. Wraps around if at the end.
+   * @returns `slideIndex` The index of the next slide. Wraps around if loop is enabled.
    */
   'next',
   /**
    * @ngdoc method
-   * @name $ionicSlideBoxDelegate#stop
-   * @description Stop sliding. The slideBox will not move again until
-   * explicitly told to do so.
+   * @name $ionicSlideBoxDelegate#autoPlay
+   * @description Set whether the slidebox should automatically play, and at what rate.
+   * @param {*} autoPlayInterval How many milliseconds delay until changing to the next slide.
+   * Set to zero or false to stop autoPlay.
    */
-  'stop',
+  'autoPlay',
   /**
    * @ngdoc method
-   * @name $ionicSlideBoxDelegate#start
-   * @description Start sliding again if the slideBox was stopped. 
+   * @name $ionicSlideBoxDelegate#enableSlide
+   * @param {boolean=} shouldEnable Whether to enable sliding the slidebox.
+   * @returns `boolean` Whether sliding is enabled.
    */
-  'start',
+  'enableSlide',
   /**
    * @ngdoc method
-   * @name $ionicSlideBoxDelegate#currentIndex
-   * @returns number The index of the current slide.
+   * @name $ionicSlideBoxDelegate#count
+   * @returns `number` The number of slides there are currently.
    */
-  'currentIndex',
+  'count',
   /**
    * @ngdoc method
-   * @name $ionicSlideBoxDelegate#slidesCount
-   * @returns number The number of slides there are currently.
+   * @name $ionicSlideBoxDelegate#update
+   * @description Causes the slidebox to re-scan all of the child slide
+   * elements and reorganize itself again. This will rarely be needed.
+   * You only need to call update if you are moving slides around in the DOM
+   * (for example, ng-repeat moving an element from the middle to the end of
+   * the list).
    */
-  'slidesCount'
+  'update',
   /**
    * @ngdoc method
    * @name $ionicSlideBoxDelegate#$getByHandle
@@ -2911,7 +3457,7 @@ IonicModule
    * {@link ionic.directive:ionSlideBox} directives with `delegate-handle` matching
    * the given handle.
    *
-   * Example: `$ionicSlideBoxDelegate.$getByHandle('my-handle').stop();`
+   * Example: `$ionicSlideBoxDelegate.$getByHandle('my-handle').select(0);`
    */
 ]));
 
@@ -2959,11 +3505,6 @@ IonicModule
    * @description Select the tab matching the given index.
    *
    * @param {number} index Index of the tab to select.
-   * @param {boolean=} shouldChangeHistory Whether this selection should load this tab's
-   * view history (if it exists) and use it, or just load the default page.
-   * Default false.
-   * Hint: you probably want this to be true if you have an
-   * {@link ionic.directive:ionNavView} inside your tab.
    */
   'select',
   /**
@@ -2984,6 +3525,132 @@ IonicModule
    */
 ]));
 
+
+// closure to keep things neat
+(function() {
+  var templatesToCache = [];
+
+/**
+ * @ngdoc service
+ * @name $ionicTemplateCache
+ * @module ionic
+ * @description A service that preemptively caches template files to eliminate transition flicker and boost performance.
+ * @usage
+ * State templates are cached automatically, but you can optionally cache other templates.
+ *
+ * ```js
+ * $ionicTemplateCache('myNgIncludeTemplate.html');
+ * ```
+ *
+ * Optionally disable all preemptive caching with the `$ionicConfigProvider` or individual states by setting `prefetchTemplate`
+ * in the `$state` definition
+ *
+ * ```js
+ *   angular.module('myApp', ['ionic'])
+ *   .config(function($stateProvider, $ionicConfigProvider) {
+ *
+ *     // disable preemptive template caching globally
+ *     $ionicConfigProvider.prefetchTemplates(false);
+ *
+ *     // disable individual states
+ *     $stateProvider
+ *       .state('tabs', {
+ *         url: "/tab",
+ *         abstract: true,
+ *         prefetchTemplate: false,
+ *         templateUrl: "tabs-templates/tabs.html"
+ *       })
+ *       .state('tabs.home', {
+ *         url: "/home",
+ *         views: {
+ *           'home-tab': {
+ *             prefetchTemplate: false,
+ *             templateUrl: "tabs-templates/home.html",
+ *             controller: 'HomeTabCtrl'
+ *           }
+ *         }
+ *       });
+ *   });
+ * ```
+ */
+IonicModule
+.factory('$ionicTemplateCache', [
+'$http',
+'$templateCache',
+'$timeout',
+'$ionicConfig',
+function($http, $templateCache, $timeout, $ionicConfig) {
+  var toCache = templatesToCache,
+      hasRun = false;
+
+  function $ionicTemplateCache(templates){
+    if(toCache.length > 500) return false;
+    if(typeof templates === 'undefined')return run();
+    if(isString(templates))templates = [templates];
+    forEach(templates, function(template){
+      toCache.push(template);
+    });
+    // is this is being called after the initial IonicModule.run()
+    if(hasRun) run();
+  }
+
+  // run through methods - internal method
+  var run = function(){
+    if($ionicConfig.prefetchTemplates === false)return;
+    //console.log('prefetching', toCache);
+    //for testing
+    $ionicTemplateCache._runCount++;
+
+    hasRun = true;
+    // ignore if race condition already zeroed out array
+    if(toCache.length === 0)return;
+    //console.log(toCache);
+    var i = 0;
+    while ( i < 5 && (template = toCache.pop()) ) {
+      // note that inline templates are ignored by this request
+      if (isString(template)) $http.get(template, { cache: $templateCache });
+      i++;
+    }
+    // only preload 5 templates a second
+    if(toCache.length)$timeout(function(){run();}, 1000);
+  };
+
+  // exposing for testing
+  $ionicTemplateCache._runCount = 0;
+  // default method
+  return $ionicTemplateCache;
+}])
+
+// Intercepts the $stateprovider.state() command to look for templateUrls that can be cached
+.config([
+'$stateProvider',
+'$ionicConfigProvider',
+function($stateProvider, $ionicConfigProvider) {
+  var stateProviderState = $stateProvider.state;
+  $stateProvider.state = function(stateName, definition) {
+    // don't even bother if it's disabled. note, another config may run after this, so it's not a catch-all
+    if(typeof definition === 'object' && $ionicConfigProvider.prefetchTemplates() !== false){
+      var enabled = definition.prefetchTemplate !== false;
+      if(enabled && isString(definition.templateUrl))templatesToCache.push(definition.templateUrl);
+      if(angular.isObject(definition.views)){
+        for (var key in definition.views){
+          enabled = definition.views[key].prefetchTemplate !== false;
+          if(enabled && isString(definition.views[key].templateUrl)) templatesToCache.push(definition.views[key].templateUrl);
+        }
+      }
+    }
+    return stateProviderState.call($stateProvider, stateName, definition);
+  };
+}])
+
+// process the templateUrls collected by the $stateProvider, adding them to the cache
+.run([
+'$ionicTemplateCache',
+function($ionicTemplateCache) {
+  $ionicTemplateCache();
+}]);
+
+})();
 
 IonicModule
 .factory('$ionicTemplateLoader', [
@@ -3084,6 +3751,11 @@ function($rootScope, $state, $location, $document, $animate, $ionicPlatform, $io
     $ionicViewService.disableRegisterByTagName('ion-side-menus');
   }
 
+  // always reset the keyboard state when change stage
+  $rootScope.$on('$stateChangeStart', function(){
+    ionic.keyboard.hide();
+  });
+
   $rootScope.$on('viewState.changeHistory', function(e, data) {
     if(!data) return;
 
@@ -3148,7 +3820,8 @@ function($rootScope, $state, $location, $document, $animate, $ionicPlatform, $io
   '$injector',
   '$animate',
   '$ionicNavViewConfig',
-function($rootScope, $state, $location, $window, $injector, $animate, $ionicNavViewConfig) {
+  '$ionicClickBlock',
+function($rootScope, $state, $location, $window, $injector, $animate, $ionicNavViewConfig, $ionicClickBlock) {
 
   var View = function(){};
   View.prototype.initialize = function(data) {
@@ -3258,8 +3931,17 @@ function($rootScope, $state, $location, $window, $injector, $animate, $ionicNavV
                 hist.cursor > -1 && hist.stack.length > 0 && hist.cursor < hist.stack.length &&
                 hist.stack[hist.cursor].stateId === currentStateId) {
         // they just changed to a different history and the history already has views in it
-        rsp.viewId = hist.stack[hist.cursor].viewId;
+        var switchToView = hist.stack[hist.cursor];
+        rsp.viewId = switchToView.viewId;
         rsp.navAction = 'moveBack';
+
+        // if switching to a different history, and the history of the view we're switching
+        // to has an existing back view from a different history than itself, then
+        // it's back view would be better represented using the current view as its back view
+        var switchToViewBackView = this._getViewById(switchToView.backViewId);
+        if(switchToViewBackView && switchToView.historyId !== switchToViewBackView.historyId) {
+          hist.stack[hist.cursor].backViewId = currentView.viewId;
+        }
 
       } else {
 
@@ -3276,8 +3958,9 @@ function($rootScope, $state, $location, $window, $injector, $animate, $ionicNavV
           }
           rsp.navAction = 'newView';
 
-          // check if there is a new forward view
-          if(forwardView && currentView.stateId !== forwardView.stateId) {
+          // check if there is a new forward view within the same history
+          if(forwardView && currentView.stateId !== forwardView.stateId &&
+             currentView.historyId === forwardView.historyId) {
             // they navigated to a new view but the stack already has a forward view
             // since its a new view remove any forwards that existed
             var forwardsHistory = this._getHistoryById(forwardView.historyId);
@@ -3531,17 +4214,17 @@ function($rootScope, $state, $location, $window, $injector, $animate, $ionicNavV
               setAnimationClass();
 
               element.addClass('ng-enter');
-              document.body.classList.add('disable-pointer-events');
+              $ionicClickBlock.show();
 
               $animate.enter(element, navViewElement, null, function() {
-                document.body.classList.remove('disable-pointer-events');
+                $ionicClickBlock.hide();
                 if (animationClass) {
                   navViewElement[0].classList.remove(animationClass);
                 }
               });
               return;
             } else if(!doAnimation) {
-              document.body.classList.remove('disable-pointer-events');
+              $ionicClickBlock.hide();
             }
 
             // no animation
@@ -3604,21 +4287,23 @@ function($rootScope, $state, $location, $window, $injector, $animate, $ionicNavV
       histories = $rootScope.$viewHistory.histories,
       currentView = $rootScope.$viewHistory.currentView;
 
-      for(var historyId in histories) {
+      if(histories) {
+        for(var historyId in histories) {
 
-        if(histories[historyId].stack) {
-          histories[historyId].stack = [];
-          histories[historyId].cursor = -1;
+          if(histories[historyId].stack) {
+            histories[historyId].stack = [];
+            histories[historyId].cursor = -1;
+          }
+
+          if(currentView && currentView.historyId === historyId) {
+            currentView.backViewId = null;
+            currentView.forwardViewId = null;
+            histories[historyId].stack.push(currentView);
+          } else if(histories[historyId].destroy) {
+            histories[historyId].destroy();
+          }
+
         }
-
-        if(currentView.historyId === historyId) {
-          currentView.backViewId = null;
-          currentView.forwardViewId = null;
-          histories[historyId].stack.push(currentView);
-        } else if(histories[historyId].destroy) {
-          histories[historyId].destroy();
-        }
-
       }
 
       for(var viewId in $rootScope.$viewHistory.views) {
@@ -3627,7 +4312,9 @@ function($rootScope, $state, $location, $window, $injector, $animate, $ionicNavV
         }
       }
 
-      this.setNavViews(currentView.viewId);
+      if(currentView) {
+        this.setNavViews(currentView.viewId);
+      }
     }
 
   };
@@ -3682,7 +4369,7 @@ function($provide) {
  * <ion-content ng-controller="MyCtrl">
  *   <button class="button" ng-click="showDeleteButtons()"></button>
  *   <ion-list>
- *     <ion-item ng-repeat="i in items">>
+ *     <ion-item ng-repeat="i in items">
  *       {% raw %}Hello, {{i}}!{% endraw %}
  *       <ion-delete-button class="ion-minus-circled"></ion-delete-button>
  *     </ion-item>
@@ -3709,14 +4396,14 @@ IonicModule
   /**
    * @ngdoc method
    * @name $ionicListDelegate#showDelete
-   * @param {boolean=} showReorder Set whether or not this list is showing its delete buttons.
+   * @param {boolean=} showDelete Set whether or not this list is showing its delete buttons.
    * @returns {boolean} Whether the delete buttons are shown.
    */
   'showDelete',
   /**
    * @ngdoc method
    * @name $ionicListDelegate#canSwipeItems
-   * @param {boolean=} showReorder Set whether or not this list is able to swipe to show
+   * @param {boolean=} canSwipeItems Set whether or not this list is able to swipe to show
    * option buttons.
    * @returns {boolean} Whether the list is able to swipe to show option buttons.
    */
@@ -3797,6 +4484,10 @@ function($scope, $element, $attrs, $ionicViewService, $animate, $compile, $ionic
 
   $scope.$on('$destroy', deregisterInstance);
 
+  $scope.$on('$viewHistory.historyChange', function(e, data) {
+    backIsShown = !!data.showBack;
+  });
+
   var self = this;
 
   this.leftButtonsElement = jqLite(
@@ -3841,6 +4532,10 @@ function($scope, $element, $attrs, $ionicViewService, $animate, $compile, $ionic
 
   this.changeTitle = function(title, direction) {
     if ($scope.title === title) {
+      // if we're not animating the title, but the back button becomes invisible
+      if(typeof backIsShown != 'undefined' && !backIsShown && $scope.backButtonShown){
+        jqLite($element[0].querySelector('.back-button')).addClass('ng-hide');
+      }
       return false;
     }
     this.setTitle(title);
@@ -3876,7 +4571,7 @@ function($scope, $element, $attrs, $ionicViewService, $animate, $compile, $ionic
     currentTitles = $element[0].querySelectorAll('.title');
     if (currentTitles.length) {
       oldTitleEl = $compile('<h1 class="title" ng-bind-html="oldTitle"></h1>')($scope);
-      jqLite(currentTitles[0]).replaceWith(oldTitleEl);
+      jqLite(currentTitles[currentTitles.length-1]).replaceWith(oldTitleEl);
     }
     //Compile new title
     newTitleEl = $compile('<h1 class="title invisible" ng-bind-html="title"></h1>')($scope);
@@ -3933,6 +4628,8 @@ IonicModule
 function($scope, scrollViewOptions, $timeout, $window, $$scrollValueCache, $location, $rootScope, $document, $ionicScrollDelegate) {
 
   var self = this;
+  // for testing
+  this.__timeout = $timeout;
 
   this._scrollViewOptions = scrollViewOptions; //for testing
 
@@ -3969,28 +4666,40 @@ function($scope, scrollViewOptions, $timeout, $window, $$scrollValueCache, $loca
 
   // set by rootScope listener if needed
   var backListenDone = angular.noop;
+  var viewContentLoaded = angular.noop;
 
-  $scope.$on('$destroy', function() {
-    deregisterInstance();
-    scrollView.__removeEventHandlers();
-    ionic.off('resize', resize, $window);
-    $window.removeEventListener('resize', resize);
-    backListenDone();
-    if (self._rememberScrollId) {
-      $$scrollValueCache[self._rememberScrollId] = scrollView.getValues();
-    }
-  });
-
-  $element.on('scroll', function(e) {
+  var scrollFunc = function(e) {
     var detail = (e.originalEvent || e).detail || {};
     $scope.$onScroll && $scope.$onScroll({
       event: e,
       scrollTop: detail.scrollTop || 0,
       scrollLeft: detail.scrollLeft || 0
     });
+  };
+
+  $element.on('scroll', scrollFunc );
+
+  $scope.$on('$destroy', function() {
+    deregisterInstance();
+    scrollView.__cleanup();
+    ionic.off('resize', resize, $window);
+    $window.removeEventListener('resize', resize);
+    viewContentLoaded();
+    backListenDone();
+    if (self._rememberScrollId) {
+      $$scrollValueCache[self._rememberScrollId] = scrollView.getValues();
+    }
+    scrollViewOptions = null;
+    self._scrollViewOptions = null;
+    self.element = null;
+    $element.off('scroll', scrollFunc);
+    $element = null;
+    self.$element = null;
+    self.scrollView = null;
+    scrollView = null;
   });
 
-  $scope.$on('$viewContentLoaded', function(e, historyData) {
+  viewContentLoaded = $scope.$on('$viewContentLoaded', function(e, historyData) {
     //only the top-most scroll area under a view should remember that view's
     //scroll position
     if (e.defaultPrevented) { return; }
@@ -4013,7 +4722,7 @@ function($scope, scrollViewOptions, $timeout, $window, $$scrollValueCache, $loca
   });
 
   $timeout(function() {
-    scrollView.run();
+    scrollView && scrollView.run && scrollView.run();
   });
 
   this._rememberScrollId = null;
@@ -4027,16 +4736,20 @@ function($scope, scrollViewOptions, $timeout, $window, $$scrollValueCache, $loca
   };
 
   this.resize = function() {
-    return $timeout(resize);
+    return $timeout(resize).then(function() {
+      $element && $element.triggerHandler('scroll.resize');
+    });
   };
 
   this.scrollTop = function(shouldAnimate) {
+    ionic.DomUtil.blurAll();
     this.resize().then(function() {
       scrollView.scrollTo(0, 0, !!shouldAnimate);
     });
   };
 
   this.scrollBottom = function(shouldAnimate) {
+    ionic.DomUtil.blurAll();
     this.resize().then(function() {
       var max = scrollView.getScrollMax();
       scrollView.scrollTo(max.left, max.top, !!shouldAnimate);
@@ -4044,18 +4757,35 @@ function($scope, scrollViewOptions, $timeout, $window, $$scrollValueCache, $loca
   };
 
   this.scrollTo = function(left, top, shouldAnimate) {
+    ionic.DomUtil.blurAll();
     this.resize().then(function() {
       scrollView.scrollTo(left, top, !!shouldAnimate);
     });
   };
 
+  this.zoomTo = function(zoom, shouldAnimate, originLeft, originTop) {
+    ionic.DomUtil.blurAll();
+    this.resize().then(function() {
+      scrollView.zoomTo(zoom, !!shouldAnimate, originLeft, originTop);
+    });
+  };
+
+  this.zoomBy = function(zoom, shouldAnimate, originLeft, originTop) {
+    ionic.DomUtil.blurAll();
+    this.resize().then(function() {
+      scrollView.zoomBy(zoom, !!shouldAnimate, originLeft, originTop);
+    });
+  };
+
   this.scrollBy = function(left, top, shouldAnimate) {
+    ionic.DomUtil.blurAll();
     this.resize().then(function() {
       scrollView.scrollBy(left, top, !!shouldAnimate);
     });
   };
 
   this.anchorScroll = function(shouldAnimate) {
+    ionic.DomUtil.blurAll();
     this.resize().then(function() {
       var hash = $location.hash();
       var elm = hash && $document[0].getElementById(hash);
@@ -4086,10 +4816,11 @@ function($scope, scrollViewOptions, $timeout, $window, $$scrollValueCache, $loca
     this._rememberScrollId = null;
   };
   this.scrollToRememberedPosition = function(shouldAnimate) {
+    ionic.DomUtil.blurAll();
     var values = $$scrollValueCache[this._rememberScrollId];
     if (values) {
       this.resize().then(function() {
-        scrollView.scrollTo(+values.left, +values.top, shouldAnimate);
+        scrollView && scrollView.scrollTo && scrollView.scrollTo(+values.left, +values.top, shouldAnimate);
       });
     }
   };
@@ -4099,16 +4830,27 @@ function($scope, scrollViewOptions, $timeout, $window, $$scrollValueCache, $loca
    */
   this._setRefresher = function(refresherScope, refresherElement) {
     var refresher = this.refresher = refresherElement;
-    var refresherHeight = self.refresher.clientHeight || 0;
+    var refresherHeight = self.refresher.clientHeight || 60;
     scrollView.activatePullToRefresh(refresherHeight, function() {
+      // activateCallback
       refresher.classList.add('active');
       refresherScope.$onPulling();
     }, function() {
-      refresher.classList.remove('refreshing');
-      refresher.classList.remove('active');
+      // deactivateCallback
+        refresher.classList.remove('active', 'refreshing', 'refreshing-tail');
     }, function() {
+      // startCallback
       refresher.classList.add('refreshing');
       refresherScope.$onRefresh();
+    },function(){
+      // showCallback
+      refresher.classList.remove('invisible');
+    },function(){
+      // hideCallback
+      refresher.classList.add('invisible');
+    },function(){
+      // tailCallback
+      refresher.classList.add('refreshing-tail');
     });
   };
 }]);
@@ -4120,39 +4862,343 @@ IonicModule
   '$attrs',
   '$ionicSideMenuDelegate',
   '$ionicPlatform',
-function($scope, $attrs, $ionicSideMenuDelegate, $ionicPlatform) {
+  '$ionicBody',
+function($scope, $attrs, $ionicSideMenuDelegate, $ionicPlatform, $ionicBody) {
   var self = this;
-  extend(this, ionic.controllers.SideMenuController.prototype);
+  var rightShowing, leftShowing, isDragging;
+  var startX, lastX, offsetX, isAsideExposed;
 
-  this.$scope = $scope;
+  self.$scope = $scope;
 
-  ionic.controllers.SideMenuController.call(this, {
-    left: { width: 275 },
-    right: { width: 275 }
-  });
+  self.initialize = function(options) {
+    self.left = options.left;
+    self.right = options.right;
+    self.setContent(options.content);
+    self.dragThresholdX = options.dragThresholdX || 10;
+  };
 
-  this.canDragContent = function(canDrag) {
+  /**
+   * Set the content view controller if not passed in the constructor options.
+   *
+   * @param {object} content
+   */
+  self.setContent = function(content) {
+    if (content) {
+      self.content = content;
+
+      self.content.onDrag = function(e) {
+        self._handleDrag(e);
+      };
+
+      self.content.endDrag = function(e) {
+        self._endDrag(e);
+      };
+    }
+  };
+
+  self.isOpenLeft = function() {
+    return self.getOpenAmount() > 0;
+  };
+
+  self.isOpenRight = function() {
+    return self.getOpenAmount() < 0;
+  };
+
+  /**
+   * Toggle the left menu to open 100%
+   */
+  self.toggleLeft = function(shouldOpen) {
+    if (isAsideExposed || !self.left.isEnabled) return;
+    var openAmount = self.getOpenAmount();
+    if (arguments.length === 0) {
+      shouldOpen = openAmount <= 0;
+    }
+    self.content.enableAnimation();
+    if (!shouldOpen) {
+      self.openPercentage(0);
+    } else {
+      self.openPercentage(100);
+    }
+  };
+
+  /**
+   * Toggle the right menu to open 100%
+   */
+  self.toggleRight = function(shouldOpen) {
+    if (isAsideExposed || !self.right.isEnabled) return;
+    var openAmount = self.getOpenAmount();
+    if (arguments.length === 0) {
+      shouldOpen = openAmount >= 0;
+    }
+    self.content.enableAnimation();
+    if (!shouldOpen) {
+      self.openPercentage(0);
+    } else {
+      self.openPercentage(-100);
+    }
+  };
+
+  /**
+   * Close all menus.
+   */
+  self.close = function() {
+    self.openPercentage(0);
+  };
+
+  /**
+   * @return {float} The amount the side menu is open, either positive or negative for left (positive), or right (negative)
+   */
+  self.getOpenAmount = function() {
+    return self.content && self.content.getTranslateX() || 0;
+  };
+
+  /**
+   * @return {float} The ratio of open amount over menu width. For example, a
+   * menu of width 100 open 50 pixels would be open 50% or a ratio of 0.5. Value is negative
+   * for right menu.
+   */
+  self.getOpenRatio = function() {
+    var amount = self.getOpenAmount();
+    if (amount >= 0) {
+      return amount / self.left.width;
+    }
+    return amount / self.right.width;
+  };
+
+  self.isOpen = function() {
+    return self.getOpenAmount() !== 0;
+  };
+
+  /**
+   * @return {float} The percentage of open amount over menu width. For example, a
+   * menu of width 100 open 50 pixels would be open 50%. Value is negative
+   * for right menu.
+   */
+  self.getOpenPercentage = function() {
+    return self.getOpenRatio() * 100;
+  };
+
+  /**
+   * Open the menu with a given percentage amount.
+   * @param {float} percentage The percentage (positive or negative for left/right) to open the menu.
+   */
+  self.openPercentage = function(percentage) {
+    var p = percentage / 100;
+
+    if (self.left && percentage >= 0) {
+      self.openAmount(self.left.width * p);
+    } else if (self.right && percentage < 0) {
+      var maxRight = self.right.width;
+      self.openAmount(self.right.width * p);
+    }
+
+    // add the CSS class "menu-open" if the percentage does not
+    // equal 0, otherwise remove the class from the body element
+    $ionicBody.enableClass((percentage !== 0), 'menu-open');
+  };
+
+  /**
+   * Open the menu the given pixel amount.
+   * @param {float} amount the pixel amount to open the menu. Positive value for left menu,
+   * negative value for right menu (only one menu will be visible at a time).
+   */
+  self.openAmount = function(amount) {
+    var maxLeft = self.left && self.left.width || 0;
+    var maxRight = self.right && self.right.width || 0;
+
+    // Check if we can move to that side, depending if the left/right panel is enabled
+    if (!(self.left && self.left.isEnabled) && amount > 0) {
+      self.content.setTranslateX(0);
+      return;
+    }
+
+    if (!(self.right && self.right.isEnabled) && amount < 0) {
+      self.content.setTranslateX(0);
+      return;
+    }
+
+    if (leftShowing && amount > maxLeft) {
+      self.content.setTranslateX(maxLeft);
+      return;
+    }
+
+    if (rightShowing && amount < -maxRight) {
+      self.content.setTranslateX(-maxRight);
+      return;
+    }
+
+    self.content.setTranslateX(amount);
+
+    if (amount >= 0) {
+      leftShowing = true;
+      rightShowing = false;
+
+      if (amount > 0) {
+        // Push the z-index of the right menu down
+        self.right && self.right.pushDown && self.right.pushDown();
+        // Bring the z-index of the left menu up
+        self.left && self.left.bringUp && self.left.bringUp();
+      }
+    } else {
+      rightShowing = true;
+      leftShowing = false;
+
+      // Bring the z-index of the right menu up
+      self.right && self.right.bringUp && self.right.bringUp();
+      // Push the z-index of the left menu down
+      self.left && self.left.pushDown && self.left.pushDown();
+    }
+  };
+
+  /**
+   * Given an event object, find the final resting position of this side
+   * menu. For example, if the user "throws" the content to the right and
+   * releases the touch, the left menu should snap open (animated, of course).
+   *
+   * @param {Event} e the gesture event to use for snapping
+   */
+  self.snapToRest = function(e) {
+    // We want to animate at the end of this
+    self.content.enableAnimation();
+    isDragging = false;
+
+    // Check how much the panel is open after the drag, and
+    // what the drag velocity is
+    var ratio = self.getOpenRatio();
+
+    if (ratio === 0) {
+      // Just to be safe
+      self.openPercentage(0);
+      return;
+    }
+
+    var velocityThreshold = 0.3;
+    var velocityX = e.gesture.velocityX;
+    var direction = e.gesture.direction;
+
+    // Going right, less than half, too slow (snap back)
+    if (ratio > 0 && ratio < 0.5 && direction == 'right' && velocityX < velocityThreshold) {
+      self.openPercentage(0);
+    }
+
+    // Going left, more than half, too slow (snap back)
+    else if (ratio > 0.5 && direction == 'left' && velocityX < velocityThreshold) {
+      self.openPercentage(100);
+    }
+
+    // Going left, less than half, too slow (snap back)
+    else if (ratio < 0 && ratio > -0.5 && direction == 'left' && velocityX < velocityThreshold) {
+      self.openPercentage(0);
+    }
+
+    // Going right, more than half, too slow (snap back)
+    else if (ratio < 0.5 && direction == 'right' && velocityX < velocityThreshold) {
+      self.openPercentage(-100);
+    }
+
+    // Going right, more than half, or quickly (snap open)
+    else if (direction == 'right' && ratio >= 0 && (ratio >= 0.5 || velocityX > velocityThreshold)) {
+      self.openPercentage(100);
+    }
+
+    // Going left, more than half, or quickly (span open)
+    else if (direction == 'left' && ratio <= 0 && (ratio <= -0.5 || velocityX > velocityThreshold)) {
+      self.openPercentage(-100);
+    }
+
+    // Snap back for safety
+    else {
+      self.openPercentage(0);
+    }
+  };
+
+  self.isAsideExposed = function() {
+    return !!isAsideExposed;
+  };
+
+  self.exposeAside = function(shouldExposeAside) {
+    if (!(self.left && self.left.isEnabled) && !(self.right && self.right.isEnabled)) return;
+    self.close();
+    isAsideExposed = shouldExposeAside;
+    if (self.left && self.left.isEnabled) {
+      // set the left marget width if it should be exposed
+      // otherwise set false so there's no left margin
+      self.content.setMarginLeft(isAsideExposed ? self.left.width : 0);
+    } else if (self.right && self.right.isEnabled) {
+      self.content.setMarginRight(isAsideExposed ? self.right.width : 0);
+    }
+
+    self.$scope.$emit('$ionicExposeAside', isAsideExposed);
+  };
+
+  self.activeAsideResizing = function(isResizing) {
+    $ionicBody.enableClass(isResizing, 'aside-resizing');
+  };
+
+  // End a drag with the given event
+  self._endDrag = function(e) {
+    if (isAsideExposed) return;
+
+    if (isDragging) {
+      self.snapToRest(e);
+    }
+    startX = null;
+    lastX = null;
+    offsetX = null;
+  };
+
+  // Handle a drag event
+  self._handleDrag = function(e) {
+    if (isAsideExposed) return;
+
+    // If we don't have start coords, grab and store them
+    if (!startX) {
+      startX = e.gesture.touches[0].pageX;
+      lastX = startX;
+    } else {
+      // Grab the current tap coords
+      lastX = e.gesture.touches[0].pageX;
+    }
+
+    // Calculate difference from the tap points
+    if (!isDragging && Math.abs(lastX - startX) > self.dragThresholdX) {
+      // if the difference is greater than threshold, start dragging using the current
+      // point as the starting point
+      startX = lastX;
+
+      isDragging = true;
+      // Initialize dragging
+      self.content.disableAnimation();
+      offsetX = self.getOpenAmount();
+    }
+
+    if (isDragging) {
+      self.openAmount(offsetX + (lastX - startX));
+    }
+  };
+
+  self.canDragContent = function(canDrag) {
     if (arguments.length) {
       $scope.dragContent = !!canDrag;
     }
     return $scope.dragContent;
   };
 
-  this.edgeThreshold = 25;
-  this.edgeThresholdEnabled = false;
-  this.edgeDragThreshold = function(value) {
+  self.edgeThreshold = 25;
+  self.edgeThresholdEnabled = false;
+  self.edgeDragThreshold = function(value) {
     if (arguments.length) {
       if (angular.isNumber(value) && value > 0) {
-        this.edgeThreshold = value;
-        this.edgeThresholdEnabled = true;
+        self.edgeThreshold = value;
+        self.edgeThresholdEnabled = true;
       } else {
-        this.edgeThresholdEnabled = !!value;
+        self.edgeThresholdEnabled = !!value;
       }
     }
-    return this.edgeThresholdEnabled;
+    return self.edgeThresholdEnabled;
   };
 
-  this.isDraggableTarget = function(e) {
+  self.isDraggableTarget = function(e) {
     //Only restrict edge when sidemenu is closed and restriction is enabled
     var shouldOnlyAllowEdgeDrag = self.edgeThresholdEnabled && !self.isOpen();
     var startX = e.gesture.startEvent && e.gesture.startEvent.center &&
@@ -4160,21 +5206,21 @@ function($scope, $attrs, $ionicSideMenuDelegate, $ionicPlatform) {
 
     var dragIsWithinBounds = !shouldOnlyAllowEdgeDrag ||
       startX <= self.edgeThreshold ||
-      startX >= self.content.offsetWidth - self.edgeThreshold;
+      startX >= self.content.element.offsetWidth - self.edgeThreshold;
 
     return ($scope.dragContent || self.isOpen()) &&
-           dragIsWithinBounds &&
-           !e.gesture.srcEvent.defaultPrevented &&
-           !e.target.tagName.match(/input|textarea|select|object|embed/i) &&
-           !e.target.isContentEditable &&
-           !(e.target.dataset ? e.target.dataset.preventScroll : e.target.getAttribute('data-prevent-default') == 'true');
+      dragIsWithinBounds &&
+      !e.gesture.srcEvent.defaultPrevented &&
+      !e.target.tagName.match(/input|textarea|select|object|embed/i) &&
+      !e.target.isContentEditable &&
+      !(e.target.dataset ? e.target.dataset.preventScroll : e.target.getAttribute('data-prevent-scroll') == 'true');
   };
 
   $scope.sideMenuContentTranslateX = 0;
 
-
   var deregisterBackButtonAction = angular.noop;
-  var closeSideMenu = angular.bind(this, this.close);
+  var closeSideMenu = angular.bind(self, self.close);
+
   $scope.$watch(function() {
     return self.getOpenAmount() !== 0;
   }, function(isOpen) {
@@ -4188,12 +5234,434 @@ function($scope, $attrs, $ionicSideMenuDelegate, $ionicPlatform) {
   });
 
   var deregisterInstance = $ionicSideMenuDelegate._registerInstance(
-    this, $attrs.delegateHandle
+    self, $attrs.delegateHandle
   );
+
   $scope.$on('$destroy', function() {
     deregisterInstance();
     deregisterBackButtonAction();
+    self.$scope = null;
+    if (self.content) {
+      self.content.element = null;
+      self.content = null;
+    }
   });
+
+  self.initialize({
+    left: {
+      width: 275
+    },
+    right: {
+      width: 275
+    }
+  });
+
+}]);
+
+IonicModule
+.controller('$ionSlideBox', [
+  '$scope',
+  '$element',
+  '$$ionicAttachDrag',
+  '$interval',
+  /*
+   * This can be abstracted into a controller that will work for views, tabs, and
+   * slidebox.
+   */
+function(scope, element, $$ionicAttachDrag, $interval) {
+  var self = this;
+  var slideList = ionic.Utils.list([]);
+  var slidesParent = angular.element(element[0].querySelector('.slider-slides'));
+
+  // Successful slide requires velocity to be greater than this amount
+  var SLIDE_SUCCESS_VELOCITY = (1 / 4); // pixels / ms
+  var SLIDE_TRANSITION_DURATION = 250; //ms
+
+  $$ionicAttachDrag(scope, element, {
+    getDistance: function() { return slidesParent.prop('offsetWidth'); },
+    onDrag: onDrag,
+    onDragEnd: onDragEnd
+  });
+
+  self.element = element;
+  self.isRelevant = isRelevant;
+  self.previous = previous;
+  self.next = next;
+
+  // Methods calling straight back to Utils.list
+  self.at = slideList.at;
+  self.count = slideList.count;
+  self.indexOf = slideList.indexOf;
+  self.isInRange = slideList.isInRange;
+  self.loop = slideList.loop;
+  self.delta = slideList.delta;
+
+  self.update = update;
+  self.enableSlide = enableSlide;
+  self.autoPlay = autoPlay;
+  self.add = add;
+  self.remove = remove;
+  self.move = move;
+  self.selected = selected;
+  self.select = select;
+  self.onDrag = onDrag;
+  self.onDragEnd = onDragEnd;
+
+  // ***
+  // Public Methods
+  // ***
+
+  // Gets whether the given index is relevant to selected
+  // That is, whether the given index is previous, selected, or next
+  function isRelevant(index) {
+    return slideList.isRelevant(index, scope.selectedIndex);
+  }
+
+  // Gets the index to the previous of the given slide, default scope.selectedIndex
+  function previous(index) {
+    index = arguments.length ? index : scope.selectedIndex;
+    // If we only have two slides and loop is enabled, we cannot have a previous
+    // because previous === next. In this case, return -1.
+    if (self.loop() && self.count() === 2) {
+      return -1;
+    }
+    return slideList.previous(index);
+  }
+
+  // Gets the index to the next of the given slide, default scope.selectedIndex
+  function next(index) {
+    index = arguments.length ? index : scope.selectedIndex;
+    return slideList.next(index);
+  }
+
+  function update() {
+    var selectedIndex = scope.selectedIndex;
+    for (var i = self.count() - 1; i >= 0; i--) {
+      slideList.remove(i);
+    }
+    var slideNodes = element[0].querySelectorAll('ion-slide');
+    for (var j = 0, jj = slideNodes.length; j < jj; j++) {
+      slideList.add(jqLite(slideNodes[j]).controller('ionSlide'));
+    }
+    self.select(selectedIndex);
+  }
+
+  function enableSlide(isEnabled) {
+    if (arguments.length) {
+      self.dragDisabled = !isEnabled;
+    }
+    return !!self.dragDisabled;
+  }
+
+  function autoPlay(newInterval) {
+    $interval.cancel(self.autoPlayTimeout);
+
+    if (angular.isNumber(newInterval) && newInterval > 0) {
+      self.autoPlayTimeout = $interval(function() {
+        self.select(self.next());
+      }, newInterval);
+    }
+  }
+
+  /*
+   * Add/remove/move slides
+   */
+  function add(slide, index) {
+    var newIndex = slideList.add(slide, index);
+    slide.onAdded();
+
+    // If we are waiting for a certain scope.selectedIndex and this is it,
+    // select the slide
+    if (scope.selectedIndex === index) {
+      self.select(newIndex);
+    // If we don't have a selectedIndex yet, select the first one available
+    } else if (!isNumber(scope.selectedIndex) || scope.selectedIndex === -1) {
+      self.select(newIndex);
+    } else if (newIndex === self.previous() || newIndex === self.next()) {
+      // if the new slide is adjacent to selected, refresh the selection
+      enqueueRefresh();
+    }
+  }
+  function remove(slide) {
+    var index = self.indexOf(slide);
+    if (index === -1) return;
+
+    var isSelected = self.selected() === index;
+    slideList.remove(index);
+    slide.onRemoved();
+
+    if (isSelected) {
+      self.select( self.isInRange(scope.selectedIndex) ? scope.selectedIndex : scope.selectedIndex - 1 );
+    }
+  }
+  function move(slide, targetIndex) {
+    var index = self.indexOf(slide);
+    if (index === -1) return;
+
+    // If the slide is current, next, or previous, save so we can re-select after moving.
+    var isRelevant = self.selected() === index || self.isRelevant(targetIndex);
+    slideList.remove(index);
+    slideList.add(slide, targetIndex);
+
+    if (isRelevant) {
+      self.select(targetIndex);
+    }
+  }
+
+  function selected() {
+    return self.isInRange(scope.selectedIndex) ? scope.selectedIndex : -1;
+  }
+
+  /*
+   * Select and change slides
+   */
+  function select(newIndex, transitionDuration) {
+    if (!self.isInRange(newIndex)) return;
+
+    var delta = self.delta(scope.selectedIndex, newIndex);
+
+    slidesParent.css(
+      ionic.CSS.TRANSITION_DURATION,
+      (transitionDuration || SLIDE_TRANSITION_DURATION) + 'ms'
+    );
+    scope.selectedIndex = newIndex;
+
+    if (self.isInRange(scope.selectedIndex) && Math.abs(delta) > 1) {
+      // if the new slide is > 1 away, then it is currently not attached to the DOM.
+      // Attach it in the position from which it will slide in.
+      self.at(newIndex).setState(delta > 1 ? 'next' : 'previous');
+      // Wait one frame so the new slide can 'settle' in its new place and
+      // be ready to properly transition in
+      ionic.requestAnimationFrame(doSelect);
+    } else {
+      doSelect();
+    }
+
+    function doSelect() {
+      // If a new selection has happened before this frame, abort.
+      if (scope.selectedIndex !== newIndex) return;
+      scope.$evalAsync(function() {
+        if (scope.selectedIndex !== newIndex) return;
+        arrangeSlides(newIndex);
+      });
+    }
+  }
+
+  // percent is negative 0-1 for backward slide
+  // positive 0-1 for forward slide
+  function onDrag(percent) {
+    if (self.dragDisabled) return;
+
+    var target = self.at(percent > 0 ? self.next() : self.previous());
+    var current = self.at(self.selected());
+
+    target && target.transform(percent);
+    current && current.transform(percent);
+  }
+
+  function onDragEnd(percent, velocity) {
+    var nextIndex = -1;
+    if (Math.abs(percent) > 0.5 || velocity > SLIDE_SUCCESS_VELOCITY) {
+      nextIndex = percent > 0 ? self.next() : self.previous();
+    }
+
+    // Select a new slide if it's avaiable
+    if (self.isInRange(nextIndex)) {
+      var distanceRemaining = (1 - Math.abs(percent)) * slidesParent.prop('offsetWidth');
+      var transitionDuration = Math.min(
+        distanceRemaining / velocity,
+        SLIDE_TRANSITION_DURATION
+      );
+      self.select(nextIndex, transitionDuration);
+    } else {
+      self.select(scope.selectedIndex);
+    }
+  }
+
+  // ***
+  // Private Methods
+  // ***
+
+  var oldSlides;
+  function arrangeSlides(newShownIndex) {
+    var newSlides = {
+      previous: self.at(self.previous(newShownIndex)),
+      selected: self.at(newShownIndex),
+      next: self.at(self.next(newShownIndex))
+    };
+
+    newSlides.previous && newSlides.previous.setState('previous');
+    newSlides.selected && newSlides.selected.setState('selected');
+    newSlides.next && newSlides.next.setState('next');
+
+    if (oldSlides) {
+      var oldShown = oldSlides.selected;
+      var delta = self.delta(self.indexOf(oldSlides.selected), self.indexOf(newSlides.selected));
+      if (Math.abs(delta) > 1) {
+        // If we're changing by more than one slide, we need to manually transition
+        // the current slide out and then put it into its new state.
+        oldShown.setState(delta > 1 ? 'previous' : 'next').then(function() {
+          oldShown.setState(
+            newSlides.previous === oldShown ?  'previous' :
+            newSlides.next === oldShown ? 'next' :
+            'detached'
+          );
+        });
+      } else {
+        detachIfUnused(oldSlides.selected);
+      }
+      //Additionally, we need to detach both of the old slides.
+      detachIfUnused(oldSlides.previous);
+      detachIfUnused(oldSlides.next);
+    }
+
+    function detachIfUnused(oldSlide) {
+      if (oldSlide && oldSlide !== newSlides.previous &&
+          oldSlide !== newSlides.selected &&
+          oldSlide !== newSlides.next) {
+        oldSlide.setState('detached');
+      }
+    }
+
+    oldSlides = newSlides;
+  }
+
+  // When adding/moving slides, we sometimes need to refresh
+  // the currently selected slides to reflect new data.
+  // We don't want to refresh more than once per digest cycle,
+  // so we do this.
+  function enqueueRefresh() {
+    if (!enqueueRefresh.queued) {
+      enqueueRefresh.queued = true;
+      scope.$$postDigest(function() {
+        self.select(scope.selectedIndex);
+        enqueueRefresh.queued = false;
+      });
+    }
+  }
+}]);
+
+IonicModule
+.controller('$ionSlide', [
+  '$scope',
+  '$element',
+  '$q',
+function(scope, element, $q) {
+  var self = this;
+
+  scope.$on('$destroy', function() {
+    // Re-attach the element so it can be properly removed
+    attachSlide();
+  });
+  element.on(ionic.CSS.TRANSITIONEND, onTransitionEnd);
+
+  self.element = element;
+
+  self.onAdded = onAdded;
+  self.onRemoved = onRemoved;
+
+  self.transform = transform;
+
+  self.state = '';
+  self.setState = setState;
+
+  // ***
+  // Public Methods
+  // ***
+
+  function onAdded() {
+    // Set default state
+    self.setState('detached');
+  }
+  function onRemoved() {
+    self.setState('detached');
+  }
+
+  var isTransforming;
+  // percent is negative 0-1 for dragging left
+  // percent is positive 0-1 for dragging right
+  function transform(percent) {
+    if (!isTransforming) {
+      self.element.addClass('no-animate');
+      isTransforming = true;
+    }
+
+    var startPercent = self.state === 'previous' ? -1 :
+      self.state === 'next' ? 1 :
+      0;
+    self.element.css(
+      ionic.CSS.TRANSFORM,
+      'translate3d(' + (100 * (startPercent - percent)) + '%, 0, 0)'
+    );
+  }
+
+  function setState(newState) {
+    if (newState !== self.state) {
+      self.state && self.element.attr('slide-previous-state', self.state);
+      self.element.attr('slide-state', newState);
+    }
+    self.element.css(ionic.CSS.TRANSFORM, '');
+    self.element.removeClass('no-animate');
+    isTransforming = false;
+
+    self.previousState = self.state;
+    self.state = newState;
+
+    switch(newState) {
+      case 'detached':
+        detachSlide();
+        break;
+      case 'previous':
+      case 'next':
+      case 'selected':
+        attachSlide();
+        break;
+    }
+
+    return getTransitionPromise();
+  }
+
+  // ***
+  // Private Methods
+  // ***
+
+  function attachSlide() {
+    // if (!self.element[0].parentNode) {
+    //   self.parentElement.append(self.element);
+    //   ionic.Utils.reconnectScope(scope);
+    // }
+    ionic.Utils.reconnectScope(scope);
+  }
+
+  function detachSlide() {
+    // Don't use self.element.remove(), that will destroy the element's data
+    // var parent = self.element[0].parentNode;
+    // if (parent) {
+    //   parent.removeChild(self.element[0]);
+    //   ionic.Utils.disconnectScope(scope);
+    // }
+    ionic.Utils.disconnectScope(scope);
+  }
+
+  var transitionDeferred;
+  function getTransitionPromise() {
+    // If we aren't transitioning to or from selected, there's no transition, so instantly resolve.
+    if (self.previousState !== 'selected' && self.state !== 'selected') {
+      return $q.when();
+    }
+
+    // Interrupt current promise if a new state was set.
+    transitionDeferred && transitionDeferred.reject();
+    transitionDeferred = $q.defer();
+
+    return transitionDeferred.promise;
+  }
+
+  function onTransitionEnd(ev) {
+    if (ev.target !== element[0]) return; //don't let the event bubble up from children
+    transitionDeferred && transitionDeferred.resolve();
+  }
+
 }]);
 
 IonicModule
@@ -4226,9 +5694,9 @@ function($scope, $ionicViewService, $attrs, $location, $state) {
 
 IonicModule
 .controller('$ionicTabs', [
-  '$scope', 
-  '$ionicViewService', 
-  '$element', 
+  '$scope',
+  '$ionicViewService',
+  '$element',
 function($scope, $ionicViewService, $element) {
   var _selectedTab = null;
   var self = this;
@@ -4285,8 +5753,9 @@ function($scope, $ionicViewService, $element) {
     } else {
       tabIndex = self.tabs.indexOf(tab);
     }
-    if (!tab || tabIndex == -1) {
-      throw new Error('Cannot select tab "' + tabIndex + '"!');
+
+    if (arguments.length === 1) {
+      shouldEmitEvent = !!(tab.navViewName || tab.uiSref);
     }
 
     if (_selectedTab && _selectedTab.$historyId == tab.$historyId) {
@@ -4311,7 +5780,6 @@ function($scope, $ionicViewService, $element) {
           navViewName: tab.navViewName,
           hasNavView: !!tab.navViewName,
           title: tab.title,
-          //Skip the first character of href if it's #
           url: tab.href,
           uiSref: tab.uiSref
         };
@@ -4451,13 +5919,10 @@ IonicModule
  * Pixel amounts or percentages are allowed (see below).
  * 3. The elements rendered will be absolutely positioned: be sure to let your CSS work with
  * this (see below).
- * 4. Keep the HTML of your repeated elements as simple as possible.
- * The more complicated your elements, the more likely it is that the on-demand compilation will cause
- * some jerkiness in the user's scrolling.
- * 6. Each collection-repeat list will take up all of its parent scrollView's space.
+ * 4. Each collection-repeat list will take up all of its parent scrollView's space.
  * If you wish to have multiple lists on one page, put each list within its own
  * {@link ionic.directive:ionScroll ionScroll} container.
- * 7. You should not use the ng-show and ng-hide directives on your ion-content/ion-scroll elements that
+ * 5. You should not use the ng-show and ng-hide directives on your ion-content/ion-scroll elements that
  * have a collection-repeat inside.  ng-show and ng-hide apply the `display: none` css rule to the content's
  * style, causing the scrollView to read the width and height of the content as 0.  Resultingly,
  * collection-repeat will render elements that have just been un-hidden incorrectly.
@@ -4483,7 +5948,7 @@ IonicModule
  *       {% raw %}{{item}}{% endraw %}
  *     </div>
  *   </div>
- * </div>
+ * </ion-content>
  * ```
  * ```js
  * function ContentCtrl($scope) {
@@ -4565,11 +6030,6 @@ var COLLECTION_REPEAT_ATTR_WIDTH_ERROR = "collection-repeat expected attribute c
 var COLLECTION_REPEAT_ATTR_REPEAT_ERROR = "collection-repeat expected expression in form of '_item_ in _collection_[ track by _id_]' but got '%'";
 
 IonicModule
-.directive({
-  ngSrc: collectionRepeatSrcDirective('ngSrc', 'src'),
-  ngSrcset: collectionRepeatSrcDirective('ngSrcset', 'srcset'),
-  ngHref: collectionRepeatSrcDirective('ngHref', 'href')
-})
 .directive('collectionRepeat', [
   '$collectionRepeatManager',
   '$collectionDataSource',
@@ -4583,6 +6043,10 @@ function($collectionRepeatManager, $collectionDataSource, $parse) {
     require: '^$ionicScroll',
     controller: [function(){}],
     link: function($scope, $element, $attr, scrollCtrl, $transclude) {
+      var wrap = jqLite('<div style="position:relative;">');
+      $element.parent()[0].insertBefore(wrap[0], $element[0]);
+      wrap.append($element);
+
       var scrollView = scrollCtrl.scrollView;
       if (scrollView.options.scrollingX && scrollView.options.scrollingY) {
         throw new Error(COLLECTION_REPEAT_SCROLLVIEW_XY_ERROR);
@@ -4645,28 +6109,61 @@ function($collectionRepeatManager, $collectionDataSource, $parse) {
         rerender(value);
       });
 
+      // Find every sibling before and after the repeated items, and pass them
+      // to the dataSource
+      var scrollViewContent = scrollCtrl.scrollView.__content;
       function rerender(value) {
+        var beforeSiblings = [];
+        var afterSiblings = [];
+        var before = true;
+
+        forEach(scrollViewContent.children, function(node, i) {
+          if ( ionic.DomUtil.elementIsDescendant($element[0], node, scrollViewContent) ) {
+            before = false;
+          } else {
+            if (node.hasAttribute('collection-repeat-ignore')) return;
+            var width = node.offsetWidth;
+            var height = node.offsetHeight;
+            if (width && height) {
+              var element = jqLite(node);
+              (before ? beforeSiblings : afterSiblings).push({
+                width: node.offsetWidth,
+                height: node.offsetHeight,
+                element: element,
+                scope: element.isolateScope() || element.scope(),
+                isOutside: true
+              });
+            }
+          }
+        });
+
         scrollView.resize();
-        dataSource.setData(value);
+        dataSource.setData(value, beforeSiblings, afterSiblings);
         collectionRepeatManager.resize();
       }
-      function onWindowResize() {
+      function rerenderOnResize() {
         rerender($scope.$eval(listExpr));
       }
 
-      ionic.on('resize', onWindowResize, window);
+      scrollCtrl.$element.on('scroll.resize', rerenderOnResize);
+      ionic.on('resize', rerenderOnResize, window);
 
       $scope.$on('$destroy', function() {
         collectionRepeatManager.destroy();
         dataSource.destroy();
-        ionic.off('resize', onWindowResize, window);
+        ionic.off('resize', rerenderOnResize, window);
       });
     }
   };
-}]);
+}])
+.directive({
+  ngSrc: collectionRepeatSrcDirective('ngSrc', 'src'),
+  ngSrcset: collectionRepeatSrcDirective('ngSrcset', 'srcset'),
+  ngHref: collectionRepeatSrcDirective('ngHref', 'href')
+});
 
 // Fix for #1674
-// Problem: if an ngSrc or ngHref expression evaluates to a falsy value, it will 
+// Problem: if an ngSrc or ngHref expression evaluates to a falsy value, it will
 // not erase the previous truthy value of the href.
 // In collectionRepeat, we re-use elements from before. So if the ngHref expression
 // evaluates to truthy for item 1 and then falsy for item 2, if an element changes
@@ -4677,12 +6174,10 @@ function collectionRepeatSrcDirective(ngAttrName, attrName) {
   return [function() {
     return {
       priority: '99', // it needs to run after the attributes are interpolated
-      require: '^?collectionRepeat',
-      link: function(scope, element, attr, collectionRepeatCtrl) {
-        if (!collectionRepeatCtrl) return;
+      link: function(scope, element, attr) {
         attr.$observe(ngAttrName, function(value) {
           if (!value) {
-            element.removeAttr(attrName);
+            element[0].removeAttribute(attrName);
           }
         });
       }
@@ -4716,6 +6211,7 @@ function collectionRepeatSrcDirective(ngAttrName, attrName) {
  * @param {string=} delegate-handle The handle used to identify this scrollView
  * with {@link ionic.service:$ionicScrollDelegate}.
  * @param {string=} direction Which way to scroll. 'x' or 'y' or 'xy'. Default 'y'.
+ * @param {boolean=} locking Whether to lock scrolling in one direction at a time. Useful to set to false when zoomed in or scrolling in two directions. Default true.
  * @param {boolean=} padding Whether to add padding to the content.
  * of the content.  Defaults to true on iOS, false on Android.
  * @param {boolean=} scroll Whether to allow scrolling of content.  Defaults to true.
@@ -4723,12 +6219,13 @@ function collectionRepeatSrcDirective(ngAttrName, attrName) {
  * Ionic scroll.
  * @param {boolean=} scrollbar-x Whether to show the horizontal scrollbar. Default true.
  * @param {boolean=} scrollbar-y Whether to show the vertical scrollbar. Default true.
+ * @param {string=} start-x Initial horizontal scroll position. Default 0.
  * @param {string=} start-y Initial vertical scroll position. Default 0.
- * of the content.  Defaults to true on iOS, false on Android.
  * @param {expression=} on-scroll Expression to evaluate when the content is scrolled.
  * @param {expression=} on-scroll-complete Expression to evaluate when a scroll action completes.
  * @param {boolean=} has-bouncing Whether to allow scrolling to bounce past the edges
  * of the content.  Defaults to true on iOS, false on Android.
+ * @param {number=} scroll-event-interval Number of milliseconds between each firing of the 'on-scroll' expression. Default 10.
  */
 IonicModule
 .directive('ionContent', [
@@ -4801,26 +6298,36 @@ function($timeout, $controller, $ionicBind) {
         } else if(attr.overflowScroll === "true") {
           $element.addClass('overflow-scroll');
         } else {
+          var scrollViewOptions = {
+            el: $element[0],
+            delegateHandle: attr.delegateHandle,
+            locking: (attr.locking || 'true') === 'true',
+            bouncing: $scope.$eval($scope.hasBouncing),
+            startX: $scope.$eval($scope.startX) || 0,
+            startY: $scope.$eval($scope.startY) || 0,
+            scrollbarX: $scope.$eval($scope.scrollbarX) !== false,
+            scrollbarY: $scope.$eval($scope.scrollbarY) !== false,
+            scrollingX: $scope.direction.indexOf('x') >= 0,
+            scrollingY: $scope.direction.indexOf('y') >= 0,
+            scrollEventInterval: parseInt($scope.scrollEventInterval, 10) || 10,
+            scrollingComplete: function() {
+              $scope.$onScrollComplete({
+                scrollTop: this.__scrollTop,
+                scrollLeft: this.__scrollLeft
+              });
+            }
+          };
           $controller('$ionicScroll', {
             $scope: $scope,
-            scrollViewOptions: {
-              el: $element[0],
-              delegateHandle: attr.delegateHandle,
-              bouncing: $scope.$eval($scope.hasBouncing),
-              startX: $scope.$eval($scope.startX) || 0,
-              startY: $scope.$eval($scope.startY) || 0,
-              scrollbarX: $scope.$eval($scope.scrollbarX) !== false,
-              scrollbarY: $scope.$eval($scope.scrollbarY) !== false,
-              scrollingX: $scope.direction.indexOf('x') >= 0,
-              scrollingY: $scope.direction.indexOf('y') >= 0,
-              scrollEventInterval: parseInt($scope.scrollEventInterval, 10) || 10,
-              scrollingComplete: function() {
-                $scope.$onScrollComplete({
-                  scrollTop: this.__scrollTop,
-                  scrollLeft: this.__scrollLeft
-                });
-              }
-            }
+            scrollViewOptions: scrollViewOptions
+          });
+
+          $scope.$on('$destroy', function() {
+            scrollViewOptions.scrollingComplete = angular.noop;
+            delete scrollViewOptions.el;
+            innerElement = null;
+            $element = null;
+            attr.$$element = null;
           });
         }
 
@@ -4828,6 +6335,84 @@ function($timeout, $controller, $ionicBind) {
     }
   };
 }]);
+
+/**
+ * @ngdoc directive
+ * @name exposeAsideWhen
+ * @module ionic
+ * @restrict A
+ * @parent ionic.directive:ionSideMenus
+ *
+ * @description
+ * It is common for a tablet application to hide a menu when in portrait mode, but to show the
+ * same menu on the left side when the tablet is in landscape mode. The `exposeAsideWhen` attribute
+ * directive can be used to accomplish a similar interface.
+ *
+ * By default, side menus are hidden underneath its side menu content, and can be opened by either
+ * swiping the content left or right, or toggling a button to show the side menu. However, by adding the
+ * `exposeAsideWhen` attribute directive to an {@link ionic.directive:ionSideMenu} element directive,
+ * a side menu can be given instructions on "when" the menu should be exposed (always viewable). For
+ * example, the `expose-aside-when="large"` attribute will keep the side menu hidden when the viewport's
+ * width is less than `768px`, but when the viewport's width is `768px` or greater, the menu will then
+ * always be shown and can no longer be opened or closed like it could when it was hidden for smaller
+ * viewports.
+ *
+ * Using `large` as the attribute's value is a shortcut value to `(min-width:768px)` since it is
+ * the most common use-case. However, for added flexibility, any valid media query could be added
+ * as the value, such as `(min-width:600px)` or even multiple queries such as
+ * `(min-width:750px) and (max-width:1200px)`.
+
+ * @usage
+ * ```html
+ * <ion-side-menus>
+ *   <!-- Center content -->
+ *   <ion-side-menu-content>
+ *   </ion-side-menu-content>
+ *
+ *   <!-- Left menu -->
+ *   <ion-side-menu expose-aside-when="large">
+ *   </ion-side-menu>
+ * </ion-side-menus>
+ * ```
+ * For a complete side menu example, see the
+ * {@link ionic.directive:ionSideMenus} documentation.
+ */
+IonicModule
+.directive('exposeAsideWhen', ['$window', function($window) {
+  return {
+    restrict: 'A',
+    require: '^ionSideMenus',
+    link: function($scope, $element, $attr, sideMenuCtrl) {
+
+      function checkAsideExpose() {
+        var mq = $attr.exposeAsideWhen == 'large' ? '(min-width:768px)' : $attr.exposeAsideWhen;
+        sideMenuCtrl.exposeAside( $window.matchMedia(mq).matches );
+        sideMenuCtrl.activeAsideResizing(false);
+      }
+
+      function onResize() {
+        sideMenuCtrl.activeAsideResizing(true);
+        debouncedCheck();
+      }
+
+      var debouncedCheck = ionic.debounce(function() {
+        $scope.$apply(function(){
+          checkAsideExpose();
+        });
+      }, 300, false);
+
+      checkAsideExpose();
+
+      ionic.on('resize', onResize, $window);
+
+      $scope.$on('$destroy', function(){
+        ionic.off('resize', onResize, $window);
+      });
+
+    }
+  };
+}]);
+
 
 var GESTURE_DIRECTIVES = 'onHold onTap onTouch onRelease onDrag onDragUp onDragRight onDragDown onDragLeft onSwipe onSwipeUp onSwipeRight onSwipeDown onSwipeLeft'.split(' ');
 
@@ -4843,7 +6428,7 @@ GESTURE_DIRECTIVES.forEach(function(name) {
  * @restrict A
  *
  * @description
- * Touch stays at the same location for 500ms.
+ * Touch stays at the same location for 500ms. Similar to long touch events available for AngularJS and jQuery.
  *
  * @usage
  * ```html
@@ -5215,7 +6800,8 @@ function headerFooterBarDirective(isHeader) {
       restrict: 'E',
       compile: function($element, $attr) {
         $element.addClass(isHeader ? 'bar bar-header' : 'bar bar-footer');
-
+        var parent = $element[0].parentNode;
+        if(parent.querySelector('.tabs-top'))$element.addClass('has-tabs-top');
         return { pre: prelink };
         function prelink($scope, $element, $attr) {
           var hb = new ionic.views.HeaderBar({
@@ -5282,6 +6868,11 @@ function headerFooterBarDirective(isHeader) {
  * @usage
  * ```html
  * <ion-content ng-controller="MyController">
+ *   <ion-list>
+ *   ....
+ *   ....
+ *   </ion-list>
+ *
  *   <ion-infinite-scroll
  *     on-infinite="loadMore()"
  *     distance="1%">
@@ -5298,7 +6889,7 @@ function headerFooterBarDirective(isHeader) {
  *     });
  *   };
  *
- *   $scope.$on('stateChangeSuccess', function() {
+ *   $scope.$on('$stateChangeSuccess', function() {
  *     $scope.loadMore();
  *   });
  * }
@@ -5319,24 +6910,19 @@ IonicModule
 .directive('ionInfiniteScroll', ['$timeout', function($timeout) {
   function calculateMaxValue(distance, maximum, isPercent) {
     return isPercent ?
-      maximum * (1 - parseInt(distance,10) / 100) :
-      maximum - parseInt(distance, 10);
+      maximum * (1 - parseFloat(distance,10) / 100) :
+      maximum - parseFloat(distance, 10);
   }
   return {
     restrict: 'E',
     require: ['^$ionicScroll', 'ionInfiniteScroll'],
-    template:
-      '<div class="scroll-infinite">' +
-        '<div class="scroll-infinite-content">' +
-          '<i class="icon {{icon()}} icon-refreshing"></i>' +
-        '</div>' +
-      '</div>',
+    template: '<i class="icon {{icon()}} icon-refreshing"></i>',
     scope: true,
     controller: ['$scope', '$attrs', function($scope, $attrs) {
       this.isLoading = false;
       this.scrollView = null; //given by link function
       this.getMaxScroll = function() {
-        var distance = ($attrs.distance || '1%').trim();
+        var distance = ($attrs.distance || '2.5%').trim();
         var isPercent = distance.indexOf('%') !== -1;
         var maxValues = this.scrollView.getScrollMax();
         return {
@@ -5368,6 +6954,7 @@ IonicModule
         $element[0].classList.remove('active');
         $timeout(function() {
           scrollView.resize();
+          checkBounds();
         }, 0, false);
         infiniteScrollCtrl.isLoading = false;
       };
@@ -5377,7 +6964,7 @@ IonicModule
       });
 
       $scope.$on('$destroy', function() {
-        scrollCtrl.$element.off('scroll', checkBounds);
+        if(scrollCtrl && scrollCtrl.$element)scrollCtrl.$element.off('scroll', checkBounds);
       });
 
       var checkBounds = ionic.animationFrameThrottle(checkInfiniteBounds);
@@ -5424,6 +7011,9 @@ var ITEM_TPL_CONTENT =
 * ```html
 * <ion-list>
 *   <ion-item>Hello!</ion-item>
+*   <ion-item href="#/detail">
+*     Link to detail page
+*   </ion-item>
 * </ion-list>
 * ```
 */
@@ -5468,7 +7058,6 @@ function($animate, $compile) {
     }
   };
 }]);
-
 
 var ITEM_TPL_DELETE_BUTTON =
   '<div class="item-left-edit item-delete enable-pointer-events">' +
@@ -5644,12 +7233,12 @@ var ITEM_TPL_REORDER_BUTTON =
 * @usage
 *
 * ```html
-* <ion-list ng-controller="MyCtrl">
+* <ion-list ng-controller="MyCtrl" show-reorder="true">
 *   <ion-item ng-repeat="item in items">
 *     Item {{item}}
 *     <ion-reorder-button class="ion-navicon"
 *                         on-reorder="moveItem(item, $fromIndex, $toIndex)">
-*     </ion-reorder>
+*     </ion-reorder-button>
 *   </ion-item>
 * </ion-list>
 * ```
@@ -5687,6 +7276,11 @@ IonicModule
             $toIndex: newIndex
           });
         };
+
+        // prevent clicks from bubbling up to the item
+        if(!$attr.ngClick && !$attr.onClick && !$attr.onclick){
+          $element[0].onclick = function(e){e.stopPropagation(); return false;};
+        }
 
         var container = jqLite(ITEM_TPL_REORDER_BUTTON);
         container.append($element);
@@ -5849,6 +7443,7 @@ function keyboardAttachGetClientHeight(element) {
 *
 * @param {string=} delegate-handle The handle used to identify this list with
 * {@link ionic.service:$ionicListDelegate}.
+* @param type {string=} The type of list to use (list-inset or card)
 * @param show-delete {boolean=} Whether the delete buttons for the items in the list are
 * currently shown or hidden.
 * @param show-reorder {boolean=} Whether the reorder buttons for the items in the list are
@@ -5867,7 +7462,8 @@ function($animate, $timeout) {
     controller: '$ionicList',
     compile: function($element, $attr) {
       var listEl = jqLite('<div class="list">')
-      .append( $element.contents() );
+      .append( $element.contents() )
+      .addClass($attr.type);
       $element.append(listEl);
 
       return function($scope, $element, $attrs, ctrls) {
@@ -5896,6 +7492,13 @@ function($animate, $timeout) {
             },
             canSwipe: function() {
               return listCtrl.canSwipeItems();
+            }
+          });
+
+          $scope.$on('$destroy', function() {
+            if(listView) {
+              listView.deregister && listView.deregister();
+              listView = null;
             }
           });
 
@@ -5950,7 +7553,7 @@ function($animate, $timeout) {
           function setButtonShown(el, shown) {
             shown() && el.addClass('visible') || el.removeClass('active');
             ionic.requestAnimationFrame(function() {
-              shown() && el.addClass('active') || el.removeClass('invisible');
+              shown() && el.addClass('active') || el.removeClass('visible');
             });
           }
         }
@@ -5971,7 +7574,7 @@ function($animate, $timeout) {
  *
  * @usage
  * Below is an example of a link within a side menu. Tapping this link would
- * automatically close the currently opened menu
+ * automatically close the currently opened menu.
  *
  * ```html
  * <a menu-close href="#/home" class="item">Home</a>
@@ -5997,11 +7600,11 @@ IonicModule
  * @restrict AC
  *
  * @description
- * Toggle a side menu on the given side
+ * Toggle a side menu on the given side.
  *
  * @usage
- * Below is an example of a link within a nav bar. Tapping this link would
- * automatically open the given side menu
+ * Below is an example of a link within a nav bar. Tapping this button
+ * would open the given side menu, and tapping it again would close it.
  *
  * ```html
  * <ion-view>
@@ -6013,22 +7616,21 @@ IonicModule
  * ```
  */
 IonicModule
-.directive('menuToggle', ['$ionicViewService', function($ionicViewService) {
+.directive('menuToggle', function() {
   return {
     restrict: 'AC',
     require: '^ionSideMenus',
     link: function($scope, $element, $attr, sideMenuCtrl) {
-      var side = $attr.menuToggle || 'left';
       $element.bind('click', function(){
-        if(side === 'left') {
-          sideMenuCtrl.toggleLeft();
-        } else if(side === 'right') {
+        if ($attr.menuToggle === 'right') {
           sideMenuCtrl.toggleRight();
+        } else {
+          sideMenuCtrl.toggleLeft();
         }
       });
     }
   };
-}]);
+});
 
 
 /*
@@ -6089,7 +7691,7 @@ IonicModule
  * ```html
  * <ion-nav-bar ng-controller="MyCtrl">
  *   <ion-nav-back-button class="button-clear"
- *     ng-click="doSomethingCool()">
+ *     ng-click="goBack()">
  *     <i class="ion-arrow-left-c"></i> Back
  *   </ion-nav-back-button>
  * </ion-nav-bar>
@@ -6490,7 +8092,7 @@ IonicModule.constant('$ionicNavViewConfig', {
  * the {@link ionic.directive:ionNavBar} directive that updates as we navigate through the
  * navigation stack.
  *
- * You can use any [animation class](/docs/components#animation) on the navView's `animation` attribute
+ * You can use any [animation class](/docs/components#animations) on the navView's `animation` attribute
  * to have its pages animate.
  *
  * Recommended for page transitions: 'slide-left-right', 'slide-left-right-ios7', 'slide-in-up'.
@@ -6528,7 +8130,7 @@ IonicModule.constant('$ionicNavViewConfig', {
  * ```html
  * <script id="home" type="text/ng-template">
  *   <!-- The title of the ion-view will be shown on the navbar -->
- *   <ion-view title="'Home'">
+ *   <ion-view title="Home">
  *     <ion-content ng-controller="HomeCtrl">
  *       <!-- The content of the page -->
  *       <a href="#/music">Go to music page!</a>
@@ -6731,6 +8333,34 @@ IonicModule
   };
 });
 
+/*
+ * We don't document the ionPopover directive, we instead document
+ * the $ionicPopover service
+ */
+IonicModule
+.directive('ionPopover', [function() {
+  return {
+    restrict: 'E',
+    transclude: true,
+    replace: true,
+    controller: [function(){}],
+    template: '<div class="popover-backdrop">' +
+                '<div class="popover-wrapper" ng-transclude></div>' +
+              '</div>'
+  };
+}]);
+
+IonicModule
+.directive('ionPopoverView', function() {
+  return {
+    restrict: 'E',
+    compile: function(element) {
+      element.append( angular.element('<div class="popover-arrow"></div>') );
+      element.addClass('popover');
+    }
+  };
+});
+
 /**
  * @ngdoc directive
  * @name ionRadio
@@ -6748,6 +8378,15 @@ IonicModule
  * <ion-radio ng-model="choice" ng-value="'B'">Choose B</ion-radio>
  * <ion-radio ng-model="choice" ng-value="'C'">Choose C</ion-radio>
  * ```
+ * 
+ * @param {string=} name The name of the radio input.
+ * @param {expression=} value The value of the radio input.
+ * @param {boolean=} disabled The state of the radio input.
+ * @param {string=} icon The icon to use when the radio input is selected.
+ * @param {expression=} ng-value Angular equivalent of the value attribute.
+ * @param {expression=} ng-model The angular model for the radio input.
+ * @param {boolean=} ng-disabled Angular equivalent of the disabled attribute.
+ * @param {expression=} ng-change Triggers given expression when radio input's model changes
  */
 IonicModule
 .directive('ionRadio', function() {
@@ -6755,25 +8394,30 @@ IonicModule
     restrict: 'E',
     replace: true,
     require: '?ngModel',
-    scope: {
-      ngModel: '=?',
-      ngValue: '=?',
-      ngDisabled: '=?',
-      ngChange: '&',
-      icon: '@',
-      name: '@'
-    },
     transclude: true,
-    template: '<label class="item item-radio">' +
-                '<input type="radio" name="radio-group"' +
-                ' ng-model="ngModel" ng-value="getValue()" ng-change="ngChange()" ng-disabled="ngDisabled">' +
-                '<div class="item-content disable-pointer-events" ng-transclude></div>' +
-                '<i class="radio-icon disable-pointer-events icon ion-checkmark"></i>' +
-              '</label>',
+    template:
+      '<label class="item item-radio">' +
+        '<input type="radio" name="radio-group">' +
+        '<div class="item-content disable-pointer-events" ng-transclude></div>' +
+        '<i class="radio-icon disable-pointer-events icon ion-checkmark"></i>' +
+      '</label>',
 
     compile: function(element, attr) {
-      if(attr.name) element.children().eq(0).attr('name', attr.name);
       if(attr.icon) element.children().eq(2).removeClass('ion-checkmark').addClass(attr.icon);
+      var input = element.find('input');
+      forEach({
+          'name': attr.name,
+          'value': attr.value,
+          'disabled': attr.disabled,
+          'ng-value': attr.ngValue,
+          'ng-model': attr.ngModel,
+          'ng-disabled': attr.ngDisabled,
+          'ng-change': attr.ngChange
+      }, function(value, name) {
+        if (isDefined(value)) {
+            input.attr(name, value);
+          }
+      });
 
       return function(scope, element, attr) {
         scope.getValue = function() {
@@ -6841,6 +8485,8 @@ IonicModule
  * refresher.
  * @param {string=} refreshing-text The text to display after the user lets go of
  * the refresher.
+ * @param {boolean=} disable-pulling-rotation Disables the rotation animation of the pulling
+ * icon when it reaches its activated threshold. To be used with a custom `pulling-icon`.
  *
  */
 IonicModule
@@ -6850,10 +8496,10 @@ IonicModule
     replace: true,
     require: '^$ionicScroll',
     template:
-    '<div class="scroll-refresher">' +
+    '<div class="scroll-refresher" collection-repeat-ignore>' +
       '<div class="ionic-refresher-content" ' +
       'ng-class="{\'ionic-refresher-with-text\': pullingText || refreshingText}">' +
-        '<div class="icon-pulling">' +
+        '<div class="icon-pulling" ng-class="{\'pulling-rotation-disabled\':disablePullingRotation}">' +
           '<i class="icon {{pullingIcon}}"></i>' +
         '</div>' +
         '<div class="text-pulling" ng-bind-html="pullingText"></div>' +
@@ -6863,7 +8509,7 @@ IonicModule
     '</div>',
     compile: function($element, $attrs) {
       if (angular.isUndefined($attrs.pullingIcon)) {
-        $attrs.$set('pullingIcon', 'ion-arrow-down-c');
+        $attrs.$set('pullingIcon', 'ion-ios7-arrow-down');
       }
       if (angular.isUndefined($attrs.refreshingIcon)) {
         $attrs.$set('refreshingIcon', 'ion-loading-d');
@@ -6874,6 +8520,7 @@ IonicModule
           pullingText: '@',
           refreshingIcon: '@',
           refreshingText: '@',
+          disablePullingRotation: '@',
           $onRefresh: '&onRefresh',
           $onPulling: '&onPulling'
         });
@@ -6881,7 +8528,6 @@ IonicModule
         scrollCtrl._setRefresher($scope, $element[0]);
         $scope.$on('scroll.refreshComplete', function() {
           $scope.$evalAsync(function() {
-            $element[0].classList.remove('active');
             scrollCtrl.scrollView.finishPullToRefresh();
           });
         });
@@ -6895,14 +8541,31 @@ IonicModule
  * @name ionScroll
  * @module ionic
  * @delegate ionic.service:$ionicScrollDelegate
+ * @codepen mwFuh
  * @restrict E
  *
  * @description
  * Creates a scrollable container for all content inside.
  *
+ * @usage
+ *
+ * Basic usage:
+ *
+ * ```html
+ * <ion-scroll zooming="true" direction="xy" style="width: 500px; height: 500px">
+ *   <div style="width: 5000px; height: 5000px; background: url('https://upload.wikimedia.org/wikipedia/commons/a/ad/Europe_geological_map-en.jpg') repeat"></div>
+ *  </ion-scroll>
+ * ```
+ *
+ * Note that it's important to set the height of the scroll box as well as the height of the inner
+ * content to enable scrolling. This makes it possible to have full control over scrollable areas.
+ *
+ * If you'd just like to have a center content scrolling area, use {@link ionic.directive:ionContent} instead.
+ *
  * @param {string=} delegate-handle The handle used to identify this scrollView
  * with {@link ionic.service:$ionicScrollDelegate}.
  * @param {string=} direction Which way to scroll. 'x' or 'y' or 'xy'. Default 'y'.
+ * @param {boolean=} locking Whether to lock scrolling in one direction at a time. Useful to set to false when zoomed in or scrolling in two directions. Default true.
  * @param {boolean=} paging Whether to scroll with paging.
  * @param {expression=} on-refresh Called on pull-to-refresh, triggered by an {@link ionic.directive:ionRefresher}.
  * @param {expression=} on-scroll Called whenever the user scrolls.
@@ -6964,6 +8627,7 @@ function($timeout, $controller, $ionicBind) {
         var scrollViewOptions= {
           el: $element[0],
           delegateHandle: $attr.delegateHandle,
+          locking: ($attr.locking || 'true') === 'true',
           bouncing: $scope.$eval($attr.hasBouncing),
           paging: isPaging,
           scrollbarX: $scope.$eval($scope.scrollbarX) !== false,
@@ -7030,7 +8694,7 @@ IonicModule
         $scope.side = $attr.side || 'left';
 
         var sideMenu = sideMenuCtrl[$scope.side] = new ionic.views.SideMenu({
-          width: 275,
+          width: attr.width,
           el: $element[0],
           isEnabled: true
         });
@@ -7082,17 +8746,20 @@ IonicModule
 .directive('ionSideMenuContent', [
   '$timeout',
   '$ionicGesture',
-function($timeout, $ionicGesture) {
+  '$window',
+function($timeout, $ionicGesture, $window) {
 
   return {
     restrict: 'EA', //DEPRECATED 'A'
     require: '^ionSideMenus',
     scope: true,
     compile: function(element, attr) {
+      element.addClass('menu-content pane');
+
       return { pre: prelink };
       function prelink($scope, $element, $attr, sideMenuCtrl) {
-
-        $element.addClass('menu-content pane');
+        var startCoord = null;
+        var primaryScrollAxis = null;
 
         if (isDefined(attr.dragContent)) {
           $scope.$watch(attr.dragContent, function(value) {
@@ -7106,50 +8773,79 @@ function($timeout, $ionicGesture) {
           $scope.$watch(attr.edgeDragThreshold, function(value) {
             sideMenuCtrl.edgeDragThreshold(value);
           });
-         }
-
-        var defaultPrevented = false;
-        var isDragging = false;
+        }
 
         // Listen for taps on the content to close the menu
-        function contentTap(e) {
-          if(sideMenuCtrl.getOpenAmount() !== 0) {
+        function onContentTap(gestureEvt) {
+          if (sideMenuCtrl.getOpenAmount() !== 0) {
             sideMenuCtrl.close();
+            gestureEvt.gesture.srcEvent.preventDefault();
+            startCoord = null;
+            primaryScrollAxis = null;
+          } else if (!startCoord) {
+            startCoord = ionic.tap.pointerCoord(gestureEvt.gesture.srcEvent);
+          }
+        }
+
+        function onDragX(e) {
+          if (!sideMenuCtrl.isDraggableTarget(e)) return;
+
+          if ( getPrimaryScrollAxis(e) == 'x') {
+            sideMenuCtrl._handleDrag(e);
             e.gesture.srcEvent.preventDefault();
           }
         }
-        ionic.on('tap', contentTap, $element[0]);
 
-        var dragFn = function(e) {
-          if(defaultPrevented || !sideMenuCtrl.isDraggableTarget(e)) return;
-          isDragging = true;
-          sideMenuCtrl._handleDrag(e);
-          e.gesture.srcEvent.preventDefault();
-        };
-
-        var dragVertFn = function(e) {
-          if(isDragging) {
+        function onDragY(e) {
+          if ( getPrimaryScrollAxis(e) == 'x' ) {
             e.gesture.srcEvent.preventDefault();
           }
-        };
+        }
 
-        //var dragGesture = Gesture.on('drag', dragFn, $element);
-        var dragRightGesture = $ionicGesture.on('dragright', dragFn, $element);
-        var dragLeftGesture = $ionicGesture.on('dragleft', dragFn, $element);
-        var dragUpGesture = $ionicGesture.on('dragup', dragVertFn, $element);
-        var dragDownGesture = $ionicGesture.on('dragdown', dragVertFn, $element);
+        function onDragRelease(e) {
+          sideMenuCtrl._endDrag(e);
+          startCoord = null;
+          primaryScrollAxis = null;
+        }
 
-        var dragReleaseFn = function(e) {
-          isDragging = false;
-          if(!defaultPrevented) {
-            sideMenuCtrl._endDrag(e);
+        function getPrimaryScrollAxis(gestureEvt) {
+          // gets whether the user is primarily scrolling on the X or Y
+          // If a majority of the drag has been on the Y since the start of
+          // the drag, but the X has moved a little bit, it's still a Y drag
+
+          if (primaryScrollAxis) {
+            // we already figured out which way they're scrolling
+            return primaryScrollAxis;
           }
-          defaultPrevented = false;
-        };
 
-        var releaseGesture = $ionicGesture.on('release', dragReleaseFn, $element);
+          if (gestureEvt && gestureEvt.gesture) {
 
-        sideMenuCtrl.setContent({
+            if (!startCoord) {
+              // get the starting point
+              startCoord = ionic.tap.pointerCoord(gestureEvt.gesture.srcEvent);
+
+            } else {
+              // we already have a starting point, figure out which direction they're going
+              var endCoord = ionic.tap.pointerCoord(gestureEvt.gesture.srcEvent);
+
+              var xDistance = Math.abs(endCoord.x - startCoord.x);
+              var yDistance = Math.abs(endCoord.y - startCoord.y);
+
+              var scrollAxis = ( xDistance < yDistance ? 'y' : 'x' );
+
+              if ( Math.max(xDistance, yDistance) > 30 ) {
+                // ok, we pretty much know which way they're going
+                // let's lock it in
+                primaryScrollAxis = scrollAxis;
+              }
+
+              return scrollAxis;
+            }
+          }
+          return 'y';
+        }
+
+        var content = {
           element: element[0],
           onDrag: function(e) {},
           endDrag: function(e) {},
@@ -7157,31 +8853,70 @@ function($timeout, $ionicGesture) {
             return $scope.sideMenuContentTranslateX || 0;
           },
           setTranslateX: ionic.animationFrameThrottle(function(amount) {
-            $element[0].style[ionic.CSS.TRANSFORM] = 'translate3d(' + amount + 'px, 0, 0)';
+            var xTransform = content.offsetX + amount;
+            $element[0].style[ionic.CSS.TRANSFORM] = 'translate3d(' + xTransform + 'px,0,0)';
             $timeout(function() {
               $scope.sideMenuContentTranslateX = amount;
             });
           }),
+          setMarginLeft: ionic.animationFrameThrottle(function(amount) {
+            if (amount) {
+              amount = parseInt(amount, 10);
+              $element[0].style[ionic.CSS.TRANSFORM] = 'translate3d(' + amount + 'px,0,0)';
+              $element[0].style.width = ($window.innerWidth - amount) + 'px';
+              content.offsetX = amount;
+            } else {
+              $element[0].style[ionic.CSS.TRANSFORM] = 'translate3d(0,0,0)';
+              $element[0].style.width = '';
+              content.offsetX = 0;
+            }
+          }),
+          setMarginRight: ionic.animationFrameThrottle(function(amount) {
+            if (amount) {
+              amount = parseInt(amount, 10);
+              $element[0].style.width = ($window.innerWidth - amount) + 'px';
+              content.offsetX = amount;
+            } else {
+              $element[0].style.width = '';
+              content.offsetX = 0;
+            }
+            // reset incase left gets grabby
+            $element[0].style[ionic.CSS.TRANSFORM] = 'translate3d(0,0,0)';
+          }),
           enableAnimation: function() {
-            //this.el.classList.add(this.animateClass);
             $scope.animationEnabled = true;
             $element[0].classList.add('menu-animated');
           },
           disableAnimation: function() {
-            //this.el.classList.remove(this.animateClass);
             $scope.animationEnabled = false;
             $element[0].classList.remove('menu-animated');
-          }
-        });
+          },
+          offsetX: 0
+        };
+
+        sideMenuCtrl.setContent(content);
+
+        // add gesture handlers
+        var gestureOpts = { stop_browser_behavior: false };
+        var contentTapGesture = $ionicGesture.on('tap', onContentTap, $element, gestureOpts);
+        var dragRightGesture = $ionicGesture.on('dragright', onDragX, $element, gestureOpts);
+        var dragLeftGesture = $ionicGesture.on('dragleft', onDragX, $element, gestureOpts);
+        var dragUpGesture = $ionicGesture.on('dragup', onDragY, $element, gestureOpts);
+        var dragDownGesture = $ionicGesture.on('dragdown', onDragY, $element, gestureOpts);
+        var releaseGesture = $ionicGesture.on('release', onDragRelease, $element, gestureOpts);
 
         // Cleanup
         $scope.$on('$destroy', function() {
-          $ionicGesture.off(dragLeftGesture, 'dragleft', dragFn);
-          $ionicGesture.off(dragRightGesture, 'dragright', dragFn);
-          $ionicGesture.off(dragUpGesture, 'dragup', dragFn);
-          $ionicGesture.off(dragDownGesture, 'dragdown', dragFn);
-          $ionicGesture.off(releaseGesture, 'release', dragReleaseFn);
-          ionic.off('tap', contentTap, $element[0]);
+          if (content) {
+            content.element = null;
+            content = null;
+          }
+          $ionicGesture.off(dragLeftGesture, 'dragleft', onDragX);
+          $ionicGesture.off(dragRightGesture, 'dragright', onDragX);
+          $ionicGesture.off(dragUpGesture, 'dragup', onDragY);
+          $ionicGesture.off(dragDownGesture, 'dragdown', onDragY);
+          $ionicGesture.off(releaseGesture, 'release', onDragRelease);
+          $ionicGesture.off(contentTapGesture, 'tap', onContentTap);
         });
       }
     }
@@ -7202,11 +8937,25 @@ IonicModule
  * and/or right side menu to be toggled by dragging the main content area side
  * to side.
  *
+ * To automatically close an opened menu you can add the {@link ionic.directive:menuClose}
+ * attribute directive. Including the `menu-close` attribute is usually added to
+ * links and buttons within `ion-side-menu` content, so that when the element is
+ * clicked then the opened side menu will automatically close.
+ *
+ * By default, side menus are hidden underneath its side menu content, and can be opened by
+ * either swiping the content left or right, or toggling a button to show the side menu. However,
+ * by adding the {@link ionic.directive:exposeAsideWhen} attribute directive to an
+ * {@link ionic.directive:ionSideMenu} element directive, a side menu can be given instructions
+ * on "when" the menu should be exposed (always viewable).
+ *
  * ![Side Menu](http://ionicframework.com.s3.amazonaws.com/docs/controllers/sidemenu.gif)
  *
- * For more information on side menus, check out the documenation for
- * {@link ionic.directive:ionSideMenuContent} and
- * {@link ionic.directive:ionSideMenu}.
+ * For more information on side menus, check out:
+ *
+ * - {@link ionic.directive:ionSideMenuContent}
+ * - {@link ionic.directive:ionSideMenu}
+ * - {@link ionic.directive:menuClose}
+ * - {@link ionic.directive:exposeAsideWhen}
  *
  * @usage
  * To use side menus, add an `<ion-side-menus>` parent element,
@@ -7240,16 +8989,73 @@ IonicModule
  * with {@link ionic.service:$ionicSideMenuDelegate}.
  *
  */
-.directive('ionSideMenus', [function() {
+.directive('ionSideMenus', ['$ionicBody', function($ionicBody) {
   return {
     restrict: 'ECA',
     controller: '$ionicSideMenus',
     compile: function(element, attr) {
       attr.$set('class', (attr['class'] || '') + ' view');
+
+      return { pre: prelink };
+      function prelink($scope) {
+
+        $scope.$on('$ionicExposeAside', function(evt, isAsideExposed){
+          if(!$scope.$exposeAside) $scope.$exposeAside = {};
+          $scope.$exposeAside.active = isAsideExposed;
+          $ionicBody.enableClass(isAsideExposed, 'aside-open');
+        });
+
+        $scope.$on('$destroy', function(){
+          $ionicBody.removeClass('menu-open', 'aside-open');
+        });
+
+      }
     }
   };
 }]);
 
+/**
+ * @ngdoc directive
+ * @name ionSlide
+ * @parent ionic.directive:ionSlideBox
+ * @module ionic
+ *
+ * @description
+ * Displays a slide inside of a slidebox.
+ *
+ * For more complete examples, see {@link ionic.directive:ionSlideBox}.
+ *
+ * @usage
+ * ```html
+ * <ion-slide-box>
+ *   <ion-slide>1</ion-slide>
+ *   <ion-slide>2</ion-slide>
+ * </ion-slide-box>
+ * ```
+ */
+IonicModule
+.directive('ionSlide', [function() {
+  return {
+    restrict: 'E',
+    controller: '$ionSlide',
+    scope: true,
+    require: ['^ionSlideBox', 'ionSlide'],
+    link: postLink
+  };
+
+  function postLink(scope, element, attr, ctrls) {
+    var slideBoxCtrl = ctrls[0];
+    var slideCtrl = ctrls[1];
+
+    element.addClass('slider-slide');
+
+    slideBoxCtrl.add(slideCtrl);
+    element.on('$destroy', function() {
+      slideBoxCtrl.remove(slideCtrl);
+    });
+
+  }
+}]);
 
 /**
  * @ngdoc directive
@@ -7262,9 +9068,11 @@ IonicModule
  *
  * ![SlideBox](http://ionicframework.com.s3.amazonaws.com/docs/controllers/slideBox.gif)
  *
+ * Note: The slideBox will take up the whole width and height of its parent element.
+ *
  * @usage
  * ```html
- * <ion-slide-box on-slide-changed="slideHasChanged($index)">
+ * <ion-slide-box on-slide-changed="slideHasChanged($slideIndex)" loop="shouldLoop" auto-play="3000">
  *   <ion-slide>
  *     <div class="box blue"><h1>BLUE</h1></div>
  *   </ion-slide>
@@ -7277,165 +9085,192 @@ IonicModule
  * </ion-slide-box>
  * ```
  *
- * @param {string=} delegate-handle The handle used to identify this slideBox
- * with {@link ionic.service:$ionicSlideBoxDelegate}.
- * @param {boolean=} does-continue Whether the slide box should loop.
- * @param {boolean=} auto-play Whether the slide box should automatically slide. Default true if does-continue is true.
- * @param {number=} slide-interval How many milliseconds to wait to change slides (if does-continue is true). Defaults to 4000.
- * @param {boolean=} show-pager Whether a pager should be shown for this slide box.
- * @param {expression=} pager-click Expression to call when a pager is clicked (if show-pager is true). Is passed the 'index' variable.
- * @param {expression=} on-slide-changed Expression called whenever the slide is changed.  Is passed an '$index' variable.
- * @param {expression=} active-slide Model to bind the current slide to.
+ * @param {expression=} selected A model bound to the selected slide index.
+ * @param {boolean=} loop Whether the slide box should loop. Default false.
+ * @param {number=} auto-play If a positive number, then every time the given number of milliseconds have passed, slideBox will go to the next slide. Set to a non-positive number to disable. Default: -1.
+ * @param {expression=} on-slide-changed Expression called whenever the slide is changed.  Is passed a '$slideIndex' variable.
+ * @param {string=} delegate-handle The handle used to identify this slideBox with
+ * {@link ionic.service:$ionicSlideBoxDelegate}.
  */
 IonicModule
 .directive('ionSlideBox', [
-  '$timeout',
-  '$compile',
   '$ionicSlideBoxDelegate',
-function($timeout, $compile, $ionicSlideBoxDelegate) {
+  '$window',
+function($ionicSlideBoxDelegate, $window) {
+
   return {
     restrict: 'E',
-    replace: true,
+    controller: '$ionSlideBox',
+    require: 'ionSlideBox',
     transclude: true,
     scope: {
-      autoPlay: '=',
-      doesContinue: '@',
-      slideInterval: '@',
-      showPager: '@',
-      pagerClick: '&',
-      disableScroll: '@',
-      onSlideChanged: '&',
-      activeSlide: '=?'
+      selectedIndex: '=?selected',
+      onSlideChanged: '&'
     },
-    controller: ['$scope', '$element', '$attrs', function($scope, $element, $attrs) {
-      var _this = this;
+    template: '<div class="slider-slides" ng-transclude></div>',
+    compile: compile
+  };
 
-      var continuous = $scope.$eval($scope.doesContinue) === true;
-      var shouldAutoPlay = isDefined($attrs.autoPlay) ? !!$scope.autoPlay : false;
-      var slideInterval = shouldAutoPlay ? $scope.$eval($scope.slideInterval) || 4000 : 0;
+  function compile(element, attr) {
+    // DEPRECATED attr.doesContinue
+    isDefined(attr.doesContinue) && attr.$set('loop', attr.doesContinue);
 
-      var slider = new ionic.views.Slider({
-        el: $element[0],
-        auto: slideInterval,
-        continuous: continuous,
-        startSlide: $scope.activeSlide,
-        slidesChanged: function() {
-          $scope.currentSlide = slider.currentIndex();
+    return postLink;
+  }
 
-          // Try to trigger a digest
-          $timeout(function() {});
-        },
-        callback: function(slideIndex) {
-          $scope.currentSlide = slideIndex;
-          $scope.onSlideChanged({ index: $scope.currentSlide, $index: $scope.currentSlide});
-          $scope.$parent.$broadcast('slideBox.slideChanged', slideIndex);
-          $scope.activeSlide = slideIndex;
-          // Try to trigger a digest
-          $timeout(function() {});
-        }
+  function postLink(scope, element, attr, slideBoxCtrl) {
+    element.addClass('slider');
+
+    var deregister = $ionicSlideBoxDelegate._registerInstance(slideBoxCtrl, attr.delegateHandle);
+    scope.$on('$destroy', deregister);
+
+    watchSelected();
+    isDefined(attr.loop) && watchLoop();
+    isDefined(attr.autoPlay) && watchAutoPlay();
+
+    var throttledReposition = ionic.animationFrameThrottle(repositionSlideBox);
+    throttledReposition();
+    angular.element($window).on('resize', throttledReposition);
+
+    scope.$on('$destroy', function() {
+      angular.element($window).off('resize', throttledReposition);
+    });
+
+    // ***
+    // Methods
+    // ***
+
+    // There is no way to make the slidebox stretch to a large enough size
+    // when its children are all position: absolute elements.
+    // We just make it so the slidebox is *always* as large as its offsetParent.
+    function repositionSlideBox() {
+      element.css({
+        width: (element[0].offsetParent || element[0].parentNode || {}).offsetWidth + 'px',
+        height: (element[0].offsetParent || element[0].parentNode || {}).offsetHeight + 'px'
       });
-
-      slider.enableSlide($scope.$eval($attrs.disableScroll) !== true);
-
-      $scope.$watch('activeSlide', function(nv) {
-        if(angular.isDefined(nv)){
-          slider.slide(nv);
-        }
-      });
-
-      $scope.$on('slideBox.nextSlide', function() {
-        slider.next();
-      });
-
-      $scope.$on('slideBox.prevSlide', function() {
-        slider.prev();
-      });
-
-      $scope.$on('slideBox.setSlide', function(e, index) {
-        slider.slide(index);
-      });
-
-      //Exposed for testing
-      this.__slider = slider;
-
-      var deregisterInstance = $ionicSlideBoxDelegate._registerInstance(slider, $attrs.delegateHandle);
-      $scope.$on('$destroy', deregisterInstance);
-
-      this.slidesCount = function() {
-        return slider.slidesCount();
-      };
-
-      this.onPagerClick = function(index) {
-        void 0;
-        $scope.pagerClick({index: index});
-      };
-
-      $timeout(function() {
-        slider.load();
-      });
-    }],
-    template: '<div class="slider">' +
-      '<div class="slider-slides" ng-transclude>' +
-      '</div>' +
-    '</div>',
-
-    link: function($scope, $element, $attr, slideBoxCtrl) {
-      // If the pager should show, append it to the slide box
-      if($scope.$eval($scope.showPager) !== false) {
-        var childScope = $scope.$new();
-        var pager = jqLite('<ion-pager></ion-pager>');
-        $element.append(pager);
-        $compile(pager)(childScope);
-      }
     }
-  };
-}])
-.directive('ionSlide', function() {
-  return {
-    restrict: 'E',
-    require: '^ionSlideBox',
-    compile: function(element, attr) {
-      element.addClass('slider-slide');
-      return function($scope, $element, $attr) {
-      };
-    },
-  };
-})
 
-.directive('ionPager', function() {
-  return {
-    restrict: 'E',
-    replace: true,
-    require: '^ionSlideBox',
-    template: '<div class="slider-pager"><span class="slider-pager-page" ng-repeat="slide in numSlides() track by $index" ng-class="{active: $index == currentSlide}" ng-click="pagerClick($index)"><i class="icon ion-record"></i></span></div>',
-    link: function($scope, $element, $attr, slideBox) {
-      var selectPage = function(index) {
-        var children = $element[0].children;
-        var length = children.length;
-        for(var i = 0; i < length; i++) {
-          if(i == index) {
-            children[i].classList.add('active');
-          } else {
-            children[i].classList.remove('active');
+    function watchSelected() {
+      scope.$watch('selectedIndex', function selectedAttrWatchAction(newIndex) {
+        if (slideBoxCtrl.isInRange(newIndex)) {
+          scope.onSlideChanged({
+            //DEPRECATED $index
+            $index: newIndex,
+            $slideIndex: newIndex
+          });
+          if (slideBoxCtrl.selected() !== newIndex) {
+            slideBoxCtrl.select(newIndex);
           }
         }
-      };
-
-      $scope.pagerClick = function(index) {
-        slideBox.onPagerClick(index);
-      };
-
-      $scope.numSlides = function() {
-        return new Array(slideBox.slidesCount());
-      };
-
-      $scope.$watch('currentSlide', function(v) {
-        selectPage(v);
       });
     }
+
+    function watchLoop() {
+      var unwatchParent = scope.$parent.$watch(attr.loop, slideBoxCtrl.loop);
+      scope.$on('$destroy', unwatchParent);
+    }
+
+    function watchAutoPlay() {
+      var unwatchParent = scope.$parent.$watch(attr.autoPlay, slideBoxCtrl.autoPlay);
+      scope.$on('$destroy', unwatchParent);
+    }
+  }
+
+}]);
+
+
+
+/**
+ * @ngdoc directive
+ * @name ionSlidePager
+ * @parent ionic.directive:ionSlideBox
+ * @module ionic
+ * @description
+ * Shows a pager for the slidebox.
+ *
+ * A pager is a row of small buttons at the bottom of the slidebox, each
+ * representing one slide. When the user clicks a pager, that slide will
+ * be selected.
+ *
+ * For more complete examples, see {@link ionic.directive:ionSlideBox}.
+ *
+ * @usage
+ * This will show four pager buttons, one for each slide.
+ *
+ * ```html
+ * <ion-slide-box>
+ *   <ion-slide-pager></ion-slide-pager>
+ *   <ion-slide>1</ion-slide>
+ *   <ion-slide>2</ion-slide>
+ *   <ion-slide>3</ion-slide>
+ *   <ion-slide>4</ion-slide>
+ * </ion-slide-box>
+ * ```
+ *
+ * If you provide your own `ng-click` attribute, it overrides the default
+ * click behavior.
+ *
+ * ```html
+ * <ion-slide-box>
+ *   <ion-slide-pager ng-click="doSomething($slideIndex)"></ion-slide-pager>
+ *   <ion-slide>1</ion-slide>
+ *   <ion-slide>2</ion-slide>
+ *   <ion-slide>3</ion-slide>
+ * </ion-slide-box>
+ * ```
+ *
+ * @param {expression=} ng-click By default, clicking a pager will select the corresponding
+ * slide. You can override this by providing an ng-click expression. The ng-click
+ * expression will be provided a `$slideIndex` variable, signifying the slide index
+ * matching the click.
+ */
+IonicModule.directive('ionSlidePager', [
+  '$parse',
+function($parse) {
+  return {
+    restrict: 'E',
+    require: '^ionSlideBox',
+    scope: {},
+    template:
+      '<div class="slider-pager-page" ' +
+           'ng-repeat="i in pages" ' +
+           'ng-class="{active: i === slideBoxCtrl.selected()}" ' +
+           'ng-click="click(i)">' +
+      '</div>',
+    link: postLink
   };
 
-});
+  function postLink(scope, element, attr, slideBoxCtrl) {
+    var clickFn = attr.ngClick ?
+      $parse(attr.ngClick) :
+      function(scope, locals) {
+        slideBoxCtrl.select(locals.$slideIndex);
+      };
+
+    element.addClass('slider-pager');
+    scope.slideBoxCtrl = slideBoxCtrl;
+    scope.pages = [];
+
+    scope.click = onPagerClicked;
+    scope.$watch(slideBoxCtrl.count, watchCountAction);
+
+    function onPagerClicked(index) {
+      clickFn(scope.$parent, {
+        // DEPRECATED pass in `index` variable
+        index: index,
+        $slideIndex: index,
+      });
+    }
+
+    function watchCountAction(slidesCount) {
+      scope.pages.length = slidesCount;
+      for (var i = 0; i < slidesCount; i++) {
+        scope.pages[i] = i;
+      }
+    }
+  }
+
+}]);
 
 IonicModule.constant('$ionicTabConfig', {
   type: ''
@@ -7537,7 +9372,13 @@ function($rootScope, $animate, $ionicBind, $compile) {
 
         tabsCtrl.add($scope);
         $scope.$on('$destroy', function() {
-          tabsCtrl.remove($scope);
+          if(!$scope.$tabsDestroy) {
+            // if the containing ionTabs directive is being destroyed
+            // then don't bother going through the controllers remove
+            // method, since remove will reset the active tab as each tab
+            // is being destroyed, causing unnecessary view loads and transitions
+            tabsCtrl.remove($scope);
+          }
           tabNavElement.isolateScope().$destroy();
           tabNavElement.remove();
         });
@@ -7546,13 +9387,13 @@ function($rootScope, $animate, $ionicBind, $compile) {
         $element[0].removeAttribute('title');
 
         if (navViewName) {
-          tabCtrl.navViewName = navViewName;
+          tabCtrl.navViewName = $scope.navViewName = navViewName;
         }
         $scope.$on('$stateChangeSuccess', selectIfMatchesState);
         selectIfMatchesState();
         function selectIfMatchesState() {
           if (tabCtrl.tabMatchesState()) {
-            tabsCtrl.select($scope);
+            tabsCtrl.select($scope, false);
           }
         }
 
@@ -7695,9 +9536,9 @@ IonicModule.constant('$ionicTabsConfig', {
 
 IonicModule
 .directive('ionTabs', [
-  '$ionicViewService', 
-  '$ionicTabsDelegate', 
-  '$ionicTabsConfig', 
+  '$ionicViewService',
+  '$ionicTabsDelegate',
+  '$ionicTabsConfig',
 function($ionicViewService, $ionicTabsDelegate, $ionicTabsConfig) {
   return {
     restrict: 'E',
@@ -7719,7 +9560,14 @@ function($ionicViewService, $ionicTabsDelegate, $ionicTabsConfig) {
           tabsCtrl, $attr.delegateHandle
         );
 
-        $scope.$on('$destroy', deregisterInstance);
+        $scope.$on('$destroy', function(){
+          // variable to inform child tabs that they're all being blown away
+          // used so that while destorying an individual tab, each one
+          // doesn't select the next tab as the active one, which causes unnecessary
+          // loading of tab views when each will eventually all go away anyway
+          $scope.$tabsDestroy = true;
+          deregisterInstance();
+        });
 
         tabsCtrl.$scope = $scope;
         tabsCtrl.$element = $element;
@@ -7803,6 +9651,10 @@ function($ionicGesture, $timeout) {
           input.attr(name, value);
         }
       });
+
+      if(attr.toggleClass) {
+        element[0].getElementsByTagName('label')[0].classList.add(attr.toggleClass);
+      }
 
       return function($scope, $element, $attr) {
          var el, checkbox, track, handle;
