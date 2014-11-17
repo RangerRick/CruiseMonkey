@@ -1,6 +1,0 @@
-[submodule "dist"]
-	path = dist
-	url = git@github.com:RangerRick/CruiseMonkey-Client.git
-[submodule "ionic"]
-	path = ionic
-	url = https://github.com/driftyco/ionic.git

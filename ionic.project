@@ -1,4 +1,12 @@
 {
   "name": "CruiseMonkey",
-  "app_id": ""
+  "app_id": "com.raccoonfink.cruisemonkey",
+  "gulpStartupTasks": [
+    "sass",
+    "watch"
+  ],
+  "watchPatterns": [
+    "www/**/*",
+    "!www/lib/**/*"
+  ]
 }

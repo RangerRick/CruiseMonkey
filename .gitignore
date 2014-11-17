@@ -1,18 +1,6 @@
-*~
-*.swp
-*.swo
-*.bak
-.DS_Store
-.sass-cache
-.staging
-.tmp
-app/bower_components
-node_modules
-xcuserdata
-xcshareddata
-/www/
+# Specifies intentionally untracked files to ignore when using Git
+# http://git-scm.com/docs/gitignore
 
-# Android
-.classpath
-.project
-.settings
+node_modules/
+platforms/
+plugins/

@@ -13,7 +13,23 @@
                             "count": 1
                         },
                         {
-                            "xml": "<feature name=\"SpinnerDialog\"><param name=\"ios-package\" value=\"CDVSpinnerDialog\" /></feature>",
+                            "xml": "<feature name=\"DatePicker\"><param name=\"ios-package\" value=\"DatePicker\" /></feature>",
+                            "count": 1
+                        },
+                        {
+                            "xml": "<feature name=\"Clipboard\"><param name=\"ios-package\" value=\"CDVClipboard\" /></feature>",
+                            "count": 1
+                        },
+                        {
+                            "xml": "<feature name=\"Device\"><param name=\"ios-package\" value=\"CDVDevice\" /></feature>",
+                            "count": 1
+                        },
+                        {
+                            "xml": "<feature name=\"LocalNotification\"><param name=\"ios-package\" onload=\"true\" value=\"APPLocalNotification\" /><param name=\"onload\" value=\"true\" /></feature>",
+                            "count": 1
+                        },
+                        {
+                            "xml": "<feature name=\"Toast\"><param name=\"ios-package\" value=\"Toast\" /></feature>",
                             "count": 1
                         },
                         {
@@ -21,11 +37,11 @@
                             "count": 1
                         },
                         {
-                            "xml": "<feature name=\"Console\"><param name=\"ios-package\" value=\"CDVLogger\" /></feature>",
+                            "xml": "<preference name=\"CameraUsesGeolocation\" value=\"false\" />",
                             "count": 1
                         },
                         {
-                            "xml": "<feature name=\"Device\"><param name=\"ios-package\" value=\"CDVDevice\" /></feature>",
+                            "xml": "<feature name=\"Console\"><param name=\"ios-package\" value=\"CDVLogger\" /></feature>",
                             "count": 1
                         },
                         {
@@ -38,22 +54,6 @@
                         },
                         {
                             "xml": "<feature name=\"File\"><param name=\"ios-package\" value=\"CDVFile\" /><param name=\"onload\" value=\"true\" /></feature>",
-                            "count": 1
-                        },
-                        {
-                            "xml": "<feature name=\"Geolocation\"><param name=\"ios-package\" value=\"CDVLocation\" /></feature>",
-                            "count": 1
-                        },
-                        {
-                            "xml": "<feature name=\"InAppBrowser\"><param name=\"ios-package\" value=\"CDVInAppBrowser\" /></feature>",
-                            "count": 1
-                        },
-                        {
-                            "xml": "<feature name=\"Media\"><param name=\"ios-package\" value=\"CDVSound\" /></feature>",
-                            "count": 1
-                        },
-                        {
-                            "xml": "<feature name=\"Capture\"><param name=\"ios-package\" value=\"CDVCapture\" /></feature>",
                             "count": 1
                         },
                         {
@@ -73,10 +73,6 @@
                             "count": 1
                         },
                         {
-                            "xml": "<preference name=\"StatusBarBackgroundColor\" value=\"#000000\" />",
-                            "count": 1
-                        },
-                        {
                             "xml": "<preference name=\"StatusBarStyle\" value=\"lightcontent\" />",
                             "count": 1
                         },
@@ -85,15 +81,20 @@
                             "count": 1
                         },
                         {
-                            "xml": "<feature name=\"BackgroundFetch\"><param name=\"ios-package\" value=\"CDVBackgroundFetch\" /><param name=\"onload\" value=\"true\" /></feature>",
+                            "xml": "<feature name=\"ProgressIndicator\"><param name=\"ios-package\" value=\"ProgressIndicator\" /></feature>",
                             "count": 1
                         }
-                    ],
-                    "/widget": []
+                    ]
                 }
             },
             "framework": {
                 "parents": {
+                    "QuartzCore.framework": [
+                        {
+                            "xml": "false",
+                            "count": 1
+                        }
+                    ],
                     "ImageIO.framework": [
                         {
                             "xml": "true",
@@ -103,13 +104,13 @@
                     "CoreLocation.framework": [
                         {
                             "xml": "false",
-                            "count": 1
+                            "count": 2
                         }
                     ],
                     "CoreGraphics.framework": [
                         {
                             "xml": "false",
-                            "count": 4
+                            "count": 3
                         }
                     ],
                     "AssetsLibrary.framework": [
@@ -121,7 +122,7 @@
                     "MobileCoreServices.framework": [
                         {
                             "xml": "false",
-                            "count": 3
+                            "count": 2
                         }
                     ],
                     "AudioToolbox.framework": [
@@ -135,20 +136,14 @@
                             "xml": "true",
                             "count": 1
                         }
-                    ],
-                    "libsqlite3.dylib": [],
-                    "libstdc++.dylib": [],
-                    "libicucore.dylib": [],
-                    "libz.dylib": [],
-                    "Security.framework": [],
-                    "CFNetwork.framework": []
+                    ]
                 }
             },
             "*-Info.plist": {
                 "parents": {
-                    "UIBackgroundModes": [
+                    "NSLocationWhenInUseUsageDescription": [
                         {
-                            "xml": "<array><string>fetch</string></array>",
+                            "xml": "<string />",
                             "count": 1
                         }
                     ]
@@ -160,16 +155,22 @@
         "com.ionic.keyboard": {
             "PACKAGE_NAME": "com.raccoonfink.cruisemonkey"
         },
-        "hu.dpal.phonegap.plugins.SpinnerDialog": {
+        "com.plugin.datepicker": {
+            "PACKAGE_NAME": "com.raccoonfink.cruisemonkey"
+        },
+        "com.verso.cordova.clipboard": {
+            "PACKAGE_NAME": "com.raccoonfink.cruisemonkey"
+        },
+        "de.appplant.cordova.plugin.local-notification": {
+            "PACKAGE_NAME": "com.raccoonfink.cruisemonkey"
+        },
+        "nl.x-services.plugins.toast": {
             "PACKAGE_NAME": "com.raccoonfink.cruisemonkey"
         },
         "org.apache.cordova.camera": {
             "PACKAGE_NAME": "com.raccoonfink.cruisemonkey"
         },
         "org.apache.cordova.console": {
-            "PACKAGE_NAME": "com.raccoonfink.cruisemonkey"
-        },
-        "org.apache.cordova.device": {
             "PACKAGE_NAME": "com.raccoonfink.cruisemonkey"
         },
         "org.apache.cordova.device-orientation": {
@@ -179,18 +180,6 @@
             "PACKAGE_NAME": "com.raccoonfink.cruisemonkey"
         },
         "org.apache.cordova.file": {
-            "PACKAGE_NAME": "com.raccoonfink.cruisemonkey"
-        },
-        "org.apache.cordova.geolocation": {
-            "PACKAGE_NAME": "com.raccoonfink.cruisemonkey"
-        },
-        "org.apache.cordova.inappbrowser": {
-            "PACKAGE_NAME": "com.raccoonfink.cruisemonkey"
-        },
-        "org.apache.cordova.media": {
-            "PACKAGE_NAME": "com.raccoonfink.cruisemonkey"
-        },
-        "org.apache.cordova.media-capture": {
             "PACKAGE_NAME": "com.raccoonfink.cruisemonkey"
         },
         "org.apache.cordova.network-information": {
@@ -205,12 +194,12 @@
         "org.apache.cordova.vibration": {
             "PACKAGE_NAME": "com.raccoonfink.cruisemonkey"
         },
-        "org.transistorsoft.cordova.plugin.background.fetch": {
+        "org.pbernasconi.progressIndicator": {
             "PACKAGE_NAME": "com.raccoonfink.cruisemonkey"
         }
     },
     "dependent_plugins": {
-        "com.red_folder.phonegap.plugin.backgroundservice": {
+        "org.apache.cordova.device": {
             "PACKAGE_NAME": "com.raccoonfink.cruisemonkey"
         }
     }

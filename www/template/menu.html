@@ -1,0 +1,35 @@
+<ion-side-menus>
+
+  <ion-pane ion-side-menu-content>
+    <ion-nav-bar class="bar-stable bar-dark nav-title-slide-ios7">
+      <ion-nav-back-button class="button-clear"><i class="icon ion-ios7-arrow-back"></i> Back</ion-nav-back-button>
+    </ion-nav-bar>
+    <ion-nav-view name="menuContent" animation="slide-left-right"></ion-nav-view>
+  </ion-pane>
+
+  <ion-side-menu side="left" expose-aside-when="large">
+    <header class="bar bar-header bar-stable bar-dark">
+      <h1 class="title">CruiseMonkey</h1>
+    </header>
+    <ion-content class="has-header">
+      <ion-list>
+				<ion-item nav-clear menu-close ui-sref="app.events({eventType: 'official'})"   ui-sref-active="active">Official Events</ion-item>
+				<ion-item nav-clear menu-close ui-sref="app.events({eventType: 'unofficial'})" ui-sref-active="active">Unofficial Events</ion-item>
+				<ion-item nav-clear menu-close ui-sref="app.events({eventType: 'my'})"         ui-sref-active="active" ng-if="user.loggedIn">My Events</ion-item>
+				<ion-item nav-clear menu-close ui-sref="app.deck-plans"                        ui-sref-active="active">Deck Plans</ion-item>
+				<ion-item nav-clear menu-close ui-sref="app.amenities"                         ui-sref-active="active">Amenities</ion-item>
+				<ion-item nav-clear menu-close ui-sref="app.karaoke"                           ui-sref-active="active">Karaoke</ion-item>
+				<ion-item nav-clear menu-close ui-sref="app.photos"                            ui-sref-active="active">Twit-Arr Pics</ion-item>
+				<ion-item nav-clear menu-close ng-click="openSeamail()"                        ui-sref-active="active">
+					Seamail
+					<span class="badge badge-assertive" ng-if="seamailCount > 0">{{seamailCount}}</span>
+				</ion-item>
+				<ion-item nav-clear menu-close ui-sref="app.logout" ng-if="user.loggedIn"      ui-sref-active="active">Log Out ({{user.username}})</ion-item>
+				<ion-item nav-clear menu-close ui-sref="app.login" ng-if="!user.loggedIn"      ui-sref-active="active">Log In</ion-item>
+				<ion-item nav-clear menu-close ui-sref="app.advanced"                          ui-sref-active="active">Advanced</ion-item>
+				<ion-item nav-clear menu-close ui-sref="app.help"                              ui-sref-active="active">Help</ion-item>
+				<ion-item nav-clear menu-close ui-sref="app.about"                             ui-sref-active="active">About</ion-item>
+      </ion-list>
+    </ion-content>
+  </ion-side-menu>
+</ion-side-menus>

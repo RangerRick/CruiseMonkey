@@ -1,0 +1,11 @@
+{
+"stage":
+	{
+	"datahostname" : "'qa-api.mydomain.com'"
+	},
+"prod":
+	{
+	"datahostname" : "'api.mydomain.com'"
+	}
+
+}
