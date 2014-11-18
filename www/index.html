@@ -23,6 +23,7 @@
 
 <!-- build:css(.tmp) styles/3rdparty.css -->
 <link rel="stylesheet" href="css/normalize.css" />
+<link rel="stylesheet" href="lib/AngularJS-Toaster/toaster.css">
 <!-- endbuild -->
 
 <!-- build:css(.tmp) styles/cm.css -->
@@ -112,9 +113,10 @@ if (typeof String.prototype.contains !== 'function') {
 	<ion-nav-view></ion-nav-view>
 
 	<!-- build:js scripts/3rdparty.js -->
-	<script src="scripts/3rdparty/modernizr-latest.js"></script>
+	<script src="lib/modernizr/modernizr.js"></script>
 	<script src="lib/classlist/classList.js"></script>
 	<script src="lib/es5-shim/es5-shim.js"></script>
+	<script src="lib/blob-util/dist/blob-util.min.js"></script>
 	<script src="lib/offline/offline.min.js"></script>
 	<!-- <script src="scripts/3rdparty/pouchdb-nightly.js"></script> -->
 	<script src="lib/pouchdb/dist/pouchdb.min.js"></script>
@@ -132,10 +134,11 @@ if (typeof String.prototype.contains !== 'function') {
 	<script src="lib/angular-resource/angular-resource.js"></script>
 	<script src="lib/angular-bindonce/bindonce.js"></script>
 	<script src="lib/angular-ui-router/release/angular-ui-router.js"></script>
-	<!-- <script src="scripts/angular-3rdparty/ionic-angular.js"></script> -->
 	<script src="lib/angularLocalStorage/src/angularLocalStorage.js"></script>
 	<script src="scripts/angular-3rdparty/angular-loading-bar/build/loading-bar.js"></script>
 	<script src="lib/angular-uuid4/angular-uuid4.js"></script>
+	<script src="lib/AngularJS-Toaster/toaster.js"></script>
+	<script src="lib/javascript-state-machine/state-machine.min.js"></script>
 	<!-- endbuild -->
 
 	<!-- build:js scripts/cm.js -->
@@ -160,6 +163,7 @@ if (typeof String.prototype.contains !== 'function') {
 	<script src="scripts/cruisemonkey/Events.js"></script>
 	<script src="scripts/cruisemonkey/Notifications.js"></script>
 	<script src="scripts/cruisemonkey/Seamail.js"></script>
+	<script src="scripts/cruisemonkey/State.js"></script>
 	<script src="scripts/cruisemonkey/Upgrades.js"></script>
 	<script src="scripts/cruisemonkey/User.js"></script>
 	<script src="scripts/cruisemonkey/cruisemonkey.js"></script>
@@ -172,7 +176,7 @@ if (typeof String.prototype.contains !== 'function') {
 
 		Offline.options = {
 			checkOnLoad: false,
-			interceptRequests: true,
+			interceptRequests: false,
 			reconnect: false,
 			requests: false,
 			checks: {}
@@ -188,5 +192,6 @@ if (typeof String.prototype.contains !== 'function') {
 			angular.bootstrap(document, ['cruisemonkey']);
 		}
 	</script>
+	<toaster-container toaster-options="{'position-class': 'toast-top-full-width'}"></toaster-container>
 </body>
 </html>

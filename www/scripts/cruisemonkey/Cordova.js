@@ -39,6 +39,7 @@
 
 		if (isMobile) {
 			console.info('CordovaService: "isMobile" set.  Assuming Cordova.');
+			isCordova.resolve(true);
 		} else {
 			console.info('CordovaService: "isMobile" not set.  Waiting for Cordova initialization.');
 			$timeout(function() {
@@ -68,6 +69,9 @@
 		};
 
 		return {
+			'setCordova': function(value) {
+				isCordova.resolve(value);
+			},
 			'isCordova': function() {
 				return isCordova.promise;
 			},

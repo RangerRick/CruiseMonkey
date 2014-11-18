@@ -18,7 +18,7 @@
 	.factory('EventService', ['$q', '$rootScope', '$timeout', '$location', 'uuid4', '_database', 'UserService', 'config.database.name', function($q, $rootScope, $timeout, $location, uuid4, _database, UserService, databaseName) {
 		console.info('EventService: Initializing EventService.');
 
-		var eventsdb    = _database.get(databaseName + '.events', {
+		var eventsdb = _database.get(databaseName + '.events', {
 			'view': {
 				'view': 'cruisemonkey/events-replication'
 			},
@@ -471,7 +471,7 @@
 			console.debug('EventService.isFavorite()');
 
 			var username = UserService.getUsername();
-			if (!username) {
+			if (!username || !favoritesdb) {
 				return rejectedResult('EventService.isFavorite(): user not logged in');
 			}
 
@@ -498,7 +498,7 @@
 		var addFavorite = function(eventId) {
 			console.debug('EventService.addFavorite(' + eventId + ')');
 			var username = UserService.getUsername();
-			if (!username || !eventId) {
+			if (!username || !eventId || !favoritesdb) {
 				return rejectedResult('EventService.addFavorite(): user not logged in, or no eventId passed');
 			}
 
@@ -553,7 +553,7 @@
 		var removeFavorite = function(eventId) {
 			console.debug('EventService.removeFavorite(' + eventId + ')');
 			var username = UserService.getUsername();
-			if (!username || !eventId) {
+			if (!username || !eventId || !favoritesdb) {
 				return rejectedResult('EventService.removeFavorite(): user not logged in, or no eventId passed');
 			}
 

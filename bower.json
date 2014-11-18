@@ -25,7 +25,10 @@
     "base64": "~0.3.0",
     "offline": "~0.7.11",
     "pouchdb": "~3.1.0",
-    "ngCordova": "~0.1.7-alpha"
+    "ngCordova": "~0.1.7-alpha",
+    "javascript-state-machine": "~2.3.3",
+    "modernizr": "~2.8.3",
+    "blob-util": "~1.1.0"
   },
   "devDependencies": {
     "jasmine.async": "~0.1.0",

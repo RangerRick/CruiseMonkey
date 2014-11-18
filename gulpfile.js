@@ -6,15 +6,20 @@ var sass = require('gulp-sass');
 var minifyCss = require('gulp-minify-css');
 var rename = require('gulp-rename');
 var sh = require('shelljs');
+var jshint = require('gulp-jshint');
+var jasmine = require('gulp-jasmine');
+var karma = require('gulp-karma');
 
 var paths = {
-  sass: ['./scss/**/*.scss']
+  sass: './scss/**/*.scss',
+  cruisemonkey: './www/scripts/cruisemonkey/*.js',
+  spec: './spec/*.js'
 };
 
-gulp.task('default', ['sass']);
+gulp.task('default', ['sass', 'lint', 'test']);
 
 gulp.task('sass', function(done) {
-  gulp.src('./scss/*.scss')
+  gulp.src([paths.sass])
     .pipe(sass())
     .pipe(gulp.dest('./www/css/'))
     .pipe(minifyCss({
@@ -25,8 +30,15 @@ gulp.task('sass', function(done) {
     .on('end', done);
 });
 
+gulp.task('lint', function() {
+  return gulp.src([paths.cruisemonkey, paths.spec])
+    .pipe(jshint())
+    .pipe(jshint.reporter('jshint-stylish'))
+    .pipe(jshint.reporter('fail'));
+});
+
 gulp.task('watch', function() {
-  gulp.watch(paths.sass, ['sass']);
+  gulp.watch([paths.sass], ['sass']);
 });
 
 gulp.task('install', ['git-check'], function() {
@@ -47,4 +59,37 @@ gulp.task('git-check', function(done) {
     process.exit(1);
   }
   done();
+});
+
+var testSource = [
+  './www/lib/ionic/js/ionic.bundle.js',
+  './www/lib/angular-is-online/src/angular-is-online.js',
+  './www/lib/angular-cookies/angular-cookies.js',
+  './www/lib/angular-mocks/angular-mocks.js',
+  './www/lib/ngCordova/dist/ng-cordova-mocks.js',
+  './www/lib/modernizr/modernizr.js',
+  './www/lib/momentjs/moment.js',
+  './www/lib/javascript-state-machine/state-machine.min.js',
+  './www/lib/angularLocalStorage/src/angularLocalStorage.js',
+  paths.cruisemonkey,
+  paths.spec
+];
+
+gulp.task('test', function(done) {
+  gulp.src(testSource)
+    .pipe(karma({
+      configFile: 'karma.conf.js',
+      action: 'run'
+    }))
+    .on('error', function(err) {
+      throw err;
+    });
+});
+
+gulp.task('continuous', function() {
+  gulp.src(testSource)
+    .pipe(karma({
+      configFile: 'karma.conf.js',
+      action: 'watch'
+    }));
 });

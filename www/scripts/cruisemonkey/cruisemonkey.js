@@ -30,6 +30,7 @@
 		'cruisemonkey.Notifications',
 		'cruisemonkey.Seamail',
 		'cruisemonkey.Settings',
+		'cruisemonkey.State',
 		'cruisemonkey.Upgrades',
 		'cruisemonkey.User'
 	])
@@ -55,7 +56,7 @@
 				url: '/events/:eventType',
 				views: {
 					'menuContent': {
-						templateUrl: 'template/event-list-repeat.html',
+						templateUrl: 'template/event-list.html',
 						controller: 'CMEventCtrl'
 					}
 				}
@@ -143,7 +144,7 @@
 			})
 		;
 	}])
-	.run(['$rootScope', '$timeout', '$ionicPlatform', '$cordovaDialogs', '$cordovaSplashscreen', 'UserService', 'SettingsService', 'EventService', '_database', function($rootScope, $timeout, $ionicPlatform, $cordovaDialogs, $cordovaSplashscreen, UserService, SettingsService, EventService, database) {
+	.run(['$rootScope', '$timeout', '$ionicPlatform', '$cordovaDialogs', '$cordovaSplashscreen', 'CordovaService', 'NotificationService', 'UserService', 'SettingsService', 'EventService', '_database', function($rootScope, $timeout, $ionicPlatform, $cordovaDialogs, $cordovaSplashscreen, CordovaService, NotificationService, UserService, SettingsService, EventService, database) {
 		console.debug('CruiseMonkey run() called.');
 
 		$ionicPlatform.ready(function() {
@@ -198,11 +199,16 @@
 		var remotedb = database.get(remoteUrl);
 		EventService.syncFrom(remotedb).then(function() {
 			console.debug('Finished loading events.');
+			NotificationService.alert('Booooo');
 			$rootScope.$broadcast('cm.main.database-initialized');
-			$cordovaSplashscreen.hide();
+			CordovaService.ifCordova(function() {
+				$cordovaSplashscreen.hide();
+			});
 		}, function() {
 			console.debug('Failed to load events.');
-			$cordovaSplashscreen.hide();
+			CordovaService.ifCordova(function() {
+				$cordovaSplashscreen.hide();
+			});
 		});
 	}])
 	;

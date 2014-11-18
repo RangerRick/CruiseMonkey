@@ -291,7 +291,7 @@
 							console.debug('cruisemonkey.Database: failed to replicate from ' + from.name + ' to ' + to.name + ':',err);
 							deferred.reject(err);
 						} else {
-							console.debug('finished replication from ' + from.name + ' to ' + to.name);
+							console.debug('finished replication of ' + response.docs_written + ' documents from ' + from.name + ' to ' + to.name);
 							deferred.resolve(response.docs_written);
 						}
 					});

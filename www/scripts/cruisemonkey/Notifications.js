@@ -9,9 +9,10 @@
 
 	angular.module('cruisemonkey.Notifications', [
 		'cruisemonkey.Config',
-		'cruisemonkey.Cordova'
+		'cruisemonkey.Cordova',
+		'toaster'
 	])
-	.factory('NotificationService', ['$q', '$rootScope', '$timeout', '$window', 'config.notifications.timeout', 'CordovaService', function($q, $rootScope, $timeout, $window, notificationTimeout, cor) {
+	.factory('NotificationService', ['$q', '$rootScope', '$timeout', '$window', 'config.notifications.timeout', 'CordovaService', 'toaster', function($q, $rootScope, $timeout, $window, notificationTimeout, cor, toaster) {
 		var notificationQueue = [];
 		var nextId = 0;
 
@@ -21,7 +22,8 @@
 				navigator.notification.alert(message, callback);
 			}).otherwise(function() {
 				console.info('NotificationService.doAlert(): not native cordova: ' + message);
-				$window.alert(message);
+				toaster.pop('note', message);
+				//$window.alert(message);
 				callback();
 			});
 		};
@@ -65,7 +67,7 @@
 					break;
 				}
 			}
-			console.debug('Unable to remove notification for message "' + message + '".');
+			//console.debug('Unable to remove notification for message "' + message + '".');
 		};
 
 		var statusNotification = function(message, arg) {
