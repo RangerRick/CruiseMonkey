@@ -131,7 +131,11 @@ describe('DB Tests', function() {
 
 	it('should have replicated when everything has started', function(done) {
 		var interval;
-		$rootScope.$on('eventsdb.sync.uptodate', function() {
+		$rootScope.$broadcast('state.online', 'state.offline', undefined);
+		interval = window.setInterval(function() {
+			$rootScope.$digest();
+		}, 200);
+		window.setTimeout(function() {
 			eventsdb.all().then(function(docs) {
 				var count = 0;
 				angular.forEach(docs, function(key, value) {
@@ -150,11 +154,7 @@ describe('DB Tests', function() {
 				expect(err).toBeUndefined();
 				done();
 			});
-		});
-		$rootScope.$broadcast('state.online', 'state.offline', undefined);
-		interval = window.setInterval(function() {
-			$rootScope.$digest();
-		}, 200);
+		}, 2000);
 	});
 
 	xit('should initialize when Cordova is ready and online', function() {

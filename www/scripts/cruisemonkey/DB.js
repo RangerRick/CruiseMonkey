@@ -47,6 +47,7 @@
 				}}
 			];
 
+			db._db().deltaInit();
 			persist = db._db().persist({
 				url: remoteDb,
 				to: { listeners: listeners },

@@ -9,7 +9,7 @@
 /*global xit: true */
 /*global xdescribe: true */
 
-xdescribe('State Machine Tests', function() {
+describe('State Machine Tests', function() {
 	'use strict';
 
 	var StateService,
