@@ -40,7 +40,7 @@
 			callbacks: {
 				oninitialized: function(event, from, to, isCordova) {
 					console.info(event + ': ' + from + ' -> ' + to);
-					$rootScope.$emit('state.initialized', from, to, isCordova);
+					$rootScope.$broadcast('state.' + to, 'state.' + from, isCordova);
 					if (isCordova) {
 						if ($cordovaNetwork.isOnline()) {
 							fsm.goOnline(isCordova);
@@ -53,24 +53,24 @@
 				},
 				onoffline: function(event, from, to, data) {
 					console.info(event + ': ' + from + ' -> ' + to);
-					$rootScope.$emit('state.offline', from, to, data);
+					$rootScope.$broadcast('state.' + to, 'state.' + from, data);
 				},
 				ononline: function(event, from, to, data) {
 					console.info(event + ': ' + from + ' -> ' + to);
-					$rootScope.$emit('state.online', from, to, data);
+					$rootScope.$broadcast('state.' + to, 'state.' + from, data);
 					if (UserService.loggedIn()) {
-						fsm.logIn();
+						fsm.logIn(UserService.getUsername());
 					} else {
 						fsm.logOut();
 					}
 				},
 				onloggedout: function(event, from, to, data) {
 					console.info(event + ': ' + from + ' -> ' + to);
-					$rootScope.$emit('state.loggedout', from, to, data);
+					$rootScope.$broadcast('state.' + to, 'state.' + from, data);
 				},
-				onloggedin: function(event, from, to, data) {
-					console.info(event + ': ' + from + ' -> ' + to);
-					$rootScope.$emit('state.loggedin', from, to, data);
+				onloggedin: function(event, from, to, username) {
+					console.info(event + ': ' + from + ' -> ' + to + ', username=' + username);
+					$rootScope.$broadcast('state.' + to, 'state.' + from, username);
 				}
 			}
 		});

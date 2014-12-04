@@ -1,0 +1,23 @@
+notifications:
+  irc:
+    - "chat.freenode.net#cruisemonkey"
+language: node_js
+node_js:
+  - '0.10'
+#  - '0.11'
+#services:
+#  - couchdb
+before_install:
+  - 'npm install -g bower gulp'
+  - 'npm install'
+  - 'npm install pouchdb-server'
+  - 'bower install'
+  - 'gem install compass'
+  - 'sudo pip install couchapp'
+before_script:
+  - './setup-travis.sh'
+script: gulp test
+cache:
+  directories:
+    - node_modules
+    - app/bower_components

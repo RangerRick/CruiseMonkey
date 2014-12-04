@@ -28,11 +28,18 @@
     "ngCordova": "~0.1.7-alpha",
     "javascript-state-machine": "~2.3.3",
     "modernizr": "~2.8.3",
-    "blob-util": "~1.1.0"
+    "blob-util": "~1.1.0",
+    "pouchdb-all-dbs": "~0.1.6",
+    "angular-pouchdb": "*",
+    "angular-pouchdb-rangerrick": "git://github.com/RangerRick/angular-pouchdb.git#master",
+    "pouchdb-collate": "~1.1.2",
+    "delta-pouch": "~0.1.7",
+    "pouchdb-persist": "~0.0.6"
   },
   "devDependencies": {
     "jasmine.async": "~0.1.0",
     "angular-mocks": "1.2.25",
-    "ionic": "driftyco/ionic-bower#1.0.0-beta.13"
+    "ionic": "driftyco/ionic-bower#1.0.0-beta.13",
+    "pouchdb-load": "~1.2.1"
   }
 }

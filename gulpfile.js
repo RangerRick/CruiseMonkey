@@ -62,15 +62,26 @@ gulp.task('git-check', function(done) {
 });
 
 var testSource = [
+  './www/lib/modernizr/modernizr.js',
+  './www/lib/es5-shim/es5-shim.js',
+  './www/lib/blob-util/dist/blob-util.min.js',
   './www/lib/ionic/js/ionic.bundle.js',
+  './www/lib/pouchdb/dist/pouchdb.js',
+  './www/lib/pouchdb-all-dbs/dist/pouchdb.all-dbs.js',
+  './www/lib/pouchdb-load/dist/pouchdb.load.js',
+  './www/lib/delta-pouch/dist/pouchdb.delta-pouch.js',
+  './www/lib/pouchdb-persist/dist/pouchdb-persist.js',
+  './www/lib/pouchdb/dist/pouchdb.memory.js',
   './www/lib/angular-is-online/src/angular-is-online.js',
   './www/lib/angular-cookies/angular-cookies.js',
+  /* './www/lib/angular-pouchdb/angular-pouchdb.js', */
+  './www/lib/angular-pouchdb-rangerrick/angular-pouchdb.js',
   './www/lib/angular-mocks/angular-mocks.js',
   './www/lib/ngCordova/dist/ng-cordova-mocks.js',
-  './www/lib/modernizr/modernizr.js',
   './www/lib/momentjs/moment.js',
   './www/lib/javascript-state-machine/state-machine.min.js',
   './www/lib/angularLocalStorage/src/angularLocalStorage.js',
+  './www/lib/AngularJS-Toaster/toaster.js',
   paths.cruisemonkey,
   paths.spec
 ];

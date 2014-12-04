@@ -10,9 +10,6 @@ module.exports = function(config) {
 
     // list of files / patterns to load in the browser
     files: [
-      './www/lib/ionic/js/ionic.bundle.js',
-      './www/scripts/cruisemonkey/**/*.js',
-      './spec/*.js'
     ],
 
     // list of files to exclude

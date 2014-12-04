@@ -122,10 +122,10 @@
 
 			if (args.length > 0 && !isString(args[args.length - 1])) {
 				var opt = args.pop();
-				//console.log('last argument was options!',opt);
+				//console.debug('last argument was options!',opt);
 				options = angular.extend({}, options, opt);
 			}
-			//console.log('options=',options);
+			//console.debug('options=',options);
 
 			var promises = [], i;
 
@@ -138,7 +138,7 @@
 					key:username
 				});
 				promises.push(favoritesdb.query('cruisemonkey/favorites-all', opts));
-				//console.log('opts=',opts);
+				//console.debug('opts=',opts);
 			}
 
 			$q.all(promises).then(function(results) {
@@ -152,13 +152,13 @@
 					result = results[i];
 					for (j=0; j < result.rows.length; j++) {
 						ev = new CMEvent(result.rows[j].doc);
-						//console.log(ev.toString());
+						//console.debug(ev.toString());
 						events.push(ev);
 					}
 				}
 				for (i=0; i < favresults.rows.length; i++) {
 					fav = new CMFavorite(favresults.rows[i].doc);
-					//console.log(fav.toString());
+					//console.debug(fav.toString());
 					favorites.push(fav);
 				}
 

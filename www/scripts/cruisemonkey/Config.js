@@ -5,8 +5,10 @@
 
 	angular.module('cruisemonkey.Config', [])
 	.value('config.logging.useStringAppender', false)
-	.value('config.database.host', 'http://localhost:5984/')
-	.value('config.database.name', 'cruisemonkey')
+	.value('config.database.root', 'http://localhost:5984/')
+	.value('config.database.adapter', undefined)
+	.value('config.database.events', 'cm5-events')
+	.value('config.database.favorites', 'cm5-favorites')
 	.value('config.database.replicate', true)
 	.value('config.urls.openinchrome', false)
 	.value('config.notifications.timeout', 5000)
@@ -19,10 +21,12 @@
 		'cruisemonkey.Config',
 		'cruisemonkey.Upgrades'
 	])
-	.factory('SettingsService', ['storage', '$rootScope', '$location', 'config.database.host', 'config.database.name', 'config.urls.openinchrome', 'config.twitarr.root', 'UpgradeService', function(storage, $rootScope, $location, databaseHost, databaseName, openInChrome, twitarrRoot, upgrades) {
+	.factory('SettingsService', ['storage', '$rootScope', '$location', 'config.database.root', 'config.database.adapter', 'config.database.events', 'config.database.favorites', 'config.urls.openinchrome', 'config.twitarr.root', 'UpgradeService', function(storage, $rootScope, $location, databaseRoot, databaseAdapter, eventsDatabase, favoritesDatabase, openInChrome, twitarrRoot, upgrades) {
 		var defaultValue = {
-			'database.host': databaseHost,
-			'database.name': databaseName,
+			'database.root': databaseRoot,
+			'database.adapter': databaseAdapter,
+			'database.events': eventsDatabase,
+			'database.favorites': favoritesDatabase,
 			'urls.openinchrome': openInChrome,
 			'twitarr.root': twitarrRoot
 		};
@@ -36,9 +40,10 @@
 		var endCruise   = moment('2014-03-02 00:00');
 		var now = moment();
 		if (now.isAfter(startCruise) && now.isBefore(endCruise)) {
-			defaultValue['database.host'] = 'http://jccc4.rccl.com/db/';
-			defaultValue['database.name'] = 'cruisemonkey-jccc4';
-			defaultValue['twitarr.root']  = 'http://jccc4.rccl.com/';
+			defaultValue['database.root']      = 'http://jccc4.rccl.com/db/';
+			defaultValue['database.events']    = 'cm5-events';
+			defaultValue['database.favorites'] = 'cm5-favorites';
+			defaultValue['twitarr.root']       = 'http://jccc4.rccl.com/';
 		}
 
 		$rootScope.safeApply = function(fn) {
@@ -57,7 +62,8 @@
 			'storeName': 'cm.settings'
 		});
 
-		upgrades.register('4.0.2', 'Database and Twit-Arr Settings Reset', function() {
+		upgrades.register('***VERSION***', 'Database and Twit-Arr Settings Reset', function() {
+			console.info('resetting config to defaults');
 			$rootScope._settings = getDefaults();
 		});
 
@@ -68,20 +74,22 @@
 		if (now.isAfter(startCruise) && now.isBefore(endCruise) && !$rootScope.onaboat) {
 			$rootScope.onaboat = true;
 			var defaults = getDefaults();
-			$rootScope._settings['database.host'] = defaults['database.host'];
-			$rootScope._settings['database.name'] = defaults['database.name'];
-			$rootScope._settings['twitarr.root']  = defaults['twitarr.root'];
+			$rootScope._settings['database.root']      = defaults['database.root'];
+			$rootScope._settings['database.events']    = defaults['database.events'];
+			$rootScope._settings['database.favorites'] = defaults['database.favorites'];
+			$rootScope._settings['twitarr.root']       = defaults['twitarr.root'];
 		}
 
 		var getSettings = function() {
-			var dbHost       = $rootScope._settings['database.host']     || databaseHost;
-			var dbName       = $rootScope._settings['database.name']     || databaseName;
-			var openInChrome = $rootScope._settings['urls.openinchrome'] || openInChrome;
-			var twRoot       = $rootScope._settings['twitarr.root']      || twitarrRoot;
+			var dbRoot       = $rootScope._settings['database.root']      || databaseRoot;
+			var dbAdapter    = $rootScope._settings['database.adapter']   || databaseAdapter;
+			var eventsDb     = $rootScope._settings['database.events']    || eventsDatabase;
+			var favoritesDb  = $rootScope._settings['database.favorites'] || favoritesDatabase;
+			var openInChrome = $rootScope._settings['urls.openinchrome']  || openInChrome;
+			var twRoot       = $rootScope._settings['twitarr.root']       || twitarrRoot;
 
-			if (dbHost === dbName) {
-				console.warn('Database host invalid!');
-				dbHost = databaseHost;
+			if (dbRoot.startsWith('http') && !dbRoot.endsWith('/')) {
+				dbRoot += '/';
 			}
 
 			if (!twRoot.endsWith('/')) {
@@ -93,47 +101,91 @@
 			}
 
 			return angular.copy({
-				databaseHost: dbHost,
-				databaseName: dbName,
+				databaseRoot: dbRoot,
+				databaseAdapter: dbAdapter,
+				eventsDatabase: eventsDatabase,
+				favoritesDatabase: favoritesDatabase,
 				openInChrome: openInChrome,
 				twitarrRoot: twRoot
 			});
 		};
 
-		var getRemoteDatabaseUrl = function() {
-			var host = getSettings().databaseHost;
-			if (!host) {
-				host = 'http://' + $location.host();
+		var getRemoteDatabaseRoot = function() {
+			var root = getSettings().databaseRoot;
+			if (!root) {
+				root = 'http://' + $location.root();
 			}
 
-			if (!host.endsWith('/')) {
-				host += '/';
+			/*
+			if (!root.endsWith('/')) {
+				root += '/';
 			}
-			if (!host.startsWith('http')) {
-				host = 'http://' + host;
+			if (!root.startsWith('http')) {
+				root = 'http://' + root;
 			}
+			*/
 
-			return host + getSettings().databaseName;
+			return root;
 		};
 
-		var getLocalDatabaseUrl = function() {
-			return getSettings().databaseName;
+		var getRemoteEventsDatabaseUrl = function() {
+			return getRemoteDatabaseRoot() + getSettings().eventsDatabase;
+		};
+
+		var getRemoteFavoritesDatabaseUrl = function() {
+			return getRemoteDatabaseRoot() + getSettings().favoritesDatabase;
+		};
+
+		var getDatabaseAdapter = function() {
+			return getSettings().databaseAdapter;
+		};
+
+		var getLocalEventsDatabaseUrl = function() {
+			return getSettings().eventsDatabase;
+		};
+
+		var getLocalFavoritesDatabaseUrl = function() {
+			return getSettings().favoritesDatabase;
+		};
+
+		var broadcastChanges = function(callback) {
+			var oldSettings = getSettings();
+			callback();
+			$rootScope.$broadcast('settings.changed', {
+				'old': oldSettings,
+				'new': getSettings()
+			});
 		};
 
 		return {
 			'getSettings': getSettings,
 			'getDefaults': getDefaults,
-			'getDatabaseHost': function() {
-				return getSettings().databaseHost;
+			'getDatabaseRoot': function() {
+				return getSettings().databaseRoot;
 			},
-			'setDatabaseHost': function(host) {
-				$rootScope._settings['database.host'] = angular.copy(host);
+			'setDatabaseRoot': function(root) {
+				broadcastChanges(function() {
+					$rootScope._settings['database.root'] = angular.copy(root);
+				});
 			},
-			'getDatabaseName': function() {
-				return getSettings().databaseName;
+			'getDatabaseAdapter': function() {
+				return getSettings().databaseAdapter;
 			},
-			'setDatabaseName': function(name) {
-				$rootScope._settings['database.name'] = angular.copy(name);
+			'getEventsDatabaseName': function() {
+				return getSettings().eventsDatabase;
+			},
+			'setEventsDatabaseName': function(name) {
+				broadcastChanges(function() {
+					$rootScope._settings['database.events'] = angular.copy(name);
+				});
+			},
+			'getFavoritesDatabaseName': function() {
+				return getSettings().favoritesDatabase;
+			},
+			'setFavoritesDatabaseName': function(name) {
+				broadcastChanges(function() {
+					$rootScope._settings['database.favorites'] = angular.copy(name);
+				});
 			},
 			'getOpenInChrome': function() {
 				return getSettings().openInChrome;
@@ -142,19 +194,29 @@
 				if (!oic) {
 					oic = false;
 				}
-				$rootScope._settings['urls.openinchrome'] = oic;
+				broadcastChanges(function() {
+					$rootScope._settings['urls.openinchrome'] = oic;
+				});
 			},
 			'getTwitarrRoot': function() {
 				return getSettings().twitarrRoot;
 			},
 			'setTwitarrRoot': function(root) {
-				$rootScope._settings['twitarr.root'] = angular.copy(root);
+				broadcastChanges(function() {
+					$rootScope._settings['twitarr.root'] = angular.copy(root);
+				});
 			},
-			'getRemoteDatabaseUrl': function() {
-				return getRemoteDatabaseUrl();
+			'getRemoteEventsDatabaseUrl': function() {
+				return getRemoteEventsDatabaseUrl();
 			},
-			'getLocalDatabaseUrl': function() {
-				return getLocalDatabaseUrl();
+			'getRemoteFavoritesDatabaseUrl': function() {
+				return getRemoteFavoritesDatabaseUrl();
+			},
+			'getLocalEventsDatabaseUrl': function() {
+				return getLocalEventsDatabaseUrl();
+			},
+			'getLocalFavoritesDatabaseUrl': function() {
+				return getLocalFavoritesDatabaseUrl();
 			}
 		};
 	}]);
