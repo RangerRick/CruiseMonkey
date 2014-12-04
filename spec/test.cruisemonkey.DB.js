@@ -129,34 +129,35 @@ describe('DB Tests', function() {
 		expect(eventsdb.isStarted()).toBe(true);
 	});
 
-	xit('should have replicated when everything has started', function(done) {
-		$rootScope.$broadcast('state.online', 'state.offline', undefined);
-		$rootScope.$digest();
-		window.setInterval(function() {
-			console.debug('digest');
-			$rootScope.$digest();
-		}, 200);
-		window.setTimeout(function() {
-			console.debug('calling all');
+	it('should have replicated when everything has started', function(done) {
+		var interval;
+		$rootScope.$on('eventsdb.sync.uptodate', function() {
 			eventsdb.all().then(function(docs) {
 				var count = 0;
 				angular.forEach(docs, function(key, value) {
-					console.debug(key, value);
 					count++;
 				});
 				expect(count).toBe(5);
+				if (interval) {
+					clearInterval(interval);
+				}
 				done();
 			}, function(err) {
 				console.debug('err=',err);
+				if (interval) {
+					clearInterval(interval);
+				}
 				expect(err).toBeUndefined();
 				done();
 			});
+		});
+		$rootScope.$broadcast('state.online', 'state.offline', undefined);
+		interval = window.setInterval(function() {
 			$rootScope.$digest();
-		}, 2000);
+		}, 200);
 	});
 
 	xit('should initialize when Cordova is ready and online', function() {
-		spyOn($rootScope, '$emit');
 		isOnline = true;
 		CordovaService.setCordova(true);
 		$rootScope.$digest();

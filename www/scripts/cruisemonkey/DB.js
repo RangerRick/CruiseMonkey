@@ -29,19 +29,19 @@
 			var listeners = [
 				{ method: 'on', event: 'uptodate', listener: function () {
 					$rootScope.$evalAsync(function() {
-						console.debug('eventsdb: onUptodate');
+						//console.debug('eventsdb: onUptodate');
 						$rootScope.$broadcast('eventsdb.sync.uptodate');
 					});
 				}},
 				{ method: 'on', event: 'connect', listener: function () {
 					$rootScope.$evalAsync(function() {
-						console.debug('eventsdb: onConnect');
+						//console.debug('eventsdb: onConnect');
 						$rootScope.$broadcast('eventsdb.sync.connect');
 					});
 				}},
 				{ method: 'on', event: 'disconnect', listener: function () {
 					$rootScope.$evalAsync(function() {
-						console.debug('eventsdb: onDisconnect');
+						//console.debug('eventsdb: onDisconnect');
 						$rootScope.$broadcast('eventsdb.sync.disconnect');
 					});
 				}}
