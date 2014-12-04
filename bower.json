@@ -34,7 +34,8 @@
     "angular-pouchdb-rangerrick": "git://github.com/RangerRick/angular-pouchdb.git#master",
     "pouchdb-collate": "~1.1.2",
     "delta-pouch": "~0.1.7",
-    "pouchdb-persist": "~0.0.6"
+    "pouchdb-persist": "~0.0.6",
+    "AngularJS-Toaster": "~0.4.9"
   },
   "devDependencies": {
     "jasmine.async": "~0.1.0",
