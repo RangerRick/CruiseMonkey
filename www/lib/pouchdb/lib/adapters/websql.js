@@ -28,6 +28,40 @@ function unescapeBlob(str) {
     .replace(/\u0001\u0002/g, '\u0001')
     .replace(/\u0002\u0002/g, '\u0002');
 }
+function fetchAttachmentsIfNecessary(doc, opts, api, txn, cb) {
+  var attachments = Object.keys(doc._attachments || {});
+  if (!attachments.length) {
+    return cb && cb();
+  }
+  var numDone = 0;
+
+  function checkDone() {
+    if (++numDone === attachments.length && cb) {
+      cb();
+    }
+  }
+
+  function fetchAttachment(doc, att) {
+    var attObj = doc._attachments[att];
+    var attOpts = {encode: true, ctx: txn};
+    api._getAttachment(attObj, attOpts, function (_, base64) {
+      doc._attachments[att] = utils.extend(
+        utils.pick(attObj, ['digest', 'content_type']),
+        { data: base64 }
+      );
+      checkDone();
+    });
+  }
+
+  attachments.forEach(function (att) {
+    if (opts.attachments && opts.include_docs) {
+      fetchAttachment(doc, att);
+    } else {
+      doc._attachments[att].stub = true;
+      checkDone();
+    }
+  });
+}
 
 var cachedDatabases = {};
 
@@ -568,7 +602,6 @@ function WebSqlPouch(opts, callback) {
         return doc;
       }
       var newDoc = utils.parseDoc(doc, newEdits);
-      newDoc._bulk_seq = i;
       return newDoc;
     });
 
@@ -582,13 +615,14 @@ function WebSqlPouch(opts, callback) {
     var tx;
     var results = new Array(docInfos.length);
     var fetchedDocs = new utils.Map();
-    var numDocsWritten = 0;
 
+    var preconditionErrored;
     function complete() {
+      if (preconditionErrored) {
+        return callback(preconditionErrored);
+      }
       var aresults = results.map(function (result) {
-        if (result._bulk_seq) {
-          delete result._bulk_seq;
-        } else if (!Object.keys(result).length) {
+        if (!Object.keys(result).length) {
           return {
             ok: true
           };
@@ -607,7 +641,7 @@ function WebSqlPouch(opts, callback) {
         };
       });
       WebSqlPouch.Changes.notify(name);
-
+      docCount = -1; // invalidate
       callback(null, aresults);
     }
 
@@ -658,69 +692,6 @@ function WebSqlPouch(opts, callback) {
       });
     }
 
-    function preprocessAttachment(att, finish) {
-      if (att.stub) {
-        return finish();
-      }
-      if (typeof att.data === 'string') {
-        try {
-          att.data = atob(att.data);
-        } catch (e) {
-          var err = errors.error(errors.BAD_ARG,
-                                "Attachments need to be base64 encoded");
-          return callback(err);
-        }
-        var data = utils.fixBinary(att.data);
-        att.data = utils.createBlob([data], {type: att.content_type});
-      }
-      utils.readAsBinaryString(att.data, function (binary) {
-        att.data = binary;
-        utils.MD5(binary).then(function (result) {
-          att.digest = 'md5-' + result;
-          att.length = binary.length;
-          finish();
-        });
-      });
-    }
-
-    function preprocessAttachments(callback) {
-      if (!docInfos.length) {
-        return callback();
-      }
-
-      var docv = 0;
-
-      docInfos.forEach(function (docInfo) {
-        var attachments = docInfo.data && docInfo.data._attachments ?
-          Object.keys(docInfo.data._attachments) : [];
-        var recv = 0;
-
-        if (!attachments.length) {
-          return done();
-        }
-
-        function processedAttachment() {
-          recv++;
-          if (recv === attachments.length) {
-            done();
-          }
-        }
-
-        for (var key in docInfo.data._attachments) {
-          if (docInfo.data._attachments.hasOwnProperty(key)) {
-            preprocessAttachment(docInfo.data._attachments[key],
-                                 processedAttachment);
-          }
-        }
-      });
-
-      function done() {
-        docv++;
-        if (docInfos.length === docv) {
-          callback();
-        }
-      }
-    }
 
     function writeDoc(docInfo, winningRev, deleted, callback, isUpdate,
                       resultsIdx) {
@@ -857,108 +828,9 @@ function WebSqlPouch(opts, callback) {
       }
     }
 
-    function updateDoc(oldDoc, docInfo, resultsIdx, callback) {
-
-      if (utils.revExists(oldDoc, docInfo.metadata.rev)) {
-        results[resultsIdx] = docInfo;
-        callback();
-        return;
-      }
-
-      var merged =
-        merge.merge(oldDoc.rev_tree, docInfo.metadata.rev_tree[0], 1000);
-
-      var previouslyDeleted = utils.isDeleted(oldDoc);
-      var deleted = utils.isDeleted(docInfo.metadata);
-      var inConflict = (previouslyDeleted && deleted && newEdits) ||
-        (!previouslyDeleted && newEdits && merged.conflicts !== 'new_leaf') ||
-        (previouslyDeleted && !deleted && merged.conflicts === 'new_branch');
-
-      if (inConflict) {
-        results[resultsIdx] = makeErr(errors.REV_CONFLICT, docInfo._bulk_seq);
-        return callback();
-      }
-
-      docInfo.metadata.rev_tree = merged.tree;
-
-      // recalculate
-      var winningRev = merge.winningRev(docInfo.metadata);
-      deleted = utils.isDeleted(docInfo.metadata, winningRev);
-
-      writeDoc(docInfo, winningRev, deleted, callback, true, resultsIdx);
-    }
-
-    function insertDoc(docInfo, resultsIdx, callback) {
-      // Cant insert new deleted documents
-      var winningRev = merge.winningRev(docInfo.metadata);
-      var deleted = utils.isDeleted(docInfo.metadata, winningRev);
-      if ('was_delete' in opts && deleted) {
-        results[resultsIdx] = errors.MISSING_DOC;
-        return callback();
-      }
-      writeDoc(docInfo, winningRev, deleted, callback, false, resultsIdx);
-    }
-
-    function checkDoneWritingDocs() {
-      if (++numDocsWritten === docInfos.length) {
-        complete();
-      }
-    }
-
     function processDocs() {
-      if (!docInfos.length) {
-        return complete();
-      }
-
-      var idsToDocs = new utils.Map();
-
-      docInfos.forEach(function (currentDoc, resultsIdx) {
-
-        if (currentDoc._id && utils.isLocalId(currentDoc._id)) {
-          api[currentDoc._deleted ? '_removeLocal' : '_putLocal'](
-              currentDoc, {ctx: tx}, function (err, resp) {
-            if (err) {
-              results[resultsIdx] = err;
-            } else {
-              results[resultsIdx] = {};
-            }
-            checkDoneWritingDocs();
-          });
-          return;
-        }
-
-        var id = currentDoc.metadata.id;
-        if (idsToDocs.has(id)) {
-          idsToDocs.get(id).push([currentDoc, resultsIdx]);
-        } else {
-          idsToDocs.set(id, [[currentDoc, resultsIdx]]);
-        }
-      });
-
-      // in the case of new_edits, the user can provide multiple docs
-      // with the same id. these need to be processed sequentially
-      idsToDocs.forEach(function (docs, id) {
-        var numDone = 0;
-
-        function docWritten() {
-          checkDoneWritingDocs();
-          if (++numDone < docs.length) {
-            nextDoc();
-          }
-        }
-        function nextDoc() {
-          var value = docs[numDone];
-          var currentDoc = value[0];
-          var resultsIdx = value[1];
-
-          if (fetchedDocs.has(id)) {
-            updateDoc(fetchedDocs.get(id), currentDoc, resultsIdx, docWritten);
-          } else {
-            insertDoc(currentDoc, resultsIdx, docWritten);
-          }
-        }
-        nextDoc();
-      });
+      utils.processDocs(docInfos, api, fetchedDocs,
+        tx, results, writeDoc, opts);
     }
 
     function fetchExistingDocs(callback) {
@@ -990,12 +862,6 @@ function WebSqlPouch(opts, callback) {
       });
     }
 
-    // Insert sequence number into the error so we can sort later
-    function makeErr(err, seq) {
-      err._bulk_seq = seq;
-      return err;
-    }
-
     function saveAttachment(digest, data, callback) {
       var sql = 'SELECT digest FROM ' + ATTACH_STORE + ' WHERE digest=?';
       tx.executeSql(sql, [digest], function (tx, result) {
@@ -1017,18 +883,20 @@ function WebSqlPouch(opts, callback) {
       });
     }
 
-    preprocessAttachments(function () {
+    utils.preprocessAttachments(docInfos, 'binary', function (err) {
+      if (err) {
+        return callback(err);
+      }
       db.transaction(function (txn) {
         tx = txn;
         verifyAttachments(function (err) {
           if (err) {
-            return callback(err);
+            preconditionErrored = err;
+          } else {
+            fetchExistingDocs(processDocs);
           }
-          fetchExistingDocs(processDocs);
         });
-      }, unknownError(callback), function () {
-        docCount = -1;
-      });
+      }, unknownError(callback), complete);
     });
   };
 
@@ -1181,11 +1049,7 @@ function WebSqlPouch(opts, callback) {
               if (opts.conflicts) {
                 doc.doc._conflicts = merge.collectConflicts(metadata);
               }
-              for (var att in doc.doc._attachments) {
-                if (doc.doc._attachments.hasOwnProperty(att)) {
-                  doc.doc._attachments[att].stub = true;
-                }
-              }
+              fetchAttachmentsIfNecessary(doc.doc, opts, api, tx);
             }
             if (item.deleted) {
               if (opts.deleted === 'ok') {
@@ -1263,9 +1127,14 @@ function WebSqlPouch(opts, callback) {
         sql += ' LIMIT ' + limit;
       }
 
+      var lastSeq = 0;
       db.readTransaction(function (tx) {
         tx.executeSql(sql, sqlArgs, function (tx, result) {
-          var lastSeq = 0;
+          function reportChange(change) {
+            return function () {
+              opts.onChange(change);
+            };
+          }
           for (var i = 0, l = result.rows.length; i < l; i++) {
             var res = result.rows.item(i);
             var metadata = vuvuzela.parse(res.metadata);
@@ -1280,19 +1149,27 @@ function WebSqlPouch(opts, callback) {
               if (returnDocs) {
                 results.push(change);
               }
-              opts.onChange(change);
+              // process the attachment immediately
+              // for the benefit of live listeners
+              if (opts.attachments && opts.include_docs) {
+                fetchAttachmentsIfNecessary(doc, opts, api, tx,
+                  reportChange(change));
+              } else {
+                reportChange(change)();
+              }
             }
             if (numResults === limit) {
               break;
             }
           }
-          if (!opts.continuous) {
-            opts.complete(null, {
-              results: results,
-              last_seq: lastSeq
-            });
-          }
         });
+      }, unknownError(opts.complete), function () {
+        if (!opts.continuous) {
+          opts.complete(null, {
+            results: results,
+            last_seq: lastSeq
+          });
+        }
       });
     }
 
@@ -1485,12 +1362,14 @@ function WebSqlPouch(opts, callback) {
       var params = [doc._id, doc._rev];
       tx.executeSql(sql, params, function (tx, res) {
         if (!res.rowsAffected) {
-          return callback(errors.REV_CONFLICT);
+          return callback(errors.MISSING_DOC);
         }
         ret = {ok: true, id: doc._id, rev: '0-0'};
       });
     }, unknownError(callback), function () {
-      callback(null, ret);
+      if (ret) {
+        callback(null, ret);
+      }
     });
   };
 }

@@ -39,6 +39,49 @@ var vuvuEncoding = {
   type: 'cheap-json'
 };
 
+function fetchAttachments(results, stores) {
+  return utils.Promise.all(results.map(function (row) {
+    if (row.doc && row.doc._attachments) {
+      var attNames = Object.keys(row.doc._attachments);
+      return utils.Promise.all(attNames.map(function (att) {
+        var attObj = row.doc._attachments[att];
+        if ('data' in attObj) { // already fetched
+          return;
+        }
+        return new utils.Promise(function (resolve, reject) {
+          stores.binaryStore.get(attObj.digest, function (err, buffer) {
+            var base64 = '';
+            if (err && err.name !== 'NotFoundError') {
+              return reject(err);
+            } else if (!err) {
+              base64 = utils.btoa(buffer);
+            }
+            row.doc._attachments[att] = utils.extend(
+              utils.pick(attObj, ['digest', 'content_type']),
+              {data: base64}
+            );
+            resolve();
+          });
+        });
+      }));
+    }
+  }));
+}
+
+function createChangesFilter(opts) {
+  var baseFilter = utils.filterChange(opts);
+  var docIds = opts.doc_ids && new utils.Set(opts.doc_ids);
+  return function filter(change) {
+    // It's the responsibility of each adapter to actually do
+    // the doc_ids filtering, since websql/idb can do it
+    // more efficiently.
+    if (docIds && !docIds.has(change.id)) {
+      return false;
+    }
+    return baseFilter(change);
+  };
+}
+
 function LevelPouch(opts, callback) {
   opts = utils.clone(opts);
   var api = this;
@@ -352,7 +395,6 @@ function LevelPouch(opts, callback) {
         return doc;
       }
       var newDoc = utils.parseDoc(doc, newEdits);
-      newDoc._bulk_seq = i;
 
       if (newDoc.metadata && !newDoc.metadata.rev_map) {
         newDoc.metadata.rev_map = {};
@@ -447,8 +489,7 @@ function LevelPouch(opts, callback) {
       }
 
       if (lock.has(currentDoc.metadata.id)) {
-        results[index] = makeErr(errors.REV_CONFLICT,
-                                 'somebody else is accessing this');
+        results[index] = errors.REV_CONFLICT;
         inProgress--;
         return processDocs();
       }
@@ -486,7 +527,7 @@ function LevelPouch(opts, callback) {
     function insertDoc(doc, index, callback) {
       // Can't insert new deleted documents
       if ('was_delete' in opts && utils.isDeleted(doc.metadata)) {
-        results[index] = makeErr(errors.MISSING_DOC, doc._bulk_seq);
+        results[index] = errors.MISSING_DOC;
         return callback();
       }
       writeDoc(doc, index, function (err) {
@@ -508,17 +549,26 @@ function LevelPouch(opts, callback) {
         return;
       }
 
+      var previouslyDeleted = utils.isDeleted(oldDoc);
+      var deleted = utils.isDeleted(docInfo.metadata);
+      var isRoot = /^1-/.test(docInfo.metadata.rev);
+
+      if (previouslyDeleted && !deleted && newEdits && isRoot) {
+        var newDoc = docInfo.data;
+        newDoc._rev = oldDoc.rev;
+        newDoc._id = docInfo.metadata.id;
+        docInfo = utils.parseDoc(newDoc, newEdits);
+      }
+
       var merged =
         merge.merge(oldDoc.rev_tree, docInfo.metadata.rev_tree[0], 1000);
 
-      var previouslyDeleted = utils.isDeleted(oldDoc);
-      var deleted = utils.isDeleted(docInfo.metadata);
-      var inConflict = (previouslyDeleted && deleted && newEdits) ||
+      var inConflict = newEdits && ((previouslyDeleted && deleted) ||
         (!previouslyDeleted && newEdits && merged.conflicts !== 'new_leaf') ||
-        (previouslyDeleted && !deleted && merged.conflicts === 'new_branch');
+        (previouslyDeleted && !deleted && merged.conflicts === 'new_branch'));
 
       if (inConflict) {
-        results[index] = makeErr(errors.REV_CONFLICT, docInfo._bulk_seq);
+        results[index] = errors.REV_CONFLICT;
         return callback();
       }
       var newRev = docInfo.metadata.rev;
@@ -664,18 +714,25 @@ function LevelPouch(opts, callback) {
         finish();
       }
     }
-    
-    function saveAttachmentRefs(id, rev, digest, callback) {
-      stores.attachmentStore.get(digest, function (err, oldAtt) {
-        var newAttachment = false;
-        if (err) {
-          if (err.name !== 'NotFoundError') {
-            return callback(err);
-          } else {
-            newAttachment = true;
-          }
-        }
 
+    // attachments are queued per-digest, otherwise the refs could be
+    // overwritten by concurrent writes in the same bulkDocs session
+    var attachmentQueues = {};
+
+    function saveAttachmentRefs(id, rev, digest, callback) {
+
+      function fetchAtt() {
+        return new utils.Promise(function (resolve, reject) {
+          stores.attachmentStore.get(digest, function (err, oldAtt) {
+            if (err && err.name !== 'NotFoundError') {
+              return reject(err);
+            }
+            resolve(oldAtt);
+          });
+        });
+      }
+
+      function saveAtt(oldAtt) {
         var ref = [id, rev].join('@');
         var newAtt = {};
 
@@ -692,12 +749,23 @@ function LevelPouch(opts, callback) {
           newAtt.refs[ref] = true;
         }
 
-        stores.attachmentStore.put(digest, newAtt, function (err) {
-          if (err) {
-            return callback(err);
-          }
-          callback(null, newAttachment);
+        return new utils.Promise(function (resolve, reject) {
+          stores.attachmentStore.put(digest, newAtt, function (err) {
+            if (err) {
+              return reject(err);
+            }
+            resolve(!oldAtt);
+          });
         });
+      }
+
+      // put attachments in a per-digest queue, to avoid two docs with the same
+      // attachment overwriting each other
+      var queue = attachmentQueues[digest] || utils.Promise.resolve();
+      attachmentQueues[digest] = queue.then(function () {
+        return fetchAtt().then(saveAtt).then(function (isNewAttachment) {
+          callback(null, isNewAttachment);
+        }, callback);
       });
     }
 
@@ -709,7 +777,7 @@ function LevelPouch(opts, callback) {
       var id = docInfo.metadata.id;
       var rev = docInfo.metadata.rev;
 
-      saveAttachmentRefs(id, rev, digest, function (err, newAttachment) {
+      saveAttachmentRefs(id, rev, digest, function (err, isNewAttachment) {
         if (err) {
           return callback(err);
         }
@@ -717,7 +785,7 @@ function LevelPouch(opts, callback) {
         if (data.length === 0) {
           return callback(err);
         }
-        if (!newAttachment) {
+        if (!isNewAttachment) {
           // small optimization - don't bother writing it again
           return callback(err);
         }
@@ -729,11 +797,8 @@ function LevelPouch(opts, callback) {
     }
 
     function complete() {
-      results.sort(function (a, b) { return a._bulk_seq - b._bulk_seq; });
       var aresults = results.map(function (result) {
-        if (result._bulk_seq) {
-          delete result._bulk_seq;
-        } else if (!Object.keys(result).length) {
+        if (!Object.keys(result).length) {
           return {
             ok: true
           };
@@ -755,11 +820,6 @@ function LevelPouch(opts, callback) {
       process.nextTick(function () {
         callback(null, aresults);
       });
-    }
-
-    function makeErr(err, seq) {
-      err._bulk_seq = seq;
-      return err;
     }
 
     verifyAttachments(function (err) {
@@ -873,11 +933,15 @@ function LevelPouch(opts, callback) {
           allDocsInner(metadata);
         }
       }, function (next) {
-        callback(null, {
-          total_rows: docCount,
-          offset: opts.skip,
-          rows: results
-        });
+        utils.Promise.resolve().then(function () {
+          return opts.attachments && fetchAttachments(results, stores);
+        }).then(function () {
+          callback(null, {
+            total_rows: docCount,
+            offset: opts.skip,
+            rows: results
+          });
+        }, callback);
         next();
       }).on('unpipe', function () {
         throughStream.end();
@@ -917,7 +981,9 @@ function LevelPouch(opts, callback) {
     if (!streamOpts.reverse) {
       streamOpts.start = formatSeq(opts.since ? opts.since + 1 : 0);
     }
-    var filter = utils.filterChange(opts);
+
+    var filter = createChangesFilter(opts);
+
     var returnDocs;
     if ('returnDocs' in opts) {
       returnDocs = opts.returnDocs;
@@ -935,7 +1001,13 @@ function LevelPouch(opts, callback) {
       changeStream.unpipe(throughStream);
       changeStream.destroy();
       if (!opts.continuous && !opts.cancelled) {
-        opts.complete(null, {results: results, last_seq: last_seq});
+        utils.Promise.resolve().then(function () {
+          if (opts.include_docs && opts.attachments) {
+            return fetchAttachments(results, stores);
+          }
+        }).then(function () {
+          opts.complete(null, {results: results, last_seq: last_seq});
+        });
       }
     }
     var changeStream = stores.bySeqStore.readStream(streamOpts);
@@ -967,7 +1039,15 @@ function LevelPouch(opts, callback) {
             filter(change)) {
           called++;
 
-          utils.call(opts.onChange, change);
+          if (opts.attachments && opts.include_docs) {
+            // fetch attachment immediately for the benefit
+            // of live listeners
+            fetchAttachments([change], stores).then(function () {
+              opts.onChange(change);
+            });
+          } else {
+            opts.onChange(change);
+          }
 
           if (returnDocs) {
             results.push(change);

@@ -2,8 +2,17 @@
 
 var CHANGES_BATCH_SIZE = 25;
 
+// according to http://stackoverflow.com/a/417184/680742,
+// the de factor URL length limit is 2000 characters.
+// but since most of our measurements don't take the full
+// URL into account, we fudge it a bit.
+// TODO: we could measure the full URL to enforce exactly 2000 chars
+var MAX_URL_LENGTH = 1800;
+
 var utils = require('../utils');
 var errors = require('../deps/errors');
+var log = require('debug')('pouchdb:http');
+var isBrowser = typeof process === 'undefined' || process.browser;
 
 function encodeDocId(id) {
   if (/^_(design|local)/.test(id)) {
@@ -20,7 +29,7 @@ function preprocessAttachments(doc) {
   return utils.Promise.all(Object.keys(doc._attachments).map(function (key) {
     var attachment = doc._attachments[key];
     if (attachment.data && typeof attachment.data !== 'string') {
-      if (typeof process === undefined || process.browser) {
+      if (isBrowser) {
         return new utils.Promise(function (resolve) {
           utils.readAsBinaryString(attachment.data, function (binary) {
             attachment.data = utils.btoa(binary);
@@ -122,7 +131,9 @@ function HttpPouch(opts, callback) {
   var ajaxOpts = opts.ajax || {};
   opts = utils.clone(opts);
   function ajax(options, callback) {
-    return utils.ajax(utils.extend({}, ajaxOpts, options), callback);
+    var reqOpts = utils.extend({}, ajaxOpts, options);
+    log(reqOpts.method + ' ' + reqOpts.url);
+    return utils.ajax(reqOpts, callback);
   }
 
   // Create a new CouchDB database based on the given opts
@@ -448,12 +459,18 @@ function HttpPouch(opts, callback) {
     }
 
     if (typeof blob === 'string') {
+      var binary;
       try {
-        blob = utils.atob(blob);
+        binary = utils.atob(blob);
       } catch (err) {
         // it's not base64-encoded, so throw error
         return callback(utils.extend({}, errors.BAD_ARG,
           {reason: "Attachments need to be base64 encoded"}));
+      }
+      if (isBrowser) {
+        blob = utils.createBlob([utils.fixBinary(binary)], {type: type});
+      } else {
+        blob = binary ? new Buffer(binary, 'binary') : '';
       }
     }
 
@@ -627,6 +644,11 @@ function HttpPouch(opts, callback) {
       params.push('include_docs=true');
     }
 
+    if (opts.attachments) {
+      // added in CouchDB 1.6.0
+      params.push('attachments=true');
+    }
+
     if (opts.key) {
       params.push('key=' + encodeURIComponent(JSON.stringify(opts.key)));
     }
@@ -668,9 +690,6 @@ function HttpPouch(opts, callback) {
 
     if (typeof opts.keys !== 'undefined') {
 
-      var MAX_URL_LENGTH = 2000;
-      // according to http://stackoverflow.com/a/417184/680742,
-      // the de factor URL length limit is 2000 characters
 
       var keysAsString =
         'keys=' + encodeURIComponent(JSON.stringify(opts.keys));
@@ -733,6 +752,10 @@ function HttpPouch(opts, callback) {
       params.include_docs = true;
     }
 
+    if (opts.attachments) {
+      params.attachments = true;
+    }
+
     if (opts.continuous) {
       params.feed = 'longpoll';
     }
@@ -763,6 +786,27 @@ function HttpPouch(opts, callback) {
         }
       }
     }
+
+    var method = 'GET';
+    var body;
+
+    if (opts.doc_ids) {
+      // set this automagically for the user; it's annoying that couchdb
+      // requires both a "filter" and a "doc_ids" param.
+      params.filter = '_doc_ids';
+
+      var docIdsJson = JSON.stringify(opts.doc_ids);
+
+      if (docIdsJson.length < MAX_URL_LENGTH) {
+        params.doc_ids = docIdsJson;
+      } else {
+        // anything greater than ~2000 is unsafe for gets, so
+        // use POST instead
+        method = 'POST';
+        body = {doc_ids: opts.doc_ids };
+      }
+    }
+
     if (opts.continuous && api._useSSE) {
       return  api.sse(opts, params, returnDocs);
     }
@@ -792,10 +836,11 @@ function HttpPouch(opts, callback) {
       // Set the options for the ajax call
       var xhrOpts = {
         headers: host.headers,
-        method: 'GET',
+        method: method,
         url: genDBUrl(host, '_changes' + paramStr),
         // _changes can take a long time to generate, especially when filtered
-        timeout: opts.timeout
+        timeout: opts.timeout,
+        body: body
       };
       lastFetchedSeq = since;
 

@@ -20,15 +20,15 @@
     "angular-ui-router": "0.2.10",
     "angular-mocks": "1.2.25",
     "classlist": "*",
-    "angular-bindonce": "~0.3.1",
+    "angular-bindonce": "~0.3.3",
     "es5-shim": "~4.0.3",
     "base64": "~0.3.0",
     "offline": "~0.7.11",
-    "pouchdb": "~3.1.0",
-    "ngCordova": "~0.1.7-alpha",
+    "pouchdb": "~3.2.0",
+    "ngCordova": "~0.1.8-alpha",
     "javascript-state-machine": "~2.3.3",
     "modernizr": "~2.8.3",
-    "blob-util": "~1.1.0",
+    "blob-util": "~1.1.1",
     "pouchdb-all-dbs": "~0.1.6",
     "angular-pouchdb": "*",
     "angular-pouchdb-rangerrick": "git://github.com/RangerRick/angular-pouchdb.git#master",
@@ -45,6 +45,6 @@
   },
   "resolutions": {
     "angular": "1.2.25",
-    "pouchdb": "~3.1.0"
+    "pouchdb": "~3.2.0"
   }
 }
