@@ -10,7 +10,7 @@
 /*global xdescribe: true */
 /*global PouchDB: true */
 
-describe('DB Tests', function() {
+xdescribe('DB Tests', function() {
 	'use strict';
 
 	var eventsdb,
@@ -73,12 +73,13 @@ describe('DB Tests', function() {
 			$provide.value('config.database.favorites', 'favoritesdb');
 		});
 		module('cruisemonkey.DB');
-		inject(function(_$q_, _$rootScope_, _pouchdb_, _eventsdb_, _SettingsService_) {
-			$q         = _$q_;
-			$rootScope = _$rootScope_;
-			pouchdb    = _pouchdb_;
-			settings   = _SettingsService_;
-			eventsdb   = _eventsdb_;
+		inject(function(_$q_, _$rootScope_, _pouchdb_, _eventsdb_, _favoritesdb_, _SettingsService_) {
+			$q          = _$q_;
+			$rootScope  = _$rootScope_;
+			pouchdb     = _pouchdb_;
+			settings    = _SettingsService_;
+			eventsdb    = _eventsdb_;
+			favoritesdb = _favoritesdb_;
 
 			spyOn($rootScope, '$broadcast').and.callThrough();
 			spyOn($rootScope, '$emit').and.callThrough();
@@ -102,7 +103,25 @@ describe('DB Tests', function() {
 			remote.save(entry).then(function(doc) {
 				count++;
 				if (count == entries.length) {
-					console.debug('created ' + count + ' entries');
+					console.debug('created ' + count + ' events');
+					done();
+				}
+			});
+		}
+	});
+
+	beforeEach(function(done) {
+		entries = [
+			{ '$id': '1', username: 'rangerrick', eventId: '1' }
+		];
+		var remote = new PouchDB(couchRemoteName + '/favoritesdb');
+		var count = 0;
+		for (var entry in entries) {
+			entry = entries[entry];
+			remote.save(entry).then(function(doc) {
+				count++;
+				if (count == entries.length) {
+					console.debug('created ' + count + ' favorites');
 					done();
 				}
 			});
@@ -112,6 +131,7 @@ describe('DB Tests', function() {
 	afterEach(destroyDatabases);
 
 	afterEach(function() {
+		stopDigesting();
 		jasmine.DEFAULT_TIMEOUT_INTERVAL_INTERVAL = originalTimeout;
 	});
 
@@ -119,59 +139,85 @@ describe('DB Tests', function() {
 		expect($rootScope.$broadcast.calls.count()).toEqual(0);
 		expect($rootScope.$emit.calls.count()).toEqual(0);
 		expect(eventsdb.isStarted()).toBe(false);
+		expect(favoritesdb.isStarted()).toBe(false);
 	});
 
-	it('should connect when state.online is emitted', function() {
+	it('should connect when state.online is emitted', function(done) {
 		expect(eventsdb.isStarted()).toBe(false);
+		expect(favoritesdb.isStarted()).toBe(false);
 		$rootScope.$broadcast('state.online', 'state.offline', undefined);
 		$rootScope.$digest();
 		expect($rootScope.$broadcast).toHaveBeenCalledWith('eventsdb.sync.starting', 'http://localhost:5984/eventsdb');
-		expect(eventsdb.isStarted()).toBe(true);
+		window.setTimeout(function() {
+			expect(eventsdb.isStarted()).toBe(true);
+			expect(favoritesdb.isStarted()).toBe(false);
+			done();
+		}, 200);
 	});
 
 	it('should have replicated when everything has started', function(done) {
-		var interval;
 		$rootScope.$broadcast('state.online', 'state.offline', undefined);
-		interval = window.setInterval(function() {
-			$rootScope.$digest();
-		}, 200);
+		startDigesting();
 		window.setTimeout(function() {
-			eventsdb.all().then(function(docs) {
-				var count = 0;
-				angular.forEach(docs, function(key, value) {
-					count++;
-				});
+			eventsdb.count().then(function(count) {
 				expect(count).toBe(5);
-				if (interval) {
-					clearInterval(interval);
-				}
+				expect(eventsdb.isStarted()).toBe(true);
+				expect(favoritesdb.isStarted()).toBe(false);
 				done();
 			}, function(err) {
 				console.debug('err=',err);
-				if (interval) {
-					clearInterval(interval);
-				}
+				expect(err).toBeUndefined();
+				done();
+			});
+		}, 3000);
+	});
+
+	it('should stop replicating when we go offline', function(done) {
+		$rootScope.$broadcast('state.online', 'state.offline', undefined);
+		startDigesting();
+		window.setTimeout(function() {
+			eventsdb.count().then(function(count) {
+				expect(count).toBe(5);
+				expect(eventsdb.isStarted()).toBe(true);
+				expect(favoritesdb.isStarted()).toBe(false);
+
+				$rootScope.$broadcast('state.offline', 'state.online', undefined);
+				window.setTimeout(function() {
+					expect($rootScope.$broadcast).toHaveBeenCalledWith('eventsdb.sync.stopping');
+					expect(eventsdb.isStarted()).toBe(false);
+					expect(favoritesdb.isStarted()).toBe(false);
+					done();
+				}, 500);
+			}, function(err) {
+				console.debug('err=',err);
 				expect(err).toBeUndefined();
 				done();
 			});
 		}, 2000);
 	});
 
-	xit('should initialize when Cordova is ready and online', function() {
-		isOnline = true;
-		CordovaService.setCordova(true);
-		$rootScope.$digest();
-		expect($rootScope.$emit).toHaveBeenCalledWith('state.initialized', 'state.uninitialized', true);
-		expect($rootScope.$emit).toHaveBeenCalledWith('state.online', 'state.initialized', true);
-	});
+	it('should replicate favorites when we log in and stop when we log out', function(done) {
+		$rootScope.$broadcast('state.loggedin', 'state.loggedout', undefined);
+		startDigesting();
+		window.setTimeout(function() {
+			favoritesdb.count().then(function(count) {
+				expect(count).toBe(1);
+				expect(eventsdb.isStarted()).toBe(false);
+				expect(favoritesdb.isStarted()).toBe(true);
 
-	xit('should initialize when Cordova is ready and offline', function() {
-		spyOn($rootScope, '$emit');
-		isOnline = false;
-		CordovaService.setCordova(true);
-		$rootScope.$digest();
-		expect($rootScope.$emit).toHaveBeenCalledWith('state.initialized', 'state.uninitialized', true);
-		expect($rootScope.$emit).toHaveBeenCalledWith('state.offline', 'state.initialized', true);
+				$rootScope.$broadcast('state.loggedout', 'state.loggedin', undefined);
+				window.setTimeout(function() {
+					expect($rootScope.$broadcast).toHaveBeenCalledWith('favoritesdb.sync.stopping');
+					expect(eventsdb.isStarted()).toBe(false);
+					expect(favoritesdb.isStarted()).toBe(false);
+					done();
+				}, 500);
+			}, function(err) {
+				console.debug('err=',err);
+				expect(err).toBeUndefined();
+				done();
+			});
+		}, 2000);
 	});
 
 	xit('should be logged out by default', function() {

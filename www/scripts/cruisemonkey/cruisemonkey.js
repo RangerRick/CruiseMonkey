@@ -42,7 +42,8 @@
 		$compileProvider.aHrefSanitizationWhitelist(/^\s*(https?|ftp|mailto|file|tel):/);
 		$compileProvider.imgSrcSanitizationWhitelist(/^\s*(https?|file):/);
 
-		cfpLoadingBarProvider.includeSpinner = false;
+		cfpLoadingBarProvider.includeSpinner = true;
+		cfpLoadingBarProvider.includeBar = false;
 
 		$urlRouterProvider.otherwise('/app/events/official');
 
@@ -53,9 +54,46 @@
 				templateUrl: 'template/menu.html'
 			})
 			.state('app.events', {
-				url: '/events/:eventType',
+				url: '/events',
+				/* abstract: true, */
 				views: {
 					'menuContent': {
+						templateUrl: 'template/events-tabs.html',
+						controller: 'CMEventsBarCtrl'
+					}
+				}
+			})
+			.state('app.events.official', {
+				url: '/official',
+				views: {
+					'events-official': {
+						templateUrl: 'template/event-list.html',
+						controller: 'CMEventCtrl'
+					}
+				}
+			})
+			.state('app.events.unofficial', {
+				url: '/unofficial',
+				views: {
+					'events-unofficial': {
+						templateUrl: 'template/event-list.html',
+						controller: 'CMEventCtrl'
+					}
+				}
+			})
+			.state('app.events.my', {
+				url: '/my',
+				views: {
+					'events-my': {
+						templateUrl: 'template/event-list.html',
+						controller: 'CMEventCtrl'
+					}
+				}
+			})
+			.state('app.events.all', {
+				url: '/all',
+				views: {
+					'events-all': {
 						templateUrl: 'template/event-list.html',
 						controller: 'CMEventCtrl'
 					}

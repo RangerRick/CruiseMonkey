@@ -23,13 +23,22 @@ This plugin aligns with the W3C vibration specification http://www.w3.org/TR/vib
 
 This plugin provides a way to vibrate the device.
 
+This plugin defines global objects including `navigator.vibrate`.
+
+Although in the global scope, they are not available until after the `deviceready` event.
+
+    document.addEventListener("deviceready", onDeviceReady, false);
+    function onDeviceReady() {
+        console.log(navigator.vibrate);
+    }
+
 ## Installation
 
     cordova plugin add org.apache.cordova.vibration
 
 ## Supported Platforms
 
-navigator.vibrate<br />
+navigator.vibrate,<br />
 navigator.notification.vibrate
 - Amazon Fire OS
 - Android
@@ -40,6 +49,7 @@ navigator.notification.vibrate
 
 navigator.notification.vibrateWithPattern,<br />navigator.notification.cancelVibration
 - Android
+- Windows Phone 8
 
 ## vibrate (recommended)
 
@@ -93,6 +103,10 @@ Vibrates the device with a given pattern
     // Wait for 1 second
     // Vibrate for 5 seconds
     navigator.vibrate([1000, 1000, 3000, 1000, 5000]);
+
+####Windows Phone 8 Quirks
+
+- vibrate(pattern) falls back on vibrate with default duration
 
 ###Cancel vibration (not supported in iOS)
 

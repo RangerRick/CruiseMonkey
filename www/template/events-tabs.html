@@ -1,0 +1,19 @@
+<ion-tabs class="tabs-background-dark tabs-color-light">
+  <style type="text/css">
+		.tab-item {
+			font-weight: 900;
+		}
+	</style>
+  <ion-tab title="Official" href="#/app/events/official">
+    <ion-nav-view name="events-official"></ion-nav-view>
+  </ion-tab>
+  <ion-tab title="Unofficial" href="#/app/events/unofficial">
+    <ion-nav-view name="events-unofficial"></ion-nav-view>
+  </ion-tab>
+  <ion-tab title="All" href="#/app/events/all">
+    <ion-nav-view name="events-all"></ion-nav-view>
+  </ion-tab>
+  <ion-tab title="Mine" href="#/app/events/my" ng-if="user.loggedIn">
+    <ion-nav-view name="events-my"></ion-nav-view>
+  </ion-tab>
+</ion-tabs>

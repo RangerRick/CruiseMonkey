@@ -3,9 +3,9 @@
 //this hook installs all your plugins
 
 // add your plugins to this list--either the identifier, the filesystem location or the URL
-var pluginlist = [
+var addList = [
 	// upstream cordova plugins
-	'org.apache.cordova.camera',
+//	'org.apache.cordova.camera',
 //	'org.apache.cordova.console',
 //	'org.apache.cordova.device',
 //	'org.apache.cordova.device-orientation',
@@ -17,11 +17,14 @@ var pluginlist = [
 	'org.apache.cordova.vibration',
 
 	// 3rd-party plugins
+	'https://github.com/VersoSolutions/CordovaClipboard',
+];
+
+var removeList = [
 	'de.appplant.cordova.plugin.local-notification',
 	'https://github.com/EddyVerbruggen/Toast-PhoneGap-Plugin',
-	'https://github.com/VersoSolutions/CordovaClipboard',
 	'https://github.com/VitaliiBlagodir/cordova-plugin-datepicker',
-	//'org.pbernasconi.progressindicator',
+	'org.pbernasconi.progressindicator',
 ];
 
 // no need to configure below
@@ -43,6 +46,10 @@ function puts(error, stdout, stderr) {
 	}
 }
 
-pluginlist.forEach(function(plug) {
+addList.forEach(function(plug) {
 	exec("cordova plugin add " + plug, puts);
+});
+
+removeList.forEach(function(plug) {
+	exec("cordova plugin remove " + plug, puts);
 });

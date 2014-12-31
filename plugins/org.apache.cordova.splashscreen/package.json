@@ -1,5 +1,5 @@
 {
-    "version": "0.3.4",
+    "version": "0.3.5",
     "name": "org.apache.cordova.splashscreen",
     "cordova_name": "Splashscreen",
     "description": "Cordova Splashscreen Plugin",

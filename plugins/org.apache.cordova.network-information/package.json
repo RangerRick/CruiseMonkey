@@ -1,5 +1,5 @@
 {
-    "version": "0.2.13",
+    "version": "0.2.14",
     "name": "org.apache.cordova.network-information",
     "cordova_name": "Network Information",
     "description": "Cordova Network Information Plugin",

@@ -43,9 +43,10 @@ $greySVG: "#{$imagePath}/entypo/grey/SVG";
 $controlYellow: #f2be00;
 $cmBabyBlue: #ddf2ff;
 
-$defaultFont: Hero, sans-serif;
-$eventListFont: Casper, sans-serif;
-$sidebarHeaderFont: Nexa, Hero, sans-serif;
+$defaultFont: Nexa, "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
+$defaultLightFont: "Helvetica Neue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
+$eventListFont: Casper, "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
+$sidebarHeaderFont: Nexa, "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
 $headerFont: $sidebarHeaderFont;
 
 $gutterShadow: 0px 0px 5px 6px rgba(0,0,0,0.4);
@@ -78,8 +79,8 @@ $navWidth: 250px;
 $gutterMonkey: url(../images/cruise-monkey-transparent-bg.png);
 
 /* Ionic Overrides */
-$font-family-sans-serif: Hero, "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
-$font-family-light-sans-serif: Hero, "Helvetica Neue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
+/* $font-family-sans-serif: $defaultFont; */
+/* $font-family-light-sans-serif: $defaultLightFont; */
 $dark: black;
 $light: white;
 $item-divider-bg: $dark;
@@ -140,6 +141,12 @@ $item-default-active-border:      #444;
 			opacity: 1;
 			color: $controlYellow;
 		}
+	}
+}
+
+@media (min-width:768px) {
+	.button.ion-navicon {
+		display: none;
 	}
 }
 

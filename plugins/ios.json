@@ -13,31 +13,11 @@
                             "count": 1
                         },
                         {
-                            "xml": "<feature name=\"DatePicker\"><param name=\"ios-package\" value=\"DatePicker\" /></feature>",
-                            "count": 1
-                        },
-                        {
                             "xml": "<feature name=\"Clipboard\"><param name=\"ios-package\" value=\"CDVClipboard\" /></feature>",
                             "count": 1
                         },
                         {
-                            "xml": "<feature name=\"Device\"><param name=\"ios-package\" value=\"CDVDevice\" /></feature>",
-                            "count": 1
-                        },
-                        {
-                            "xml": "<feature name=\"LocalNotification\"><param name=\"ios-package\" onload=\"true\" value=\"APPLocalNotification\" /><param name=\"onload\" value=\"true\" /></feature>",
-                            "count": 1
-                        },
-                        {
                             "xml": "<feature name=\"Toast\"><param name=\"ios-package\" value=\"Toast\" /></feature>",
-                            "count": 1
-                        },
-                        {
-                            "xml": "<feature name=\"Camera\"><param name=\"ios-package\" value=\"CDVCamera\" /></feature>",
-                            "count": 1
-                        },
-                        {
-                            "xml": "<preference name=\"CameraUsesGeolocation\" value=\"false\" />",
                             "count": 1
                         },
                         {
@@ -65,7 +45,7 @@
                             "count": 1
                         },
                         {
-                            "xml": "<feature name=\"StatusBar\"><param name=\"ios-package\" onload=\"true\" value=\"CDVStatusBar\" /></feature>",
+                            "xml": "<feature name=\"StatusBar\"><param name=\"ios-package\" value=\"CDVStatusBar\" /><param name=\"onload\" value=\"true\" /></feature>",
                             "count": 1
                         },
                         {
@@ -79,10 +59,6 @@
                         {
                             "xml": "<feature name=\"Vibration\"><param name=\"ios-package\" value=\"CDVVibration\" /></feature>",
                             "count": 1
-                        },
-                        {
-                            "xml": "<feature name=\"ProgressIndicator\"><param name=\"ios-package\" value=\"ProgressIndicator\" /></feature>",
-                            "count": 1
                         }
                     ]
                 }
@@ -95,34 +71,29 @@
                             "count": 1
                         }
                     ],
-                    "ImageIO.framework": [
-                        {
-                            "xml": "true",
-                            "count": 1
-                        }
-                    ],
+                    "ImageIO.framework": [],
                     "CoreLocation.framework": [
                         {
                             "xml": "false",
-                            "count": 2
+                            "count": 1
                         }
                     ],
                     "CoreGraphics.framework": [
                         {
                             "xml": "false",
-                            "count": 3
+                            "count": 1
                         }
                     ],
                     "AssetsLibrary.framework": [
                         {
                             "xml": "false",
-                            "count": 2
+                            "count": 1
                         }
                     ],
                     "MobileCoreServices.framework": [
                         {
                             "xml": "false",
-                            "count": 2
+                            "count": 1
                         }
                     ],
                     "AudioToolbox.framework": [
@@ -141,12 +112,7 @@
             },
             "*-Info.plist": {
                 "parents": {
-                    "NSLocationWhenInUseUsageDescription": [
-                        {
-                            "xml": "<string />",
-                            "count": 1
-                        }
-                    ]
+                    "NSLocationWhenInUseUsageDescription": []
                 }
             }
         }
@@ -155,19 +121,10 @@
         "com.ionic.keyboard": {
             "PACKAGE_NAME": "com.raccoonfink.cruisemonkey"
         },
-        "com.plugin.datepicker": {
-            "PACKAGE_NAME": "com.raccoonfink.cruisemonkey"
-        },
         "com.verso.cordova.clipboard": {
             "PACKAGE_NAME": "com.raccoonfink.cruisemonkey"
         },
-        "de.appplant.cordova.plugin.local-notification": {
-            "PACKAGE_NAME": "com.raccoonfink.cruisemonkey"
-        },
         "nl.x-services.plugins.toast": {
-            "PACKAGE_NAME": "com.raccoonfink.cruisemonkey"
-        },
-        "org.apache.cordova.camera": {
             "PACKAGE_NAME": "com.raccoonfink.cruisemonkey"
         },
         "org.apache.cordova.console": {
@@ -193,14 +150,7 @@
         },
         "org.apache.cordova.vibration": {
             "PACKAGE_NAME": "com.raccoonfink.cruisemonkey"
-        },
-        "org.pbernasconi.progressIndicator": {
-            "PACKAGE_NAME": "com.raccoonfink.cruisemonkey"
         }
     },
-    "dependent_plugins": {
-        "org.apache.cordova.device": {
-            "PACKAGE_NAME": "com.raccoonfink.cruisemonkey"
-        }
-    }
+    "dependent_plugins": {}
 }

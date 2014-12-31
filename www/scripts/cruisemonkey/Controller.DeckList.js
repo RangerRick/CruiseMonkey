@@ -6,9 +6,8 @@
 		'angularLocalStorage',
 		'cruisemonkey.Cordova'
 	])
-	.controller('CMDeckListCtrl', ['storage', '$scope', '$rootScope', '$timeout', '$state', '$stateParams', '$location', '$document', 'CordovaService', function(storage, $scope, $rootScope, $timeout, $state, $stateParams, $location, $document, cor) {
+	.controller('CMDeckListCtrl', ['storage', '$scope', '$rootScope', '$ionicNavBarDelegate', '$ionicSlideBoxDelegate', '$timeout', '$state', '$stateParams', '$location', '$document', 'CordovaService', function(storage, $scope, $rootScope, $ionicNavBarDelegate, $ionicSlideBoxDelegate, $timeout, $state, $stateParams, $location, $document, cor) {
 		console.info('Initializing CMDeckListCtrl');
-		$rootScope.headerTitle = "Deck Plans";
 		$rootScope.leftButtons = $rootScope.getLeftButtons();
 		$rootScope.rightButtons = [];
 
@@ -88,6 +87,7 @@
 			}).otherwise(function() {
 				$scope.showButtons = true;
 			});
+			$ionicNavBarDelegate.title('Deck ' + $scope.deck);
 		};
 
 		$scope.$watch('deck', function(newValue, oldValue) {

@@ -3,7 +3,7 @@
 
 [![Travis](http://img.shields.io/travis/driftyco/ng-cordova.svg?style=flat)](https://travis-ci.org/driftyco/ng-cordova) [![Bower](http://img.shields.io/badge/bower-ngCordova-FFCC2F.svg?style=flat)](http://bower.io/search/?q=ngCordova)
 
-### Cordova with AngularJS Goodness 
+### Cordova with AngularJS Goodness
 
 
 [<img src="http://ionicframework.com/img/ngcordova-context-logo.png" alt="ngCordova Logo" width="210px" height="210px" />](http://ngcordova.com/)
@@ -30,17 +30,22 @@ Install manually, or from bower:
 $ bower install ngCordova
 ```
 
-## Plugins
+## Plugins `(63+)`
+
+- [Action Sheet](https://github.com/EddyVerbruggen/cordova-plugin-actionsheet)
 - [AdMob](https://github.com/floatinghotpot/cordova-plugin-admob)
 - [App Availability](https://github.com/ohh2ahh/AppAvailability)
 - [App Preferences](https://github.com/dferrell/plugins-application-preferences)
 - [App Rate](https://github.com/pushandplay/cordova-plugin-apprate)
+- [App Version](https://github.com/whiteoctober/cordova-plugin-app-version)
 - [Background Geolocation](https://github.com/christocracy/cordova-plugin-background-geolocation)
-- [Barcode Scanner](https://github.com/wildabeast/BarcodeScanner)
 - [Badge](https://github.com/katzer/cordova-plugin-badge)
+- [Barcode Scanner](https://github.com/wildabeast/BarcodeScanner)
 - [Battery Status](https://github.com/apache/cordova-plugin-battery-status) *
 - [Bluetooth Low Energy](https://github.com/evothings/cordova-ble)
 - [Bluetooth Serial](https://github.com/don/BluetoothSerial)
+- [Brightness](https://github.com/fiscal-cliff/phonegap-plugin-brightness)
+- [Calendar](https://github.com/EddyVerbruggen/Calendar-PhoneGap-Plugin)
 - [Camera](https://github.com/apache/cordova-plugin-camera) *
 - [Clipboard](https://github.com/VersoSolutions/CordovaClipboard)
 - [Console](https://github.com/apache/cordova-plugin-console) *
@@ -59,8 +64,10 @@ $ bower install ngCordova
 - [Globalization](https://github.com/apache/cordova-plugin-globalization) *
 - [Google Ads](https://github.com/floatinghotpot/cordova-admob-pro)
 - [Google Analytics](https://github.com/danwilson/google-analytics-plugin)
+- [Google Maps]()
 - [Httpd (Web Server)](https://github.com/floatinghotpot/cordova-httpd)
 - [Apple iAd](https://github.com/floatinghotpot/cordova-iad-pro)
+- [Image Picker](https://github.com/wymsee/cordova-imagePicker)
 - [InAppBrowser](https://github.com/apache/cordova-plugin-inappbrowser)*
 - [Keyboard](https://github.com/driftyco/ionic-plugins-keyboard)
 - [Keychain](https://github.com/shazron/KeychainPlugin)
@@ -86,6 +93,7 @@ $ bower install ngCordova
 - [Toast](https://github.com/EddyVerbruggen/Toast-PhoneGap-Plugin)
 - [Touchid](https://github.com/leecrossley/cordova-plugin-touchid)
 - [Vibration](https://github.com/apache/cordova-plugin-vibration) *
+- [Video Capture Plus](https://github.com/EddyVerbruggen/VideoCapturePlus-PhoneGap-Plugin) *
 - [Zip](https://github.com/MobileChromeApps/zip)
 
 `* official Apache Cordova Plugin`

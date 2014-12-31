@@ -9,7 +9,6 @@
 	])
 	.controller('CMAdvancedCtrl', ['$scope', '$rootScope', '$window', '_database', 'CordovaService', 'config.app.version', 'SettingsService', function($scope, $rootScope, $window, _database, cor, version, SettingsService) {
 		console.info('Initializing CMAdvancedCtrl');
-		$rootScope.headerTitle = 'Advanced Options';
 		$rootScope.leftButtons = $rootScope.getLeftButtons();
 		$rootScope.rightButtons = [];
 
@@ -24,7 +23,7 @@
 			var updated  = $scope.settings;
 
 			return (
-				existing.databaseHost    === updated.databaseHost &&
+				existing.databaseRoot    === updated.databaseRoot &&
 				existing.databaseName    === updated.databaseName &&
 				existing.openInChrome    === updated.openInChrome &&
 				existing.twitarrRoot     === updated.twitarrRoot
@@ -42,7 +41,7 @@
 			console.info('saving=', $scope.settings);
 			var before = angular.copy(SettingsService.getSettings());
 			var after = angular.copy($scope.settings);
-			SettingsService.setDatabaseHost($scope.settings.databaseHost);
+			SettingsService.setDatabaseRoot($scope.settings.databaseRoot);
 			SettingsService.setDatabaseName($scope.settings.databaseName);
 			SettingsService.setOpenInChrome($scope.settings.openInChrome);
 			SettingsService.setTwitarrRoot($scope.settings.twitarrRoot);
