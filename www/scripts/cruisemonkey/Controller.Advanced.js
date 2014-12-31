@@ -53,6 +53,9 @@
 
 		$scope.resetDatabase = function() {
 			throw "reimplement database reset!";
+			_database.destroy().then(function() {
+				console.log('Database destroyed.');
+			});
 			//_db.reset();
 		};
 

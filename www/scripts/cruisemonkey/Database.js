@@ -210,7 +210,10 @@
 			}
 
 			$q.all([to.getIds(), fromQuery, from.doesDesignDocExist()]).then(function(res) {
-				var newIds = [], i;
+				var newIds = [], i,
+					ids = res[0],
+					fromQuery = res[1],
+					designDocExists = res[2];
 				if (res[2]) {
 					newIds.push('_design/cruisemonkey');
 				}
@@ -218,19 +221,19 @@
 				if (doQuery) {
 					console.debug('querying IDs from the remote database using view options:', to.getView());
 					// we get back a .query result with rows
-					for (i=0; i < res[1].rows.length; i++) {
-						if (res[0].indexOf(res[1].rows[i].id) === -1) {
+					for (i=0; i < fromQuery.rows.length; i++) {
+						if (ids.indexOf(fromQuery.rows[i].id) === -1) {
 							// we don't already have this one; sync it
-							newIds.push(res[1].rows[i].id);
+							newIds.push(fromQuery.rows[i].id);
 						}
 					}
 				} else {
 					// we get back a list of ids
 					console.debug('NOT using view for querying IDs from the remote database (fetching all document IDs matching event:*)');
-					for (i=0; i < res[1].length; i++) {
-						if (res[0].indexOf(res[1][i]) === -1) {
+					for (i=0; i < fromQuery.length; i++) {
+						if (ids.indexOf(fromQuery[i]) === -1) {
 							// we don't already have this one; sync it
-							newIds.push(res[1][i]);
+							newIds.push(fromQuery[i]);
 						}
 					}
 				}

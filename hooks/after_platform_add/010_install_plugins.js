@@ -6,9 +6,9 @@
 var addList = [
 	// upstream cordova plugins
 //	'org.apache.cordova.camera',
-//	'org.apache.cordova.console',
-//	'org.apache.cordova.device',
-//	'org.apache.cordova.device-orientation',
+	'org.apache.cordova.console',
+	'org.apache.cordova.device',
+	'org.apache.cordova.device-orientation',
 	'org.apache.cordova.dialogs',
 	'org.apache.cordova.file',
 	'org.apache.cordova.network-information',

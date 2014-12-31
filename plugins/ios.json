@@ -25,6 +25,10 @@
                             "count": 1
                         },
                         {
+                            "xml": "<feature name=\"Device\"><param name=\"ios-package\" value=\"CDVDevice\" /></feature>",
+                            "count": 1
+                        },
+                        {
                             "xml": "<feature name=\"Compass\"><param name=\"ios-package\" value=\"CDVCompass\" /></feature>",
                             "count": 1
                         },
@@ -71,17 +75,16 @@
                             "count": 1
                         }
                     ],
-                    "ImageIO.framework": [],
                     "CoreLocation.framework": [
                         {
                             "xml": "false",
                             "count": 1
                         }
                     ],
-                    "CoreGraphics.framework": [
+                    "AudioToolbox.framework": [
                         {
-                            "xml": "false",
-                            "count": 1
+                            "xml": "true",
+                            "count": 2
                         }
                     ],
                     "AssetsLibrary.framework": [
@@ -96,23 +99,18 @@
                             "count": 1
                         }
                     ],
-                    "AudioToolbox.framework": [
-                        {
-                            "xml": "true",
-                            "count": 2
-                        }
-                    ],
                     "SystemConfiguration.framework": [
                         {
                             "xml": "true",
                             "count": 1
                         }
+                    ],
+                    "CoreGraphics.framework": [
+                        {
+                            "xml": "false",
+                            "count": 1
+                        }
                     ]
-                }
-            },
-            "*-Info.plist": {
-                "parents": {
-                    "NSLocationWhenInUseUsageDescription": []
                 }
             }
         }
@@ -128,6 +126,9 @@
             "PACKAGE_NAME": "com.raccoonfink.cruisemonkey"
         },
         "org.apache.cordova.console": {
+            "PACKAGE_NAME": "com.raccoonfink.cruisemonkey"
+        },
+        "org.apache.cordova.device": {
             "PACKAGE_NAME": "com.raccoonfink.cruisemonkey"
         },
         "org.apache.cordova.device-orientation": {

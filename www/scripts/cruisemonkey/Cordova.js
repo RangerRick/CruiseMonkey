@@ -1,4 +1,4 @@
-(function() {
+(function(w) {
 	'use strict';
 
 	/*global isMobile: true*/
@@ -17,13 +17,13 @@
 		var onDeviceReady = function() {
 			console.info('CruiseMonkey Cordova Initialized.');
 
-			if ($window.device) {
+			if (w.device) {
 				console.info('Found Cordova Device Information.');
-				console.info('Model:    ' + $window.device.model);
-				console.info('Cordova:  ' + $window.device.cordova);
-				console.info('Platform: ' + $window.device.platform);
-				console.info('UUID:     ' + $window.device.uuid);
-				console.info('Version:  ' + $window.device.version);
+				console.info('Model:    ' + w.device.model);
+				console.info('Cordova:  ' + w.device.cordova);
+				console.info('Platform: ' + w.device.platform);
+				console.info('UUID:     ' + w.device.uuid);
+				console.info('Version:  ' + w.device.version);
 
 				// if we're on older Android, disable animations
 				if (androidVersion < 4.3) {
@@ -78,4 +78,4 @@
 			'ifCordova': ifCordova
 		};
 	}]);
-}());
+}(window));
