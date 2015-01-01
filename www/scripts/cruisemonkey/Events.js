@@ -15,10 +15,19 @@
 		'cruisemonkey.Database',
 		'cruisemonkey.User'
 	])
-	.factory('EventService', ['$q', '$rootScope', '$timeout', '$location', 'uuid4', '_database', 'UserService', 'config.database.name', function($q, $rootScope, $timeout, $location, uuid4, _database, UserService, databaseName) {
+	.factory('EventService', ['$q', '$rootScope', '$timeout', '$location', 'uuid4', '_database', 'UserService', 'SettingsService', function($q, $rootScope, $timeout, $location, uuid4, _database, UserService, SettingsService) {
 		console.info('EventService: Initializing EventService.');
+		var databaseName = SettingsService.getDatabaseName();
 
-		var eventsdb = _database.get(databaseName + '.events', {
+		var eventsdbName = null;
+		var eventsdb = null;
+		if (SettingsService.getDatabaseReplicate()) {
+			eventsdbName = databaseName + '.events';
+		} else {
+			eventsdbName = SettingsService.getRemoteDatabaseUrl();
+		}
+		console.debug('Database replicate? ' + SettingsService.getDatabaseReplicate() + ': events database is "' + eventsdbName + '"');
+		eventsdb = _database.get(eventsdbName, {
 			'view': {
 				'view': 'cruisemonkey/events-replication'
 			},
@@ -26,12 +35,18 @@
 				'filter': 'cruisemonkey/events'
 			}
 		});
-		var favoritesdb = null;
 
+		var favoritesdb = null;
 		$rootScope.$on('cruisemonkey.user.updated', function(ev, user) {
 			console.debug('user updated:',user);
 			if (user.loggedIn) {
-				favoritesdb = _database.get(databaseName + '.favorites', {
+				var favoritesdbName = null;
+				if (SettingsService.getDatabaseReplicate()) {
+					favoritesdbName = databaseName + '.favorites';
+				} else {
+					favoritesdbName = SettingsService.getRemoteDatabaseUrl();
+				}
+				favoritesdb = _database.get(favoritesdbName, {
 					'view': {
 						'view': 'cruisemonkey/favorites-all',
 						'key': user.username
@@ -258,16 +273,34 @@
 
 			var deferred = $q.defer();
 			_allEvents = deferred.promise;
-			eventsdb.query('cruisemonkey/events-all', {include_docs: true}).then(function(results) {
-				var ret = [];
-				for (var i=0; i < results.rows.length; i++) {
-					ret.push(new CMEvent(results.rows[i].doc));
+
+			var promises = [];
+
+			promises.push(queryEventView('cruisemonkey/events-public'));
+			var username = UserService.getUsername();
+			if (username) {
+				promises.push(queryEventView('cruisemonkey/events-user', {
+					key: username
+				}));
+			}
+
+			$q.all(promises).then(function(results) {
+				var ret = {}, i, ev;
+				for (i=0; i < results[0].length; i++) {
+					ev = results[0][i];
+					ret[ev.getId()] = ev;
 				}
-				deferred.resolve(ret);
+				if (results.length == 2) {
+					for (i=0; i < results[1].length; i++) {
+						ev = results[1][i];
+						ret[ev.getId()] = ev;
+					}
+				}
+				deferred.resolve(reconcileEvents(ret, []));
 			}, function(err) {
-				console.error('Failed to get all events:',err);
 				deferred.reject(err);
 			});
+
 			_allEvents['finally'](function() {
 				console.debug('EventService.getAllEvents(): finished.');
 				_allEvents = null;

@@ -170,7 +170,7 @@
 				case 'official': eventMethod = EventService.getOfficialEvents; break;
 				case 'unofficial': eventMethod = EventService.getUnofficialEvents; break;
 				case 'my': eventMethod = EventService.getMyEvents; break;
-				case 'all': eventMethod = EventService.getOfficialEvents; break;
+				case 'all': eventMethod = EventService.getAllEvents; break;
 				default: console.warn('Unknown event type: ' + $scope.eventType); break;
 			}
 
@@ -268,7 +268,7 @@
 		$scope.$on('$ionicView.enter', function(ev, info) {
 			console.info('CMEventCtrl.enter:', info);
 			var eventType = info.stateName.replace('app.events.', '');
-			$timeout(function() {
+			$scope.$evalAsync(function() {
 				$ionicNavBarDelegate.title('Events: ' + (eventType == 'my'? 'Mine' : eventType.capitalize()));
 			});
 		});

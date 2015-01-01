@@ -34,13 +34,16 @@
 		'cruisemonkey.Upgrades',
 		'cruisemonkey.User'
 	])
-	.config(['$stateProvider', '$urlRouterProvider', '$compileProvider', 'cfpLoadingBarProvider', function($stateProvider, $urlRouterProvider, $compileProvider, cfpLoadingBarProvider) {
+	.config(['$stateProvider', '$urlRouterProvider', '$compileProvider', '$ionicConfigProvider', 'cfpLoadingBarProvider', function($stateProvider, $urlRouterProvider, $compileProvider, $ionicConfigProvider, cfpLoadingBarProvider) {
 		if (isMobile) {
 			ionic.Platform.fullScreen(false,true);
 		}
 
 		$compileProvider.aHrefSanitizationWhitelist(/^\s*(https?|ftp|mailto|file|tel):/);
 		$compileProvider.imgSrcSanitizationWhitelist(/^\s*(https?|file):/);
+
+		$ionicConfigProvider.views.maxCache(20);
+		$ionicConfigProvider.views.transition('none');
 
 		cfpLoadingBarProvider.includeSpinner = true;
 		cfpLoadingBarProvider.includeBar = false;
@@ -231,23 +234,31 @@
 		$rootScope.$on('cm.loggedOut', function(event) {
 			console.info('User logged out.');
 		});
-		
-		var remoteUrl = SettingsService.getRemoteDatabaseUrl();
-		console.debug('remoteUrl=',remoteUrl);
-		var remotedb = database.get(remoteUrl);
-		EventService.syncFrom(remotedb).then(function() {
-			console.debug('Finished loading events.');
-			NotificationService.alert('Booooo');
+
+		if (SettingsService.getDatabaseReplicate()) {
+			console.debug('Replication enabled.  Starting sync.');
+			var remoteUrl = SettingsService.getRemoteDatabaseUrl();
+			console.debug('remoteUrl=',remoteUrl);
+			var remotedb = database.get(remoteUrl);
+			EventService.syncFrom(remotedb).then(function() {
+				console.debug('Finished loading events.');
+				$rootScope.$broadcast('cm.main.database-initialized');
+				CordovaService.ifCordova(function() {
+					$cordovaSplashscreen.hide();
+				});
+			}, function() {
+				console.debug('Failed to load events.');
+				CordovaService.ifCordova(function() {
+					$cordovaSplashscreen.hide();
+				});
+			});
+		} else {
+			console.debug('Replication disabled.');
 			$rootScope.$broadcast('cm.main.database-initialized');
 			CordovaService.ifCordova(function() {
 				$cordovaSplashscreen.hide();
 			});
-		}, function() {
-			console.debug('Failed to load events.');
-			CordovaService.ifCordova(function() {
-				$cordovaSplashscreen.hide();
-			});
-		});
+		}
 	}])
 	;
 }());

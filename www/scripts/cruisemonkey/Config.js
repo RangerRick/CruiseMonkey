@@ -5,7 +5,7 @@
 
 	angular.module('cruisemonkey.Config', [])
 	.value('config.logging.useStringAppender', false)
-	.value('config.database.root', 'http://localhost:5984/')
+	.value('config.database.root', 'http://192.168.211.30:5984/')
 	.value('config.database.adapter', undefined)
 	.value('config.database.name', 'cruisemonkey')
 	.value('config.database.replicate', true)
@@ -20,11 +20,19 @@
 		'cruisemonkey.Config',
 		'cruisemonkey.Upgrades'
 	])
-	.factory('SettingsService', ['storage', '$rootScope', '$location', 'config.database.root', 'config.database.adapter', 'config.database.name', 'config.urls.openinchrome', 'config.twitarr.root', 'UpgradeService', function(storage, $rootScope, $location, databaseRoot, databaseAdapter, databaseName, openInChrome, twitarrRoot, upgrades) {
+	.factory('SettingsService', ['storage', '$rootScope', '$location', 'config.database.root', 'config.database.adapter', 'config.database.name', 'config.database.replicate', 'config.urls.openinchrome', 'config.twitarr.root', 'UpgradeService', function(storage, $rootScope, $location, databaseRoot, databaseAdapter, databaseName, databaseReplicate, openInChrome, twitarrRoot, upgrades) {
+		var ua = navigator.userAgent;
+		var androidVersion = ua.indexOf('Android') >= 0? parseFloat(ua.slice(ua.indexOf("Android")+8)) : 0;
+		console.debug('Android version: ' + androidVersion);
+		if (androidVersion < 4.0) {
+			databaseReplicate = false;
+		}
+
 		var defaultValue = {
 			'database.root': databaseRoot,
 			'database.adapter': databaseAdapter,
 			'database.name': databaseName,
+			'database.replicate': databaseReplicate,
 			'urls.openinchrome': openInChrome,
 			'twitarr.root': twitarrRoot
 		};
@@ -80,6 +88,7 @@
 			var dbRoot       = $rootScope._settings['database.root']      || databaseRoot;
 			var dbAdapter    = $rootScope._settings['database.adapter']   || databaseAdapter;
 			var dbName       = $rootScope._settings['database.name']      || databaseName;
+			var dbReplicate  = $rootScope._settings['database.replicate'] || databaseReplicate;
 			var openInChrome = $rootScope._settings['urls.openinchrome']  || openInChrome;
 			var twRoot       = $rootScope._settings['twitarr.root']       || twitarrRoot;
 
@@ -99,6 +108,7 @@
 				databaseRoot: dbRoot,
 				databaseAdapter: dbAdapter,
 				databaseName: dbName,
+				databaseReplicate: dbReplicate,
 				openInChrome: openInChrome,
 				twitarrRoot: twRoot
 			});
@@ -110,28 +120,14 @@
 				root = 'http://' + $location.root();
 			}
 
-			/*
 			if (!root.endsWith('/')) {
 				root += '/';
 			}
 			if (!root.startsWith('http')) {
 				root = 'http://' + root;
 			}
-			*/
 
 			return root;
-		};
-
-		var getRemoteDatabaseUrl = function() {
-			return getRemoteDatabaseRoot() + getSettings().databaseName;
-		};
-
-		var getDatabaseAdapter = function() {
-			return getSettings().databaseAdapter;
-		};
-
-		var getLocalDatabaseUrl = function() {
-			return getSettings().databaseName;
 		};
 
 		var broadcastChanges = function(callback) {
@@ -165,6 +161,9 @@
 					$rootScope._settings['database.name'] = angular.copy(name);
 				});
 			},
+			'getDatabaseReplicate': function() {
+				return getSettings().databaseReplicate;
+			},
 			'getOpenInChrome': function() {
 				return getSettings().openInChrome;
 			},
@@ -185,10 +184,10 @@
 				});
 			},
 			'getRemoteDatabaseUrl': function() {
-				return getRemoteDatabaseUrl();
+				return getRemoteDatabaseRoot() + getSettings().databaseName;
 			},
 			'getLocalDatabaseUrl': function() {
-				return getLocalDatabaseUrl();
+				return getSettings().databaseName;
 			}
 		};
 	}]);
