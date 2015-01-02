@@ -152,9 +152,9 @@ if (typeof String.prototype.contains !== 'function') {
 	<script src="scripts/cruisemonkey/Controller.Karaoke.js"></script>
 	<script src="scripts/cruisemonkey/Controller.Login.js"></script>
 	<script src="scripts/cruisemonkey/Controller.Logout.js"></script>
+	<script src="scripts/cruisemonkey/Controller.Menu.js"></script>
 	<script src="scripts/cruisemonkey/Controller.Navigation.js"></script>
 	<script src="scripts/cruisemonkey/Controller.Photos.js"></script>
-	<script src="scripts/cruisemonkey/Cordova.js"></script>
 	<script src="scripts/cruisemonkey/DB.js"></script>
 	<script src="scripts/cruisemonkey/Database.js"></script>
 	<script src="scripts/cruisemonkey/Decks.js"></script>
@@ -180,15 +180,10 @@ if (typeof String.prototype.contains !== 'function') {
 			checks: {}
 		};
 
-		if (isMobile) {
-			console.log('Mobile.  Bootstrapping when "deviceready" event fires.');
-			document.addEventListener("deviceready", function() {
-				angular.bootstrap(document, ['cruisemonkey']);
-			}, false);
-		} else {
-			console.log('Not mobile.  Bootstrapping immediately.');
+		ionic.Platform.ready(function() {
+			console.log('Platform is ready.  Bootstrapping.');
 			angular.bootstrap(document, ['cruisemonkey']);
-		}
+		});
 	</script>
 	<toaster-container toaster-options="{'position-class': 'toast-top-full-width'}"></toaster-container>
 </body>

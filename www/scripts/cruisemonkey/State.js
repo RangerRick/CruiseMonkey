@@ -4,11 +4,10 @@
 	/*global StateMachine: true*/
 
 	angular.module('cruisemonkey.State', [
-		'cruisemonkey.Cordova',
 		'cruisemonkey.User',
 		'ngCordova'
 	])
-	.factory('StateService', ['$rootScope', '$timeout', 'CordovaService', 'UserService', '$cordovaNetwork', function($rootScope, $timeout, c, UserService, $cordovaNetwork) {
+	.factory('StateService', ['$rootScope', '$timeout', 'UserService', '$cordovaNetwork', function($rootScope, $timeout, UserService, $cordovaNetwork) {
 		console.info('StateService: Initializing.');
 
 		var initWait = 5000;
@@ -75,9 +74,7 @@
 			}
 		});
 
-		c.isCordova().then(function(isCordova) {
-			fsm.initialize(isCordova);
-		});
+		fsm.initialize(ionic.Platform.isWebView());
 
 		return {
 			currentState: function() {

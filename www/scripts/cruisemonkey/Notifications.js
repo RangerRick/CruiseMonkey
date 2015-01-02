@@ -9,23 +9,22 @@
 
 	angular.module('cruisemonkey.Notifications', [
 		'cruisemonkey.Config',
-		'cruisemonkey.Cordova',
 		'toaster'
 	])
-	.factory('NotificationService', ['$q', '$rootScope', '$timeout', '$window', 'config.notifications.timeout', 'CordovaService', 'toaster', function($q, $rootScope, $timeout, $window, notificationTimeout, cor, toaster) {
+	.factory('NotificationService', ['$q', '$rootScope', '$timeout', '$window', 'config.notifications.timeout', 'toaster', function($q, $rootScope, $timeout, $window, notificationTimeout, toaster) {
 		var notificationQueue = [];
 		var nextId = 0;
 
 		var doAlert = function(message, callback) {
-			cor.ifCordova(function() {
+			if (ionic.Platform.isWebView()) {
 				console.info('NotificationService.doAlert(): native cordova: ' + message);
 				navigator.notification.alert(message, callback);
-			}).otherwise(function() {
+			} else {
 				console.info('NotificationService.doAlert(): not native cordova: ' + message);
 				toaster.pop('note', message);
 				//$window.alert(message);
 				callback();
-			});
+			}
 		};
 
 		var alert = function(message, alertCallback) {

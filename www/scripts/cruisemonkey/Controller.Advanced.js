@@ -3,14 +3,11 @@
 
 	angular.module('cruisemonkey.controllers.Advanced', [
 		'cruisemonkey.Config',
-		'cruisemonkey.Cordova',
 		'cruisemonkey.Database',
 		'cruisemonkey.Settings'
 	])
-	.controller('CMAdvancedCtrl', ['$scope', '$rootScope', '$window', '_database', 'CordovaService', 'config.app.version', 'SettingsService', function($scope, $rootScope, $window, _database, cor, version, SettingsService) {
+	.controller('CMAdvancedCtrl', ['$scope', '$rootScope', '$window', '_database', 'config.app.version', 'SettingsService', function($scope, $rootScope, $window, _database, version, SettingsService) {
 		console.info('Initializing CMAdvancedCtrl');
-		$rootScope.leftButtons = $rootScope.getLeftButtons();
-		$rootScope.rightButtons = [];
 
 		$scope.settings = SettingsService.getSettings();
 
@@ -63,11 +60,5 @@
 			throw "reimplement re-sync!";
 			//_db.restartSync();
 		};
-
-		cor.ifCordova(function() {
-			$scope.isIos = true;
-		}).otherwise(function() {
-			$scope.isIos = false;
-		});
 	}]);
 }());

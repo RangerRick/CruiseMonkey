@@ -3,13 +3,10 @@
 
 	angular.module('cruisemonkey.controllers.DeckList', [
 		'ui.router',
-		'angularLocalStorage',
-		'cruisemonkey.Cordova'
+		'angularLocalStorage'
 	])
-	.controller('CMDeckListCtrl', ['storage', '$scope', '$rootScope', '$ionicNavBarDelegate', '$ionicSlideBoxDelegate', '$timeout', '$state', '$stateParams', '$location', '$document', 'CordovaService', function(storage, $scope, $rootScope, $ionicNavBarDelegate, $ionicSlideBoxDelegate, $timeout, $state, $stateParams, $location, $document, cor) {
+	.controller('CMDeckListCtrl', ['storage', '$scope', '$rootScope', '$ionicSlideBoxDelegate', '$timeout', '$state', '$stateParams', '$location', '$document', function(storage, $scope, $rootScope, $ionicSlideBoxDelegate, $timeout, $state, $stateParams, $location, $document) {
 		console.info('Initializing CMDeckListCtrl');
-		$rootScope.leftButtons = $rootScope.getLeftButtons();
-		$rootScope.rightButtons = [];
 
 		storage.bind($scope, 'deck', {
 			'defaultValue': 2,
@@ -69,8 +66,6 @@
 		};
 
 		var updateUI = function() {
-			$rootScope.headerTitle = "Deck " + $scope.deck;
-
 			if ($scope.deck === 2) {
 				$scope.hasPrevious = false;
 				$scope.hasNext = true;
@@ -82,12 +77,11 @@
 				$scope.hasNext = true;
 			}
 
-			cor.ifCordova(function() {
+			if (ionic.Platform.isWebView()) {
 				$scope.showButtons = false;
-			}).otherwise(function() {
+			} else {
 				$scope.showButtons = true;
-			});
-			$ionicNavBarDelegate.title('Deck ' + $scope.deck);
+			}
 		};
 
 		$scope.$watch('deck', function(newValue, oldValue) {

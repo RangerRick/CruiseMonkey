@@ -1,32 +1,36 @@
 <ion-side-menus>
   <ion-side-menu-content edge-drag-threshold="true" drag-content="true">
     <ion-nav-bar class="bar-stable bar-dark" animation="no-animation">
-      <!-- <ion-nav-back-button class="button-clear"><i class="icon ion-ios7-arrow-back"></i> Back</ion-nav-back-button> -->
+			<ion-nav-buttons side="left">
+			  <button menu-toggle="left" class="button button-icon icon ion-navicon"></button>
+			</ion-nav-buttons>
     </ion-nav-bar>
     <ion-nav-view name="menuContent" animation="no-animation"></ion-nav-view>
   </ion-side-menu-content>
 
   <ion-side-menu side="left" expose-aside-when="large">
-    <header class="bar bar-header bar-stable bar-dark">
+    <header class="bar bar-header bar-stable bar-dark" menu-close>
       <h1 class="title">CruiseMonkey</h1>
     </header>
-    <ion-content class="has-header">
+    <ion-content class="has-header" menu-close>
       <ion-list menu-close>
-				<a class="item" menu-close nav-clear ui-sref="app.events"                            ui-sref-active="active">Events</a>
-				<a class="item" menu-close nav-clear ui-sref="app.deck-plans"                        ui-sref-active="active">Deck Plans</a>
-				<a class="item" menu-close nav-clear ui-sref="app.amenities"                         ui-sref-active="active">Amenities</a>
-				<a class="item" menu-close nav-clear ui-sref="app.karaoke"                           ui-sref-active="active">Karaoke</a>
-				<a class="item" menu-close nav-clear ui-sref="app.photos"                            ui-sref-active="active">Twit-Arr Pics</a>
-				<a class="item" menu-close nav-clear ng-click="openSeamail()"                        ui-sref-active="active">
+				<a class="item" ui-sref="app.events"                            ui-sref-active="active">Events</a>
+				<a class="item" ui-sref="app.deck-plans"                        ui-sref-active="active">Deck Plans</a>
+				<a class="item" ui-sref="app.amenities"                         ui-sref-active="active">Amenities</a>
+				<a class="item" ui-sref="app.karaoke"                           ui-sref-active="active">Karaoke</a>
+				<a class="item" ui-sref="app.photos"                            ui-sref-active="active">Twit-Arr Pics</a>
+				<a class="item" ng-click="openSeamail()"                        ui-sref-active="active">
 					Seamail
 					<span class="badge badge-assertive" ng-if="seamailCount > 0">{{seamailCount}}</span>
 				</a>
-				<a class="item" menu-close nav-clear ui-sref="app.logout" ng-if="user.loggedIn"      ui-sref-active="active">Log Out ({{user.username}})</a>
-				<a class="item" menu-close nav-clear ui-sref="app.login" ng-if="!user.loggedIn"      ui-sref-active="active">Log In</a>
-				<a class="item" menu-close nav-clear ui-sref="app.advanced"                          ui-sref-active="active">Advanced</a>
-				<a class="item" menu-close nav-clear ui-sref="app.help"                              ui-sref-active="active">Help</a>
-				<a class="item" menu-close nav-clear ui-sref="app.about"                             ui-sref-active="active">About</a>
       </ion-list>
     </ion-content>
+		<ion-footer-bar class="bar-dark" menu-close>
+			<button class="button button-icon icon ion-information-circled" ng-click="aboutModal.show()"></button>
+			<button class="button button-icon icon ion-help-circled" ng-click="helpModal.show()"></button>
+			<button class="button button-icon icon ion-gear-b" ng-click="settingsModal.show()"></button>
+			<button class="button button-icon icon ion-log-out" ng-if="user.loggedIn" ng-click="logOut()"></button>
+			<button class="button button-icon icon ion-log-in" ng-if="!user.loggedIn" ng-click="loginModal.show()"></button>
+		</ion-footer-bar>
   </ion-side-menu>
 </ion-side-menus>

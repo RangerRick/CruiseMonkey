@@ -3,15 +3,12 @@
 
 	angular.module('cruisemonkey.controllers.Login', [
 		'cruisemonkey.Config',
-		'cruisemonkey.Cordova',
 		'cruisemonkey.Notifications',
 		'cruisemonkey.Settings',
 		'cruisemonkey.User'
 	])
-	.controller('CMLoginCtrl', ['$scope', '$rootScope', '$location', '$http', 'UserService', 'SettingsService', 'CordovaService', 'NotificationService', function($scope, $rootScope, $location, $http, UserService, SettingsService, cor, notifications) {
+	.controller('CMLoginCtrl', ['$scope', '$rootScope', '$location', '$http', 'UserService', 'SettingsService', 'NotificationService', function($scope, $rootScope, $location, $http, UserService, SettingsService, notifications) {
 		console.info('Initializing CMLoginCtrl');
-		$rootScope.headerTitle = "Log In";
-		$rootScope.leftButtons = $rootScope.getLeftButtons();
 
 		$rootScope.user = UserService.get();
 
@@ -21,6 +18,9 @@
 		};
 
 		$scope.isUnchanged = function(newUser) {
+			if (newUser.loggedIn == false) {
+				return false;
+			}
 			var savedUser = UserService.get();
 			if (savedUser === null || savedUser === undefined) {
 				if (newUser === null || newUser === undefined) {
@@ -29,7 +29,7 @@
 					return false;
 				}
 			}
-			return savedUser.username === newUser.username && savedUser.password === newUser.password;
+			return savedUser.username === newUser.username && savedUser.password === newUser.password && savedUser.loggedIn === newUser.loggedIn;
 		};
 
 		$scope.cancel = function() {
@@ -38,17 +38,6 @@
 			$rootScope.$broadcast('cm.loggedOut', oldUser);
 			$location.path('/events/official');
 		};
-
-		$rootScope.rightButtons = [
-			{
-				type: 'button-positive',
-				content: 'Cancel',
-				tap: function(e) {
-					e.preventDefault();
-					$scope.cancel();
-				}
-			}
-		];
 
 		$scope.saveUser = function(user) {
 			user.loggedIn = true;

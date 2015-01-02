@@ -13,52 +13,107 @@
 		'uuid4',
 		'cruisemonkey.Config',
 		'cruisemonkey.Database',
-		'cruisemonkey.User'
+		'cruisemonkey.User',
+		'cfp.loadingBar'
 	])
-	.factory('EventService', ['$q', '$rootScope', '$timeout', '$location', 'uuid4', '_database', 'UserService', 'SettingsService', function($q, $rootScope, $timeout, $location, uuid4, _database, UserService, SettingsService) {
+	.factory('EventService', ['$q', '$rootScope', '$timeout', '$location', 'uuid4', '_database', 'UserService', 'SettingsService', 'cfpLoadingBar', function($q, $rootScope, $timeout, $location, uuid4, _database, UserService, SettingsService, cfpLoadingBar) {
 		console.info('EventService: Initializing EventService.');
-		var databaseName = SettingsService.getDatabaseName();
+		var createEventsDb = function() {
+			var databaseName = SettingsService.getDatabaseName();
+			var remoteDatabase = SettingsService.getRemoteDatabaseUrl();
+			var replicate = SettingsService.getDatabaseReplicate();
 
-		var eventsdbName = null;
-		var eventsdb = null;
-		if (SettingsService.getDatabaseReplicate()) {
-			eventsdbName = databaseName + '.events';
-		} else {
-			eventsdbName = SettingsService.getRemoteDatabaseUrl();
-		}
-		console.debug('Database replicate? ' + SettingsService.getDatabaseReplicate() + ': events database is "' + eventsdbName + '"');
-		eventsdb = _database.get(eventsdbName, {
-			'view': {
-				'view': 'cruisemonkey/events-replication'
-			},
-			'replication': {
-				'filter': 'cruisemonkey/events'
+			var eventsdbName = replicate? databaseName + '.events' : remoteDatabase;
+
+			console.debug('Database replicate? ' + replicate + ': events database is "' + eventsdbName + '", remote database is "' + remoteDatabase + '"');
+			var eventsdb = _database.get(eventsdbName, {
+				'view': {
+					'view': 'cruisemonkey/events-replication'
+				},
+				'replication': {
+					'filter': 'cruisemonkey/events'
+				}
+			});
+
+			if (replicate) {
+				var remoteDb = _database.get(remoteDatabase);
+				eventsdb.syncFrom(remoteDb).then(function() {
+					eventsdb.continuouslyReplicateFrom(remoteDb);
+				}, function(err) {
+					console.warn('Failed to sync eventsdb:',err);
+				});
 			}
-		});
 
+			return eventsdb;
+		};
+
+		var createFavoritesDb = function() {
+			var databaseName = SettingsService.getDatabaseName();
+			var remoteDatabase = SettingsService.getRemoteDatabaseUrl();
+			var replicate = SettingsService.getDatabaseReplicate();
+
+			var favoritesdbName = replicate? databaseName + '.favorites' : remoteDatabase;
+
+			favoritesdb = _database.get(favoritesdbName, {
+				'view': {
+					'view': 'cruisemonkey/favorites-all',
+					'key': user.username
+				},
+				'replication': {
+					'filter': 'cruisemonkey/favorites',
+					'query_parms': {
+						'username': user.username
+					}
+				}
+			});
+			
+			if (replicate) {
+				var remoteDb = _database.get(remoteDatabase);
+				favoritesdb.syncFrom(remoteDb).then(function() {
+					favoritesdb.continuouslyReplicateFrom(remoteDb);
+				}, function(err) {
+					console.warn('Failed to sync favoritesdb:',err);
+				});
+			}
+
+			return favoritesdb;
+		};
+
+		var _isLoading = false;
+		var startLoadingBar = function() {
+			if (cfpLoadingBar.status() >= 100 || cfpLoadingBar.status() === 0) {
+				_isLoading = true;
+				cfpLoadingBar.start();
+			}
+		};
+		var stopLoadingBar = function() {
+			if (_isLoading) {
+				cfpLoadingBar.complete();
+			}
+			_isLoading = false;
+		}
+
+		var doLoadingBar = function(promise) {
+			startLoadingBar();
+			$q.when(promise).then(function() {
+				stopLoadingBar();
+			}, function() {
+				stopLoadingBar();
+			});
+			return promise;
+		};
+
+		var eventsdb = createEventsDb();
 		var favoritesdb = null;
+
 		$rootScope.$on('cruisemonkey.user.updated', function(ev, user) {
 			console.debug('user updated:',user);
 			if (user.loggedIn) {
-				var favoritesdbName = null;
-				if (SettingsService.getDatabaseReplicate()) {
-					favoritesdbName = databaseName + '.favorites';
-				} else {
-					favoritesdbName = SettingsService.getRemoteDatabaseUrl();
-				}
-				favoritesdb = _database.get(favoritesdbName, {
-					'view': {
-						'view': 'cruisemonkey/favorites-all',
-						'key': user.username
-					},
-					'replication': {
-						'filter': 'cruisemonkey/favorites',
-						'query_parms': {
-							'username': user.username
-						}
-					}
-				});
+				favoritesdb = createFavoritesDb();
 			} else {
+				if (favoritesdb) {
+					favoritesdb.stopReplication();
+				}
 				favoritesdb = null;
 			}
 		});
@@ -75,7 +130,7 @@
 				deferred.resolve();
 			});
 
-			return deferred.promise;
+			return doLoadingBar(deferred.promise);
 		};
 
 		var promisedResult = function(result) {
@@ -212,7 +267,7 @@
 				deferred.reject(err);
 			});
 
-			return deferred.promise;
+			return doLoadingBar(deferred.promise);
 		};
 
 		var updateEvent = function(up) {
@@ -241,7 +296,7 @@
 				deferred.reject(err);
 			});
 
-			return deferred.promise;
+			return doLoadingBar(deferred.promise);
 		};
 
 		var removeEvent = function(doc) {
@@ -261,7 +316,7 @@
 				deferred.reject(err);
 			});
 
-			return deferred.promise;
+			return doLoadingBar(deferred.promise);
 		};
 
 		var _allEvents = null;
@@ -305,7 +360,7 @@
 				console.debug('EventService.getAllEvents(): finished.');
 				_allEvents = null;
 			});
-			return _allEvents;
+			return doLoadingBar(_allEvents);
 		};
 
 		var _allFavorites = null;
@@ -333,7 +388,7 @@
 				console.debug('EventService.getAllFavorites(): finished.');
 				_allFavorites = null;
 			});
-			return _allFavorites;
+			return doLoadingBar(_allFavorites);
 		};
 
 		var _officialEvents = null;
@@ -357,7 +412,7 @@
 				console.debug('EventService.getOfficialEvents(): finished.');
 				_officialEvents = null;
 			});
-			return _officialEvents;
+			return doLoadingBar(_officialEvents);
 		};
 
 		var _unofficialEvents = null;
@@ -381,7 +436,7 @@
 				console.debug('EventService.getUnofficialEvents(): finished.');
 				_unofficialEvents = null;
 			});
-			return _unofficialEvents;
+			return doLoadingBar(_unofficialEvents);
 		};
 
 		var _userEvents = null;
@@ -411,7 +466,7 @@
 				console.debug('EventService.getUserEvents(): finished.');
 				_userEvents = null;
 			});
-			return _userEvents;
+			return doLoadingBar(_userEvents);
 		};
 
 		var _myEvents = null;
@@ -456,7 +511,7 @@
 				console.debug('EventService.getMyEvents(): finished.');
 				_myEvents = null;
 			});
-			return _myEvents;
+			return doLoadingBar(_myEvents);
 		};
 
 		var _myFavorites = null;
@@ -492,7 +547,7 @@
 				console.debug('EventService.getMyFavorites(): finished.');
 				_myFavorites = null;
 			});
-			return _myFavorites;
+			return doLoadingBar(_myFavorites);
 		};
 
 		var _isFavorite = null;
@@ -525,7 +580,7 @@
 				console.debug('EventService.isFavorite(): finished.');
 				_isFavorite = null;
 			});
-			return _isFavorite;
+			return doLoadingBar(_isFavorite);
 		};
 
 		var addFavorite = function(eventId) {
@@ -580,7 +635,7 @@
 				});
 			});
 
-			return deferred.promise;
+			return doLoadingBar(deferred.promise);
 		};
 
 		var removeFavorite = function(eventId) {
@@ -612,7 +667,7 @@
 				deferred.reject(err);
 			});
 
-			return deferred.promise;
+			return doLoadingBar(deferred.promise);
 		};
 
 		var getEventForTime = function(time, eventList) {

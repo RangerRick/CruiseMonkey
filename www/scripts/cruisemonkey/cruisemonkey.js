@@ -14,7 +14,6 @@
 		'pasvaz.bindonce',
 		'chieffancypants.loadingBar',
 		'cruisemonkey.Config',
-		'cruisemonkey.Cordova',
 		'cruisemonkey.controllers.About',
 		'cruisemonkey.controllers.Advanced',
 		'cruisemonkey.controllers.Amenities',
@@ -24,6 +23,7 @@
 		'cruisemonkey.controllers.Karaoke',
 		'cruisemonkey.controllers.Login',
 		'cruisemonkey.controllers.Logout',
+		'cruisemonkey.controllers.Menu',
 		'cruisemonkey.controllers.Navigation',
 		'cruisemonkey.controllers.Photos',
 		'cruisemonkey.Database',
@@ -54,7 +54,8 @@
 			.state('app', {
 				url: '/app',
 				abstract: true,
-				templateUrl: 'template/menu.html'
+				templateUrl: 'template/menu.html',
+				controller: 'CMMenuCtrl'
 			})
 			.state('app.events', {
 				url: '/events',
@@ -99,24 +100,6 @@
 					'events-all': {
 						templateUrl: 'template/event-list.html',
 						controller: 'CMEventCtrl'
-					}
-				}
-			})
-			.state('app.login', {
-				url: '/login',
-				views: {
-					'menuContent': {
-						templateUrl: 'template/login.html',
-						controller: 'CMLoginCtrl'
-					}
-				}
-			})
-			.state('app.logout', {
-				url: '/logout',
-				views: {
-					'menuContent': {
-						templateUrl: 'template/logout.html',
-						controller: 'CMLogoutCtrl'
 					}
 				}
 			})
@@ -185,10 +168,11 @@
 			})
 		;
 	}])
-	.run(['$rootScope', '$timeout', '$ionicPlatform', '$cordovaDialogs', '$cordovaSplashscreen', 'CordovaService', 'NotificationService', 'UserService', 'SettingsService', 'EventService', '_database', function($rootScope, $timeout, $ionicPlatform, $cordovaDialogs, $cordovaSplashscreen, CordovaService, NotificationService, UserService, SettingsService, EventService, database) {
+	.run(['$rootScope', '$timeout', '$ionicPlatform', '$cordovaDialogs', '$cordovaSplashscreen', 'NotificationService', 'UserService', 'SettingsService', 'EventService', '_database', function($rootScope, $timeout, $ionicPlatform, $cordovaDialogs, $cordovaSplashscreen, NotificationService, UserService, SettingsService, EventService, database) {
 		console.debug('CruiseMonkey run() called.');
 
-		$ionicPlatform.ready(function() {
+		if (ionic.Platform.isWebView()) {
+			console.debug('Initializing ionic platform plugins and events.');
 			// Hide the accessory bar by default (remove this to show the accessory bar above the keyboard or form inputs)
 			if(window.cordova && window.cordova.plugins.Keyboard) {
 				cordova.plugins.Keyboard.hideKeyboardAccessoryBar(true);
@@ -197,15 +181,15 @@
 				// org.apache.cordova.statusbar required
 				StatusBar.styleLightContent();
 			}
-			document.addEventListener("pause", function() {
-				console.warn('CruiseMonkey paused:', Array.prototype.slice.call(arguments));
-			}, false);
-			document.addEventListener("resign", function() {
-				console.warn('CruiseMonkey locked while in foreground:', Array.prototype.slice.call(arguments));
-			}, false);
-			document.addEventListener("resume", function() {
-				console.warn('CruiseMonkey resumed:', Array.prototype.slice.call(arguments));
-			}, false);
+			$ionicPlatform.on('pause', function() {
+				console.warn('CruiseMonkey paused:', arguments);
+			});
+			$ionicPlatform.on('resign', function() {
+				console.warn('CruiseMonkey locked while in foreground:', arguments);
+			});
+			$ionicPlatform.on('resume', function() {
+				console.warn('CruiseMonkey resumed:', arguments);
+			});
 
 			if (window.plugins && window.plugins.backgroundFetch) {
 				window.plugins.backgroundFetch.configure(function() {
@@ -218,23 +202,9 @@
 					});
 				});
 			}
-		});
+		}
 
-		$rootScope.getLeftButtons = function() {
-			return [{
-				type: 'button-clear',
-				content: '<i class="icon active ion-navicon"></i>',
-				tap: $rootScope.openLeft
-			}];
-		};
-
-		$rootScope.$on('cm.loggedIn', function(event) {
-			console.info('User "' + UserService.getUsername() + '" logged in.');
-		});
-		$rootScope.$on('cm.loggedOut', function(event) {
-			console.info('User logged out.');
-		});
-
+		/*
 		if (SettingsService.getDatabaseReplicate()) {
 			console.debug('Replication enabled.  Starting sync.');
 			var remoteUrl = SettingsService.getRemoteDatabaseUrl();
@@ -243,21 +213,26 @@
 			EventService.syncFrom(remotedb).then(function() {
 				console.debug('Finished loading events.');
 				$rootScope.$broadcast('cm.main.database-initialized');
-				CordovaService.ifCordova(function() {
+				if (navigator.splashscreen) {
 					$cordovaSplashscreen.hide();
-				});
+				}
 			}, function() {
 				console.debug('Failed to load events.');
-				CordovaService.ifCordova(function() {
+				if (navigator.splashscreen) {
 					$cordovaSplashscreen.hide();
-				});
+				}
 			});
 		} else {
 			console.debug('Replication disabled.');
 			$rootScope.$broadcast('cm.main.database-initialized');
-			CordovaService.ifCordova(function() {
+			if (navigator.splashscreen) {
 				$cordovaSplashscreen.hide();
-			});
+			}
+		}
+		*/
+		$rootScope.$broadcast('cm.main.database-initialized');
+		if (navigator.splashscreen) {
+			$cordovaSplashscreen.hide();
 		}
 	}])
 	;

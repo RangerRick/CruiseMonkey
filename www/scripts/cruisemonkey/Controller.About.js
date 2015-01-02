@@ -6,8 +6,6 @@
 	])
 	.controller('CMAboutCtrl', ['$scope', '$rootScope', 'EventService', 'config.app.version', function($scope, $rootScope, EventService, version) {
 		console.info('Initializing CMAboutCtrl');
-		$rootScope.leftButtons = $rootScope.getLeftButtons();
-		$rootScope.rightButtons = [];
 		$scope.version = version;
 
 		$scope.goToSite = function(site) {

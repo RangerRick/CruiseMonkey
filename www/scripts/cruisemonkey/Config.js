@@ -21,13 +21,6 @@
 		'cruisemonkey.Upgrades'
 	])
 	.factory('SettingsService', ['storage', '$rootScope', '$location', 'config.database.root', 'config.database.adapter', 'config.database.name', 'config.database.replicate', 'config.urls.openinchrome', 'config.twitarr.root', 'UpgradeService', function(storage, $rootScope, $location, databaseRoot, databaseAdapter, databaseName, databaseReplicate, openInChrome, twitarrRoot, upgrades) {
-		var ua = navigator.userAgent;
-		var androidVersion = ua.indexOf('Android') >= 0? parseFloat(ua.slice(ua.indexOf("Android")+8)) : 0;
-		console.debug('Android version: ' + androidVersion);
-		if (androidVersion < 4.0) {
-			databaseReplicate = false;
-		}
-
 		var defaultValue = {
 			'database.root': databaseRoot,
 			'database.adapter': databaseAdapter,

@@ -1,24 +1,25 @@
-<ion-view title="Log In" hide-back-button="true">
-<ion-nav-buttons side="left">
-  <button menu-toggle="left" class="button button-icon icon ion-navicon"></button>
-</ion-nav-buttons>
-<ion-content has-header="true" scroll="true" padded="false">
-	<div class="list">
-		<div class="item item-text-wrap">
-			Log in using your Twit-Arr account.  If you haven't yet created a Twit-Arr account,
-			<a ng-click="goToTwitarr()" style="text-decoration:underline;cursor:pointer">go to the Twit-Arr server</a> and create an account.
+<ion-modal-view>
+	<ion-header-bar class="bar-stable bar-dark">
+		<h1 class="title">Log In</h1>
+		<button class="button button-icon icon ion-close-circled" ng-click="loginModal.hide()"></button>
+	</ion-header-bar>
+	<ion-content has-header="true" ng-controller="CMLoginCtrl">
+		<div class="list">
+			<div class="item item-text-wrap">
+				Log in using your Twit-Arr account.  If you haven't yet created a Twit-Arr account,
+				<a ng-click="goToTwitarr()" style="text-decoration:underline;cursor:pointer">go to the Twit-Arr server</a> and create an account.
+			</div>
+			<form name="loginForm" class="login-form" novalidate>
+				<label class="item item-input item-stacked-label">
+					<span class="input-label">Username</span>
+					<input id="loginUsername" type="text" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="off" ng-model="user.username" name="username" autofocus="autofocus" required />
+				</label>
+				<label class="item item-input item-stacked-label">
+					<span class="input-label">Password</span>
+					<input id="loginPassword" type="password" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="off" ng-model="user.password" name="password" required />
+				</label>
+				<button class="button button-full button-positive" ng-click="update(user)" ng-disabled="form.$invalid || isUnchanged(user)">Log In</button>
+			</form>
 		</div>
-		<form name="loginForm" class="login-form" novalidate>
-			<label class="item item-input item-stacked-label">
-				<span class="input-label">Username</span>
-				<input id="loginUsername" type="text" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="off" ng-model="user.username" name="username" autofocus="autofocus" required />
-			</label>
-			<label class="item item-input item-stacked-label">
-				<span class="input-label">Password</span>
-				<input id="loginPassword" type="password" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="off" ng-model="user.password" name="password" required />
-			</label>
-			<button class="button button-full button-positive" ng-click="update(user)" ng-disabled="form.$invalid || isUnchanged(user)">Log In</button>
-		</form>
-	</div>
-</ion-content>
-</ion-view>
+	</ion-content>
+</ion-modal-view>

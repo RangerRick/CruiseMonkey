@@ -90,9 +90,6 @@
 	}])
 	.controller('CMKaraokeSearchCtrl', ['storage', '$rootScope', '$scope', '$state', 'KaraokeService', function(storage, $rootScope, $scope, $state, KaraokeService) {
 		console.info('Initializing CMKaraokeSearchCtrl');
-		$rootScope.headerTitle = 'Karaoke Search';
-		$rootScope.leftButtons = $rootScope.getLeftButtons();
-		$rootScope.rightButtons = [];
 
 		KaraokeService.setScope($scope);
 		KaraokeService.setSortFunction(sortByArtist);

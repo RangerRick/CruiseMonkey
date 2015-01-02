@@ -3,10 +3,9 @@
 
 	angular.module('cruisemonkey.controllers.Photos', [
 		'ionic',
-		'cruisemonkey.Cordova',
 		'cruisemonkey.Settings'
 	])
-	.factory('PhotoService', ['$q', '$rootScope', '$http', '$timeout', 'SettingsService', 'CordovaService', function($q, $rootScope, $http, $timeout, settings, cordova) {
+	.factory('PhotoService', ['$q', '$rootScope', '$http', '$timeout', 'SettingsService', function($q, $rootScope, $http, $timeout, settings) {
 		var finished, nextPage, nextEntry, entries;
 
 		var reset = function() {
@@ -113,9 +112,6 @@
 	}])
 	.controller('CMPhotoCtrl', ['$rootScope', '$scope', '$ionicSlideBoxDelegate', '$http', '$log', 'PhotoService', function($rootScope, $scope, $ionicSlideBoxDelegate, $http, log, photos) {
 		console.info('Initializing CMPhotoCtrl');
-		$rootScope.headerTitle = "Twit-Arr Pics";
-		$rootScope.leftButtons = $rootScope.getLeftButtons();
-		$rootScope.rightButtons = [];
 
 		$scope.finished = false;
 		$scope.entries = [];

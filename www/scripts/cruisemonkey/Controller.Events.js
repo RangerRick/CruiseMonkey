@@ -132,9 +132,9 @@
 			}
 		};
 	}])
-	.controller('CMEventsBarCtrl', ['$scope', '$timeout', '$ionicNavBarDelegate', 'storage', function($scope, $timeout, $ionicNavBarDelegate, storage) {
+	.controller('CMEventsBarCtrl', ['$scope', '$timeout', 'storage', function($scope, $timeout, storage) {
 	}])
-	.controller('CMEventCtrl', ['$q', '$scope', '$rootScope', '$timeout', '$ionicNavBarDelegate', '$ionicScrollDelegate', 'EventService', 'EventCache', function($q, $scope, $rootScope, $timeout, $ionicNavBarDelegate, $ionicScrollDelegate, EventService, EventCache) {
+	.controller('CMEventCtrl', ['$q', '$scope', '$rootScope', '$timeout', '$ionicScrollDelegate', 'EventService', 'EventCache', function($q, $scope, $rootScope, $timeout, $ionicScrollDelegate, EventService, EventCache) {
 		var withDays = function(events) {
 			var ret = [],
 				ev, i,
@@ -225,6 +225,35 @@
 			}
 		};
 
+		var timeout = null;
+		var refreshEvents = function(immediately) {
+			if (timeout) {
+				console.debug('CMEventCtrl.refreshEvents(): Refresh already in-flight.  Skipping.');
+				return;
+			} else if (immediately) {
+				console.debug('CMEventCtrl.refreshEvents(): Refreshing immediately.');
+				doRefresh();
+			} else {
+				console.debug('CMEventCtrl.refreshEvents(): Refreshing in ' + refreshInterval + ' seconds.');
+				timeout = $timeout(function() {
+					timeout = null;
+					doRefresh();
+				}, refreshInterval * 1000);
+			}
+		};
+
+		var delayTimeout = null;
+		var updateDelayed = function(delay) {
+			if (delayTimeout) {
+				$timeout.cancel(delayTimeout);
+			}
+			delayTimeout = $timeout(function() {
+				console.debug('CMEventCtrl.doUpdateDelayed()');
+				delayTimeout = null;
+				updateEntries();
+			}, delay || 300);
+		};
+
 		$scope.getDateId = function(date) {
 			return 'date-' + date.unix();
 		};
@@ -256,21 +285,48 @@
 			}
 		};
 
+		$scope.searchChanged = function(newSearchString) {
+			$scope.searchString = newSearchString;
+			updateDelayed();
+		};
+
+		$scope.clearSearchString = function() {
+			console.info('clear search string');
+			var element = document.getElementById('search');
+			element.value = '';
+			if ("createEvent" in document) {
+				var evt = document.createEvent('HTMLEvents');
+				evt.initEvent('change', false, true);
+				element.dispatchEvent(evt);
+			} else {
+				element.fireEvent('change');
+			}
+		};
+
+		$scope.eventTitle = 'Events';
+
 		$scope.$on('$ionicView.loaded', function(ev, info) {
-			console.info('CMEventCtrl.loaded:', info);
 			$scope.searchString = '';
 		});
 		$scope.$on('$ionicView.beforeEnter', function(ev, info) {
-			console.info('CMEventCtrl.beforeEnter:', info);
 			$scope.eventType = info.stateName.replace('app.events.', '');
 			doRefresh();
 		});
+		$scope.$on('$ionicView.afterEnter', function(ev, info) {
+			$scope.eventTitle = 'Events: ' + ($scope.eventType == 'my'? 'Mine' : $scope.eventType.capitalize());
+		});
+		$scope.$on('cm.main.database-initialized', function() {
+			console.debug('CMEventCtrl: Database initialized.');
+			$timeout(function() {
+				refreshEvents(true);
+			}, 100);
+		});
+
+		/*
 		$scope.$on('$ionicView.enter', function(ev, info) {
 			console.info('CMEventCtrl.enter:', info);
 			var eventType = info.stateName.replace('app.events.', '');
-			$scope.$evalAsync(function() {
-				$ionicNavBarDelegate.title('Events: ' + (eventType == 'my'? 'Mine' : eventType.capitalize()));
-			});
+			$scope.eventTitle = 'Events: ' + (eventType == 'my'? 'Mine' : eventType.capitalize());
 		});
 		$scope.$on('$ionicView.leave', function(ev, info) {
 			console.info('CMEventCtrl.leave:', info);
@@ -278,180 +334,18 @@
 		$scope.$on('$ionicView.unloaded', function(ev, info) {
 			console.info('CMEventCtrl.unloaded:', info);
 		});
+		*/
 	}])
 	.controller('OldCMEventCtrl', [ 'storage', '$scope', '$rootScope', '$interval', '$timeout', '$stateParams', '$location', '$q', '$ionicModal', '$ionicScrollDelegate', '$window', 'UserService', 'EventService', 'EventCache', 'NotificationService', function(storage, $scope, $rootScope, $interval, $timeout, $stateParams, $location, $q, $ionicModal, $ionicScrollDelegate, $window, UserService, EventService, EventCache, notifications) {
 		console.info('Initializing CMEventCtrl');
 
-		if (!$stateParams.eventType) {
-			$location.path('/app/events/official');
-			return;
-		}
-
-		var eventType = $stateParams.eventType;
-		var refreshInterval = 2; // seconds
-
-		$scope.isDisabled = true;
-		$timeout(function() {
-			$scope.isDisabled = false;
-		}, 500);
-
 		var message = 'Updating ' + eventType.capitalize() + ' events...';
 		var scrolled = false;
-
-		var withDays = function(events) {
-			var ret = [],
-				ev, i,
-				lastDay = moment('1970-01-01 00:00'),
-				currentDay = null;
-
-			for (i=0; i < events.length; i++) {
-				ev = events[i];
-				currentDay = ev.getDay();
-				if (!lastDay.isSame(currentDay)) {
-					ret.push(new CMDay(currentDay));
-					lastDay = currentDay;
-				}
-				ret.push(ev);
-			}
-
-			return ret;
-		};
 
 		storage.bind($scope, 'searchString', {
 			'storeName': 'cm.event.' + eventType
 		});
 		console.debug('$scope.searchString: ' + $scope.searchString);
-
-		$scope.username = UserService.getUsername();
-		console.debug('username = ' + $scope.username);
-		$rootScope.$on('cruisemonkey.user.updated', function(ev, user) {
-			console.debug('user updated:',user);
-		});
-
-		$scope.entries = withDays(EventCache.get(eventType, $scope.searchString) || []);
-		if ($scope.entries.length === 0) {
-			notifications.status(message, 2000);
-		}
-
-		var eventMethod = EventService.getOfficialEvents;
-		if (eventType === 'official') {
-			eventMethod = EventService.getOfficialEvents;
-		} else if (eventType === 'unofficial') {
-			eventMethod = EventService.getUnofficialEvents;
-		} else if (eventType === 'my') {
-			eventMethod = EventService.getMyEvents;
-		}
-
-		var timeout = null;
-
-		var getTextForElement = function(el) {
-			var ret = '<' + el.nodeName.toLowerCase(),
-				i, attr;
-			if (el.attributes.length > 0) {
-				for (i=0; i < el.attributes.length; i++) {
-					attr = el.attributes[i];
-					ret += ' ' + attr.name + '="' + attr.value + '"';
-				}
-			}
-			ret += '>';
-			return ret;
-		};
-
-		var goToHash = function(hash) {
-			var elm, scrollEl, position = 0;
-			elm = document.getElementById(hash);
-			if (elm) {
-				scrollEl = angular.element(elm);
-				while (scrollEl) {
-					if (scrollEl.hasClass('scroll-content')) {
-						break;
-					}
-					var offsetTop = scrollEl[0].offsetTop,
-						scrollTop = scrollEl[0].scrollTop,
-						clientTop = scrollEl[0].clientTop;
-					position += (offsetTop - scrollTop + clientTop);
-					scrollEl = scrollEl.parent();
-				}
-				console.debug('offset='+position);
-				$scope.$broadcast('scroll.scrollTo', 0, position, true);
-			} else {
-				console.debug("can't find element " + hash);
-			}
-		};
-
-		var updateEntries = function() {
-			var cached = withDays(EventCache.get(eventType, $scope.searchString));
-			console.debug('cached events:',cached);
-			$scope.entries = cached;
-			$scope.$broadcast('scroll.resize');
-		};
-
-		var delayTimeout = null;
-		var updateDelayed = function(delay) {
-			if (delayTimeout) {
-				$timeout.cancel(delayTimeout);
-			}
-			delayTimeout = $timeout(function() {
-				console.debug('CMEventCtrl.doUpdateDelayed()');
-				delayTimeout = null;
-				updateEntries();
-			}, delay || 300);
-		};
-
-		$scope.searchChanged = function(newSearchString) {
-			$scope.searchString = newSearchString;
-			updateDelayed();
-		};
-
-		var refreshing = null;
-		var doRefresh = function() {
-			console.debug('doRefresh()');
-			if (refreshing) {
-				return refreshing;
-			}
-
-			var deferred = $q.defer();
-			refreshing = deferred.promise;
-
-			console.debug('CMEventCtrl.doRefresh(): refreshing.');
-			$q.when(eventMethod()).then(function(e) {
-				console.debug('CMEventCtrl: got ' + e.length + ' ' + eventType + ' events');
-				notifications.removeStatus(message);
-				deferred.resolve(true);
-
-				e.sort(sortEvent);
-				EventCache.put(eventType, e);
-				updateEntries();
-			}, function(err) {
-				console.warn('CMEventCtrl: failed to get ' + eventType + ' events: ' + err);
-				notifications.removeStatus(message);
-				deferred.resolve(false);
-			});
-
-			refreshing['finally'](function() {
-				refreshing = null;
-			});
-
-			return refreshing;
-		};
-
-		doRefresh();
-
-		var refreshEvents = function(immediately) {
-			if (timeout) {
-				console.debug('CMEventCtrl.refreshEvents(): Refresh already in-flight.  Skipping.');
-				return;
-			} else if (immediately) {
-				console.debug('CMEventCtrl.refreshEvents(): Refreshing immediately.');
-				doRefresh();
-			} else {
-				console.debug('CMEventCtrl.refreshEvents(): Refreshing in ' + refreshInterval + ' seconds.');
-				timeout = $timeout(function() {
-					timeout = null;
-					doRefresh();
-				}, refreshInterval * 1000);
-			}
-		};
 
 		var removeEventFromDisplay = function(ev) {
 			var eventId = ev.getId(),
@@ -500,61 +394,6 @@
 				refreshEvents(true);
 			}, 100);
 		});
-
-		$scope.clearSearchString = function() {
-			console.info('clear search string');
-			var element = document.getElementById('search');
-			element.value = '';
-			if ("createEvent" in document) {
-				var evt = document.createEvent('HTMLEvents');
-				evt.initEvent('change', false, true);
-				element.dispatchEvent(evt);
-			} else {
-				element.fireEvent('change');
-			}
-		};
-
-		$scope.getDateId = function(date) {
-			return 'date-' + date.unix();
-		};
-
-		$scope.isDay = function(entry) {
-			return entry && entry.day !== undefined;
-		};
-
-		$scope.prettyDate = function(date) {
-			return date? date.format('dddd, MMMM Do') : undefined;
-		};
-
-		$scope.fuzzy = function(date) {
-			return date? date.fromNow() : undefined;
-		};
-
-		$scope.justTime = function(date) {
-			return date? date.format('hh:mma') : undefined;
-		};
-
-		$scope.getEntryHeight = function(entry, index) {
-			//console.debug('getEntryHeight:', entry, index);
-			if ($scope.isDay(entry)) {
-				return 32;
-			} else {
-				if (entry.getLocation()) {
-					return 112;
-				} else {
-					return 88;
-				}
-			}
-		};
-
-		$scope.goToNow = function() {
-			var nextEvent = EventService.getNextEvent($scope.events);
-			if (nextEvent) {
-				goToHash(nextEvent.getId());
-			} else {
-				goToHash('the-end');
-			}
-		};
 
 		$scope.trash = function(ev) {
 			if (window.confirm('Are you sure you want to delete "' + ev.getSummary() + '"?')) {
@@ -707,14 +546,6 @@
 
 			$scope.modal.show();
 		};
-
-		$rootScope.leftButtons = $rootScope.getLeftButtons();
-		$rootScope.leftButtons.push({
-			type: 'button-clear',
-			content: '<i class="icon icon-cm active ion-clock"></i>',
-			tap: $scope.goToNow
-		});
-		$rootScope.rightButtons = [];
 
 		if (UserService.getUsername() && UserService.getUsername() !== '') {
 			$rootScope.rightButtons.push({

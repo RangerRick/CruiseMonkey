@@ -305,6 +305,41 @@
 			return deferred.promise;
 		};
 
+		Database.prototype.continuouslyReplicateFrom = function(from, options) {
+			var to = this,
+			deferred = $q.defer();
+
+			var replication = to.getReplication() || {};
+			console.debug('performing a continuous replication from ' + from.name + ' to ' + to.name + ' using options:',replication);
+			
+			var opts = angular.extend({}, {
+				live: true,
+				batch_size: 500
+			}, replication, options);
+
+			var persistOptions = {
+				url: from.name,
+				maxTimeout: 30000,
+				startingTimeout: 1000,
+				manual: false,
+				changes: opts
+			}
+			to._persist = to.pouch().persist(persistOptions);
+			$rootScope.$evalAsync(function() {
+				deferred.resolve(true);
+			});
+			return deferred.promise;
+		};
+
+		Database.prototype.stopReplication = function() {
+			var self = this;
+			if (self._persist) {
+				self._persist.stop();
+				self._persist.removeAllListeners();
+				self._persist = undefined;
+			}
+		};
+
 		Database.prototype.syncFrom = function(from) {
 			var self = this,
 			deferred = $q.defer();
