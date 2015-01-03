@@ -1,6 +1,7 @@
 {
   "name": "CruiseMonkey",
   "version": "4.0.81",
+  "minSdk": "14", /* Android 4.0+ */
   "description": "Keep Track of Your Cruise",
   "build": 40160,
   "scripts": {
