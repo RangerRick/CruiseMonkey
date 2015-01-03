@@ -13,7 +13,6 @@ describe('State Machine Tests', function() {
 	'use strict';
 
 	var StateService,
-		CordovaService,
 		$rootScope,
 		$timeout;
 
@@ -50,16 +49,14 @@ describe('State Machine Tests', function() {
 		};
 	});
 
-	beforeEach(module('cruisemonkey.Cordova'));
 	beforeEach(module('cruisemonkey.State', function($provide) {
 		$provide.value('$cordovaNetwork', $cordovaNetwork);
 		$provide.value('UserService', UserService);
 	}));
 
 	beforeEach(function() {
-		inject(function(_StateService_, _CordovaService_, _$rootScope_, _$timeout_) {
+		inject(function(_StateService_, _$rootScope_, _$timeout_) {
 			StateService   = _StateService_;
-			CordovaService = _CordovaService_;
 			$rootScope     = _$rootScope_;
 			$timeout       = _$timeout_;
 		});

@@ -56,7 +56,16 @@
 		};
 
 		Database.prototype.createDb = function() {
-			this.db = new PouchDB(this.name, {size:50});
+			var self = this;
+			self.db = new PouchDB(self.name, {size:50});
+			self.db.setMaxListeners(20);
+
+			console.debug('Database.createDb: ' + self.name + ': configuring event listeners.');
+			var events = [ 'complete', 'uptodate', 'change', 'error', 'create', 'update', 'delete' ];
+			for (var i=0; i < events.length; i++) {
+				var ev = events[i];
+				self.db.on(ev, function(obj) { $rootScope.$broadcast('cm.database.' + ev, self, obj); });
+			}
 		};
 
 		Database.prototype.getView = function() {
@@ -70,6 +79,8 @@
 		Database.prototype.destroy = function() {
 			var deferred = $q.defer();
 			var self = this;
+
+			self.db.removeAllListeners();
 
 			var resolveDeleted = function() {
 				deferred.resolve({ok:true});
@@ -321,11 +332,21 @@
 				url: from.name,
 				maxTimeout: 30000,
 				startingTimeout: 1000,
-				manual: false,
+				manual: true,
 				changes: opts
 			}
+			
 			to._persist = to.pouch().persist(persistOptions);
+
+			console.debug('Database.continuouslyReplicateFrom: ' + from.name + ': configuring event listeners.');
+			var events = [ 'connect', 'disconnect' ];
+			for (var i=0; i < events.length; i++) {
+				var ev = events[i];
+				to._persist.on(ev, function() { $rootScope.$broadcast('cm.persist.' + ev, to); });
+			}
+
 			$rootScope.$evalAsync(function() {
+				to._persist.start();
 				deferred.resolve(true);
 			});
 			return deferred.promise;
@@ -374,8 +395,8 @@
 		};
 
 		var getdb = function(db, options) {
-			var view        = options? options.view        : undefined,
-				replication = options? options.replication : undefined;
+			var view          = options? options.view          : undefined,
+				replication   = options? options.replication   : undefined;
 
 			if (!(db in databases)) {
 				databases[db] = new Database(db, view, replication);

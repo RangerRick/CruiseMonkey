@@ -171,6 +171,31 @@
 	.run(['$rootScope', '$timeout', '$ionicPlatform', '$cordovaDialogs', '$cordovaSplashscreen', 'NotificationService', 'UserService', 'SettingsService', 'EventService', '_database', function($rootScope, $timeout, $ionicPlatform, $cordovaDialogs, $cordovaSplashscreen, NotificationService, UserService, SettingsService, EventService, database) {
 		console.debug('CruiseMonkey run() called.');
 
+		$rootScope.$on('cm.persist.connect', function(ev, db) {
+			console.debug('persistence connected: ' + db.name);
+		});
+		$rootScope.$on('cm.persist.disconnect', function(ev, db) {
+			console.debug('persistence disconnected: ' + db.name);
+		});
+		$rootScope.$on('cm.database.uptodate', function(ev, db) {
+			console.debug('persistence up to date: ' + db.name);
+		});
+		$rootScope.$on('cm.database.change', function(ev, db, doc) {
+			console.debug('persistence changed: ' + db.name + ': ' + doc.id);
+		});
+		$rootScope.$on('cm.database.complete', function(ev, db) {
+			console.debug('persistence complete: ', db.name);
+		});
+		$rootScope.$on('cm.database.create', function(ev, db, doc) {
+			console.debug('persistence created an object: ' + db.name + ': ' + doc.id);
+		});
+		$rootScope.$on('cm.database.update', function(ev, db, doc) {
+			console.debug('persistence updated an object: ' + db.name + ': ' + doc.id);
+		});
+		$rootScope.$on('cm.database.delete', function(ev, db, doc) {
+			console.debug('persistence deleted an object: ' + db.name + ': ' + doc.id);
+		});
+
 		if (ionic.Platform.isWebView()) {
 			console.debug('Initializing ionic platform plugins and events.');
 			// Hide the accessory bar by default (remove this to show the accessory bar above the keyboard or form inputs)

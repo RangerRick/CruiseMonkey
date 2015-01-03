@@ -38,7 +38,7 @@
 			if (replicate) {
 				var remoteDb = _database.get(remoteDatabase);
 				eventsdb.syncFrom(remoteDb).then(function() {
-					eventsdb.continuouslyReplicateFrom(remoteDb);
+					eventsdb.continuouslyReplicateFrom(remoteDb, { configureEvents: true });
 				}, function(err) {
 					console.warn('Failed to sync eventsdb:',err);
 				});
@@ -47,7 +47,14 @@
 			return eventsdb;
 		};
 
-		var createFavoritesDb = function() {
+		var createFavoritesDb = function(user) {
+			if (!user) {
+				user = UserService.get();
+			}
+			if (!user.username || !user.loggedIn) {
+				return null;
+			}
+
 			var databaseName = SettingsService.getDatabaseName();
 			var remoteDatabase = SettingsService.getRemoteDatabaseUrl();
 			var replicate = SettingsService.getDatabaseReplicate();
@@ -104,12 +111,12 @@
 		};
 
 		var eventsdb = createEventsDb();
-		var favoritesdb = null;
+		var favoritesdb = createFavoritesDb();
 
 		$rootScope.$on('cruisemonkey.user.updated', function(ev, user) {
 			console.debug('user updated:',user);
 			if (user.loggedIn) {
-				favoritesdb = createFavoritesDb();
+				favoritesdb = createFavoritesDb(user);
 			} else {
 				if (favoritesdb) {
 					favoritesdb.stopReplication();
@@ -213,22 +220,24 @@
 
 			$q.all(promises).then(function(results) {
 				var events = [], favorites = [], favresults = {rows: []}, j, ev, fav, result, ret;
-				if (username) {
+				if (results.length > 1) {
 					favresults = results.pop();
 				}
 
+				console.log('favresults=',favresults);
+				console.log('events=',results);
 				// iterate over any events results we got
 				for (i=0; i < results.length; i++) {
 					result = results[i];
 					for (j=0; j < result.rows.length; j++) {
 						ev = new CMEvent(result.rows[j].doc);
-						//console.debug(ev.toString());
+						console.debug(ev.toString());
 						events.push(ev);
 					}
 				}
 				for (i=0; i < favresults.rows.length; i++) {
 					fav = new CMFavorite(favresults.rows[i].doc);
-					//console.debug(fav.toString());
+					console.debug(fav.toString());
 					favorites.push(fav);
 				}
 

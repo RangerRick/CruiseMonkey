@@ -303,6 +303,77 @@
 			}
 		};
 
+		$scope.trash = function(ev) {
+			if (window.confirm('Are you sure you want to delete "' + ev.getSummary() + '"?')) {
+				removeEventFromDisplay(ev);
+				EventService.removeEvent(ev).then(function() {
+					refreshEvents(true);
+				});
+			}
+		};
+
+		$scope.onFavoriteChanged = function(ev) {
+			$scope.safeApply(function() {
+				var i, entry, eventId = ev.getId();
+				console.debug('CMEventCtrl.onFavoriteChanged(' + eventId + ')');
+
+				if (ev.isFavorite()) {
+					// Event was favorited, unfavorite it
+					ev.setFavorite(undefined);
+
+					// If we're in the 'my' browser, it should disappear from the list
+					if (eventType === 'my') {
+						removeEventFromDisplay(ev);
+					}
+
+					EventService.removeFavorite(eventId).then(function() {
+						refreshEvents(true);
+					});
+				} else {
+					var existing;
+					for (i=0; i < $scope.entries.length; i++) {
+						entry = $scope.entries[i];
+						if (entry.getId() === eventId) {
+							existing = entry;
+							break;
+						}
+					}
+
+					if (!existing) {
+						console.warn('Somehow favorited an event that does not exist! (' + eventId + ')');
+						return;
+					}
+
+					// Add a temporary favorite object so the UI updates
+					existing.setFavorite(new CMFavorite());
+
+					EventService.addFavorite(eventId).then(function(fav) {
+						refreshEvents(true);
+						/*
+						fav.setEvent(existing);
+						existing.setFavorite(fav);
+						*/
+					}, function() {
+						notifications.alert('Failed to favorite ' + ev.getSummary() + '!');
+						refreshEvents(true);
+						/*
+						existing.setFavorite(undefined);
+						*/
+					});
+				}
+			});
+		};
+
+		$scope.onPublicChanged = function(ev) {
+			console.debug('onPublicChanged(' + ev.getId() + ')');
+			$scope.safeApply(function() {
+				ev.setPublic(!ev.isPublic());
+				$scope.$broadcast('scroll.resize');
+				refreshEvents(true);
+				EventService.updateEvent(ev);
+			});
+		};
+
 		$scope.eventTitle = 'Events';
 
 		$scope.$on('$ionicView.loaded', function(ev, info) {
@@ -394,77 +465,6 @@
 				refreshEvents(true);
 			}, 100);
 		});
-
-		$scope.trash = function(ev) {
-			if (window.confirm('Are you sure you want to delete "' + ev.getSummary() + '"?')) {
-				removeEventFromDisplay(ev);
-				EventService.removeEvent(ev).then(function() {
-					refreshEvents(true);
-				});
-			}
-		};
-
-		$scope.onFavoriteChanged = function(ev) {
-			$scope.safeApply(function() {
-				var i, entry, eventId = ev.getId();
-				console.debug('CMEventCtrl.onFavoriteChanged(' + eventId + ')');
-
-				if (ev.isFavorite()) {
-					// Event was favorited, unfavorite it
-					ev.setFavorite(undefined);
-
-					// If we're in the 'my' browser, it should disappear from the list
-					if (eventType === 'my') {
-						removeEventFromDisplay(ev);
-					}
-
-					EventService.removeFavorite(eventId).then(function() {
-						refreshEvents(true);
-					});
-				} else {
-					var existing;
-					for (i=0; i < $scope.entries.length; i++) {
-						entry = $scope.entries[i];
-						if (entry.getId() === eventId) {
-							existing = entry;
-							break;
-						}
-					}
-
-					if (!existing) {
-						console.warn('Somehow favorited an event that does not exist! (' + eventId + ')');
-						return;
-					}
-
-					// Add a temporary favorite object so the UI updates
-					existing.setFavorite(new CMFavorite());
-
-					EventService.addFavorite(eventId).then(function(fav) {
-						refreshEvents(true);
-						/*
-						fav.setEvent(existing);
-						existing.setFavorite(fav);
-						*/
-					}, function() {
-						notifications.alert('Failed to favorite ' + ev.getSummary() + '!');
-						refreshEvents(true);
-						/*
-						existing.setFavorite(undefined);
-						*/
-					});
-				}
-			});
-		};
-
-		$scope.onPublicChanged = function(ev) {
-			console.debug('onPublicChanged(' + ev.getId() + ')');
-			$scope.safeApply(function() {
-				ev.setPublic(!ev.isPublic());
-				$scope.$broadcast('scroll.resize');
-				refreshEvents(true);
-				EventService.updateEvent(ev);
-			});
-		};
 
 		$scope.edit = function(ev) {
 			$scope.safeApply(function() {
