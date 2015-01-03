@@ -20,5 +20,9 @@ function(doc, req) {
 		// any deleted docs
 		return true;
 	}
+	if (doc._id.indexOf('_design/') === 0) {
+		// also sync the design doc
+		return true;
+	}
 	return false;
 }
