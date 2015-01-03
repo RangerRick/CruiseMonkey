@@ -134,7 +134,7 @@
 	}])
 	.controller('CMEventsBarCtrl', ['$scope', '$timeout', 'storage', function($scope, $timeout, storage) {
 	}])
-	.controller('CMEventCtrl', ['$q', '$scope', '$rootScope', '$timeout', '$ionicScrollDelegate', 'EventService', 'NotificationService', 'UserService', 'EventCache', function($q, $scope, $rootScope, $timeout, $ionicScrollDelegate, EventService, notifications, UserService, EventCache) {
+	.controller('CMEventCtrl', ['$q', '$scope', '$rootScope', '$timeout', '$ionicScrollDelegate', '$ionicPopover', '$ionicModal', 'EventService', 'NotificationService', 'UserService', 'EventCache', function($q, $scope, $rootScope, $timeout, $ionicScrollDelegate, $ionicPopover, $ionicModal, EventService, notifications, UserService, EventCache) {
 		var withDays = function(events) {
 			var ret = [],
 				ev, i,
@@ -156,7 +156,7 @@
 
 		var refreshing = null;
 		var doRefresh = function() {
-			console.debug('doRefresh()');
+			console.debug('CMEventCtrl: refreshing view.');
 			if (refreshing) {
 				return refreshing;
 			}
@@ -280,9 +280,21 @@
 				$timeout.cancel(updateDelayTimeout);
 			}
 			updateDelayTimeout = $timeout(function() {
-				console.debug('CMEventCtrl.doUpdateDelayed()');
+				//console.debug('CMEventCtrl.doUpdateDelayed()');
 				updateDelayTimeout = null;
 				updateEntries();
+			}, delay || 300);
+		};
+
+		var refreshDelayTimeout = null;
+		var refreshDelayed = function(delay) {
+			if (refreshDelayTimeout) {
+				return;
+			}
+			refreshDelayTimeout = $timeout(function() {
+				//console.debug('CMEventCtrl.doRefreshDelayed()');
+				refreshDelayTimeout = null;
+				doRefresh();
 			}, delay || 300);
 		};
 
@@ -371,6 +383,7 @@
 
 		$scope.trash = function(ev) {
 			if (window.confirm('Are you sure you want to delete "' + ev.getSummary() + '"?')) {
+				$scope.closePopover();
 				removeEventFromDisplay(ev);
 				EventService.removeEvent(ev).then(function() {
 					refreshEvents(true);
@@ -379,6 +392,7 @@
 		};
 
 		$scope.onFavoriteChanged = function(ev) {
+			$scope.closePopover();
 			$scope.$evalAsync(function() {
 				var i, entry, eventId = ev.getId();
 				console.debug('CMEventCtrl.onFavoriteChanged(' + eventId + ')');
@@ -432,6 +446,7 @@
 
 		$scope.onPublicChanged = function(ev) {
 			console.debug('onPublicChanged(' + ev.getId() + ')');
+			$scope.closePopover();
 			$scope.$evalAsync(function() {
 				ev.setPublic(!ev.isPublic());
 				$scope.$broadcast('scroll.resize');
@@ -440,50 +455,10 @@
 			});
 		};
 
-		$scope.eventTitle = 'Events';
-
-		$scope.$on('$ionicView.loaded', function(ev, info) {
-			$scope.searchString = '';
-		});
-		$scope.$on('$ionicView.beforeEnter', function(ev, info) {
-			$scope.eventType = info.stateName.replace('app.events.', '');
-			doRefresh();
-		});
-		$scope.$on('$ionicView.afterEnter', function(ev, info) {
-			$scope.eventTitle = 'Events: ' + ($scope.eventType === 'my'? 'Mine' : $scope.eventType.capitalize());
-		});
-		$scope.$on('cm.main.database-initialized', function() {
-			console.debug('CMEventCtrl: Database initialized.');
-			$timeout(function() {
-				refreshEvents(true);
-			}, 100);
-		});
-
-		/*
-		$scope.$on('$ionicView.enter', function(ev, info) {
-			console.info('CMEventCtrl.enter:', info);
-			var eventType = info.stateName.replace('app.events.', '');
-			$scope.eventTitle = 'Events: ' + (eventType == 'my'? 'Mine' : eventType.capitalize());
-		});
-		$scope.$on('$ionicView.leave', function(ev, info) {
-			console.info('CMEventCtrl.leave:', info);
-		});
-		$scope.$on('$ionicView.unloaded', function(ev, info) {
-			console.info('CMEventCtrl.unloaded:', info);
-		});
-		*/
-	}])
-	.controller('OldCMEventCtrl', [ 'storage', '$scope', '$rootScope', '$interval', '$timeout', '$stateParams', '$location', '$q', '$ionicModal', '$ionicScrollDelegate', '$window', 'UserService', 'EventService', 'EventCache', 'NotificationService', function(storage, $scope, $rootScope, $interval, $timeout, $stateParams, $location, $q, $ionicModal, $ionicScrollDelegate, $window, UserService, EventService, EventCache, notifications) {
-		console.info('Initializing CMEventCtrl');
-
-		/*
-		var message = 'Updating ' + eventType.capitalize() + ' events...';
-		var scrolled = false;
-
-		storage.bind($scope, 'searchString', {
-			'storeName': 'cm.event.' + eventType
-		});
-		console.debug('$scope.searchString: ' + $scope.searchString);
+		$scope.loggedIn = function() {
+			var user = UserService.get();
+			return user && user.username && user.loggedIn;
+		};
 
 		$ionicModal.fromTemplateUrl('template/event-edit.html', function(modal) {
 			$scope.modal = modal;
@@ -491,22 +466,6 @@
 			scope: $scope,
 			animation: 'slide-in-up'
 		});
-
-		$scope.$on('cm.main.database-initialized', function() {
-			console.debug('CMEventCtrl: Database initialized.');
-			$timeout(function() {
-				refreshEvents(true);
-			}, 100);
-		});
-
-		$scope.edit = function(ev) {
-			$scope.$evalAsync(function() {
-				$scope.event = ev;
-				$scope.eventData = ev.toEditableBean();
-
-				$scope.modal.show();
-			});
-		};
 
 		$scope.cancelModal = function(e) {
 			e.preventDefault();
@@ -554,6 +513,111 @@
 				refreshEvents(true);
 			});
 		};
+
+		$scope.addEvent = function() {
+			var ev = new CMEvent();
+			ev.setStart(moment());
+			ev.setEnd(ev.getStart().clone());
+			ev.setEnd(ev.getEnd().add('hours', 1));
+			ev.setUsername(UserService.getUsername());
+			ev.setPublic(true);
+
+			$scope.event = ev;
+			$scope.eventData = ev.toEditableBean();
+
+			$scope.modal.show();
+		};
+
+		$scope.editEvent = function(ev) {
+			$scope.closePopover();
+			$scope.$evalAsync(function() {
+				$scope.event = ev;
+				$scope.eventData = ev.toEditableBean();
+
+				$scope.modal.show();
+			});
+		};
+
+		$ionicPopover.fromTemplateUrl('template/event-popover.html', {
+			scope: $scope
+		}).then(function(popover) {
+			$scope.popover = popover;
+		});
+		$scope.popoverEntry = null;
+		$scope.openPopover = function($event, entry) {
+			var user = UserService.get();
+			if (!user.username || user.username !== entry.getUsername()) {
+				return;
+			}
+			console.debug('openPopover:', $event, entry);
+			$scope.popoverEntry = entry;
+			$scope.popover.show($event);
+		};
+		$scope.closePopover = function() {
+			$scope.popover.hide();
+		};
+		$scope.$on('popover.hidden', function() {
+			$scope.popoverEntry = null;
+		});
+		$scope.$on('popover.removed', function() {
+			$scope.popoverEntry = null;
+		});
+		$scope.$on('$destroy', function() {
+			$scope.popover.remove();
+		});
+
+		$scope.eventTitle = 'Events';
+
+		$scope.$on('$ionicView.loaded', function(ev, info) {
+			$scope.searchString = '';
+		});
+		$scope.$on('$ionicView.beforeEnter', function(ev, info) {
+			$scope.eventType = info.stateName.replace('app.events.', '');
+			doRefresh();
+		});
+		$scope.$on('$ionicView.afterEnter', function(ev, info) {
+			$scope.eventTitle = 'Events: ' + ($scope.eventType === 'my'? 'Mine' : $scope.eventType.capitalize());
+		});
+		$scope.$on('cm.database.syncComplete', function() {
+			console.debug('CMEventCtrl: Sync complete.');
+			refreshDelayed(100);
+		});
+		$rootScope.$on('cm.database.change', function(ev, db, doc) {
+			refreshDelayed(1000);
+		});
+
+		/*
+		$scope.$on('$ionicView.enter', function(ev, info) {
+			console.info('CMEventCtrl.enter:', info);
+			var eventType = info.stateName.replace('app.events.', '');
+			$scope.eventTitle = 'Events: ' + (eventType == 'my'? 'Mine' : eventType.capitalize());
+		});
+		$scope.$on('$ionicView.leave', function(ev, info) {
+			console.info('CMEventCtrl.leave:', info);
+		});
+		$scope.$on('$ionicView.unloaded', function(ev, info) {
+			console.info('CMEventCtrl.unloaded:', info);
+		});
+		*/
+	}])
+	.controller('OldCMEventCtrl', [ 'storage', '$scope', '$rootScope', '$interval', '$timeout', '$stateParams', '$location', '$q', '$ionicModal', '$ionicScrollDelegate', '$window', 'UserService', 'EventService', 'EventCache', 'NotificationService', function(storage, $scope, $rootScope, $interval, $timeout, $stateParams, $location, $q, $ionicModal, $ionicScrollDelegate, $window, UserService, EventService, EventCache, notifications) {
+		console.info('Initializing CMEventCtrl');
+
+		/*
+		var message = 'Updating ' + eventType.capitalize() + ' events...';
+		var scrolled = false;
+
+		storage.bind($scope, 'searchString', {
+			'storeName': 'cm.event.' + eventType
+		});
+		console.debug('$scope.searchString: ' + $scope.searchString);
+
+		$scope.$on('cm.main.database-initialized', function() {
+			console.debug('CMEventCtrl: Database initialized.');
+			$timeout(function() {
+				refreshEvents(true);
+			}, 100);
+		});
 
 		$scope.$on('$stateChangeStart', function(event, toState, toParams, fromState, fromParams){
 			if ($scope.modal) {

@@ -298,8 +298,8 @@ CMEvent.prototype.toEditableBean = function() {
 	var bean = {
 		id: this.getId(),
 		revision: this.getRevision(),
-		startDate: this.getStart().format(dateStringFormat),
-		endDate: end? end.format(dateStringFormat) : undefined,
+		startDate: this.getStart().toDate(),
+		endDate: end? end.toDate() : undefined,
 		summary: this.getSummary(),
 		description: this.getDescription(),
 		location: this.getLocation(),

@@ -39,8 +39,10 @@ $greySVG: "#{$imagePath}/entypo/grey/SVG";
 	font-weight: 600;
 }
 
-/* $controlYellow: #ffc600; */
-$controlYellow: #f2be00;
+$rciNavyBlue: #061557;
+$rciLightBlue: #0073bb;
+$rciYellow: #febd11;
+
 $cmBabyBlue: #ddf2ff;
 
 $defaultFont: Nexa, "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
@@ -66,8 +68,12 @@ $gutterHoverColor: black;
 
 $simpleBorder: 1px solid black;
 
+/*
 $headerColor: white;
 $headerBG: black;
+*/
+$headerColor: $rciYellow;
+$headerBG: $rciNavyBlue;
 
 $contentBG: #f8f8f8;
 
@@ -81,7 +87,7 @@ $gutterMonkey: url(../images/cruise-monkey-transparent-bg.png);
 /* Ionic Overrides */
 /* $font-family-sans-serif: $defaultFont; */
 /* $font-family-light-sans-serif: $defaultLightFont; */
-$dark: black;
+$dark: $rciNavyBlue;
 $light: white;
 $item-divider-bg: $dark;
 $item-divider-color: $light;
@@ -91,7 +97,13 @@ $item-default-bg:                 $light;
 $item-default-border:             #ddd;
 $item-default-text:               #444;
 $item-default-active-bg:          $light;
-$item-default-active-border:      #444;
+$item-default-active-border:      $dark;
+$item-padding:                    10px;
+
+$button-small-font-size:          20px;
+$button-small-height:             30px;
+$button-small-padding:            2px;
+$button-small-icon-size:          28px;
 
 @import "www/lib/ionic/scss/ionic";
 
@@ -111,11 +123,31 @@ $item-default-active-border:      #444;
 
 .icon {
 	&.icon-cm {
-		/* color: black; */
-		color: $controlYellow;
+		color: $rciYellow;
 		&.active {
 			opacity: 1;
-			color: $controlYellow;
+			color: $rciYellow;
+		}
+	}
+	&.icon-yellow {
+		color: $rciYellow;
+		&.active {
+			opacity: 1;
+			color: $rciYellow;
+		}
+	}
+	&.icon-navy {
+		color: $rciNavyBlue;
+		&.active {
+			opacity: 1;
+			color: $rciNavyBlue;
+		}
+	}
+	&.icon-blue {
+		color: $rciLightBlue;
+		&.active {
+			opacity: 1;
+			color: $rciLightBlue;
 		}
 	}
 }
@@ -136,18 +168,67 @@ $item-default-active-border:      #444;
 
 .button {
 	&.button-cm {
-		color: $controlYellow;
+		color: $rciYellow;
 		&.active {
 			opacity: 1;
-			color: $controlYellow;
+			color: $rciYellow;
 		}
 	}
+	&.button-yellow {
+		color: $rciYellow;
+		&.active {
+			opacity: 1;
+			color: $rciYellow;
+		}
+	}
+	&.button-navy {
+		color: $rciNavyBlue;
+		&.active {
+			opacity: 1;
+			color: $rciNavyBlue;
+		}
+	}
+	&.button-blue {
+		color: $rciLightBlue;
+		&.active {
+			opacity: 1;
+			color: $rciLightBlue;
+		}
+	}
+}
+
+.button-small {
+	min-width: 40px;
 }
 
 @media (min-width:768px) {
 	.button.ion-navicon {
 		display: none;
 	}
+}
+
+ion-popover-view.fit {
+  height: auto !important;
+}
+
+ion-popover-view.fit ion-content {
+  position: relative !important;
+}
+
+.platform-android ion-popover-view.fit {
+  margin-top: 10px !important;
+}
+
+ion-modal-view.fit {
+  height: auto !important;
+}
+
+ion-modal-view.fit ion-content {
+	position: relative !important;
+}
+
+.platform-android ion-modal-view.fit {
+  margin-top: 10px !important;
 }
 
 .help {
@@ -237,6 +318,9 @@ a:hover {
 	/*
 	padding: 10px;
 	*/
+	.item-note {
+		margin: -10px;
+	}
 }
 
 ion-side-menu {
@@ -266,6 +350,13 @@ ion-side-menu {
 
 .list {
 	margin-bottom: 0px;
+}
+
+.modal {
+	.list {
+		padding-bottom: 0;
+		padding-top: 0;
+	}
 }
 
 .event-list {

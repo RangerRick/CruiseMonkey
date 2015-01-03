@@ -177,6 +177,7 @@
 		$rootScope.$on('cm.persist.disconnect', function(ev, db) {
 			console.debug('persistence disconnected: ' + db.name);
 		});
+		/*
 		$rootScope.$on('cm.database.uptodate', function(ev, db) {
 			console.debug('persistence up to date: ' + db.name);
 		});
@@ -195,6 +196,7 @@
 		$rootScope.$on('cm.database.delete', function(ev, db, doc) {
 			console.debug('persistence deleted an object: ' + db.name + ': ' + doc.id);
 		});
+		*/
 
 		if (ionic.Platform.isWebView()) {
 			console.debug('Initializing ionic platform plugins and events.');

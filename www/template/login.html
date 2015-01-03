@@ -1,9 +1,9 @@
-<ion-modal-view>
+<ion-modal-view ng-class="'fit'">
 	<ion-header-bar class="bar-stable bar-dark">
 		<h1 class="title">Log In</h1>
 		<button class="button button-icon icon ion-close-circled" ng-click="loginModal.hide()"></button>
 	</ion-header-bar>
-	<ion-content has-header="true" ng-controller="CMLoginCtrl">
+	<ion-content has-header="true" ng-controller="CMLoginCtrl" scroll="false">
 		<div class="list">
 			<div class="item item-text-wrap">
 				Log in using your Twit-Arr account.  If you haven't yet created a Twit-Arr account,

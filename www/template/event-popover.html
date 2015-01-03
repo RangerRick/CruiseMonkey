@@ -1,0 +1,9 @@
+<ion-popover-view class="fit">
+	<ion-content scroll="false">
+		<ion-list>
+			<ion-item ng-click="trash(popoverEntry)"><i class="icon ion-ios-trash"></i> Delete</ion-item>
+			<ion-item ng-click="onPublicChanged(popoverEntry)"><i class="icon ion-eye" ng-class="popoverEntry.isPublic()? 'ion-eye-disabled':'ion-eye'"></i> <span ng-bind="popoverEntry.isPublic()? 'Make Private' : 'Make Public'"></span></ion-item>
+			<ion-item ng-click="editEvent(popoverEntry)"><i class="icon ion-edit"></i> Edit</ion-item>
+		</div>
+	</ion-content>
+</ion-popover-view>
