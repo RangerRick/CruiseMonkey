@@ -76,7 +76,6 @@ describe('State Machine Tests', function() {
 	it('should initialize when Cordova is ready and online', function() {
 		spyOn($rootScope, '$broadcast');
 		isOnline = true;
-		CordovaService.setCordova(true);
 		$rootScope.$digest();
 		expect($rootScope.$broadcast).toHaveBeenCalledWith('state.initialized', 'state.uninitialized', true);
 		expect($rootScope.$broadcast).toHaveBeenCalledWith('state.online', 'state.initialized', true);
@@ -85,7 +84,6 @@ describe('State Machine Tests', function() {
 	it('should initialize when Cordova is ready and offline', function() {
 		spyOn($rootScope, '$broadcast');
 		isOnline = false;
-		CordovaService.setCordova(true);
 		$rootScope.$digest();
 		expect($rootScope.$broadcast).toHaveBeenCalledWith('state.initialized', 'state.uninitialized', true);
 		expect($rootScope.$broadcast).toHaveBeenCalledWith('state.offline', 'state.initialized', true);
@@ -95,7 +93,6 @@ describe('State Machine Tests', function() {
 		spyOn($rootScope, '$broadcast');
 		isOnline = true;
 		user.loggedIn = false;
-		CordovaService.setCordova(true);
 		$rootScope.$digest();
 		expect($rootScope.$broadcast).toHaveBeenCalledWith('state.initialized', 'state.uninitialized', true);
 		expect($rootScope.$broadcast).toHaveBeenCalledWith('state.online', 'state.initialized', true);
@@ -106,7 +103,6 @@ describe('State Machine Tests', function() {
 		spyOn($rootScope, '$broadcast');
 		isOnline = true;
 		user.loggedIn = false;
-		CordovaService.setCordova(true);
 		$rootScope.$digest();
 		expect($rootScope.$broadcast).toHaveBeenCalledWith('state.loggedout', 'state.online', undefined);
 		StateService.loginFailed();
@@ -117,7 +113,6 @@ describe('State Machine Tests', function() {
 		spyOn($rootScope, '$broadcast');
 		isOnline = true;
 		user.loggedIn = false;
-		CordovaService.setCordova(true);
 		$rootScope.$digest();
 		expect($rootScope.$broadcast).toHaveBeenCalledWith('state.loggedout', 'state.online', undefined);
 		user.username = 'ranger';
@@ -130,7 +125,6 @@ describe('State Machine Tests', function() {
 		spyOn($rootScope, '$broadcast');
 		isOnline = true;
 		user.loggedIn = false;
-		CordovaService.setCordova(true);
 		$rootScope.$digest();
 		expect($rootScope.$broadcast).toHaveBeenCalledWith('state.loggedout', 'state.online', undefined);
 		StateService.loginSucceeded('ranger');

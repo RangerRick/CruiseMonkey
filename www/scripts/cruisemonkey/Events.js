@@ -98,7 +98,7 @@
 				cfpLoadingBar.complete();
 			}
 			_isLoading = false;
-		}
+		};
 
 		var doLoadingBar = function(promise) {
 			startLoadingBar();
@@ -354,7 +354,7 @@
 					ev = results[0][i];
 					ret[ev.getId()] = ev;
 				}
-				if (results.length == 2) {
+				if (results.length === 2) {
 					for (i=0; i < results[1].length; i++) {
 						ev = results[1][i];
 						ret[ev.getId()] = ev;

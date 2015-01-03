@@ -2,6 +2,7 @@
 	'use strict';
 
 	/*global StateMachine: true*/
+	/*global ionic: true*/
 
 	angular.module('cruisemonkey.State', [
 		'cruisemonkey.User',

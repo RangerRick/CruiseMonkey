@@ -1,6 +1,8 @@
 (function() {
 	'use strict';
 
+	/*global ionic: true*/
+
 	angular.module('cruisemonkey.Seamail', [
 		'angularLocalStorage',
 		'cruisemonkey.Notifications',

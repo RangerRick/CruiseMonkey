@@ -18,7 +18,7 @@
 		};
 
 		$scope.isUnchanged = function(newUser) {
-			if (newUser.loggedIn == false) {
+			if (newUser.loggedIn === false) {
 				return false;
 			}
 			var savedUser = UserService.get();

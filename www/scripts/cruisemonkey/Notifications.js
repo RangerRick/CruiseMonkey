@@ -2,6 +2,7 @@
 	'use strict';
 
 	/*global isMobile: true*/
+	/*global ionic: true*/
 
 	function isNumber(n) {
 	  return !isNaN(parseFloat(n)) && isFinite(n);

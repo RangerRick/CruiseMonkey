@@ -20,6 +20,12 @@
 
 		var databases = {};
 
+		var makeEventHandler = function(eventName, db) {
+			return function(obj) {
+				$rootScope.$broadcast(eventName, db, obj);
+			};
+		};
+
 		function Database(name, view, replication) {
 			var self         = this;
 
@@ -64,7 +70,7 @@
 			var events = [ 'complete', 'uptodate', 'change', 'error', 'create', 'update', 'delete' ];
 			for (var i=0; i < events.length; i++) {
 				var ev = events[i];
-				self.db.on(ev, function(obj) { $rootScope.$broadcast('cm.database.' + ev, self, obj); });
+				self.db.on(ev, makeEventHandler('cm.database.' + ev, self));
 			}
 		};
 
@@ -334,7 +340,7 @@
 				startingTimeout: 1000,
 				manual: true,
 				changes: opts
-			}
+			};
 			
 			to._persist = to.pouch().persist(persistOptions);
 
@@ -342,7 +348,7 @@
 			var events = [ 'connect', 'disconnect' ];
 			for (var i=0; i < events.length; i++) {
 				var ev = events[i];
-				to._persist.on(ev, function() { $rootScope.$broadcast('cm.persist.' + ev, to); });
+				to._persist.on(ev, makeEventHandler('cm.persist.' + ev, to));
 			}
 
 			$rootScope.$evalAsync(function() {

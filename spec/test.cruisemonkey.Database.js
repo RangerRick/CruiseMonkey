@@ -1,5 +1,16 @@
-/* global describe: true */
-/* global xdescribe: true */
+/*global jasmine: true */
+/*global describe: true */
+/*global expect: true */
+/*global inject: true */
+/*global beforeEach: true */
+/*global afterEach: true */
+/*global it: true */
+/*global spyOn: true */
+/*global xit: true */
+/*global xdescribe: true */
+/*global startDigesting: true */
+/*global stopDigesting: true */
+/*global $rootScope: true */
 
 xdescribe('cruisemonkey.Database', function() {
 	'use strict';
@@ -13,7 +24,7 @@ xdescribe('cruisemonkey.Database', function() {
 
 	var $q           = null,
 		$timeout     = null,
-		/* $rootScope   = null, */
+		/*$rootScope   = null, */
 		$httpBackend = null,
 		_database    = null,
 		_dbnum       = 0;

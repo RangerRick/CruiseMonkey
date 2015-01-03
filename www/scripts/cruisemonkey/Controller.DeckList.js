@@ -1,6 +1,7 @@
 (function() {
 	'use strict';
 
+	/*global ionic: true*/
 	angular.module('cruisemonkey.controllers.DeckList', [
 		'ui.router',
 		'angularLocalStorage'

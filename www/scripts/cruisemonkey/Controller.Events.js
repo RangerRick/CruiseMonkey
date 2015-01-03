@@ -134,7 +134,7 @@
 	}])
 	.controller('CMEventsBarCtrl', ['$scope', '$timeout', 'storage', function($scope, $timeout, storage) {
 	}])
-	.controller('CMEventCtrl', ['$q', '$scope', '$rootScope', '$timeout', '$ionicScrollDelegate', 'EventService', 'EventCache', function($q, $scope, $rootScope, $timeout, $ionicScrollDelegate, EventService, EventCache) {
+	.controller('CMEventCtrl', ['$q', '$scope', '$rootScope', '$timeout', '$ionicScrollDelegate', 'EventService', 'NotificationService', 'EventCache', function($q, $scope, $rootScope, $timeout, $ionicScrollDelegate, EventService, notifications, EventCache) {
 		var withDays = function(events) {
 			var ret = [],
 				ev, i,
@@ -225,7 +225,8 @@
 			}
 		};
 
-		var timeout = null;
+		var timeout = null,
+			refreshInterval = 5;
 		var refreshEvents = function(immediately) {
 			if (timeout) {
 				console.debug('CMEventCtrl.refreshEvents(): Refresh already in-flight.  Skipping.');
@@ -252,6 +253,40 @@
 				delayTimeout = null;
 				updateEntries();
 			}, delay || 300);
+		};
+
+		var removeEventFromDisplay = function(ev) {
+			var eventId = ev.getId(),
+				i, entry, removeDay = false, previousEntry, nextEntry;
+			for (i=0; i < $scope.entries.length; i++) {
+				entry = $scope.entries[i];
+				if (entry.getId() === eventId) {
+					// remove the event from the list
+					$scope.entries.splice(i,1);
+
+					previousEntry = $scope.entries[i-1];
+					nextEntry     = $scope.entries[i+1];
+					console.debug('previousEntry=',previousEntry);
+					console.debug('nextEntry=',nextEntry);
+					console.debug('i=',i);
+					console.debug('length=',$scope.entries.length);
+					// if this is the first entry of the day...
+					if (previousEntry && previousEntry.getId().indexOf('day-') === 0) {
+						if ((i+1) === $scope.entries.length) {
+							// ...and it's the last entry in the list, remove the day
+							removeDay = true;
+						} else if (nextEntry && nextEntry.getId().indexOf('day-') === 0) {
+							// ...and the next entry is a new day, remove the day
+							removeDay = true;
+						}
+
+						if (removeDay) {
+							$scope.entries.splice(i-1, 1);
+						}
+					}
+					break;
+				}
+			}
 		};
 
 		$scope.getDateId = function(date) {
@@ -322,7 +357,7 @@
 					ev.setFavorite(undefined);
 
 					// If we're in the 'my' browser, it should disappear from the list
-					if (eventType === 'my') {
+					if ($scope.eventType === 'my') {
 						removeEventFromDisplay(ev);
 					}
 
@@ -384,7 +419,7 @@
 			doRefresh();
 		});
 		$scope.$on('$ionicView.afterEnter', function(ev, info) {
-			$scope.eventTitle = 'Events: ' + ($scope.eventType == 'my'? 'Mine' : $scope.eventType.capitalize());
+			$scope.eventTitle = 'Events: ' + ($scope.eventType === 'my'? 'Mine' : $scope.eventType.capitalize());
 		});
 		$scope.$on('cm.main.database-initialized', function() {
 			console.debug('CMEventCtrl: Database initialized.');
@@ -410,6 +445,7 @@
 	.controller('OldCMEventCtrl', [ 'storage', '$scope', '$rootScope', '$interval', '$timeout', '$stateParams', '$location', '$q', '$ionicModal', '$ionicScrollDelegate', '$window', 'UserService', 'EventService', 'EventCache', 'NotificationService', function(storage, $scope, $rootScope, $interval, $timeout, $stateParams, $location, $q, $ionicModal, $ionicScrollDelegate, $window, UserService, EventService, EventCache, notifications) {
 		console.info('Initializing CMEventCtrl');
 
+		/*
 		var message = 'Updating ' + eventType.capitalize() + ' events...';
 		var scrolled = false;
 
@@ -417,40 +453,6 @@
 			'storeName': 'cm.event.' + eventType
 		});
 		console.debug('$scope.searchString: ' + $scope.searchString);
-
-		var removeEventFromDisplay = function(ev) {
-			var eventId = ev.getId(),
-				i, entry, removeDay = false, previousEntry, nextEntry;
-			for (i=0; i < $scope.entries.length; i++) {
-				entry = $scope.entries[i];
-				if (entry.getId() === eventId) {
-					// remove the event from the list
-					$scope.entries.splice(i,1);
-
-					previousEntry = $scope.entries[i-1];
-					nextEntry     = $scope.entries[i+1];
-					console.debug('previousEntry=',previousEntry);
-					console.debug('nextEntry=',nextEntry);
-					console.debug('i=',i);
-					console.debug('length=',$scope.entries.length);
-					// if this is the first entry of the day...
-					if (previousEntry && previousEntry.getId().indexOf('day-') === 0) {
-						if ((i+1) === $scope.entries.length) {
-							// ...and it's the last entry in the list, remove the day
-							removeDay = true;
-						} else if (nextEntry && nextEntry.getId().indexOf('day-') === 0) {
-							// ...and the next entry is a new day, remove the day
-							removeDay = true;
-						}
-
-						if (removeDay) {
-							$scope.entries.splice(i-1, 1);
-						}
-					}
-					break;
-				}
-			}
-		};
 
 		$ionicModal.fromTemplateUrl('template/event-edit.html', function(modal) {
 			$scope.modal = modal;
@@ -569,5 +571,7 @@
 				}
 			});
 		}
+		
+		*/
 	}]);
 }());

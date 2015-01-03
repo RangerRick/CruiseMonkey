@@ -32,11 +32,13 @@ if (typeof String.prototype.contains !== 'function') {
 
 var __digest_interval, $rootScope;
 var startDigesting = function() {
+	'use strict';
 	__digest_interval = window.setInterval(function() {
 		$rootScope.$apply();
 	}, 200);
 };
 var stopDigesting = function() {
+	'use strict';
 	if (__digest_interval) {
 		clearInterval(__digest_interval);
 	}
