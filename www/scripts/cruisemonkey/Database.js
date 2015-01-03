@@ -167,9 +167,12 @@
 			self.pouch().info(function(err,res) {
 				$rootScope.safeApply(function() {
 					if (err) {
-						deferred.resolve(0);
+						deferred.resolve(false);
+						console.debug('isEmpty = ' + false);
 					} else {
-						deferred.resolve(res.doc_count === 0);
+						var isEmpty = res.doc_count === 0;
+						deferred.resolve(isEmpty);
+						console.debug('isEmpty = ' + isEmpty);
 					}
 				});
 			});
@@ -375,6 +378,9 @@
 				if (isEmpty) {
 					self.updateFrom(from).then(function(res) {
 						deferred.resolve(true);
+						$rootScope.$evalAsync(function() {
+							$rootScope.$broadcast('cm.database.syncComplete');
+						});
 					}, function(err) {
 						console.error('failed to update from ' + from.name,err);
 						deferred.reject(err);
@@ -382,6 +388,9 @@
 				} else {
 					self.replicateFrom(from).then(function(res) {
 						deferred.resolve(true);
+						$rootScope.$evalAsync(function() {
+							$rootScope.$broadcast('cm.database.syncComplete');
+						});
 					}, function(err) {
 						console.error('failed to replicate from ' + from.name,err);
 						deferred.reject(err);

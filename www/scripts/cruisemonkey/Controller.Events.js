@@ -134,7 +134,7 @@
 	}])
 	.controller('CMEventsBarCtrl', ['$scope', '$timeout', 'storage', function($scope, $timeout, storage) {
 	}])
-	.controller('CMEventCtrl', ['$q', '$scope', '$rootScope', '$timeout', '$ionicScrollDelegate', 'EventService', 'NotificationService', 'EventCache', function($q, $scope, $rootScope, $timeout, $ionicScrollDelegate, EventService, notifications, EventCache) {
+	.controller('CMEventCtrl', ['$q', '$scope', '$rootScope', '$timeout', '$ionicScrollDelegate', 'EventService', 'NotificationService', 'UserService', 'EventCache', function($q, $scope, $rootScope, $timeout, $ionicScrollDelegate, EventService, notifications, UserService, EventCache) {
 		var withDays = function(events) {
 			var ret = [],
 				ev, i,
@@ -164,23 +164,54 @@
 			var deferred = $q.defer();
 			refreshing = deferred.promise;
 
-			var eventMethod = EventService.getOfficialEvents;
+			EventService.getAllEvents().then(function(events) {
+				var filteredEvents = [], ev, i;
+				var user = UserService.get();
+				switch ($scope.eventType) {
+					case 'official': {
+						for (i=0; i < events.length; i++) {
+							ev = events[i];
+							if (ev.getUsername() === 'official') {
+								filteredEvents.push(ev);
+							}
+						}
+					}; break;
+					case 'unofficial': {
+						for (i=0; i < events.length; i++) {
+							ev = events[i];
+							if (ev.isPublic() && ev.getUsername() !== 'official') {
+								filteredEvents.push(ev);
+							} else if (user.loggedIn && ev.getUsername() === user.username) {
+								filteredEvents.push(ev);
+							}
+						}
+					}; break;
+					case 'all': {
+						for (i=0; i < events.length; i++) {
+							ev = events[i];
+							if (ev.isPublic()) {
+								filteredEvents.push(ev);
+							} else if (user.loggedIn && ev.getUsername() === user.username) {
+								filteredEvents.push(ev);
+							}
+						}
+					}; break;
+					case 'my': {
+						for (i=0; i < events.length; i++) {
+							ev = events[i];
+							if (ev.getUsername() === user.username) {
+								filteredEvents.push(ev);
+							} else if (ev.isPublic() && ev.isFavorite()) {
+								filteredEvents.push(ev);
+							}
+						}
+					}; break;
+				}
 
-			switch ($scope.eventType) {
-				case 'official': eventMethod = EventService.getOfficialEvents; break;
-				case 'unofficial': eventMethod = EventService.getUnofficialEvents; break;
-				case 'my': eventMethod = EventService.getMyEvents; break;
-				case 'all': eventMethod = EventService.getAllEvents; break;
-				default: console.warn('Unknown event type: ' + $scope.eventType); break;
-			}
-
-			console.debug('CMEventCtrl.doRefresh(): refreshing.');
-			$q.when(eventMethod()).then(function(e) {
-				console.debug('CMEventCtrl: got ' + e.length + ' ' + $scope.eventType + ' events');
+				filteredEvents.sort(sortEvent);
+				console.debug('CMEventCtrl: got ' + filteredEvents.length + ' ' + $scope.eventType + ' events');
+				EventCache.put($scope.eventType, filteredEvents);
 				deferred.resolve(true);
-
-				e.sort(sortEvent);
-				EventCache.put($scope.eventType, e);
 				updateEntries();
 			}, function(err) {
 				console.warn('CMEventCtrl: failed to get ' + $scope.eventType + ' events: ' + err);
@@ -196,7 +227,7 @@
 
 		var updateEntries = function() {
 			var cached = withDays(EventCache.get($scope.eventType, $scope.searchString));
-			console.debug('cached events:',cached);
+			//console.debug('cached events:',cached);
 			$scope.entries = cached;
 			$scope.$broadcast('scroll.resize');
 		};
@@ -243,14 +274,14 @@
 			}
 		};
 
-		var delayTimeout = null;
+		var updateDelayTimeout = null;
 		var updateDelayed = function(delay) {
-			if (delayTimeout) {
-				$timeout.cancel(delayTimeout);
+			if (updateDelayTimeout) {
+				$timeout.cancel(updateDelayTimeout);
 			}
-			delayTimeout = $timeout(function() {
+			updateDelayTimeout = $timeout(function() {
 				console.debug('CMEventCtrl.doUpdateDelayed()');
-				delayTimeout = null;
+				updateDelayTimeout = null;
 				updateEntries();
 			}, delay || 300);
 		};
@@ -310,7 +341,7 @@
 		};
 
 		$scope.goToNow = function() {
-			var nextEvent = EventService.getNextEvent($scope.events);
+			var nextEvent = EventService.getNextEvent($scope.entries);
 			if (nextEvent) {
 				var hashLocation = findHash(nextEvent.getId());
 				console.debug('scrolling to hash location: ' + hashLocation);

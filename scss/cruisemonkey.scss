@@ -242,6 +242,8 @@ a:hover {
 ion-side-menu {
 	.item.active {
 		background-color: $cmBabyBlue;
+		border-top: 2px solid $item-default-active-border;
+		border-bottom: 3px solid $item-default-active-border;
 		.item-content {
 			background-color: transparent;
 		}
@@ -325,7 +327,7 @@ ion-side-menu {
 
 .deck-plans {
 	overflow-x: hidden;
-	width: 100%;
+	/* width: 100%; */
 	user-drag: none;
 	-moz-user-select: none;
 	-webkit-user-drag: none;

@@ -224,20 +224,20 @@
 					favresults = results.pop();
 				}
 
-				console.log('favresults=',favresults);
-				console.log('events=',results);
+				//console.log('favresults=',favresults);
+				//console.log('events=',results);
 				// iterate over any events results we got
 				for (i=0; i < results.length; i++) {
 					result = results[i];
 					for (j=0; j < result.rows.length; j++) {
 						ev = new CMEvent(result.rows[j].doc);
-						console.debug(ev.toString());
+						//console.debug(ev.toString());
 						events.push(ev);
 					}
 				}
 				for (i=0; i < favresults.rows.length; i++) {
 					fav = new CMFavorite(favresults.rows[i].doc);
-					console.debug(fav.toString());
+					//console.debug(fav.toString());
 					favorites.push(fav);
 				}
 
