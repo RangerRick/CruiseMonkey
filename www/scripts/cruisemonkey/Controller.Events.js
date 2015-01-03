@@ -379,7 +379,7 @@
 		};
 
 		$scope.onFavoriteChanged = function(ev) {
-			$scope.safeApply(function() {
+			$scope.$evalAsync(function() {
 				var i, entry, eventId = ev.getId();
 				console.debug('CMEventCtrl.onFavoriteChanged(' + eventId + ')');
 
@@ -432,7 +432,7 @@
 
 		$scope.onPublicChanged = function(ev) {
 			console.debug('onPublicChanged(' + ev.getId() + ')');
-			$scope.safeApply(function() {
+			$scope.$evalAsync(function() {
 				ev.setPublic(!ev.isPublic());
 				$scope.$broadcast('scroll.resize');
 				refreshEvents(true);
@@ -500,7 +500,7 @@
 		});
 
 		$scope.edit = function(ev) {
-			$scope.safeApply(function() {
+			$scope.$evalAsync(function() {
 				$scope.event = ev;
 				$scope.eventData = ev.toEditableBean();
 

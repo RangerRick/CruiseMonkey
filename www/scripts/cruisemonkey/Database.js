@@ -5,19 +5,6 @@
 	angular.module('cruisemonkey.Database', [
 	])
 	.factory('_database', ['$q', '$rootScope', '$timeout', function($q, $rootScope, $timeout) {
-		if (!$rootScope.safeApply) {
-			$rootScope.safeApply = function(fn) {
-				var phase = this.$root.$$phase;
-				if(phase === '$apply' || phase === '$digest') {
-					if(fn && (typeof(fn) === 'function')) {
-						fn();
-					}
-				} else {
-					this.$apply(fn);
-				}
-			};
-		}
-
 		var databases = {};
 
 		var makeEventHandler = function(eventName, db) {
@@ -48,7 +35,7 @@
 
 			var method = args.shift();
 			args.push(function(err,res) {
-				$rootScope.safeApply(function() {
+				$rootScope.$evalAsync(function() {
 					if (err) {
 						deferred.reject(err);
 					} else {
@@ -100,7 +87,7 @@
 					resolveDeleted();
 				} else {
 					self.pouch().destroy(function(err, res) {
-						$rootScope.safeApply(function() {
+						$rootScope.$evalAsync(function() {
 							if (err) {
 								if (err.message && err.message.indexOf('no such table') >= 0) {
 									console.warn('cruisemonkey.Database: destroy called on database that already does not exist.');
@@ -127,7 +114,7 @@
 
 			var options = angular.extend({}, opts);
 			self.pouch().allDocs(options, function(err,res) {
-				$rootScope.safeApply(function() {
+				$rootScope.$evalAsync(function() {
 					if (err) {
 						deferred.reject(err);
 					} else {
@@ -148,7 +135,7 @@
 			var self = this;
 
 			self.pouch().get('_design/cruisemonkey', function(err, doc) {
-				$rootScope.safeApply(function() {
+				$rootScope.$evalAsync(function() {
 					if (err) {
 						deferred.resolve(false);
 					} else {
@@ -165,7 +152,7 @@
 			var self = this;
 
 			self.pouch().info(function(err,res) {
-				$rootScope.safeApply(function() {
+				$rootScope.$evalAsync(function() {
 					if (err) {
 						deferred.resolve(false);
 						console.debug('isEmpty = ' + false);
@@ -309,7 +296,7 @@
 			var opts = angular.extend({}, {
 				batch_size: 500,
 				complete: function(err, response) {
-					$rootScope.safeApply(function() {
+					$rootScope.$evalAsync(function() {
 						if (err) {
 							console.debug('cruisemonkey.Database: failed to replicate from ' + from.name + ' to ' + to.name + ':',err);
 							deferred.reject(err);
