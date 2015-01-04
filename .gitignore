@@ -1,6 +1,8 @@
 # Specifies intentionally untracked files to ignore when using Git
 # http://git-scm.com/docs/gitignore
 
+index.html
+.index.html
 .*.swp
 www.zip
 npm-debug.log
