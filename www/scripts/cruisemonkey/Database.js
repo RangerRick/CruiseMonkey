@@ -195,6 +195,28 @@
 			return this.__call('bulkDocs', docs, options);
 		};
 
+		Database.prototype.syncDesignDocs = function(from) {
+			var to = this;
+
+			var deferred = $q.defer();
+
+			to.pouch().replicate.from(from.pouch(), {
+				'doc_ids': ['_design/cruisemonkey']
+			}).on('complete', function(info) {
+				$rootScope.$evalAsync(function() {
+					console.debug('Database.syncDesignDocs: design doc synced');
+					deferred.resolve(true);
+				});
+			}).on('error', function(err) {
+				$rootScope.$evalAsync(function() {
+					console.debug('Database.syncDesignDocs: design doc sync failure:',err);
+					deferred.reject(err);
+				});
+			});
+
+			return deferred.promise;
+		};
+
 		Database.prototype.updateFrom = function(from, options) {
 			var to = this;
 
@@ -294,7 +316,8 @@
 			var replication = to.getReplication() || {};
 			console.debug('performing a replication from ' + from.name + ' to ' + to.name + ' using options:',replication);
 			var opts = angular.extend({}, {
-				batch_size: 500,
+				batch_size: 100,
+				batches_limit: 5,
 				complete: function(err, response) {
 					$rootScope.$evalAsync(function() {
 						if (err) {
@@ -308,7 +331,22 @@
 				}
 			}, replication, options);
 
-			from.pouch().replicate.to(to.pouch(), opts);
+			to.syncDesignDocs(from).then(function() {
+				from.pouch().replicate.to(to.pouch(), opts).on('complete', function(info) {
+					$rootScope.$evalAsync(function() {
+						console.debug('Database.replicateFrom: initial replication complete');
+						deferred.resolve(true);
+					});
+				}).on('error', function(err) {
+					$rootScope.$evalAsync(function() {
+						console.debug('Database.replicateFrom: initial replication failed:',err);
+						deferred.reject(err);
+					});
+				});
+			}, function(err) {
+				deferred.reject(err);
+			});
+
 			return deferred.promise;
 		};
 
@@ -317,11 +355,10 @@
 			deferred = $q.defer();
 
 			var replication = to.getReplication() || {};
-			console.debug('performing a continuous replication from ' + from.name + ' to ' + to.name + ' using options:',replication);
-			
 			var opts = angular.extend({}, {
 				live: true,
-				batch_size: 500
+				batch_size: 100,
+				batches_limit: 5
 			}, replication, options);
 
 			var persistOptions = {
@@ -332,19 +369,26 @@
 				changes: opts
 			};
 			
+			console.debug('performing a continuous replication from ' + from.name + ' to ' + to.name + ' using options:',persistOptions);
+
 			to._persist = to.pouch().persist(persistOptions);
 
 			console.debug('Database.continuouslyReplicateFrom: ' + from.name + ': configuring event listeners.');
+
 			var events = [ 'connect', 'disconnect' ];
 			for (var i=0; i < events.length; i++) {
 				var ev = events[i];
 				to._persist.on(ev, makeEventHandler('cm.persist.' + ev, to));
 			}
 
-			$rootScope.$evalAsync(function() {
+			to.syncDesignDocs(from).then(function() {
 				to._persist.start();
 				deferred.resolve(true);
+			}, function(err) {
+				to._persist.start();
+				deferred.reject(err);
 			});
+
 			return deferred.promise;
 		};
 

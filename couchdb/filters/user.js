@@ -6,7 +6,7 @@ function(doc, req) {
 			// my document
 			return true;
 		}
-		if (doc._id && doc._id.indexOf('favorite:' + req.query.username + ':') === 0) {
+		if (doc._id && (doc._id.indexOf('favorite:' + req.query.username + ':') === 0 || doc._id.indexOf('favorite-' + req.query.username + '-'))) {
 			// my favorite
 			return true;
 		}

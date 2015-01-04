@@ -3,7 +3,7 @@ function(doc, req) {
 	if (req && req.query && req.query.username) {
 		username = req.query.username;
 	}
-	if (username && doc._id.indexOf('favorite:' + username + ':') === 0) {
+	if (username && (doc._id.indexOf('favorite:' + username + ':') === 0 || doc._id.indexOf('favorite-' + username + '-') === 0)) {
 		// my favorite, sync it
 		return true;
 	}

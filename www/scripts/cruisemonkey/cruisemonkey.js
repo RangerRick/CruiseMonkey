@@ -177,10 +177,10 @@
 		$rootScope.$on('cm.persist.disconnect', function(ev, db) {
 			console.debug('persistence disconnected: ' + db.name);
 		});
-		/*
 		$rootScope.$on('cm.database.uptodate', function(ev, db) {
 			console.debug('persistence up to date: ' + db.name);
 		});
+		/*
 		$rootScope.$on('cm.database.change', function(ev, db, doc) {
 			console.debug('persistence changed: ' + db.name + ': ' + doc.id);
 		});
@@ -231,32 +231,6 @@
 			}
 		}
 
-		/*
-		if (SettingsService.getDatabaseReplicate()) {
-			console.debug('Replication enabled.  Starting sync.');
-			var remoteUrl = SettingsService.getRemoteDatabaseUrl();
-			console.debug('remoteUrl=',remoteUrl);
-			var remotedb = database.get(remoteUrl);
-			EventService.syncFrom(remotedb).then(function() {
-				console.debug('Finished loading events.');
-				$rootScope.$broadcast('cm.main.database-initialized');
-				if (navigator.splashscreen) {
-					$cordovaSplashscreen.hide();
-				}
-			}, function() {
-				console.debug('Failed to load events.');
-				if (navigator.splashscreen) {
-					$cordovaSplashscreen.hide();
-				}
-			});
-		} else {
-			console.debug('Replication disabled.');
-			$rootScope.$broadcast('cm.main.database-initialized');
-			if (navigator.splashscreen) {
-				$cordovaSplashscreen.hide();
-			}
-		}
-		*/
 		$rootScope.$broadcast('cm.main.database-initialized');
 		if (navigator.splashscreen) {
 			$cordovaSplashscreen.hide();

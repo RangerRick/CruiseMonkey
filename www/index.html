@@ -117,19 +117,18 @@ if (typeof String.prototype.contains !== 'function') {
 	<script src="lib/modernizr/modernizr.js"></script>
 	<script src="lib/classlist/classList.js"></script>
 	<script src="lib/es5-shim/es5-shim.js"></script>
-	<script src="lib/blob-util/dist/blob-util.min.js"></script>
-	<script src="lib/offline/offline.min.js"></script>
+	<!-- <script src="lib/blob-util/dist/blob-util.min.js"></script> -->
+	<!-- <script src="lib/offline/offline.min.js"></script> -->
 	<script src="lib/pouchdb/dist/pouchdb.min.js"></script>
-	<script src="lib/pouchdb-all-dbs/dist/pouchdb.all-dbs.js"></script>
-	<script src="lib/delta-pouch/dist/pouchdb.delta-pouch.js"></script>
-	<script src="lib/pouchdb-persist/dist/pouchdb-persist.js"></script>
+	<!-- <script src="lib/pouchdb-all-dbs/dist/pouchdb.all-dbs.js"></script> -->
+	<script src="lib/pouchdb-persist/dist/pouchdb-persist.min.js"></script>
 	<script src="lib/momentjs/moment.js"></script>
 	<script src="lib/base64/base64.js"></script>
 	<script src="lib/ionic/js/ionic.bundle.js"></script>
 	<script src="lib/angular-bindonce/bindonce.js"></script>
 	<script src="lib/angular-cookies/angular-cookies.js"></script>
 	<script src="lib/angular-loader/angular-loader.js"></script>
-	<script src="lib/angular-pouchdb/angular-pouchdb.js"></script>
+	<!-- <script src="lib/angular-pouchdb/angular-pouchdb.js"></script> -->
 	<script src="lib/angular-resource/angular-resource.js"></script>
 	<script src="lib/angular-ui-router/release/angular-ui-router.js"></script>
 	<script src="lib/angular-uuid4/angular-uuid4.js"></script>
@@ -155,7 +154,6 @@ if (typeof String.prototype.contains !== 'function') {
 	<script src="scripts/cruisemonkey/Controller.Menu.js"></script>
 	<script src="scripts/cruisemonkey/Controller.Navigation.js"></script>
 	<script src="scripts/cruisemonkey/Controller.Photos.js"></script>
-	<script src="scripts/cruisemonkey/DB.js"></script>
 	<script src="scripts/cruisemonkey/Database.js"></script>
 	<script src="scripts/cruisemonkey/Decks.js"></script>
 	<script src="scripts/cruisemonkey/Events.js"></script>
@@ -171,14 +169,6 @@ if (typeof String.prototype.contains !== 'function') {
 	<script src="cordova.js"></script>
 	<script>
 		var isMobile = false;
-
-		Offline.options = {
-			checkOnLoad: false,
-			interceptRequests: false,
-			reconnect: false,
-			requests: false,
-			checks: {}
-		};
 
 		ionic.Platform.ready(function() {
 			console.log('Platform is ready.  Bootstrapping.');

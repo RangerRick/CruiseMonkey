@@ -37,11 +37,7 @@
 
 			if (replicate) {
 				var remoteDb = _database.get(remoteDatabase);
-				eventsdb.syncFrom(remoteDb).then(function() {
-					eventsdb.continuouslyReplicateFrom(remoteDb, { configureEvents: true });
-				}, function(err) {
-					console.warn('Failed to sync eventsdb:',err);
-				});
+				eventsdb.continuouslyReplicateFrom(remoteDb);
 			}
 
 			return eventsdb;
@@ -76,11 +72,7 @@
 			
 			if (replicate) {
 				var remoteDb = _database.get(remoteDatabase);
-				favoritesdb.syncFrom(remoteDb).then(function() {
-					favoritesdb.continuouslyReplicateFrom(remoteDb);
-				}, function(err) {
-					console.warn('Failed to sync favoritesdb:',err);
-				});
+				favoritesdb.continuouslyReplicateFrom(remoteDb);
 			}
 
 			return favoritesdb;
