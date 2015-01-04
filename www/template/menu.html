@@ -10,7 +10,7 @@
 
   <ion-side-menu side="left" expose-aside-when="large">
     <header class="bar bar-header bar-stable bar-dark" menu-close>
-      <h1 class="title">CruiseMonkey</h1>
+      <h1 class="title yellow">CruiseMonkey</h1>
     </header>
     <ion-content class="has-header" menu-close>
       <ion-list menu-close>
@@ -28,11 +28,11 @@
       </ion-list>
     </ion-content>
 		<ion-footer-bar class="bar-dark" menu-close>
-			<button class="button button-icon icon ion-information-circled" ng-click="aboutModal.show()"></button>
-			<button class="button button-icon icon ion-help-circled" ng-click="helpModal.show()"></button>
-			<button class="button button-icon icon ion-gear-b" ng-click="settingsModal.show()"></button>
-			<button class="button button-icon icon ion-log-out" ng-if="user.loggedIn" ng-click="logOut()"></button>
-			<button class="button button-icon icon ion-log-in" ng-if="!user.loggedIn" ng-click="loginModal.show()"></button>
+			<button class="button button-icon icon icon-yellow ion-information-circled" ng-click="aboutModal.show()"></button>
+			<button class="button button-icon icon icon-yellow ion-help-circled" ng-click="helpModal.show()"></button>
+			<button class="button button-icon icon icon-yellow ion-gear-b" ng-click="settingsModal.show()"></button>
+			<button class="button button-icon icon icon-yellow ion-log-out" ng-if="user.loggedIn" ng-click="logOut()"></button>
+			<button class="button button-icon icon icon-yellow ion-log-in" ng-if="!user.loggedIn" ng-click="loginModal.show()"></button>
 		</ion-footer-bar>
   </ion-side-menu>
 </ion-side-menus>

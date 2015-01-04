@@ -68,10 +68,6 @@ $gutterHoverColor: black;
 
 $simpleBorder: 1px solid black;
 
-/*
-$headerColor: white;
-$headerBG: black;
-*/
 $headerColor: $rciYellow;
 $headerBG: $rciNavyBlue;
 
@@ -105,6 +101,12 @@ $button-small-height:             30px;
 $button-small-padding:            2px;
 $button-small-icon-size:          28px;
 
+$bar-dark-text: $rciYellow;
+
+$tabs-dark-bg:                 $dark;
+$tabs-dark-border:             $rciLightBlue;
+$tabs-dark-text:               $rciYellow;
+
 @import "www/lib/ionic/scss/ionic";
 
 .item-complex .item-content,
@@ -121,15 +123,20 @@ $button-small-icon-size:          28px;
 	content: "\2685";
 }
 
+.cm, .yellow {
+	color: $rciYellow;
+}
+
+.navy {
+	color: $rciNavyBlue;
+}
+
+.blue {
+	color: $rciLightBlue;
+}
+
 .icon {
-	&.icon-cm {
-		color: $rciYellow;
-		&.active {
-			opacity: 1;
-			color: $rciYellow;
-		}
-	}
-	&.icon-yellow {
+	&.icon-cm, &.icon-yellow {
 		color: $rciYellow;
 		&.active {
 			opacity: 1;
@@ -167,14 +174,7 @@ $button-small-icon-size:          28px;
 }
 
 .button {
-	&.button-cm {
-		color: $rciYellow;
-		&.active {
-			opacity: 1;
-			color: $rciYellow;
-		}
-	}
-	&.button-yellow {
+	&.button-cm, &.button-yellow {
 		color: $rciYellow;
 		&.active {
 			opacity: 1;
