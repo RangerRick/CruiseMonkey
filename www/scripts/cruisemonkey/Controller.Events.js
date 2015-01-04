@@ -292,7 +292,7 @@
 				return;
 			}
 			refreshDelayTimeout = $timeout(function() {
-				//console.debug('CMEventCtrl.doRefreshDelayed()');
+				console.debug('CMEventCtrl.doRefreshDelayed()');
 				refreshDelayTimeout = null;
 				doRefresh();
 			}, delay || 300);
@@ -578,8 +578,8 @@
 		$scope.$on('$ionicView.afterEnter', function(ev, info) {
 			$scope.eventTitle = 'Events: ' + ($scope.eventType === 'my'? 'Mine' : $scope.eventType.capitalize());
 		});
-		$scope.$on('cm.database.syncComplete', function() {
-			console.debug('CMEventCtrl: Sync complete.');
+		$scope.$on('cm.database.syncComplete', function(ev, db) {
+			console.debug('CMEventCtrl: Sync complete: ' + db.name);
 			refreshDelayed(100);
 		});
 		$rootScope.$on('cm.database.change', function(ev, db, doc) {

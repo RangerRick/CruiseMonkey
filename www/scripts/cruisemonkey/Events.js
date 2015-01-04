@@ -13,11 +13,38 @@
 		'uuid4',
 		'cruisemonkey.Config',
 		'cruisemonkey.Database',
-		'cruisemonkey.User',
-		'cfp.loadingBar'
+		'cruisemonkey.User'
 	])
-	.factory('EventService', ['$q', '$rootScope', '$timeout', '$location', 'uuid4', '_database', 'UserService', 'SettingsService', 'cfpLoadingBar', function($q, $rootScope, $timeout, $location, uuid4, _database, UserService, SettingsService, cfpLoadingBar) {
+	.factory('EventService', ['$q', '$rootScope', '$timeout', '$location', 'uuid4', '_database', 'UserService', 'SettingsService', function($q, $rootScope, $timeout, $location, uuid4, _database, UserService, SettingsService) {
 		console.info('EventService: Initializing EventService.');
+
+		$rootScope.$on('cm.persist.connect', function(ev, db) {
+			console.debug('persistence connected: ' + db.name);
+		});
+		$rootScope.$on('cm.persist.disconnect', function(ev, db) {
+			console.debug('persistence disconnected: ' + db.name);
+		});
+		$rootScope.$on('cm.database.uptodate', function(ev, db) {
+			console.debug('persistence up to date: ' + db.name);
+		});
+		$rootScope.$on('cm.database.complete', function(ev, db) {
+			console.debug('persistence complete: ', db.name);
+		});
+		/*
+		$rootScope.$on('cm.database.change', function(ev, db, doc) {
+			console.debug('persistence changed: ' + db.name + ': ' + doc.id);
+		});
+		$rootScope.$on('cm.database.create', function(ev, db, doc) {
+			console.debug('persistence created an object: ' + db.name + ': ' + doc.id);
+		});
+		$rootScope.$on('cm.database.update', function(ev, db, doc) {
+			console.debug('persistence updated an object: ' + db.name + ': ' + doc.id);
+		});
+		$rootScope.$on('cm.database.delete', function(ev, db, doc) {
+			console.debug('persistence deleted an object: ' + db.name + ': ' + doc.id);
+		});
+		*/
+
 		var createEventsDb = function() {
 			var databaseName = SettingsService.getDatabaseName();
 			var remoteDatabase = SettingsService.getRemoteDatabaseUrl();
@@ -78,30 +105,6 @@
 			return favoritesdb;
 		};
 
-		var _isLoading = false;
-		var startLoadingBar = function() {
-			if (cfpLoadingBar.status() >= 100 || cfpLoadingBar.status() === 0) {
-				_isLoading = true;
-				cfpLoadingBar.start();
-			}
-		};
-		var stopLoadingBar = function() {
-			if (_isLoading) {
-				cfpLoadingBar.complete();
-			}
-			_isLoading = false;
-		};
-
-		var doLoadingBar = function(promise) {
-			startLoadingBar();
-			$q.when(promise).then(function() {
-				stopLoadingBar();
-			}, function() {
-				stopLoadingBar();
-			});
-			return promise;
-		};
-
 		var eventsdb = createEventsDb();
 		var favoritesdb = createFavoritesDb();
 
@@ -112,6 +115,7 @@
 			} else {
 				if (favoritesdb) {
 					favoritesdb.stopReplication();
+					favoritesdb.destroy();
 				}
 				favoritesdb = null;
 			}
@@ -129,7 +133,7 @@
 				deferred.resolve();
 			});
 
-			return doLoadingBar(deferred.promise);
+			return deferred.promise;
 		};
 
 		var promisedResult = function(result) {
@@ -268,7 +272,7 @@
 				deferred.reject(err);
 			});
 
-			return doLoadingBar(deferred.promise);
+			return deferred.promise;
 		};
 
 		var updateEvent = function(up) {
@@ -297,7 +301,7 @@
 				deferred.reject(err);
 			});
 
-			return doLoadingBar(deferred.promise);
+			return deferred.promise;
 		};
 
 		var removeEvent = function(doc) {
@@ -317,7 +321,7 @@
 				deferred.reject(err);
 			});
 
-			return doLoadingBar(deferred.promise);
+			return deferred.promise;
 		};
 
 		var _allEvents = null;
@@ -361,7 +365,7 @@
 				console.debug('EventService.getAllEvents(): finished.');
 				_allEvents = null;
 			});
-			return doLoadingBar(_allEvents);
+			return _allEvents;
 		};
 
 		var _allFavorites = null;
@@ -389,7 +393,7 @@
 				console.debug('EventService.getAllFavorites(): finished.');
 				_allFavorites = null;
 			});
-			return doLoadingBar(_allFavorites);
+			return _allFavorites;
 		};
 
 		var _officialEvents = null;
@@ -413,7 +417,7 @@
 				console.debug('EventService.getOfficialEvents(): finished.');
 				_officialEvents = null;
 			});
-			return doLoadingBar(_officialEvents);
+			return _officialEvents;
 		};
 
 		var _unofficialEvents = null;
@@ -437,7 +441,7 @@
 				console.debug('EventService.getUnofficialEvents(): finished.');
 				_unofficialEvents = null;
 			});
-			return doLoadingBar(_unofficialEvents);
+			return _unofficialEvents;
 		};
 
 		var _userEvents = null;
@@ -467,7 +471,7 @@
 				console.debug('EventService.getUserEvents(): finished.');
 				_userEvents = null;
 			});
-			return doLoadingBar(_userEvents);
+			return _userEvents;
 		};
 
 		var _myEvents = null;
@@ -512,7 +516,7 @@
 				console.debug('EventService.getMyEvents(): finished.');
 				_myEvents = null;
 			});
-			return doLoadingBar(_myEvents);
+			return _myEvents;
 		};
 
 		var _myFavorites = null;
@@ -548,7 +552,7 @@
 				console.debug('EventService.getMyFavorites(): finished.');
 				_myFavorites = null;
 			});
-			return doLoadingBar(_myFavorites);
+			return _myFavorites;
 		};
 
 		var _isFavorite = null;
@@ -581,7 +585,7 @@
 				console.debug('EventService.isFavorite(): finished.');
 				_isFavorite = null;
 			});
-			return doLoadingBar(_isFavorite);
+			return _isFavorite;
 		};
 
 		var addFavorite = function(eventId) {
@@ -636,7 +640,7 @@
 				});
 			});
 
-			return doLoadingBar(deferred.promise);
+			return deferred.promise;
 		};
 
 		var removeFavorite = function(eventId) {
@@ -668,7 +672,7 @@
 				deferred.reject(err);
 			});
 
-			return doLoadingBar(deferred.promise);
+			return deferred.promise;
 		};
 
 		var getEventForTime = function(time, eventList) {

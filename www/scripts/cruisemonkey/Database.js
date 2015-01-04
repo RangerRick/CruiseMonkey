@@ -4,8 +4,40 @@
 	/*global PouchDB: true*/
 	angular.module('cruisemonkey.Database', [
 	])
-	.factory('_database', ['$q', '$rootScope', '$timeout', function($q, $rootScope, $timeout) {
+	.factory('_database', ['$q', '$rootScope', '$timeout', '$interval', '$ionicLoading', function($q, $rootScope, $timeout, $interval, $ionicLoading) {
 		var databases = {};
+
+		var _isLoading = false;
+		var startLoadingBar = function() {
+			if (_isLoading) {
+				return;
+			}
+			_isLoading = true;
+
+			console.log('starting loading bar');
+			$ionicLoading.show({
+				'template': 'Loading...',
+				'noBackdrop': true
+			});
+		};
+
+		var stopLoadingBar = function() {
+			if (_isLoading) {
+				console.log('stopping loading bar');
+				$ionicLoading.hide();
+				_isLoading = false;
+			}
+		};
+
+		var doLoadingBar = function(promise) {
+			startLoadingBar();
+			$q.when(promise).then(function() {
+				stopLoadingBar();
+			}, function() {
+				stopLoadingBar();
+			});
+			return promise;
+		};
 
 		var makeEventHandler = function(eventName, db) {
 			return function(obj) {
@@ -51,7 +83,7 @@
 		Database.prototype.createDb = function() {
 			var self = this;
 			self.db = new PouchDB(self.name, {size:50});
-			self.db.setMaxListeners(20);
+			self.db.setMaxListeners(30);
 
 			console.debug('Database.createDb: ' + self.name + ': configuring event listeners.');
 			var events = [ 'complete', 'uptodate', 'change', 'error', 'create', 'update', 'delete' ];
@@ -151,17 +183,13 @@
 			var deferred = $q.defer();
 			var self = this;
 
-			self.pouch().info(function(err,res) {
-				$rootScope.$evalAsync(function() {
-					if (err) {
-						deferred.resolve(false);
-						console.debug('isEmpty = ' + false);
-					} else {
-						var isEmpty = res.doc_count === 0;
-						deferred.resolve(isEmpty);
-						console.debug('isEmpty = ' + isEmpty);
-					}
-				});
+			self.info().then(function(info) {
+				var isEmpty = res.doc_count === 0;
+				deferred.resolve(isEmpty);
+				console.debug('isEmpty = ' + isEmpty);
+			}, function(err) {
+				deferred.resolve(false);
+				console.debug('isEmpty = ' + false);
 			});
 
 			return deferred.promise;
@@ -195,6 +223,10 @@
 			return this.__call('bulkDocs', docs, options);
 		};
 
+		Database.prototype.info = function() {
+			return this.__call('info');
+		};
+
 		Database.prototype.syncDesignDocs = function(from) {
 			var to = this;
 
@@ -222,87 +254,88 @@
 
 			var deferred = $q.defer(), fromQuery;
 
-			var viewOptions = to.getView();
-			var doQuery = ((viewOptions && viewOptions.view)? true : false);
-
-			if (doQuery) {
-				var opts = angular.copy(viewOptions);
-				var view = opts.view;
-				delete opts.view;
-
-				fromQuery = from.query(view, opts);
-			} else {
-				fromQuery = from.getIds({
-					'startkey': 'event:',
-					'endkey': 'event:\uffff'
-				});
-			}
-
-			$q.all([to.getIds(), fromQuery, from.doesDesignDocExist()]).then(function(res) {
-				var newIds = [], i,
-					ids = res[0],
-					fromQuery = res[1],
-					designDocExists = res[2];
-				if (res[2]) {
-					newIds.push('_design/cruisemonkey');
-				}
+			to.syncDesignDocs(from).then(function() {
+				var viewOptions = to.getView();
+				var doQuery = ((viewOptions && viewOptions.view)? true : false);
 
 				if (doQuery) {
-					console.debug('querying IDs from the remote database using view options:', to.getView());
-					// we get back a .query result with rows
-					for (i=0; i < fromQuery.rows.length; i++) {
-						if (ids.indexOf(fromQuery.rows[i].id) === -1) {
-							// we don't already have this one; sync it
-							newIds.push(fromQuery.rows[i].id);
-						}
-					}
+					var opts = angular.copy(viewOptions);
+					var view = opts.view;
+					delete opts.view;
+
+					fromQuery = from.query(view, opts);
 				} else {
-					// we get back a list of ids
-					console.debug('NOT using view for querying IDs from the remote database (fetching all document IDs matching event:*)');
-					for (i=0; i < fromQuery.length; i++) {
-						if (ids.indexOf(fromQuery[i]) === -1) {
-							// we don't already have this one; sync it
-							newIds.push(fromQuery[i]);
-						}
-					}
-				}
-
-				if (newIds.length > 0) {
-					from.allDocs({
-						'include_docs': true,
-						'keys': newIds
-					}).then(function(res) {
-						// console.debug('allDocs got ' + res.rows.length + ' documents');
-						var newDocs = [];
-
-						for (i=0; i < res.rows.length; i++) {
-							newDocs.push(res.rows[i].doc);
-						}
-
-						var doBulk = function(count, deferred, remainingDocs) {
-							if (remainingDocs.length > 0) {
-								console.debug('doing bulk-save of documents #' + (count + Math.min(remainingDocs.length,1)) + ' to #' + (count + Math.min(remainingDocs.length, 500)));
-								var docs = remainingDocs.splice(0, 500);
-								to.bulkDocs(docs, { 'new_edits': false }).then(function(res) {
-									var c = count + res.length;
-									doBulk(c, deferred, remainingDocs);
-								}, function(err) {
-									console.debug('bulk-save failed:',err);
-									deferred.reject(err);
-								});
-							} else {
-								console.debug('bulk-save complete. count='+count);
-								deferred.resolve(count);
-							}
-						};
-
-						doBulk(0, deferred, newDocs);
-					}, function(err) {
-						deferred.reject(err);
+					fromQuery = from.getIds({
+						'startkey': 'event:',
+						'endkey': 'event:\uffff'
 					});
-				} else {
-					deferred.resolve(0);
 				}
+
+				$q.all([to.getIds(), fromQuery]).then(function(res) {
+					var newIds = [], i,
+						ids = res[0],
+						fromQuery = res[1];
+
+					if (doQuery) {
+						console.debug('Database.updateFrom: querying IDs from the remote database using view options:', to.getView());
+						// we get back a .query result with rows
+						for (i=0; i < fromQuery.rows.length; i++) {
+							if (ids.indexOf(fromQuery.rows[i].id) === -1) {
+								// we don't already have this one; sync it
+								newIds.push(fromQuery.rows[i].id);
+							}
+						}
+					} else {
+						// we get back a list of ids
+						console.debug('Database.updateFrom: NOT using view for querying IDs from the remote database (fetching all document IDs matching event:*)');
+						for (i=0; i < fromQuery.length; i++) {
+							if (ids.indexOf(fromQuery[i]) === -1) {
+								// we don't already have this one; sync it
+								newIds.push(fromQuery[i]);
+							}
+						}
+					}
+
+					if (newIds.length > 0) {
+						from.allDocs({
+							'include_docs': true,
+							'keys': newIds
+						}).then(function(res) {
+							// console.debug('allDocs got ' + res.rows.length + ' documents');
+							var newDocs = [];
+
+							for (i=0; i < res.rows.length; i++) {
+								newDocs.push(res.rows[i].doc);
+							}
+
+							var doBulk = function(count, deferred, remainingDocs) {
+								if (remainingDocs.length > 0) {
+									console.debug('Database.updateFrom: doing bulk-save of documents #' + (count + Math.min(remainingDocs.length,1)) + ' to #' + (count + Math.min(remainingDocs.length, 500)));
+									var docs = remainingDocs.splice(0, 500);
+									to.bulkDocs(docs, { 'new_edits': false }).then(function(res) {
+										var c = count + res.length;
+										doBulk(c, deferred, remainingDocs);
+									}, function(err) {
+										console.debug('Database.updateFrom: bulk-save failed:',err);
+										deferred.reject(err);
+									});
+								} else {
+									console.debug('Database.updateFrom: bulk-save complete. count='+count);
+									deferred.resolve(count);
+								}
+							};
+
+							doBulk(0, deferred, newDocs);
+						}, function(err) {
+							deferred.reject(err);
+						});
+					} else {
+						deferred.resolve(0);
+					}
+				});
+			}, function(err) {
+				console.warn('Database.updateFrom: failed to sync design docs:',err);
+				deferred.reject(err);
 			});
 
 			return deferred.promise;
@@ -316,8 +349,6 @@
 			var replication = to.getReplication() || {};
 			console.debug('performing a replication from ' + from.name + ' to ' + to.name + ' using options:',replication);
 			var opts = angular.extend({}, {
-				batch_size: 100,
-				batches_limit: 5,
 				complete: function(err, response) {
 					$rootScope.$evalAsync(function() {
 						if (err) {
@@ -355,41 +386,62 @@
 			deferred = $q.defer();
 
 			var replication = to.getReplication() || {};
-			var opts = angular.extend({}, {
-				live: true,
-				batch_size: 100,
-				batches_limit: 5
-			}, replication, options);
 
-			var persistOptions = {
-				url: from.name,
-				maxTimeout: 30000,
-				startingTimeout: 1000,
-				manual: true,
-				changes: opts
+			var startPersist = function(seq) {
+				var since = seq || 0;
+
+				var opts = angular.extend({}, {
+					since: since
+				}, replication, options);
+
+				var persistOptions = {
+					url: from.name,
+					maxTimeout: 30000,
+					startingTimeout: 1000,
+					manual: true,
+					from: {
+						opts: angular.extend({}, {live:true}, opts)
+					}
+				};
+
+				console.debug('Database.continuouslyReplicateFrom: configuring continuous replication from ' + from.name + ' to ' + to.name + ' using options:',persistOptions);
+				to._persist = to.pouch().persist(persistOptions);
+
+				console.debug('Database.continuouslyReplicateFrom: ' + from.name + ': configuring event listeners.');
+				var events = [ 'connect', 'disconnect' ];
+				for (var i=0; i < events.length; i++) {
+					var ev = events[i];
+					to._persist.on(ev, makeEventHandler('cm.persist.' + ev, to));
+				}
+
+				to._persist.start();
 			};
-			
-			console.debug('performing a continuous replication from ' + from.name + ' to ' + to.name + ' using options:',persistOptions);
 
-			to._persist = to.pouch().persist(persistOptions);
-
-			console.debug('Database.continuouslyReplicateFrom: ' + from.name + ': configuring event listeners.');
-
-			var events = [ 'connect', 'disconnect' ];
-			for (var i=0; i < events.length; i++) {
-				var ev = events[i];
-				to._persist.on(ev, makeEventHandler('cm.persist.' + ev, to));
-			}
-
-			to.syncDesignDocs(from).then(function() {
-				to._persist.start();
-				deferred.resolve(true);
+			from.info().then(function(info) {
+				var sequenceNum = info['update_seq'];
+				console.debug('current sequence: ' + sequenceNum);
+				to.syncDesignDocs(from).then(function() {
+					to.updateFrom(from).then(function() {
+						console.debug('Database.continuouslyReplicateFrom: finished initial update.');
+						$rootScope.$broadcast('cm.database.syncComplete', to);
+						deferred.resolve(true);
+						startPersist(sequenceNum);
+					}, function(err) {
+						console.debug('Database.continuouslyReplicateFrom: updateFrom() failed:',err);
+						deferred.reject(err);
+						startPersist(0);
+					});
+				}, function(err) {
+					console.debug('Database.continuouslyReplicateFrom: failed to sync design docs:',err);
+					deferred.reject(err);
+					startPersist(0);
+				});
 			}, function(err) {
-				to._persist.start();
+				console.debug('Database.continuouslyReplicateFrom: failed to get info from ' + from.name,err);
 				deferred.reject(err);
 			});
 
-			return deferred.promise;
+			return doLoadingBar(deferred.promise);
 		};
 
 		Database.prototype.stopReplication = function() {
@@ -402,22 +454,22 @@
 		};
 
 		Database.prototype.syncFrom = function(from) {
-			var self = this,
+			var to = this,
 			deferred = $q.defer();
 
-			self.isEmpty().then(function(isEmpty) {
+			to.isEmpty().then(function(isEmpty) {
 				if (isEmpty) {
-					self.updateFrom(from).then(function(res) {
+					to.updateFrom(from).then(function(res) {
 						deferred.resolve(true);
 						$rootScope.$evalAsync(function() {
-							$rootScope.$broadcast('cm.database.syncComplete');
+							$rootScope.$broadcast('cm.database.syncComplete', to);
 						});
 					}, function(err) {
 						console.error('failed to update from ' + from.name,err);
 						deferred.reject(err);
 					});
 				} else {
-					self.replicateFrom(from).then(function(res) {
+					to.replicateFrom(from).then(function(res) {
 						deferred.resolve(true);
 						$rootScope.$evalAsync(function() {
 							$rootScope.$broadcast('cm.database.syncComplete');
@@ -428,8 +480,8 @@
 					});
 				}
 			}, function(err) {
-				console.error('unable to determine if database ' + self.name + ' is empty, falling back to replication:',err);
-				self.replicateFrom(from).then(function() {
+				console.error('unable to determine if database ' + to.name + ' is empty, falling back to replication:',err);
+				to.replicateFrom(from).then(function() {
 					deferred.resolve(true);
 				}, function(err) {
 					console.error('failed to replicate from ' + from.name,err);
