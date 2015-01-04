@@ -9,6 +9,8 @@
 (function() {
 	'use strict';
 
+	var modelVersion = '2015';
+
 	angular.module('cruisemonkey.Events', [
 		'uuid4',
 		'cruisemonkey.Config',
@@ -262,6 +264,8 @@
 				});
 				return;
 			}
+
+			eventToAdd.setId('event:' + modelVersion + ':' + eventToAdd.getUsername() + ':' + uuid4.generate());
 
 			eventToAdd.refreshLastUpdated();
 			eventsdb.post(eventToAdd.getRawData()).then(function(response) {
@@ -571,7 +575,7 @@
 			var deferred = $q.defer();
 			_isFavorite = deferred.promise;
 
-			var docId = 'favorite:' + username + ':' + eventId;
+			var docId = 'favorite:' + modelVersion + ':' + username + ':' + eventId;
 			console.debug('docId=',docId);
 			favoritesdb.get(docId).then(function(response) {
 				console.debug('response=',response);
@@ -596,7 +600,7 @@
 			}
 
 			var deferred = $q.defer(),
-				favId = 'favorite:' + username + ':' + eventId;
+				favId = 'favorite:' + modelVersion + ':' + username + ':' + eventId;
 
 			var fav = {
 				'_id': favId,

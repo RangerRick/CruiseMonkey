@@ -1,5 +1,5 @@
 function(doc) {
-	if (doc.type === 'event' && doc.isPublic) {
+	if (doc._id.indexOf('event:2015:') === 0 && doc.isPublic) {
 		emit(doc._id);
 	}
 }

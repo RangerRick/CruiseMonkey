@@ -1,13 +1,7 @@
 function(doc, req) {
-	if (doc.type === 'event') {
+	if (doc._id.indexOf('event:2015:') === 0) {
 		return true;
 	} else if (doc._id.indexOf('_design/') === 0) {
-		return true;
-	} else if (doc._id.indexOf('favorite:') === 0 || doc._id.indexOf('favorite-') === 0) {
-		// skip IDs we know are for favorites
-		return false;
-	} else if (doc._deleted || doc.deleted) {
-		// any deleted doc
 		return true;
 	}
 	return false;

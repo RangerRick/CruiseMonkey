@@ -1,5 +1,5 @@
 function(doc) {
-	if (doc.type === 'event' && doc.username === 'official') {
+	if (doc._id.indexOf('event:2015:') === 0 && doc.username === 'official') {
 		emit(doc._id);
 	}
 }
