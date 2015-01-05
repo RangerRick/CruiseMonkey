@@ -22,8 +22,8 @@ var addList = [
 
 var removeList = [
 	'de.appplant.cordova.plugin.local-notification',
-	'https://github.com/EddyVerbruggen/Toast-PhoneGap-Plugin',
-	'https://github.com/VitaliiBlagodir/cordova-plugin-datepicker',
+	'https://github.com/EddyVerbruggen/Toast-PhoneGap-Plugin.git',
+	'https://github.com/VitaliiBlagodir/cordova-plugin-datepicker.git',
 	'org.pbernasconi.progressindicator',
 ];
 
