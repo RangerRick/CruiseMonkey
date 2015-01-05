@@ -112,26 +112,33 @@ if (typeof String.prototype.contains !== 'function') {
 <body class="antialiased off-canvas hide-extras" ng-cloak animation="no-animation">
 	<ion-nav-view></ion-nav-view>
 
-	<!-- build:js scripts/3rdparty.js -->
+	<!-- build:js scripts/shim.js -->
 	<script src="lib/modernizr/modernizr.js"></script>
+	<script src="lib/base64/base64.js"></script>
 	<script src="lib/classlist/classList.js"></script>
 	<script src="lib/es5-shim/es5-shim.js"></script>
+	<!-- endbuild -->
+
+	<!-- build:js scripts/pouchdb.js -->
 	<script src="lib/pouchdb/dist/pouchdb.min.js"></script>
 	<script src="lib/pouchdb-all-dbs/dist/pouchdb.all-dbs.js"></script>
 	<script src="lib/pouchdb-persist/dist/pouchdb-persist.min.js"></script>
-	<script src="lib/momentjs/moment.js"></script>
-	<script src="lib/base64/base64.js"></script>
+	<!-- endbuild -->
+
+	<!-- build:js scripts/3rdparty.js -->
 	<script src="lib/jquery/dist/jquery.min.js"></script>
+	<script src="lib/momentjs/moment.js"></script>
+	<script src="lib/javascript-state-machine/state-machine.min.js"></script>
+	<script src="lib/toastr/toastr.min.js"></script>
+	<!-- endbuild -->
+
+	<!-- build:js scripts/ionic.js -->
 	<script src="lib/ionic/js/ionic.bundle.js"></script>
 	<script src="lib/angular-bindonce/bindonce.js"></script>
 	<script src="lib/angular-cookies/angular-cookies.js"></script>
-	<script src="lib/angular-loader/angular-loader.js"></script>
-	<script src="lib/angular-resource/angular-resource.js"></script>
 	<script src="lib/angular-ui-router/release/angular-ui-router.js"></script>
 	<script src="lib/angular-uuid4/angular-uuid4.js"></script>
 	<script src="lib/angularLocalStorage/src/angularLocalStorage.js"></script>
-	<script src="lib/javascript-state-machine/state-machine.min.js"></script>
-	<script src="lib/toastr/toastr.min.js"></script>
 	<!-- endbuild -->
 
 	<!-- build:js scripts/cm.js -->
