@@ -58,6 +58,7 @@ for my $lc_artist (sort keys %$results) {
 my $json = JSON::PP->new();
 my $json_text = $json->encode($json_list);
 
-open (FILEOUT, '>app/scripts/cruisemonkey/karaoke-list.js') or die "Can't write to karaoke-list.js: $!\n";
+print "Found " . scalar(@{$json_list}) . " entries...\n";
+open (FILEOUT, '>www/scripts/cruisemonkey/karaoke-list.js') or die "Can't write to karaoke-list.js: $!\n";
 print FILEOUT $json_text;
 close (FILEOUT);
