@@ -29,7 +29,7 @@ if (rootdir) {
 	filestoreplace.forEach(function(val, index, array) {
 		var fullfilename = path.join(rootdir, val);
 		if (fs.existsSync(fullfilename)) {
-			replace_string_in_file(fullfilename, 'version="[^"]*"', 'version="' + configobj.version + '"');
+			replace_string_in_file(fullfilename, 'id="com.raccoonfink.cruisemonkey" version="[^"]*"', 'id="com.raccoonfink.cruisemonkey" version="' + configobj.version + '"');
 		} else {
 			console.log("missing: "+fullfilename);
 		}
