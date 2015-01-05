@@ -27,9 +27,6 @@
     "javascript-state-machine": "~2.3.3",
     "modernizr": "~2.8.3",
     "pouchdb-all-dbs": "~1.0.1",
-    "angular-pouchdb-rangerrick": "git://github.com/RangerRick/angular-pouchdb.git#master",
-    "pouchdb-collate": "~1.1.2",
-    "delta-pouch": "~0.1.7",
     "pouchdb-persist": "~0.0.6",
     "angular-loading-bar": "~0.6.0",
     "toastr": "~2.1.0"
