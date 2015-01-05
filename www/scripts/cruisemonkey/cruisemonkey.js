@@ -18,7 +18,6 @@
 		'cruisemonkey.controllers.Amenities',
 		'cruisemonkey.controllers.DeckList',
 		'cruisemonkey.controllers.Events',
-		'cruisemonkey.controllers.Help',
 		'cruisemonkey.controllers.Karaoke',
 		'cruisemonkey.controllers.Login',
 		'cruisemonkey.controllers.Logout',
@@ -29,7 +28,7 @@
 		'cruisemonkey.Seamail',
 		'cruisemonkey.Settings',
 		'cruisemonkey.State',
-		'cruisemonkey.Twitarr.Notifications',
+		'cruisemonkey.Notifications',
 		'cruisemonkey.Upgrades',
 		'cruisemonkey.User'
 	])
@@ -126,15 +125,6 @@
 					}
 				}
 			})
-			.state('app.help', {
-				url: '/help',
-				views: {
-					'menuContent': {
-						templateUrl: 'template/help.html',
-						controller: 'CMHelpCtrl'
-					}
-				}
-			})
 			.state('app.karaoke', {
 				url: '/karaoke',
 				views: {
@@ -153,8 +143,8 @@
 					}
 				}
 			})
-			.state('app.advanced', {
-				url: '/advanced',
+			.state('app.settings', {
+				url: '/settings',
 				views: {
 					'menuContent': {
 						templateUrl: 'template/advanced.html',
@@ -164,7 +154,7 @@
 			})
 		;
 	}])
-	.run(['Twitarr.Notifications', '$rootScope', '$timeout', '$ionicPlatform', '$cordovaDialogs', '$cordovaSplashscreen', 'UserService', 'SettingsService', 'EventService', '_database', function(notifications, $rootScope, $timeout, $ionicPlatform, $cordovaDialogs, $cordovaSplashscreen, UserService, SettingsService, EventService, database) {
+	.run(['Notifications', '$rootScope', '$timeout', '$ionicPlatform', '$cordovaDialogs', '$cordovaSplashscreen', 'UserService', 'SettingsService', 'EventService', '_database', function(notifications, $rootScope, $timeout, $ionicPlatform, $cordovaDialogs, $cordovaSplashscreen, UserService, SettingsService, EventService, database) {
 		console.debug('CruiseMonkey run() called.');
 
 		if (ionic.Platform.isWebView()) {

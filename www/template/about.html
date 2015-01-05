@@ -1,9 +1,5 @@
-<ion-modal-view>
-	<ion-header-bar class="bar-stable bar-dark">
-		<h1 class="title">About CruiseMonkey</h1>
-		<button class="button button-icon icon ion-close-circled" ng-click="aboutModal.hide()"></button>
-	</ion-header-bar>
-	<ion-content has-header="true">
+<ion-view view-title="About CruiseMonkey" hide-back-button="true">
+	<ion-content has-header="true" scroll="true">
 		<div class="item item-text-wrap">
 			<h2>CruiseMonkey, version {{version}}.</h2>
 			<p>
@@ -36,8 +32,8 @@
 				<li>All of the beta testers and seamonkeys, for helping make sure this app works, and for making the cruise awesome!</li>
 			</ul>
 		</div>
-		<div class="item item-text-wrap">
-			<p>Copyright &copy; 2012-2015, <a ng-click="goToSite('http://www.raccoonfink.com/')">Benjamin Reed</a>. All Rights Reserved.</p>
-		</div>
 	</ion-content>
-</ion-modal-view>
+	<ion-footer-bar class="bar-dark">
+	<p class="title">Copyright &copy; 2012-2015, <a ng-click="goToSite('http://www.raccoonfink.com/')">Benjamin Reed</a>. All Rights Reserved.</p>
+	</ion-footer-bar>
+</ion-view>

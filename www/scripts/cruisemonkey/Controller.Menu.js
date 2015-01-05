@@ -3,33 +3,13 @@
 
 	angular.module('cruisemonkey.controllers.Menu', [
 	])
-	.controller('CMMenuCtrl', ['$log', '$rootScope', '$scope', '$ionicModal', 'UserService', function($log, $rootScope, $scope, $ionicModal, UserService) {
-		$log.info('CMMenuCtrl initializing.');
+	.controller('CMMenuCtrl', ['$rootScope', '$scope', '$ionicPopover', 'UserService', function($rootScope, $scope, $ionicPopover, UserService) {
+		console.info('CMMenuCtrl initializing.');
 
-		$ionicModal.fromTemplateUrl('template/about.html', {
-			scope: $scope,
-			animation: 'slide-in-up'
-		}).then(function(modal) {
-			$scope.aboutModal = modal;
-		});
-		$ionicModal.fromTemplateUrl('template/help.html', {
-			scope: $scope,
-			animation: 'slide-in-up'
-		}).then(function(modal) {
-			$scope.helpModal = modal;
-		});
-		$ionicModal.fromTemplateUrl('template/advanced.html', {
-			scope: $scope,
-			animation: 'slide-in-up'
-		}).then(function(modal) {
-			$scope.settingsModal = modal;
-		});
-		$ionicModal.fromTemplateUrl('template/login.html', {
-			scope: $scope,
-			animation: 'slide-in-up',
-			focusFirstInput: true
-		}).then(function(modal) {
-			$scope.loginModal = modal;
+		$ionicPopover.fromTemplateUrl('template/login.html', {
+			scope: $scope
+		}).then(function(popover) {
+			$scope.loginPopover = popover;
 		});
 
 		$scope.logOut = function() {
@@ -41,17 +21,14 @@
 
 		$scope.$on('cm.loggedIn', function(event) {
 			console.info('User "' + UserService.getUsername() + '" logged in.');
-			$scope.loginModal.hide();
+			$scope.loginPopover.hide();
 		});
 		$scope.$on('cm.loggedOut', function(event) {
 			console.info('User logged out.');
 		});
 
 		$scope.$on('$destroy', function() {
-			$scope.aboutModal.remove();
-			$scope.helpModal.remove();
-			$scope.settingsModal.remove();
-			$scope.loginModal.remove();
+			$scope.loginPopover.remove();
 		});
 	}]);
 }());

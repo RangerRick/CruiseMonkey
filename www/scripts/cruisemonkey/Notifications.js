@@ -9,10 +9,10 @@
 	  return !isNaN(parseFloat(n)) && isFinite(n);
 	}
 
-	angular.module('cruisemonkey.Twitarr.Notifications', [
+	angular.module('cruisemonkey.Notifications', [
 		'ngCordova'
 	])
-	.factory('Twitarr.Notifications', ['$q', '$rootScope', '$timeout', '$ionicPopup', '$cordovaDialogs', '$cordovaLocalNotification', '$cordovaToast', function($q, $rootScope, $timeout, $ionicPopup, $cordovaDialogs, $cordovaLocalNotification, $cordovaToast) {
+	.factory('Notifications', ['$q', '$rootScope', '$timeout', '$ionicPopup', '$cordovaDialogs', '$cordovaLocalNotification', '$cordovaToast', function($q, $rootScope, $timeout, $ionicPopup, $cordovaDialogs, $cordovaLocalNotification, $cordovaToast) {
 		console.info('Initializing notification service.');
 		var newEvents = [];
 		var newSeamails = [];
@@ -25,16 +25,16 @@
 		*/
 
 		$rootScope.$on('cruisemonkey.notify.newEvent', function(ev, newEvent) {
-			console.debug('Twitarr.Notifications: A new event was added to the database:',newEvent);
+			console.debug('Notifications: A new event was added to the database:',newEvent);
 			newEvents.push(newEvent);
 		});
 
 		$rootScope.$on('cruisemonkey.notify.newSeamail', function(ev, newSeamail) {
-			console.debug('Twitarr.Notifications: A new seamail message was received:',newSeamail);
+			console.debug('Notifications: A new seamail message was received:',newSeamail);
 		});
 
 		$rootScope.$on('cruisemonkey.notify.alert', function(ev, alert) {
-			console.debug('Twitarr.Notifications: Alert: ' + alert.message);
+			console.debug('Notifications: Alert: ' + alert.message);
 			if (isCordova) {
 				$cordovaDialogs.alert(alert.message, alert.title, alert.buttonName);
 			} else {
@@ -54,7 +54,7 @@
 
 		$rootScope.$on('cruisemonkey.notify.toast', function(ev, toast) {
 			var timeout = toast.timeout || 3000;
-			console.debug('Twitarr.Notifications: Toast(' + timeout + '): ' + toast.message);
+			console.debug('Notifications: Toast(' + timeout + '): ' + toast.message);
 			if (isCordova) {
 				var duration = 'short';
 				if (timeout >= 5000) {

@@ -218,6 +218,7 @@ $tabs-dark-text:               $rciYellow;
 
 ion-popover-view.fit {
   height: auto !important;
+	opacity: 1;
 }
 
 ion-popover-view.fit ion-content {
@@ -339,7 +340,6 @@ a.tab-item:hover {
 ion-side-menu {
 	.item.active {
 		background-color: $cmBabyBlue;
-		border-top: 2px solid $item-default-active-border;
 		border-bottom: 3px solid $item-default-active-border;
 		.item-content {
 			background-color: transparent;

@@ -11,28 +11,18 @@
   <ion-side-menu side="left" expose-aside-when="large">
     <header class="bar bar-header bar-stable bar-dark" menu-close>
       <h1 class="title yellow">CruiseMonkey</h1>
+			<button class="button button-icon icon icon-yellow ion-log-out" ng-if="user.loggedIn" ng-click="logOut()"></button>
+			<button class="button button-icon icon icon-yellow ion-log-in" ng-if="!user.loggedIn" ng-click="loginPopover.show()"></button>
     </header>
     <ion-content class="has-header" menu-close>
       <ion-list menu-close>
-				<a class="item" ui-sref="app.events"                            ui-sref-active="active">Events</a>
-				<a class="item" ui-sref="app.deck-plans"                        ui-sref-active="active">Deck Plans</a>
-				<a class="item" ui-sref="app.amenities"                         ui-sref-active="active">Amenities</a>
-				<a class="item" ui-sref="app.karaoke"                           ui-sref-active="active">Karaoke</a>
-				<!--
-				<a class="item" ui-sref="app.photos"                            ui-sref-active="active">Twit-Arr Pics</a>
-				<a class="item" ng-click="openSeamail()"                        ui-sref-active="active">
-					Seamail
-					<span class="badge badge-assertive" ng-if="seamailCount > 0">{{seamailCount}}</span>
-				</a>
-				-->
+				<a class="item" ui-sref="app.events"     ui-sref-active="active">Events</a>
+				<a class="item" ui-sref="app.deck-plans" ui-sref-active="active">Deck Plans</a>
+				<a class="item" ui-sref="app.amenities"  ui-sref-active="active">Amenities</a>
+				<a class="item" ui-sref="app.karaoke"    ui-sref-active="active">Karaoke</a>
+				<a class="item" ui-sref="app.about"      ui-sref-active="active">About</a>
+				<a class="item" ui-sref="app.settings"   ui-sref-active="active">Settings</a>
       </ion-list>
     </ion-content>
-		<ion-footer-bar class="bar-dark" menu-close>
-			<button class="button button-icon icon icon-yellow ion-information-circled" ng-click="aboutModal.show()"></button>
-			<button class="button button-icon icon icon-yellow ion-help-circled" ng-click="helpModal.show()"></button>
-			<button class="button button-icon icon icon-yellow ion-ios-settings-strong" ng-click="settingsModal.show()"></button>
-			<button class="button button-icon icon icon-yellow ion-log-out" ng-if="user.loggedIn" ng-click="logOut()"></button>
-			<button class="button button-icon icon icon-yellow ion-log-in" ng-if="!user.loggedIn" ng-click="loginModal.show()"></button>
-		</ion-footer-bar>
   </ion-side-menu>
 </ion-side-menus>

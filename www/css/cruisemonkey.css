@@ -7461,7 +7461,8 @@ a.button {
     display: none; } }
 
 ion-popover-view.fit {
-  height: auto !important; }
+  height: auto !important;
+  opacity: 1; }
 
 ion-popover-view.fit ion-content {
   position: relative !important; }
@@ -7552,7 +7553,6 @@ a.tab-item:hover {
 
 ion-side-menu .item.active {
   background-color: #ddf2ff;
-  border-top: 2px solid #061557;
   border-bottom: 3px solid #061557; }
   ion-side-menu .item.active .item-content {
     background-color: transparent; }
