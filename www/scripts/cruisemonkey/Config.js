@@ -5,13 +5,13 @@
 
 	angular.module('cruisemonkey.Config', [])
 	.value('config.logging.useStringAppender', false)
-	.value('config.database.root', 'https://jccc5.rylath.net/db/')
+	.value('config.database.root', 'http://cm.raccoonfink.com/db/')
 	.value('config.database.adapter', undefined)
 	.value('config.database.name', 'cruisemonkey-test')
 	.value('config.database.replicate', true)
 	.value('config.urls.openinchrome', false)
 	.value('config.notifications.timeout', 5000)
-	.value('config.twitarr.root', 'https://jccc5.rylath.net/')
+	.value('config.twitarr.root', 'http://cm.raccoonfink.com/')
 	.value('config.app.version', '***VERSION***')
 	.value('config.upgrade', true);
 
