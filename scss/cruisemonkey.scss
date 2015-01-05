@@ -288,6 +288,10 @@ a:hover {
 	text-decoration: none;
 }
 
+a.tab-item:hover {
+	color: inherit;
+}
+
 .bar-header {
 	h1.title {
 		/* font-size: 24px; */

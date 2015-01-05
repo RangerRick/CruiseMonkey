@@ -7512,6 +7512,9 @@ a:link, a:visited, a:hover {
   color: #000;
   text-decoration: none; }
 
+a.tab-item:hover {
+  color: inherit; }
+
 .bar-header h1.title {
   /* font-size: 24px; */
   font-weight: bolder; }
