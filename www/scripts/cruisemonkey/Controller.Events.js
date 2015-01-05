@@ -73,7 +73,7 @@
 		} else {
 			var ev = new CMEvent();
 			ev.setStart(moment());
-			ev.setEnd(ev.getStart().add('hours', 1));
+			ev.setEnd(ev.getStart().add(1, 'hours'));
 			ev.setUsername(UserService.getUsername());
 			ev.setPublic(true);
 			$scope.event = ev.toEditableBean();
@@ -519,7 +519,7 @@
 			var ev = new CMEvent();
 			ev.setStart(moment());
 			ev.setEnd(ev.getStart().clone());
-			ev.setEnd(ev.getEnd().add('hours', 1));
+			ev.setEnd(ev.getEnd().add(1, 'hours'));
 			ev.setUsername(UserService.getUsername());
 			ev.setPublic(true);
 
@@ -635,7 +635,7 @@
 			var ev = new CMEvent();
 			ev.setStart(moment());
 			ev.setEnd(ev.getStart().clone());
-			ev.setEnd(ev.getEnd().add('hours', 1));
+			ev.setEnd(ev.getEnd().add(1, 'hours'));
 			ev.setUsername(UserService.getUsername());
 			ev.setPublic(true);
 
@@ -656,7 +656,7 @@
 					var ev = new CMEvent();
 					ev.setStart(moment());
 					ev.setEnd(ev.getStart().clone());
-					ev.setEnd(ev.getEnd().add('hours', 1));
+					ev.setEnd(ev.getEnd().add(1, 'hours'));
 					ev.setUsername(UserService.getUsername());
 					ev.setPublic(true);
 
