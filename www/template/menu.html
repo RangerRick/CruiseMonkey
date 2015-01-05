@@ -12,7 +12,7 @@
     <header class="bar bar-header bar-stable bar-dark" menu-close>
       <h1 class="title yellow">CruiseMonkey</h1>
 			<button class="button button-icon icon icon-yellow ion-log-out" ng-if="user.loggedIn" ng-click="logOut()"></button>
-			<button class="button button-icon icon icon-yellow ion-log-in" ng-if="!user.loggedIn" ng-click="loginPopover.show()"></button>
+			<button class="button button-icon icon icon-yellow ion-log-in" ng-if="!user.loggedIn" ng-click="loginPopover.show($event)"></button>
     </header>
     <ion-content class="has-header" menu-close>
       <ion-list menu-close>

@@ -7,7 +7,8 @@
 		console.info('CMMenuCtrl initializing.');
 
 		$ionicPopover.fromTemplateUrl('template/login.html', {
-			scope: $scope
+			scope: $scope,
+			focusFirstInput: true
 		}).then(function(popover) {
 			$scope.loginPopover = popover;
 		});
