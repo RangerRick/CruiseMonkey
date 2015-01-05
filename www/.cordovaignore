@@ -1,0 +1,4 @@
+lib/angular
+lib/angular-animate
+lib/angular-mocks
+lib/angular-sanitize
