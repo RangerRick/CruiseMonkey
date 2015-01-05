@@ -42,8 +42,9 @@ $greySVG: "#{$imagePath}/entypo/grey/SVG";
 $rciNavyBlue: #061557;
 $rciLightBlue: #0073bb;
 $rciYellow: #febd11;
-
 $cmBabyBlue: #ddf2ff;
+$darkGrey: #444;
+$lightGrey: #ddd;
 
 $defaultFont: Nexa, "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
 $defaultLightFont: "Helvetica Neue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
@@ -90,10 +91,10 @@ $item-divider-color: $light;
 $menu-animation-speed: 100ms;
 
 $item-default-bg:                 $light;
-$item-default-border:             #ddd;
-$item-default-text:               #444;
+$item-default-border:             $lightGrey;
+$item-default-text:               $darkGrey;
 $item-default-active-bg:          $light;
-$item-default-active-border:      $dark;
+$item-default-active-border:      $lightGrey;
 $item-padding:                    10px;
 
 $button-small-font-size:          20px;
@@ -288,13 +289,13 @@ div.cm-notification {
 
 body {
   font-family: $defaultFont;
-	color: #444;
+	color: $darkGrey;
 }
 
 a:link,
 a:visited,
 a:hover {
-	color: #000;
+	color: black;
 	text-decoration: none;
 }
 
@@ -340,7 +341,7 @@ a.tab-item:hover {
 ion-side-menu {
 	.item.active {
 		background-color: $cmBabyBlue;
-		border-bottom: 3px solid $item-default-active-border;
+		/* border-bottom: 3px solid $item-default-active-border; */
 		.item-content {
 			background-color: transparent;
 		}

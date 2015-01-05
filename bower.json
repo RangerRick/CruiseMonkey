@@ -11,6 +11,7 @@
     "classlist": "*",
     "es5-shim": "*",
     "html5shiv": "*",
+    "ionicons": "*",
     "javascript-state-machine": "*",
     "modernizr": "*",
     "momentjs": "*",
