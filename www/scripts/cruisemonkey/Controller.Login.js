@@ -75,7 +75,7 @@
 			console.debug('Logging in to ' + url);
 
 			$http({
-				method: 'POST',
+				method: 'GET',
 				url: url,
 				params: {
 					username: user.username,
