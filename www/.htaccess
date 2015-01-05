@@ -1,5 +1,5 @@
 ExpiresActive On
-ExpiresDefault "access plus 60 seconds"
+ExpiresDefault "modification plus 60 seconds"
 
 ExpiresByType image/* "modification plus 30 days"
 
