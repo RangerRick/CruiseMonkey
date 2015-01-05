@@ -42,5 +42,6 @@ function puts(error, stdout, stderr) {
 }
 
 addList.forEach(function(plug) {
+	console.log('*** Installing plugin: ' + plug);
 	exec("cordova plugin add " + plug, puts);
 });

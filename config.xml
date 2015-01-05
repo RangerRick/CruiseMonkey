@@ -10,8 +10,37 @@
   <preference name="DisallowOverscroll" value="true"/>
   <preference name="BackupWebStorage" value="none"/>
   <preference name="AutoHideSplashScreen" value="false"/>
+  <preference name="StatusBarOverlaysWebView" value="true"/>
+  <preference name="StatusBarStyle" value="blacktranslucent"/>
+  <feature name="Clipboard">
+    <param name="ios-package" value="CDVClipboard" onload="true"/>
+  </feature>
+  <feature name="Console">
+    <param name="ios-package" value="CDVLogger" onload="true"/>
+  </feature>
+  <feature name="Device">
+    <param name="ios-package" value="CDVDevice" onload="true"/>
+  </feature>
+  <feature name="LocalNotification">
+    <param name="ios-package" value="APPLocalNotification" onload="true"/>
+    <param name="onload" value="true"/>
+  </feature>
+  <feature name="NetworkStatus">
+    <param name="ios-package" value="CDVConnection" onload="true"/>
+  </feature>
+  <feature name="Notification">
+    <param name="ios-package" value="CDVNotification" onload="true"/>
+  </feature>
+  <feature name="SplashScreen">
+    <param name="ios-package" value="CDVSplashScreen" onload="true"/>
+    <param name="onload" value="true"/>
+  </feature>
   <feature name="StatusBar">
     <param name="ios-package" value="CDVStatusBar" onload="true"/>
+    <param name="onload" value="true"/>
+  </feature>
+  <feature name="Toast">
+    <param name="ios-package" value="Toast" onload="true"/>
   </feature>
   <platform name="android">
     <icon src="resources/android/icon/drawable-ldpi-icon.png" density="ldpi"/>
