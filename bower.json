@@ -22,20 +22,17 @@
     "angular-bindonce": "~0.3.3",
     "es5-shim": "~4.0.3",
     "base64": "~0.3.0",
-    "offline": "~0.7.11",
     "pouchdb": "~3.2.0",
     "ngCordova": "~0.1.9-alpha",
     "javascript-state-machine": "~2.3.3",
     "modernizr": "~2.8.3",
-    "blob-util": "~1.1.1",
     "pouchdb-all-dbs": "~1.0.1",
-    "angular-pouchdb": "*",
     "angular-pouchdb-rangerrick": "git://github.com/RangerRick/angular-pouchdb.git#master",
     "pouchdb-collate": "~1.1.2",
     "delta-pouch": "~0.1.7",
     "pouchdb-persist": "~0.0.6",
-    "AngularJS-Toaster": "~0.4.9",
-    "angular-loading-bar": "~0.6.0"
+    "angular-loading-bar": "~0.6.0",
+    "toastr": "~2.1.0"
   },
   "devDependencies": {
     "jasmine.async": "~0.1.0",

@@ -107,6 +107,15 @@ $tabs-dark-bg:                 $dark;
 $tabs-dark-border:             $rciLightBlue;
 $tabs-dark-text:               $rciYellow;
 
+#toast-container > div {
+	opacity: 0.95;
+	-ms-filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=95);
+	filter: alpha(opacity=95);
+}
+.toast-info {
+	background-color: $rciLightBlue;
+}
+
 @import "www/lib/ionic/scss/ionic";
 
 .item-complex .item-content,

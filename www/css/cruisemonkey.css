@@ -28,6 +28,14 @@
 /* Ionic Overrides */
 /* $font-family-sans-serif: $defaultFont; */
 /* $font-family-light-sans-serif: $defaultLightFont; */
+#toast-container > div {
+  opacity: 0.95;
+  -ms-filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=95);
+  filter: alpha(opacity=95); }
+
+.toast-info {
+  background-color: #0073bb; }
+
 /*!
   Ionicons, v2.0.0
   Created by Ben Sperry for the Ionic Framework, http://ionicons.com/

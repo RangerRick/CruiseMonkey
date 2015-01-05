@@ -5,11 +5,10 @@
 
 	angular.module('cruisemonkey.Seamail', [
 		'angularLocalStorage',
-		'cruisemonkey.Notifications',
 		'cruisemonkey.Settings',
 		'cruisemonkey.User'
 	])
-	.factory('SeamailService', ['$q', '$rootScope', '$timeout', '$interval', '$http', 'SettingsService', 'NotificationService', 'UserService', 'storage', function($q, $rootScope, $timeout, $interval, $http, SettingsService, notifications, UserService, storage) {
+	.factory('SeamailService', ['$q', '$rootScope', '$timeout', '$interval', '$http', 'SettingsService', 'UserService', 'storage', function($q, $rootScope, $timeout, $interval, $http, SettingsService, UserService, storage) {
 		var interval = null;
 
 		storage.bind($rootScope, 'seamailCount', {
@@ -45,8 +44,9 @@
 					if (data.email_count > $rootScope.seamailCount) {
 						var message = 'You have ' + data.email_count + ' new messages in your Seamail inbox!';
 						if ($rootScope.foreground) {
-							notifications.status(message, 5000);
+							// notifications.status(message, 5000);
 						} else {
+							/*
 							if (ionic.Platform.isWebView()) {
 								notifications.alert(message, function() {
 									console.info('Acknowledged notification message: ' + message);
@@ -54,6 +54,7 @@
 							} else {
 								notifications.status(message, 5000);
 							}
+							*/
 						}
 					}
 					$rootScope.seamailCount = data.email_count;

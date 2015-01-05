@@ -12,7 +12,6 @@
 		'ui.router',
 		'angularLocalStorage',
 		'pasvaz.bindonce',
-		'chieffancypants.loadingBar',
 		'cruisemonkey.Config',
 		'cruisemonkey.controllers.About',
 		'cruisemonkey.controllers.Advanced',
@@ -27,14 +26,14 @@
 		'cruisemonkey.controllers.Navigation',
 		'cruisemonkey.controllers.Photos',
 		'cruisemonkey.Database',
-		'cruisemonkey.Notifications',
 		'cruisemonkey.Seamail',
 		'cruisemonkey.Settings',
 		'cruisemonkey.State',
+		'cruisemonkey.Twitarr.Notifications',
 		'cruisemonkey.Upgrades',
 		'cruisemonkey.User'
 	])
-	.config(['$stateProvider', '$urlRouterProvider', '$compileProvider', '$ionicConfigProvider', 'cfpLoadingBarProvider', function($stateProvider, $urlRouterProvider, $compileProvider, $ionicConfigProvider, cfpLoadingBarProvider) {
+	.config(['$stateProvider', '$urlRouterProvider', '$compileProvider', '$ionicConfigProvider', function($stateProvider, $urlRouterProvider, $compileProvider, $ionicConfigProvider) {
 		if (isMobile) {
 			ionic.Platform.fullScreen(false,true);
 		}
@@ -44,9 +43,6 @@
 
 		$ionicConfigProvider.views.maxCache(20);
 		$ionicConfigProvider.views.transition('none');
-
-		cfpLoadingBarProvider.includeSpinner = true;
-		cfpLoadingBarProvider.includeBar = false;
 
 		$urlRouterProvider.otherwise('/app/events/official');
 
@@ -168,7 +164,7 @@
 			})
 		;
 	}])
-	.run(['$rootScope', '$timeout', '$ionicPlatform', '$cordovaDialogs', '$cordovaSplashscreen', 'NotificationService', 'UserService', 'SettingsService', 'EventService', '_database', function($rootScope, $timeout, $ionicPlatform, $cordovaDialogs, $cordovaSplashscreen, NotificationService, UserService, SettingsService, EventService, database) {
+	.run(['Twitarr.Notifications', '$rootScope', '$timeout', '$ionicPlatform', '$cordovaDialogs', '$cordovaSplashscreen', 'UserService', 'SettingsService', 'EventService', '_database', function(notifications, $rootScope, $timeout, $ionicPlatform, $cordovaDialogs, $cordovaSplashscreen, UserService, SettingsService, EventService, database) {
 		console.debug('CruiseMonkey run() called.');
 
 		if (ionic.Platform.isWebView()) {

@@ -3,11 +3,10 @@
 
 	angular.module('cruisemonkey.controllers.Login', [
 		'cruisemonkey.Config',
-		'cruisemonkey.Notifications',
 		'cruisemonkey.Settings',
 		'cruisemonkey.User'
 	])
-	.controller('CMLoginCtrl', ['$scope', '$rootScope', '$location', '$http', 'UserService', 'SettingsService', 'NotificationService', function($scope, $rootScope, $location, $http, UserService, SettingsService, notifications) {
+	.controller('CMLoginCtrl', ['$scope', '$rootScope', '$location', '$http', 'UserService', 'SettingsService', function($scope, $rootScope, $location, $http, UserService, SettingsService) {
 		console.info('Initializing CMLoginCtrl');
 
 		$rootScope.user = UserService.get();
@@ -58,18 +57,15 @@
 			document.activeElement.blur();
 
 			if (!user.username) {
-				notifications.alert('No username! Something went wrong.');
 				return;
 			}
 			user.username = user.username.toLowerCase();
 
-			notifications.status('Logging in...', 10000);
-
 			var host = $location.host();
 			if (host === '0.0.0.0' || host === '127.0.0.1' || host === 'localhost') {
 				// special case, let Ben log in regardless  ;)
-				notifications.removeStatus('Logging in...');
-				notifications.status('YOU ARE MAGIC ADMIN', 5000);
+				// notifications.removeStatus('Logging in...');
+				// notifications.status('YOU ARE MAGIC ADMIN', 5000);
 				$scope.saveUser(user);
 				$rootScope.$broadcast('cm.loggedIn', user);
 				$location.path('/events/my');
@@ -93,21 +89,21 @@
 			})
 			.success(function(data, status, headers, config) {
 				console.debug('success:',data);
-				notifications.removeStatus('Logging in...');
+				// notifications.removeStatus('Logging in...');
 				user.key = data.key;
 				$scope.saveUser(user);
 				$rootScope.$broadcast('cm.loggedIn', user);
 				$location.path('/events/my');
 			})
 			.error(function(data, status, headers, config) {
-				notifications.removeStatus('Logging in...');
+				// notifications.removeStatus('Logging in...');
 				console.warn('failure!');
 				console.debug('url:',url);
 				console.debug('data:', data);
 				console.debug('status:',status);
 				console.debug('headers:',headers);
 				console.debug('config:',config);
-				notifications.alert('Failed to log in to twit-arr! You may need to import the twit-arr certificate in "Advanced" before login will work.');
+				// notifications.alert('Failed to log in to twit-arr! You may need to import the twit-arr certificate in "Advanced" before login will work.');
 			});
 
 			return;

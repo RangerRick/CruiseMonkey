@@ -60,8 +60,7 @@
 		'angularLocalStorage',
 		'pasvaz.bindonce',
 		'cruisemonkey.User',
-		'cruisemonkey.Events',
-		'cruisemonkey.Notifications'
+		'cruisemonkey.Events'
 	])
 	.controller('CMEditEventCtrl', ['$q', '$scope', '$rootScope', 'UserService', function($q, $scope, $rootScope, UserService) {
 		console.info('Initializing CMEditEventCtrl');
@@ -134,7 +133,7 @@
 	}])
 	.controller('CMEventsBarCtrl', ['$scope', '$timeout', 'storage', function($scope, $timeout, storage) {
 	}])
-	.controller('CMEventCtrl', ['$q', '$scope', '$rootScope', '$timeout', '$ionicScrollDelegate', '$ionicPopover', '$ionicModal', 'EventService', 'NotificationService', 'UserService', 'EventCache', function($q, $scope, $rootScope, $timeout, $ionicScrollDelegate, $ionicPopover, $ionicModal, EventService, notifications, UserService, EventCache) {
+	.controller('CMEventCtrl', ['$q', '$scope', '$rootScope', '$timeout', '$ionicScrollDelegate', '$ionicPopover', '$ionicModal', 'EventService', 'UserService', 'EventCache', function($q, $scope, $rootScope, $timeout, $ionicScrollDelegate, $ionicPopover, $ionicModal, EventService, UserService, EventCache) {
 		var withDays = function(events) {
 			var ret = [],
 				ev, i,
@@ -434,7 +433,9 @@
 						existing.setFavorite(fav);
 						*/
 					}, function() {
+						/*
 						notifications.alert('Failed to favorite ' + ev.getSummary() + '!');
+						*/
 						refreshEvents(true);
 						/*
 						existing.setFavorite(undefined);
@@ -600,7 +601,7 @@
 		});
 		*/
 	}])
-	.controller('OldCMEventCtrl', [ 'storage', '$scope', '$rootScope', '$interval', '$timeout', '$stateParams', '$location', '$q', '$ionicModal', '$ionicScrollDelegate', '$window', 'UserService', 'EventService', 'EventCache', 'NotificationService', function(storage, $scope, $rootScope, $interval, $timeout, $stateParams, $location, $q, $ionicModal, $ionicScrollDelegate, $window, UserService, EventService, EventCache, notifications) {
+	.controller('OldCMEventCtrl', [ 'storage', '$scope', '$rootScope', '$interval', '$timeout', '$stateParams', '$location', '$q', '$ionicModal', '$ionicScrollDelegate', '$window', 'UserService', 'EventService', 'EventCache', function(storage, $scope, $rootScope, $interval, $timeout, $stateParams, $location, $q, $ionicModal, $ionicScrollDelegate, $window, UserService, EventService, EventCache) {
 		console.info('Initializing CMEventCtrl');
 
 		/*

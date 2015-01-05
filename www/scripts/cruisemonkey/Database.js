@@ -15,16 +15,18 @@
 			_isLoading = true;
 
 			console.log('starting loading bar');
+			/*
 			$ionicLoading.show({
 				'template': 'Loading...',
 				'noBackdrop': true
 			});
+			*/
 		};
 
 		var stopLoadingBar = function() {
 			if (_isLoading) {
 				console.log('stopping loading bar');
-				$ionicLoading.hide();
+				//$ionicLoading.hide();
 				_isLoading = false;
 			}
 		};

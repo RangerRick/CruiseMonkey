@@ -65,6 +65,7 @@
 			});
 
 			if (replicate) {
+				$rootScope.$broadcast('cruisemonkey.notify.toast', {message: 'Synchronizing Events.'});
 				var remoteDb = _database.get(remoteDatabase);
 				eventsdb.continuouslyReplicateFrom(remoteDb);
 			}

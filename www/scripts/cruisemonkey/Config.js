@@ -5,13 +5,13 @@
 
 	angular.module('cruisemonkey.Config', [])
 	.value('config.logging.useStringAppender', false)
-	.value('config.database.root', 'http://192.168.211.30:5984/')
+	.value('config.database.root', 'https://jccc5.rylath.net/db/')
 	.value('config.database.adapter', undefined)
-	.value('config.database.name', 'cruisemonkey')
+	.value('config.database.name', 'cruisemonkey-test')
 	.value('config.database.replicate', true)
 	.value('config.urls.openinchrome', false)
 	.value('config.notifications.timeout', 5000)
-	.value('config.twitarr.root', 'https://twitarr.rylath.net/')
+	.value('config.twitarr.root', 'https://jccc5.rylath.net/')
 	.value('config.app.version', '***VERSION***')
 	.value('config.upgrade', true);
 
@@ -35,13 +35,13 @@
 			'storeName': 'cm.settings.onaboat'
 		});
 
-		var startCruise = moment('2014-02-23 00:00');
-		var endCruise   = moment('2014-03-02 00:00');
+		var startCruise = moment('2015-01-31 00:00');
+		var endCruise   = moment('2015-02-08 00:00');
 		var now = moment();
 		if (now.isAfter(startCruise) && now.isBefore(endCruise)) {
-			defaultValue['database.root']      = 'http://jccc4.rccl.com/db/';
+			defaultValue['database.root']      = 'http://jccc5.rccl.com/db/';
 			defaultValue['database.name']      = 'cruisemonkey';
-			defaultValue['twitarr.root']       = 'http://jccc4.rccl.com/';
+			defaultValue['twitarr.root']       = 'http://jccc5.rccl.com/';
 		}
 
 		storage.bind($rootScope, '_settings', {

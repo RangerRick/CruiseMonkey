@@ -24,10 +24,9 @@
 
 	angular.module('cruisemonkey.Upgrades', [
 		'angularLocalStorage',
-		'cruisemonkey.Config',
-		'cruisemonkey.Notifications'
+		'cruisemonkey.Config'
 	])
-	.factory('UpgradeService', ['$q', '$timeout', 'NotificationService', 'storage', 'config.app.version', 'config.upgrade', function($q, $timeout, notifications, storage, version, shouldUpgrade) {
+	.factory('UpgradeService', ['$q', '$timeout', 'storage', 'config.app.version', 'config.upgrade', function($q, $timeout, storage, version, shouldUpgrade) {
 		var previousVersion = storage.get('cm.version');
 		if (!previousVersion) {
 			previousVersion = '0.0.0';
@@ -74,11 +73,13 @@
 					}
 				});
 				if (performed.length > 0 && previousVersion !== '0.0.0') {
+					/*
 					var notif = "Upgrade to " + currentVersion + " complete:<br/>";
 					angular.forEach(performed, function(action) {
 						notif += "* " + action.affected + "<br/>";
 					});
 					notifications.status(notif, 5000);
+					*/
 				}
 				storage.set('cm.version', currentVersion);
 				$q.all(deferred)['finally'](function() {
