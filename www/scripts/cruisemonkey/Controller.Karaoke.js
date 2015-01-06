@@ -154,7 +154,7 @@
 		});
 
 		storage.bind($scope, 'searchString', {
-			'storeName': 'cm.karaoke-search'
+			'storeName': 'cruisemonkey.karaoke-search'
 		});
 
 		$scope.searchUpdated = function(searchString) {

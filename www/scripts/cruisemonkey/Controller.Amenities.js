@@ -38,7 +38,7 @@
 		};
 
 		storage.bind($scope, 'searchString', {
-			'storeName': 'cm.amenities'
+			'storeName': 'cruisemonkey.search.amenities'
 		});
 		console.log('$scope.searchString: ' + $scope.searchString);
 

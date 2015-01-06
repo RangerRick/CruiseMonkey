@@ -579,95 +579,12 @@
 		$scope.$on('$ionicView.afterEnter', function(ev, info) {
 			$scope.eventTitle = ($scope.eventType === 'my'? 'Mine' : $scope.eventType.capitalize());
 		});
-		$scope.$on('cm.database.syncComplete', function(ev, db) {
+		$scope.$on('cruisemonkey.database.syncComplete', function(ev, db) {
 			console.log('CMEventCtrl: Sync complete: ' + db.name);
 			refreshDelayed(100);
 		});
-		$rootScope.$on('cm.database.change', function(ev, db, doc) {
+		$rootScope.$on('cruisemonkey.database.change', function(ev, db, doc) {
 			refreshDelayed(1000);
 		});
-
-		/*
-		$scope.$on('$ionicView.enter', function(ev, info) {
-			console.log('CMEventCtrl.enter:', info);
-			var eventType = info.stateName.replace('app.events.', '');
-			$scope.eventTitle = 'Events: ' + (eventType == 'my'? 'Mine' : eventType.capitalize());
-		});
-		$scope.$on('$ionicView.leave', function(ev, info) {
-			console.log('CMEventCtrl.leave:', info);
-		});
-		$scope.$on('$ionicView.unloaded', function(ev, info) {
-			console.log('CMEventCtrl.unloaded:', info);
-		});
-		*/
-	}])
-	.controller('OldCMEventCtrl', [ 'storage', '$scope', '$rootScope', '$interval', '$timeout', '$stateParams', '$location', '$q', '$ionicModal', '$ionicScrollDelegate', '$window', 'UserService', 'EventService', 'EventCache', function(storage, $scope, $rootScope, $interval, $timeout, $stateParams, $location, $q, $ionicModal, $ionicScrollDelegate, $window, UserService, EventService, EventCache) {
-		console.log('Initializing CMEventCtrl');
-
-		/*
-		var message = 'Updating ' + eventType.capitalize() + ' events...';
-		var scrolled = false;
-
-		storage.bind($scope, 'searchString', {
-			'storeName': 'cm.event.' + eventType
-		});
-		console.log('$scope.searchString: ' + $scope.searchString);
-
-		$scope.$on('cm.main.database-initialized', function() {
-			console.log('CMEventCtrl: Database initialized.');
-			$timeout(function() {
-				refreshEvents(true);
-			}, 100);
-		});
-
-		$scope.$on('$stateChangeStart', function(event, toState, toParams, fromState, fromParams){
-			if ($scope.modal) {
-				$scope.modal.remove();
-			}
-		});
-
-		$scope.activateModal = function(e) {
-			if (e) {
-				e.preventDefault();
-				e.stopPropagation();
-			}
-
-			var ev = new CMEvent();
-			ev.setStart(moment());
-			ev.setEnd(ev.getStart().clone());
-			ev.setEnd(ev.getEnd().add(1, 'hours'));
-			ev.setUsername(UserService.getUsername());
-			ev.setPublic(true);
-
-			$scope.event = ev;
-			$scope.eventData = ev.toEditableBean();
-
-			$scope.modal.show();
-		};
-
-		if (UserService.getUsername() && UserService.getUsername() !== '') {
-			$rootScope.rightButtons.push({
-				type: 'button-clear',
-				content: '<i class="icon icon-cm active ion-ios7-plus"></i>',
-				tap: function(e) {
-					e.preventDefault();
-					e.stopPropagation();
-
-					var ev = new CMEvent();
-					ev.setStart(moment());
-					ev.setEnd(ev.getStart().clone());
-					ev.setEnd(ev.getEnd().add(1, 'hours'));
-					ev.setUsername(UserService.getUsername());
-					ev.setPublic(true);
-
-					$scope.event = ev;
-					$scope.eventData = ev.toEditableBean();
-
-					$scope.modal.show();
-				}
-			});
-		}
-		
-		*/
 	}]);
 }());

@@ -20,29 +20,29 @@
 	.factory('EventService', ['$q', '$rootScope', '$timeout', '$location', 'uuid4', '_database', 'UserService', 'SettingsService', function($q, $rootScope, $timeout, $location, uuid4, _database, UserService, SettingsService) {
 		console.log('EventService: Initializing EventService.');
 
-		$rootScope.$on('cm.persist.connect', function(ev, db) {
+		$rootScope.$on('cruisemonkey.persist.connect', function(ev, db) {
 			console.log('persistence connected: ' + db.name);
 		});
-		$rootScope.$on('cm.persist.disconnect', function(ev, db) {
+		$rootScope.$on('cruisemonkey.persist.disconnect', function(ev, db) {
 			console.log('persistence disconnected: ' + db.name);
 		});
-		$rootScope.$on('cm.database.uptodate', function(ev, db) {
+		$rootScope.$on('cruisemonkey.database.uptodate', function(ev, db) {
 			console.log('persistence up to date: ' + db.name);
 		});
-		$rootScope.$on('cm.database.complete', function(ev, db) {
+		$rootScope.$on('cruisemonkey.database.complete', function(ev, db) {
 			console.log('persistence complete: ', db.name);
 		});
 		/*
-		$rootScope.$on('cm.database.change', function(ev, db, doc) {
+		$rootScope.$on('cruisemonkey.database.change', function(ev, db, doc) {
 			console.log('persistence changed: ' + db.name + ': ' + doc.id);
 		});
-		$rootScope.$on('cm.database.create', function(ev, db, doc) {
+		$rootScope.$on('cruisemonkey.database.create', function(ev, db, doc) {
 			console.log('persistence created an object: ' + db.name + ': ' + doc.id);
 		});
-		$rootScope.$on('cm.database.update', function(ev, db, doc) {
+		$rootScope.$on('cruisemonkey.database.update', function(ev, db, doc) {
 			console.log('persistence updated an object: ' + db.name + ': ' + doc.id);
 		});
-		$rootScope.$on('cm.database.delete', function(ev, db, doc) {
+		$rootScope.$on('cruisemonkey.database.delete', function(ev, db, doc) {
 			console.log('persistence deleted an object: ' + db.name + ': ' + doc.id);
 		});
 		*/

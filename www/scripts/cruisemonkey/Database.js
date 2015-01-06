@@ -59,7 +59,7 @@
 			var events = [ 'complete', 'uptodate', 'change', 'error', 'create', 'update', 'delete' ];
 			for (var i=0; i < events.length; i++) {
 				var ev = events[i];
-				self.db.on(ev, makeEventHandler('cm.database.' + ev, self));
+				self.db.on(ev, makeEventHandler('cruisemonkey.database.' + ev, self));
 			}
 		};
 
@@ -382,7 +382,7 @@
 				var events = [ 'connect', 'disconnect' ];
 				for (var i=0; i < events.length; i++) {
 					var ev = events[i];
-					to._persist.on(ev, makeEventHandler('cm.persist.' + ev, to));
+					to._persist.on(ev, makeEventHandler('cruisemonkey.persist.' + ev, to));
 				}
 
 				to._persist.start();
@@ -394,7 +394,7 @@
 				to.syncDesignDocs(from).then(function() {
 					to.updateFrom(from).then(function() {
 						console.log('Database.continuouslyReplicateFrom: finished initial update.');
-						$rootScope.$broadcast('cm.database.syncComplete', to);
+						$rootScope.$broadcast('cruisemonkey.database.syncComplete', to);
 						deferred.resolve(true);
 						startPersist(sequenceNum);
 					}, function(err) {
@@ -433,7 +433,7 @@
 					to.updateFrom(from).then(function(res) {
 						deferred.resolve(true);
 						$rootScope.$evalAsync(function() {
-							$rootScope.$broadcast('cm.database.syncComplete', to);
+							$rootScope.$broadcast('cruisemonkey.database.syncComplete', to);
 						});
 					}, function(err) {
 						console.log('failed to update from ' + from.name,err);
@@ -443,7 +443,7 @@
 					to.replicateFrom(from).then(function(res) {
 						deferred.resolve(true);
 						$rootScope.$evalAsync(function() {
-							$rootScope.$broadcast('cm.database.syncComplete');
+							$rootScope.$broadcast('cruisemonkey.database.syncComplete', to);
 						});
 					}, function(err) {
 						console.log('failed to replicate from ' + from.name,err);

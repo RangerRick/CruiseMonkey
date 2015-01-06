@@ -11,7 +11,7 @@
 
 		storage.bind($scope, 'deck', {
 			'defaultValue': 2,
-			'storeName': 'cm.deck'
+			'storeName': 'cruisemonkey.deck'
 		});
 
 		if ($scope.deck !== undefined && isNaN($scope.deck)) {
