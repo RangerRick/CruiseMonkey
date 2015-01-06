@@ -7,6 +7,7 @@
 	.controller('CMAboutCtrl', ['$scope', '$rootScope', 'EventService', 'config.app.version', 'config.app.build', function($scope, $rootScope, EventService, version, build) {
 		console.log('Initializing CMAboutCtrl');
 		$scope.version = version;
+		$scope.build = build;
 
 		$scope.goToSite = function(site) {
 			$rootScope.openUrl(site, '_system');
