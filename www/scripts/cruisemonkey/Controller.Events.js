@@ -131,7 +131,13 @@
 			}
 		};
 	}])
-	.controller('CMEventsBarCtrl', ['$scope', '$timeout', '$state', 'storage', function($scope, $timeout, $state, storage) {
+	.controller('CMEventsBarCtrl', ['$scope', '$timeout', '$state', 'UserService', 'storage', function($scope, $timeout, $state, UserService, storage) {
+		$scope.loggedIn = UserService.get().loggedIn;
+
+		$scope.$on('cruisemonkey.user.updated', function(ev, newUser) {
+			$scope.loggedIn = newUser.loggedIn;
+		});
+
 		$scope.$on('$ionicView.beforeEnter', function(ev, info) {
 			if (info.stateName === 'app.events') {
 				var newState = 'app.events.official';
