@@ -6,8 +6,8 @@ CruiseMonkey is an HTML5 app for use on [JoCo Cruise Crazy](http://jococruisecra
 Requirements
 ============
 
-* iOS: Any device supporting iOS 6 or 7
-* Android: Any device supporting Android 2.3.3 or higher
+* iOS: Any device supporting iOS 6 or higher
+* Android: Any device supporting Android 4.0.3 or higher
 * Web: A browser capable of modern HTML5
 
 Download
@@ -22,34 +22,15 @@ The latest release version of CruiseMonkey is available in the following app sto
 Twit-Arr Has Changed!
 =====================
 
-Please note that the Twit-Arr server is completely new this year, and user accounts from last year will no longer work with it.  Before you can log in to CruiseMonkey, you will have to make an account [on the new Twit-Arr server first!](https://twitarr.rylath.net/)
+Please note that the Twit-Arr server is completely new this year, and user accounts from last year will no longer work with it.  Before you can log in to CruiseMonkey, you will have to make an account [on the new Twit-Arr server first!](https://jccc5.rylath.net/)
 
-If you have any issues with the twit-arr server, I can't really help you.  Please ask Kvort\_the\_Duck on the JoCo forums, or post to his [twit-arr thread here](http://www.jonathancoulton.com/forums/index.php?p=/discussion/1940/twitt-arrrr).
-
-Logging In to Twit-Arr
-======================
-
-Because Twit-Arr is using a self-signed certificate, you must import it into your device.  To do so, launch CruiseMonkey, go to "Advanced" and then click the "Import" button.
+If you have any issues with the twit-arr server, I can't really help you.  Please ask Kvort\_the\_Duck on the JoCo forums, or post to the [twit-arr beta thread][].  Or, feel free to join us in the [#twitarr IRC channel on freenode: irc.freenode.net](irc://irc.freenode.net/twitarr).
 
 Beta Testing
 ============
 
-Beta iOS and Android releases are available through [TestFlight](http://testflightapp.com).
-
-To be notified of beta downloads, do the following:
-
-1. Sign up at [testflightapp.com](http://testflightapp.com).
-2. Register your device by browsing to [testflightapp.com](http://testflightapp.com) directly on your mobile device.  It will prompt for a login (if you haven't already) and then register a certificate profile with your device which allows pushing beta releases to your device.
-3. Go to the [CruiseMonkey beta recruitment page](http://tflig.ht/ytVfRp) and apply as a tester.
-
-Returning Beta Testers on iOS - ACTION REQUIRED!
-------------------------------------------------
-
-Apple only allows a certain number of approved devices to be built into test binaries.  This means that I have a limited number of test slots available.  Rather than adding to last year's beta list, I'm starting over this year, since it's possible that some of last year's testers have bought or gotten rid of devices or will not be attending JCCC4.
-
-If you have beta tested previous CruiseMonkey releases, **please email me at [testflight@raccoonfink.com](mailto:testflight@raccoonfink.com)** to let me know your TestFlight account email address and which device(s) are still active and that you would like to test again this year.
-
-**ALSO: Please PLEASE remove any old devices you might have put in TestFlight that you aren't using any more, and add your current devices.**
+* Android (Google Play): [follow this link](https://play.google.com/apps/testing/com.raccoonfink.cruisemonkey) to opt-in to alpha/beta testing.
+* iOS: [email me](mailto:cruisemonkey@raccoonfink.com) and I will send you an invite for iOS testing.  The limit for testers is now 1000 users, so there is no worry about having too many this year!
 
 Bugs and Enhancement Requests
 =============================
@@ -57,15 +38,15 @@ Bugs and Enhancement Requests
 Opening an Issue (Bug or Enhancement)
 -------------------------------------
 
-* Twit-Arr: If you're having account issues, please speak with Kvort\_the\_Duck on the JoCo forums, or post to his [twit-arr thread here](http://www.jonathancoulton.com/forums/index.php?p=/discussion/1940/twitt-arrrr).  If you have found a bug or have an enhancement request for twit-arr, report it at the [Twit-Arr github page](https://github.com/walkeriniraq/twitarr/issues).  You will need to create a GitHub account to do so.
+* Twit-Arr: If you're having account issues or other general questions, please speak with Kvort\_the\_Duck on the JoCo forums, or post to his [twit-arr beta thread][].  If you have found a bug or have an enhancement request for twit-arr, report it at the [Twit-Arr github page](https://github.com/walkeriniraq/twitarr/issues).  You will need to create a GitHub account to do so.
 * CruiseMonkey: Bugs and enhancement requests can be reported at the [CruiseMonkey github page](https://github.com/RangerRick/CruiseMonkey/issues).  You will need to create a GitHub account to do so.
 
 Contact
 =======
 
 * E-Mail: You can reach me (Benjamin Reed) at [testflight@raccoonfink.com](mailto:testflight@raccoonfink.com).
-* IRC: Join me in [#SeaMonkeyIT on FreeNode: irc.freenode.net](irc://irc.freenode.net/SeaMonkeyIT).
-* Forums: You can also discuss CruiseMonkey on the [JoCo Forums](http://www.jonathancoulton.com/forums/index.php?p=/discussion/2264/cruisemonkey-4).
+* IRC: Join me in [#twitarr on FreeNode: irc.freenode.net](irc://irc.freenode.net/twitarr).
+* Forums: You can also discuss CruiseMonkey on the [JoCo Forums](http://www.jonathancoulton.com/forums/index.php?p=/discussion/2381/cruisemonkey-5).
 
 Licensing
 =========
@@ -75,6 +56,16 @@ CruiseMonkey by Benjamin Reed is licensed under the [Creative Commons Attributio
 
 Release Notes
 =============
+
+4.0.84
+------
+* complete overhaul, too many changes to count :)
+
+Known issues:
+
+* first-time click on some interface items (log in, text entry in "add an event") is slow.
+* karaoke list scroll is slow
+* twit-arr functionality (other than login) is missing
 
 4.0.80
 ------
@@ -299,3 +290,4 @@ Release Notes
 
 * initial release to testflight for users
 
+[twit-arr beta thread]: http://www.jonathancoulton.com/forums/index.php?p=/discussion/2378/twitarr-beta
