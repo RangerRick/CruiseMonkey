@@ -24,11 +24,11 @@
 						<span class="input-label">Twit-Arr URL</span>
 						<input type="url" name="twitarrRoot" ng-model="settings.twitarrRoot" />
 					</label>
-					<div class="item item-checkbox" style="height: 50px" ng-if="isIos">
-						<label class="checkbox" style="padding-top: 10px; padding-bottom: 10px; height: 50px">
+					<div class="item item-checkbox" ng-if="isIos">
+						<label class="checkbox">
 							<input type="checkbox" name="openInChrome" ng-model="settings.openInChrome" />
-							<span style="padding: 10px">Open URLs in Chrome?</span>
 						</label>
+						<span style="padding: 10px">Open URLs in Chrome?</span>
 					</div>
 					<button class="button button-full button-positive" ng-click="saveSettings()" ng-disabled="form.$invalid || isUnchanged()">Save</button>
 					<button class="button button-full button-assertive" ng-click="resetSettings()" ng-disabled="form.$invalid">Reset to Defaults</button>

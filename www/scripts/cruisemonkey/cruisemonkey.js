@@ -156,8 +156,20 @@
 		;
 	}])
 	/* EventService & Notifications are here just to make sure they initializes early */
-	.run(['$cordovaSplashscreen', 'EventService', 'Notifications', 'UpgradeService', function($cordovaSplashscreen, EventService, Notifications, UpgradeService) {
+	.run(['$rootScope', '$window', '$cordovaSplashscreen', 'EventService', 'Notifications', 'UpgradeService', function($rootScope, $window, $cordovaSplashscreen, EventService, Notifications, UpgradeService) {
 		console.log('CruiseMonkey run() called.');
+
+		$rootScope.openUrl = function(url, target) {
+			if (ionic.Platform.isIOS()) {
+				var oic = SettingsService.getOpenInChrome();
+				if (oic) {
+					if (url.startsWith('http')) {
+						url = url.replace(/^http/, 'googlechrome');
+					}
+				}
+			}
+			$window.open(url, target);
+		};
 
 		if (ionic.Platform.isWebView()) {
 			$cordovaSplashscreen.hide();

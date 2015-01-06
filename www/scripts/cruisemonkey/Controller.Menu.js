@@ -8,14 +8,19 @@
 
 		/** set up the user in the scope **/
 		$scope.user = UserService.get();
+		var loginPopover;
 
 		$scope.$on('cruisemonkey.user.updated', function(ev, newUser, oldUser) {
 			if (newUser.loggedIn && !oldUser.loggedIn) {
 				console.log('User "' + newUser.username + '" logged in.');
 			}
 			$scope.user = newUser;
-			$scope.loginPopover.hide();
+			loginPopover.hide();
 		});
+
+		$scope.logIn = function($event) {
+			loginPopover.show($event);
+		};
 
 		$scope.logOut = function() {
 			console.log('Logging out.');
@@ -26,11 +31,11 @@
 			scope: $scope,
 			focusFirstInput: true
 		}).then(function(popover) {
-			$scope.loginPopover = popover;
+			loginPopover = popover;
 		});
 
 		$scope.$on('$destroy', function() {
-			$scope.loginPopover.remove();
+			loginPopover.remove();
 		});
 	}]);
 }());

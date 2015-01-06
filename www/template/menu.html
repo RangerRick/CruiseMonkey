@@ -1,16 +1,39 @@
+<script type="text/ng-template" id="template/login.html">
+  <ion-popover-view ng-class="'fit'">
+    <ion-content scroll="false" ng-controller="CMLoginCtrl">
+      <div class="item bar bar-dark">
+        <h1 class="title">Log In</h1>
+      </div>
+      <form name="loginForm" class="list login-form" novalidate>
+        <label class="item item-input">
+          <span class="input-label">Username</span>
+          <input id="loginUsername" type="text" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="off" ng-model="user.username" name="username" autofocus="autofocus" required />
+        </label>
+        <label class="item item-input">
+          <span class="input-label">Password</span>
+          <input id="loginPassword" type="password" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="off" ng-model="user.password" name="password" required />
+        </label>
+        <div class="item item-text-wrap">
+          Need a Twit-arr account? <a ng-click="goToTwitarr()" style="text-decoration:underline;cursor:pointer">Create one here.</a>
+        </div>
+        <button class="button button-full button-positive" ng-click="logIn(user)" ng-disabled="form.$invalid || !canSubmit(user)" style="margin-top: 0; margin-bottom: 0">Log In</button>
+      </form>
+    </ion-content>
+  </ion-popover-view>
+</script>
 <ion-side-menus>
   <ion-side-menu-content edge-drag-threshold="true" drag-content="true">
     <ion-nav-view name="menuContent" animation="no-animation"></ion-nav-view>
   </ion-side-menu-content>
 
   <ion-side-menu side="left" expose-aside-when="large">
-    <header class="bar bar-header bar-stable bar-dark" menu-close>
+    <header class="bar bar-header bar-stable bar-dark">
       <h1 class="title yellow">CruiseMonkey</h1>
 			<button class="button button-icon icon icon-yellow ion-log-out" ng-if="user.loggedIn" ng-click="logOut()"></button>
-			<button class="button button-icon icon icon-yellow ion-log-in" ng-if="!user.loggedIn" ng-click="loginPopover.show($event)"></button>
+			<button class="button button-icon icon icon-yellow ion-log-in" ng-if="!user.loggedIn" ng-click="logIn()"></button>
     </header>
     <ion-content class="has-header" menu-close>
-      <ion-list menu-close>
+      <ion-list>
 				<a class="item" ui-sref="app.events"     ui-sref-active="active">Events</a>
 				<a class="item" ui-sref="app.deck-plans" ui-sref-active="active">Deck Plans</a>
 				<a class="item" ui-sref="app.amenities"  ui-sref-active="active">Amenities</a>

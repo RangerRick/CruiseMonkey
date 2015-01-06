@@ -15,7 +15,7 @@
 
 		$scope.goToTwitarr = function() {
 			var twitarrRoot = SettingsService.getTwitarrRoot();
-			$rootScope.openUrl(twitarrRoot, '_system');
+			$rootScope.openUrl(twitarrRoot + 'user/new', '_system');
 		};
 
 		$scope.canSubmit = function(newUser) {
