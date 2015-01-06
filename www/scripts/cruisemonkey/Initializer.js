@@ -15,6 +15,7 @@
 
 			// Hide the accessory bar by default (remove this to show the accessory bar above the keyboard or form inputs)
 			$cordovaKeyboard.hideAccessoryBar(true);
+			$cordovaKeyboard.disableScroll(true);
 
 			$timeout(function() {
 				// config.xml says we have light content because of the splash screen, now the title bar is dark so switch

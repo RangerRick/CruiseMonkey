@@ -3,7 +3,7 @@
 
 	angular.module('cruisemonkey.controllers.Menu', [
 	])
-	.controller('CMMenuCtrl', ['$rootScope', '$scope', '$ionicPopover', 'UserService', function($rootScope, $scope, $ionicPopover, UserService) {
+	.controller('CMMenuCtrl', ['$scope', '$templateCache', '$ionicPopover', '$cordovaKeyboard', 'UserService', function($scope, $templateCache, $ionicPopover, $cordovaKeyboard, UserService) {
 		console.log('CMMenuCtrl initializing.');
 
 		/** set up the user in the scope **/
@@ -16,6 +16,9 @@
 			}
 			$scope.user = newUser;
 			loginPopover.hide();
+			if (ionic.Platform.isWebView()) {
+				$cordovaKeyboard.hide();
+			}
 		});
 
 		$scope.logIn = function($event) {

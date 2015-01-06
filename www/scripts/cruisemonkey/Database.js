@@ -76,7 +76,9 @@
 			var self = this;
 
 			self.stopReplication();
-			self.db.removeAllListeners();
+			if (self.db) {
+				self.db.removeAllListeners();
+			}
 
 			var resolveDeleted = function() {
 				deferred.resolve({ok:true});

@@ -27,7 +27,7 @@
   </ion-side-menu-content>
 
   <ion-side-menu side="left" expose-aside-when="large">
-    <header class="bar bar-header bar-stable bar-dark">
+    <header class="bar bar-header bar-stable bar-dark" menu-close>
       <h1 class="title yellow">CruiseMonkey</h1>
 			<button class="button button-icon icon icon-yellow ion-log-out" ng-if="user.loggedIn" ng-click="logOut()"></button>
 			<button class="button button-icon icon icon-yellow ion-log-in" ng-if="!user.loggedIn" ng-click="logIn()"></button>

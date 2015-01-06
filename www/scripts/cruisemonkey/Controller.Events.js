@@ -152,7 +152,7 @@
 			}
 		});
 	}])
-	.controller('CMEventCtrl', ['$q', '$scope', '$rootScope', '$timeout', '$ionicScrollDelegate', '$ionicPopover', '$ionicModal', 'EventService', 'UserService', 'EventCache', function($q, $scope, $rootScope, $timeout, $ionicScrollDelegate, $ionicPopover, $ionicModal, EventService, UserService, EventCache) {
+	.controller('CMEventCtrl', ['$q', '$scope', '$rootScope', '$timeout', '$cordovaKeyboard', '$ionicScrollDelegate', '$ionicPopover', '$ionicModal', 'EventService', 'UserService', 'EventCache', function($q, $scope, $rootScope, $timeout, $cordovaKeyboard, $ionicScrollDelegate, $ionicPopover, $ionicModal, EventService, UserService, EventCache) {
 		var withDays = function(events) {
 			var ret = [],
 				ev, i,
@@ -480,11 +480,12 @@
 			return user && user.username && user.loggedIn;
 		};
 
-		$ionicModal.fromTemplateUrl('template/event-edit.html', function(modal) {
-			$scope.modal = modal;
-		}, {
+		$ionicModal.fromTemplateUrl('template/event-edit.html', {
 			scope: $scope,
-			animation: 'slide-in-up'
+			animation: 'slide-in-up',
+			focusFirstInput: true
+		}).then(function(modal) {
+			$scope.modal = modal;
 		});
 
 		$scope.cancelModal = function(e) {
@@ -495,6 +496,9 @@
 			$scope.event = undefined;
 			$scope.eventData = undefined;
 			$scope.modal.hide();
+			if (ionic.Platform.isWebView()) {
+				$cordovaKeyboard.hide();
+			}
 		};
 
 		$scope.saveModal = function(data) {
@@ -505,6 +509,9 @@
 			if (!username) {
 				console.log('No username!');
 				$scope.modal.hide();
+				if (ionic.Platform.isWebView()) {
+					$cordovaKeyboard.hide();
+				}
 				return;
 			}
 
