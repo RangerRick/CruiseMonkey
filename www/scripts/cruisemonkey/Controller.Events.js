@@ -167,15 +167,15 @@
 				var filteredEvents = [], ev, i;
 				var user = UserService.get();
 				switch ($scope.eventType) {
-					case 'official': {
+					case 'official':
 						for (i=0; i < events.length; i++) {
 							ev = events[i];
 							if (ev.getUsername() === 'official') {
 								filteredEvents.push(ev);
 							}
 						}
-					}; break;
-					case 'unofficial': {
+						break;
+					case 'unofficial':
 						for (i=0; i < events.length; i++) {
 							ev = events[i];
 							if (ev.isPublic() && ev.getUsername() !== 'official') {
@@ -184,8 +184,8 @@
 								filteredEvents.push(ev);
 							}
 						}
-					}; break;
-					case 'all': {
+						break;
+					case 'all':
 						for (i=0; i < events.length; i++) {
 							ev = events[i];
 							if (ev.isPublic()) {
@@ -194,8 +194,8 @@
 								filteredEvents.push(ev);
 							}
 						}
-					}; break;
-					case 'my': {
+						break;
+					case 'my':
 						for (i=0; i < events.length; i++) {
 							ev = events[i];
 							if (ev.getUsername() === user.username) {
@@ -204,7 +204,7 @@
 								filteredEvents.push(ev);
 							}
 						}
-					}; break;
+						break;
 				}
 
 				filteredEvents.sort(sortEvent);

@@ -50,7 +50,7 @@
 		var createEventsDb = function() {
 			var databaseName = SettingsService.getDatabaseName();
 			var remoteDatabase = SettingsService.getRemoteDatabaseUrl();
-			var replicate = SettingsService.getDatabaseReplicate();
+			var replicate = SettingsService.shouldDatabaseReplicate();
 
 			var eventsdbName = replicate? databaseName + '.events' : remoteDatabase;
 
@@ -83,7 +83,7 @@
 
 			var databaseName = SettingsService.getDatabaseName();
 			var remoteDatabase = SettingsService.getRemoteDatabaseUrl();
-			var replicate = SettingsService.getDatabaseReplicate();
+			var replicate = SettingsService.shouldDatabaseReplicate();
 
 			var favoritesdbName = replicate? databaseName + '.favorites' : remoteDatabase;
 

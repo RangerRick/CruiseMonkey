@@ -36,16 +36,7 @@
 
 		$scope.saveSettings = function() {
 			console.info('saving=', $scope.settings);
-			var before = angular.copy(SettingsService.getSettings());
-			var after = angular.copy($scope.settings);
-			SettingsService.setDatabaseRoot($scope.settings.databaseRoot);
-			SettingsService.setDatabaseName($scope.settings.databaseName);
-			SettingsService.setOpenInChrome($scope.settings.openInChrome);
-			SettingsService.setTwitarrRoot($scope.settings.twitarrRoot);
-			$rootScope.$broadcast('cm.settings-changed', {
-				'before': before,
-				'after': after
-			});
+			SettingsService.saveSettings($scope.settings);
 		};
 
 		$scope.resetDatabase = function() {

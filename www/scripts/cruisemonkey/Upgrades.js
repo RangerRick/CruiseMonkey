@@ -27,7 +27,7 @@
 		'cruisemonkey.Config'
 	])
 	.factory('UpgradeService', ['$q', '$timeout', 'storage', 'config.app.version', 'config.upgrade', function($q, $timeout, storage, version, shouldUpgrade) {
-		var previousVersion = storage.get('cm.version');
+		var previousVersion = storage.get('cruisemonkey.version');
 		if (!previousVersion) {
 			previousVersion = '0.0.0';
 		}
@@ -81,7 +81,7 @@
 					notifications.status(notif, 5000);
 					*/
 				}
-				storage.set('cm.version', currentVersion);
+				storage.set('cruisemonkey.version', currentVersion);
 				$q.all(deferred)['finally'](function() {
 					def.resolve(true);
 				});

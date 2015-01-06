@@ -20,11 +20,11 @@
 		'cruisemonkey.controllers.Events',
 		'cruisemonkey.controllers.Karaoke',
 		'cruisemonkey.controllers.Login',
-		'cruisemonkey.controllers.Logout',
 		'cruisemonkey.controllers.Menu',
 		'cruisemonkey.controllers.Navigation',
 		'cruisemonkey.controllers.Photos',
 		'cruisemonkey.Database',
+		'cruisemonkey.Events',
 		'cruisemonkey.Seamail',
 		'cruisemonkey.Settings',
 		'cruisemonkey.State',
@@ -154,7 +154,7 @@
 			})
 		;
 	}])
-	.run(['Notifications', '$rootScope', '$timeout', '$ionicPlatform', '$cordovaDialogs', '$cordovaSplashscreen', 'UserService', 'SettingsService', 'EventService', '_database', function(notifications, $rootScope, $timeout, $ionicPlatform, $cordovaDialogs, $cordovaSplashscreen, UserService, SettingsService, EventService, database) {
+	.run(['Notifications', '$rootScope', '$timeout', '$ionicPlatform', '$cordovaDialogs', '$cordovaSplashscreen', 'UserService', 'SettingsService', 'EventService', 'UpgradeService', '_database', function(notifications, $rootScope, $timeout, $ionicPlatform, $cordovaDialogs, $cordovaSplashscreen, UserService, SettingsService, EventService, UpgradeService, database) {
 		console.debug('CruiseMonkey run() called.');
 
 		if (ionic.Platform.isWebView()) {
@@ -190,7 +190,8 @@
 			}
 		}
 
-		$rootScope.$broadcast('cm.main.database-initialized');
+		UpgradeService.upgrade();
+
 		if (navigator.splashscreen) {
 			$cordovaSplashscreen.hide();
 		}

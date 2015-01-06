@@ -411,3 +411,4 @@ CMFavorite.prototype.getRawData = function() {
 	'use strict';
 	return this._rawdata;
 };
+

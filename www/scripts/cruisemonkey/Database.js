@@ -107,6 +107,7 @@
 			var deferred = $q.defer();
 			var self = this;
 
+			self.stopReplication();
 			self.db.removeAllListeners();
 
 			var resolveDeleted = function() {
@@ -186,7 +187,7 @@
 			var self = this;
 
 			self.info().then(function(info) {
-				var isEmpty = res.doc_count === 0;
+				var isEmpty = info.doc_count === 0;
 				deferred.resolve(isEmpty);
 				console.debug('isEmpty = ' + isEmpty);
 			}, function(err) {
@@ -420,7 +421,7 @@
 			};
 
 			from.info().then(function(info) {
-				var sequenceNum = info['update_seq'];
+				var sequenceNum = info.update_seq;
 				console.debug('current sequence: ' + sequenceNum);
 				to.syncDesignDocs(from).then(function() {
 					to.updateFrom(from).then(function() {

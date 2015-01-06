@@ -15,17 +15,14 @@
 
 		$scope.logOut = function() {
 			console.info('Logging out.');
-			var oldUser = $rootScope.user;
-			$rootScope.user = UserService.reset();
-			$rootScope.$broadcast('cm.loggedOut', oldUser);
+			UserService.reset();
 		};
 
-		$scope.$on('cm.loggedIn', function(event) {
-			console.info('User "' + UserService.getUsername() + '" logged in.');
+		$scope.$on('cruisemonkey.user.updated', function(ev, newUser, oldUser) {
+			if (newUser.loggedIn && !oldUser.loggedIn) {
+				console.info('User "' + newUser.username + '" logged in.');
+			}
 			$scope.loginPopover.hide();
-		});
-		$scope.$on('cm.loggedOut', function(event) {
-			console.info('User logged out.');
 		});
 
 		$scope.$on('$destroy', function() {

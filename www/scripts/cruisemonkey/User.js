@@ -10,43 +10,45 @@
 			'password': ''
 		};
 
-		storage.bind($rootScope, '_user', {
-			'defaultValue': defaultValue,
-			'storeName': 'cm.user'
-		});
+		var getUser = function() {
+			return angular.copy(storage.get('cruisemonkey.user') || defaultValue);
+		};
+		var setUser = function(user) {
+			var oldUser = getUser();
+			var savedUser = angular.copy(user);
+			savedUser.username = savedUser.username.toLowerCase();
+			storage.set('cruisemonkey.user', savedUser);
+			$rootScope.$broadcast('cruisemonkey.user.updated', savedUser, oldUser);
+		};
 
 		return {
 			'loggedIn': function() {
-				return $rootScope._user.loggedIn;
+				return getUser().loggedIn;
 			},
 			'getUsername': function() {
-				if ($rootScope._user.loggedIn && $rootScope._user.username) {
-					return $rootScope._user.username.toLowerCase();
+				var user = getUser();
+				if (user.loggedIn && user.username) {
+					return user.username;
 				} else {
 					return undefined;
 				}
 			},
-			'get': function() {
-				return angular.copy($rootScope._user);
-			},
 			'matches': function(username) {
-				var existing = $rootScope._user;
-				if (existing) {
-					existing = existing.toLowerCase();
-				}
+				var existing = getUser();
 				if (username) {
 					username = username.toLowerCase();
 				}
-				return existing === username;
+				return existing.username === username;
+			},
+			'get': function() {
+				return getUser();
 			},
 			'save': function(newUser) {
-				newUser.username = newUser.username.toLowerCase();
-				$rootScope._user = angular.copy(newUser);
-				$rootScope.$broadcast('cruisemonkey.user.updated', $rootScope._user);
+				setUser(newUser);
 			},
 			'reset': function() {
-				$rootScope._user = angular.copy(defaultValue);
-				return $rootScope._user;
+				setUser(defaultValue);
+				return getUser();
 			}
 		};
 	}]);
