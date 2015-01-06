@@ -29,7 +29,7 @@ If you have any issues with the twit-arr server, I can't really help you.  Pleas
 Beta Testing
 ============
 
-* Android (Google Play): [follow this link](https://play.google.com/apps/testing/com.raccoonfink.cruisemonkey) to opt-in to alpha/beta testing.
+* Android (Google Play): [join the CruiseMonkey Google Group](https://groups.google.com/forum/#!forum/cruisemonkey), and then once you're approved, [follow this link](https://play.google.com/apps/testing/com.raccoonfink.cruisemonkey) to opt-in to alpha/beta testing.
 * iOS: [email me](mailto:cruisemonkey@raccoonfink.com) and I will send you an invite for iOS testing.  The limit for testers is now 1000 users, so there is no worry about having too many this year!
 
 Bugs and Enhancement Requests
