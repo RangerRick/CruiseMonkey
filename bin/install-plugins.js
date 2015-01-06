@@ -11,6 +11,7 @@ var addList = [
 //	'org.apache.cordova.device-orientation',
 	'org.apache.cordova.dialogs',
 //	'org.apache.cordova.file',
+	'org.apache.cordova.inappbrowser',
 	'org.apache.cordova.network-information',
 	'org.apache.cordova.splashscreen',
 	'org.apache.cordova.statusbar',
