@@ -497,7 +497,7 @@
 			$scope.eventData = undefined;
 			$scope.modal.hide();
 			if (ionic.Platform.isWebView()) {
-				$cordovaKeyboard.hide();
+				$cordovaKeyboard.close();
 			}
 		};
 
@@ -510,7 +510,7 @@
 				console.log('No username!');
 				$scope.modal.hide();
 				if (ionic.Platform.isWebView()) {
-					$cordovaKeyboard.hide();
+					$cordovaKeyboard.close();
 				}
 				return;
 			}
@@ -592,9 +592,6 @@
 		});
 		$scope.$on('cruisemonkey.database.change', function(ev, db, doc) {
 			refreshDelayed(1000);
-		});
-		$scope.$on('cruisemonkey.user.updated', function() {
-			updateUserState();
 		});
 
 		/** Ionic Events **/

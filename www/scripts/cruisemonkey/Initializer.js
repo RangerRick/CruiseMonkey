@@ -10,6 +10,9 @@
 	.factory('Initializer', ['$rootScope', '$timeout', '$cordovaKeyboard', '$cordovaStatusbar', '$ionicPlatform', function($rootScope, $timeout, $cordovaKeyboard, $cordovaStatusbar, $ionicPlatform) {
 		console.log('CruiseMonkey Initializing.');
 
+		$rootScope.hideKeyboard = function() {
+		};
+
 		if (ionic.Platform.isWebView()) {
 			console.log('We are inside a web view: initializing ionic platform plugins and events.');
 

@@ -51,14 +51,6 @@
 			}
 			user.username = user.username.toLowerCase();
 
-			var host = $location.host();
-			if (host === '0.0.0.0' || host === '127.0.0.1' || host === 'localhost' || host.toLowerCase() === 'sin.local') {
-				// special case, let Ben log in regardless  ;)
-				$scope.saveUser(user);
-				$rootScope.$broadcast('cruisemonkey.notify.toast', { message: 'Logged in as ' + user.username });
-				return;
-			}
-
 			var url = twitarrRoot + 'api/v2/user/auth';
 			console.log('Logging in to ' + url);
 
@@ -76,18 +68,22 @@
 				}
 			})
 			.success(function(data, status, headers, config) {
-				console.log('success:',data);
-				user.key = data.key;
+				var key = data? data.key : undefined;
+				console.log('success: ' + key);
+				user.key = key;
 				$scope.saveUser(user);
 				$rootScope.$broadcast('cruisemonkey.notify.toast', { message: 'Logged in as ' + user.username });
 			})
 			.error(function(data, status, headers, config) {
 				console.log('failure!');
-				console.log('url:',url);
-				console.log('data:', data);
-				console.log('status:',status);
-				console.log('headers:',headers);
-				console.log('config:',config);
+				console.log('url:' + url);
+				console.log('status:' + status);
+				console.log('data:');
+				console.log(data);
+				console.log('headers:');
+				console.log(headers);
+				console.log('config:');
+				console.log(config);
 				$rootScope.$broadcast('cruisemonkey.notify.alert', { message: 'Login failed.' });
 			});
 
