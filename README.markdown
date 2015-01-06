@@ -24,7 +24,7 @@ Twit-Arr
 
 CruiseMonkey works just fine in read-only mode, but if you want to be able to create and favorite events, as well as use some of the other features for CruiseMonkey, you must log in with a twit-arr account [on the new Twit-Arr server first!](https://jccc5.rylath.net/)
 
-If you have any issues with the twit-arr server, I can't really help you.  Please ask Kvort\_the\_Duck on the JoCo forums, or post to the [twit-arr beta thread][].  Or, feel free to join us in the [#twitarr IRC channel on freenode: irc.freenode.net](irc://irc.freenode.net/twitarr).
+If you have any issues with the twit-arr server, I can't really help you.  Please ask Kvort\_the\_Duck on the JoCo forums, or post to the [twit-arr beta thread][].  Or, feel free to join us in the [#twitarr IRC channel][] on irc.freenode.net.
 
 Beta Testing
 ============
@@ -45,7 +45,7 @@ Contact
 =======
 
 * E-Mail: You can reach me (Benjamin Reed) at [testflight@raccoonfink.com](mailto:testflight@raccoonfink.com).
-* IRC: Join me in [#twitarr on FreeNode: irc.freenode.net](irc://irc.freenode.net/twitarr).
+* IRC: Join us in the [#twitarr IRC channel][] on irc.freenode.net.
 * Forums: You can also discuss CruiseMonkey on the [JoCo Forums](http://www.jonathancoulton.com/forums/index.php?p=/discussion/2381/cruisemonkey-5).
 
 Licensing
@@ -291,3 +291,4 @@ Known issues:
 * initial release to testflight for users
 
 [twit-arr beta thread]: http://www.jonathancoulton.com/forums/index.php?p=/discussion/2378/twitarr-beta
+[#twitarr IRC channel]: irc://irc.freenode.net/twitarr
