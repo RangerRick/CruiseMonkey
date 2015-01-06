@@ -19,10 +19,10 @@ The latest release version of CruiseMonkey is available in the following app sto
 * [Amazon Apps for Android](http://www.amazon.com/Benjamin-Reed-CruiseMonkey/dp/B00BBOMRDW)
 * [Google Play Store](https://play.google.com/store/apps/details?id=com.raccoonfink.cruisemonkey&hl=en_GB)
 
-Twit-Arr Has Changed!
-=====================
+Twit-Arr
+========
 
-Please note that the Twit-Arr server is completely new this year, and user accounts from last year will no longer work with it.  Before you can log in to CruiseMonkey, you will have to make an account [on the new Twit-Arr server first!](https://jccc5.rylath.net/)
+CruiseMonkey works just fine in read-only mode, but if you want to be able to create and favorite events, as well as use some of the other features for CruiseMonkey, you must log in with a twit-arr account [on the new Twit-Arr server first!](https://jccc5.rylath.net/)
 
 If you have any issues with the twit-arr server, I can't really help you.  Please ask Kvort\_the\_Duck on the JoCo forums, or post to the [twit-arr beta thread][].  Or, feel free to join us in the [#twitarr IRC channel on freenode: irc.freenode.net](irc://irc.freenode.net/twitarr).
 
