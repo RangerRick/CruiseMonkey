@@ -3,7 +3,7 @@
   "version": "4.0.83",
   "minSdk": "14",
   "description": "Keep Track of Your Cruise",
-  "build": 40187,
+  "build": 40191,
   "scripts": {
     "jshint": "jshint -c .jshintrc www/scripts/cruisemonkey/*.js spec/*.js"
   },

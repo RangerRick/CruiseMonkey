@@ -557,6 +557,21 @@
 		$scope.closePopover = function() {
 			$scope.popover.hide();
 		};
+
+		/** CruiseMonkey events **/
+
+		$scope.$on('cruisemonkey.database.syncComplete', function(ev, db) {
+			console.log('CMEventCtrl: Sync complete: ' + db.name);
+			refreshDelayed(100);
+		});
+		$scope.$on('cruisemonkey.database.change', function(ev, db, doc) {
+			refreshDelayed(1000);
+		});
+		$scope.$on('cruisemonkey.user.updated', function() {
+			updateUserState();
+		});
+
+		/** Ionic Events **/
 		$scope.$on('popover.hidden', function() {
 			$scope.popoverEntry = null;
 		});
@@ -567,6 +582,7 @@
 			$scope.popover.remove();
 		});
 
+		/** Ionic View Events - Update Title **/
 		$scope.eventTitle = 'Events';
 
 		$scope.$on('$ionicView.loaded', function(ev, info) {
@@ -578,13 +594,6 @@
 		});
 		$scope.$on('$ionicView.afterEnter', function(ev, info) {
 			$scope.eventTitle = ($scope.eventType === 'my'? 'Mine' : $scope.eventType.capitalize());
-		});
-		$scope.$on('cruisemonkey.database.syncComplete', function(ev, db) {
-			console.log('CMEventCtrl: Sync complete: ' + db.name);
-			refreshDelayed(100);
-		});
-		$rootScope.$on('cruisemonkey.database.change', function(ev, db, doc) {
-			refreshDelayed(1000);
 		});
 	}]);
 }());
