@@ -6,7 +6,7 @@
 	</ion-nav-bar>
 	<ion-content has-header="true" scroll="true">
 		<div class="item item-text-wrap">
-			<h2>CruiseMonkey, version {{version}}.</h2>
+			<h2>CruiseMonkey, version {{version}} (build {{build}}).</h2>
 			<p>
 				Last replication update: {{(lastModified &amp;&amp; !lastModified.isSame(0))? lastModified.fromNow() : 'N/A'}}<br/>
 				Last event update: {{(lastUpdatedEvent &amp;&amp; !lastUpdatedEvent.isSame(0))? lastUpdatedEvent.fromNow() : 'N/A'}}

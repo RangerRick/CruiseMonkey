@@ -4,7 +4,7 @@
 	angular.module('cruisemonkey.controllers.About', [
 		'cruisemonkey.Config'
 	])
-	.controller('CMAboutCtrl', ['$scope', '$rootScope', 'EventService', 'config.app.version', function($scope, $rootScope, EventService, version) {
+	.controller('CMAboutCtrl', ['$scope', '$rootScope', 'EventService', 'config.app.version', 'config.app.build', function($scope, $rootScope, EventService, version, build) {
 		console.log('Initializing CMAboutCtrl');
 		$scope.version = version;
 

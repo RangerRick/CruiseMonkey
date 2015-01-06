@@ -12,6 +12,7 @@
 	.value('config.notifications.timeout', 5000)
 	.value('config.twitarr.root', 'https://jccc5.rylath.net/')
 	.value('config.app.version', '***VERSION***')
+	.value('config.app.build', '***BUILD***')
 	.value('config.upgrade', true);
 
 	angular.module('cruisemonkey.Settings', [

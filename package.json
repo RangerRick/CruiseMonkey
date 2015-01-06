@@ -3,7 +3,7 @@
   "version": "4.0.84",
   "minSdk": "14",
   "description": "Keep Track of Your Cruise",
-  "build": 40192,
+  "build": 40201,
   "scripts": {
     "jshint": "jshint -c .jshintrc www/scripts/cruisemonkey/*.js spec/*.js"
   },
@@ -14,14 +14,14 @@
     "gulp-minify-css": "^0.3.0",
     "gulp-rename": "^1.2.0",
     "gulp-sass": "^0.7.1",
-    "jshint-stylish": "*",
-    "line-reader": "^0.2.4"
+    "gulp-util": "*",
+    "jshint-stylish": "*"
   },
   "devDependencies": {
-    "bower": "^1.3.3",
+    "bower": "*",
     "commonmark": "*",
     "cordova-android": "*",
-    "gulp-util": "^2.2.14",
+    "fs.extra": "*",
     "gulp-jasmine": "*",
     "gulp-karma": "*",
     "jshint": "*",
@@ -32,6 +32,7 @@
     "karma-phantomjs-launcher": "*",
     "karma-safari-launcher": "*",
     "karma-webdriver-launcher": "*",
-    "shelljs": "^0.3.0"
+    "line-reader": "*",
+    "shelljs": "*"
   }
 }
