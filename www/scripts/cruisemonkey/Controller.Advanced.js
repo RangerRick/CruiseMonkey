@@ -4,15 +4,17 @@
 	angular.module('cruisemonkey.controllers.Advanced', [
 		'cruisemonkey.Config',
 		'cruisemonkey.Database',
+		'cruisemonkey.Events',
 		'cruisemonkey.Settings'
 	])
-	.controller('CMAdvancedCtrl', ['$scope', '$rootScope', '$window', '_database', 'config.app.version', 'SettingsService', function($scope, $rootScope, $window, _database, version, SettingsService) {
+	.controller('CMAdvancedCtrl', ['$scope', '$rootScope', '$window', '_database', 'config.app.version', 'SettingsService', 'EventService', function($scope, $rootScope, $window, _database, version, SettingsService, EventService) {
 		console.log('Initializing CMAdvancedCtrl');
 
 		$scope.settings = SettingsService.getSettings();
 
-		$scope.openCertificate = function() {
-			$rootScope.openUrl('http://ranger.befunk.com/misc/twitarr.rylath.net.cer', '_system');
+		$scope.lastModified = function() {
+			var lm = EventService.getLastModified();
+			return moment(lm);
 		};
 
 		$scope.isUnchanged = function() {
@@ -40,11 +42,11 @@
 		};
 
 		$scope.resetDatabase = function() {
-			throw "reimplement database reset!";
+			EventService.recreateDatabase();
 		};
 
 		$scope.forceSync = function() {
-			throw "reimplement re-sync!";
+			EventService.forceSync();
 		};
 	}]);
 }());

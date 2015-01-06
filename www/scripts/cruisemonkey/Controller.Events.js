@@ -131,7 +131,20 @@
 			}
 		};
 	}])
-	.controller('CMEventsBarCtrl', ['$scope', '$timeout', 'storage', function($scope, $timeout, storage) {
+	.controller('CMEventsBarCtrl', ['$scope', '$timeout', '$state', 'storage', function($scope, $timeout, $state, storage) {
+		$scope.$on('$ionicView.beforeEnter', function(ev, info) {
+			if (info.stateName === 'app.events') {
+				var newState = 'app.events.official';
+				if ($scope.eventType) {
+					newState = 'app.events.' + $scope.eventType;
+				}
+				console.log('app.events navigated, going to ' + newState + ' instead.');
+				$state.go(newState);
+			} else {
+				$scope.eventType  = info.stateName.replace('app.events.', '');
+				$scope.eventTitle = ($scope.eventType === 'my'? 'Mine' : $scope.eventType.capitalize());
+			}
+		});
 	}])
 	.controller('CMEventCtrl', ['$q', '$scope', '$rootScope', '$timeout', '$ionicScrollDelegate', '$ionicPopover', '$ionicModal', 'EventService', 'UserService', 'EventCache', function($q, $scope, $rootScope, $timeout, $ionicScrollDelegate, $ionicPopover, $ionicModal, EventService, UserService, EventCache) {
 		var withDays = function(events) {
@@ -582,18 +595,17 @@
 			$scope.popover.remove();
 		});
 
-		/** Ionic View Events - Update Title **/
-		$scope.eventTitle = 'Events';
-
 		$scope.$on('$ionicView.loaded', function(ev, info) {
 			$scope.searchString = '';
 		});
 		$scope.$on('$ionicView.beforeEnter', function(ev, info) {
-			$scope.eventType = info.stateName.replace('app.events.', '');
+			//$scope.eventType = info.stateName.replace('app.events.', '');
 			doRefresh();
 		});
+		/*
 		$scope.$on('$ionicView.afterEnter', function(ev, info) {
 			$scope.eventTitle = ($scope.eventType === 'my'? 'Mine' : $scope.eventType.capitalize());
 		});
+*/
 	}]);
 }());

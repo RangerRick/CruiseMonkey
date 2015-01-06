@@ -12,13 +12,19 @@
 	var modelVersion = '2015';
 
 	angular.module('cruisemonkey.Events', [
+		'angularLocalStorage',
 		'uuid4',
 		'cruisemonkey.Config',
 		'cruisemonkey.Database',
 		'cruisemonkey.User'
 	])
-	.factory('EventService', ['$q', '$rootScope', '$timeout', '$location', 'uuid4', '_database', 'UserService', 'SettingsService', function($q, $rootScope, $timeout, $location, uuid4, _database, UserService, SettingsService) {
+	.factory('EventService', ['$q', '$rootScope', '$timeout', '$location', 'storage', 'uuid4', '_database', 'UserService', 'SettingsService', function($q, $rootScope, $timeout, $location, storage, uuid4, _database, UserService, SettingsService) {
 		console.log('EventService: Initializing EventService.');
+
+		storage.bind($rootScope, 'lastModified', {
+			'defaultValue': 0,
+			'storeName': 'cruisemonkey.lastModified'
+		});
 
 		$rootScope.$on('cruisemonkey.persist.connect', function(ev, db) {
 			console.log('persistence connected: ' + db.name);
@@ -28,14 +34,16 @@
 		});
 		$rootScope.$on('cruisemonkey.database.uptodate', function(ev, db) {
 			console.log('persistence up to date: ' + db.name);
+			$rootScope.lastModified = moment().valueOf();
 		});
 		$rootScope.$on('cruisemonkey.database.complete', function(ev, db) {
 			console.log('persistence complete: ', db.name);
 		});
-		/*
 		$rootScope.$on('cruisemonkey.database.change', function(ev, db, doc) {
 			console.log('persistence changed: ' + db.name + ': ' + doc.id);
+			$rootScope.lastModified = moment().valueOf();
 		});
+		/*
 		$rootScope.$on('cruisemonkey.database.create', function(ev, db, doc) {
 			console.log('persistence created an object: ' + db.name + ': ' + doc.id);
 		});
@@ -121,6 +129,42 @@
 					favoritesdb.destroy();
 				}
 				favoritesdb = null;
+			}
+		});
+
+		var recreateDatabase = function() {
+			var deferred = $q.defer();
+
+			var destroy = [eventsdb.destroy()];
+			if (favoritesdb) {
+				destroy.push(favoritesdb.destroy());
+			}
+			$q.all(destroy).then(function() {
+				eventsdb = createEventsDb();
+				favoritesdb = createFavoritesDb();
+				deferred.resolve(true);
+			}, function(err) {
+				console.debug('Failed to destroy a database:',err);
+				eventsdb = createEventsDb();
+				favoritesdb = createFavoritesDb();
+				deferred.resolve(false);
+			});
+
+			return deferred.promise;
+		};
+
+		var forceSync = function() {
+			eventsdb.forceSync();
+			favoritesdb.forceSync();
+		};
+
+		$rootScope.$on('cruisemonkey.user.settings-changed', function(ev, settings) {
+			if (settings.old.databaseRoot != settings.new.databaseRoot ||
+				settings.old.databaseName != settings.new.databaseName) {
+				console.log('Events: database settings have changed.  Re-creating databases.');
+				recreateDatabase();
+			} else {
+				console.log('Events: settings have changed, but database settings have not been modified.');
 			}
 		});
 
@@ -780,6 +824,11 @@
 			'getEventForTime': getEventForTime,
 			'getNextEvent': function(events) {
 				return getEventForTime(moment(), events);
+			},
+			'recreateDatabase': recreateDatabase,
+			'forceSync': forceSync,
+			'getLastModified': function() {
+				return $rootScope.lastModified;
 			}
 		};
 	}]);

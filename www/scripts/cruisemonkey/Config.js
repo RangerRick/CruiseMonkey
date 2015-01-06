@@ -175,7 +175,11 @@
 		return {
 			'getDefaultSettings': getDefaultSettings,
 			'getSettings': getSettings,
-			'saveSettings': saveSettings,
+			'saveSettings': function(settings) {
+				broadcastChanges(function() {
+					saveSettings(settings);
+				});
+			},
 			'getDatabaseRoot': getDatabaseRoot,
 			'setDatabaseRoot': function(root) {
 				broadcastChanges(function() {

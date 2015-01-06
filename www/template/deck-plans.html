@@ -4,26 +4,28 @@
 	}
 </style>
 <ion-view view-title="Deck {{deck}}" hide-back-button="true">
-<ion-nav-buttons side="primary">
-  <button menu-toggle="left" class="button button-icon icon ion-navicon"></button>
-</ion-nav-buttons>
-<ion-nav-buttons side="right">
-  <button class="button button-clear" ng-click="previous()"><i ng-class="hasPrevious? 'icon icon-cm ion-arrow-left-b':'icon ion-arrow-left-b icon-blank'"></i></button>
-  <button class="button button-clear" ng-click="next()"><i ng-class="hasNext? 'icon icon-cm ion-arrow-right-b':'icon ion-arrow-right-b icon-blank'"></i></button>
-</ion-nav-buttons>
-<ion-content has-header="true" scroll="true" style="margin-bottom: 18px">
-<ion-slide-box show-pager="false" active-slide="currentSlide" on-slide-changed="slideChanged(index)">
-	<ion-slide ng-repeat="d in [2,3,4,5,6,7,8,9,10,11,12,13,14,15]">
-		<div class="box deck-plans" ng-switch="shouldBeVisible(d)">
-			<img ng-switch-when="true" ng-src="images/decks/deck{{d}}.png" id="deck{{d}}"></img>
-			<div ng-switch-default class="placeholder"><i class="icon ion-help-buoy"></i></div>
+	<ion-nav-bar class="bar-stable bar-dark" animation="no-animation">
+		<ion-nav-buttons side="primary">
+			<button menu-toggle="left" class="button button-icon icon ion-navicon"></button>
+		</ion-nav-buttons>
+		<ion-nav-buttons side="secondary">
+			<button class="button button-clear" ng-click="previous()"><i ng-class="hasPrevious? 'icon icon-cm ion-arrow-left-b':'icon ion-arrow-left-b icon-blank'"></i></button>
+			<button class="button button-clear" ng-click="next()"><i ng-class="hasNext? 'icon icon-cm ion-arrow-right-b':'icon ion-arrow-right-b icon-blank'"></i></button>
+		</ion-nav-buttons>
+	</ion-nav-bar>
+	<ion-content has-header="true" scroll="true" style="margin-bottom: 18px">
+		<ion-slide-box show-pager="false" active-slide="currentSlide" on-slide-changed="slideChanged(index)">
+			<ion-slide ng-repeat="d in [2,3,4,5,6,7,8,9,10,11,12,13,14,15]">
+				<div class="box deck-plans" ng-switch="shouldBeVisible(d)">
+					<img ng-switch-when="true" ng-src="images/decks/deck{{d}}.png" id="deck{{d}}"></img>
+					<div ng-switch-default class="placeholder"><i class="icon ion-help-buoy"></i></div>
+				</div>
+			</ion-slide>
+		</ion-slide-box>
+	</ion-content>
+	<footer class="cm-slider bar bar-footer bar-clear">
+		<div class="slider-pager">
+			<span class="slider-pager-page" ng-repeat="d in [2,3,4,5,6,7,8,9,10,11,12,13,14,15]" ng-class="{active: d === deck}"><i class="icon ion-record"></i></span>
 		</div>
-	</ion-slide>
-</ion-slide-box>
-</ion-content>
-<footer class="cm-slider bar bar-footer bar-clear">
-	<div class="slider-pager">
-		<span class="slider-pager-page" ng-repeat="d in [2,3,4,5,6,7,8,9,10,11,12,13,14,15]" ng-class="{active: d === deck}"><i class="icon ion-record"></i></span>
-	</div>
-</footer>
+	</footer>
 </ion-view>

@@ -80,23 +80,21 @@
 
 			var resolveDeleted = function() {
 				deferred.resolve({ok:true});
-				// recreate a fresh PouchDB
-				self.createDb();
 			};
 
 			self.isEmpty().then(function(isEmpty) {
 				if (isEmpty) {
-					console.log('database ' + self.name + ' is already empty, skipping destroy');
+					console.log('Database.destroy: database ' + self.name + ' is already empty, skipping destroy');
 					resolveDeleted();
 				} else {
 					self.pouch().destroy(function(err, res) {
 						$rootScope.$evalAsync(function() {
 							if (err) {
 								if (err.message && err.message.indexOf('no such table') >= 0) {
-									console.log('cruisemonkey.Database: destroy called on database that already does not exist.');
+									console.log('Database.destroy: cruisemonkey.Database: destroy called on database that already does not exist.');
 									resolveDeleted();
 								} else {
-									console.log('cruisemonkey.Database: failed to destroy ' + self.name,err);
+									console.log('Database.destroy: cruisemonkey.Database: failed to destroy ' + self.name,err);
 									deferred.reject(err);
 								}
 							} else {
@@ -417,11 +415,42 @@
 
 		Database.prototype.stopReplication = function() {
 			var self = this;
+			var deferred = $q.defer();
 			if (self._persist) {
+				console.log('Database: ' + self.name + ' is currently replicating.  Stopping replication.');
 				self._persist.stop();
-				self._persist.removeAllListeners();
-				self._persist = undefined;
+				$rootScope.$evalAsync(function() {
+					self._persist.removeAllListeners();
+					self._persist = undefined;
+					$rootScope.$evalAsync(function() {
+						console.log('Database: finished stopping replication of ' + self.name + '.');
+						deferred.resolve(true);
+					});
+				});
+			} else {
+				deferred.resolve(true);
 			}
+			return deferred.promise;
+		};
+
+		Database.prototype.forceSync = function() {
+			var self = this;
+			var deferred = $q.defer();
+			if (self._persist) {
+				console.log('Database: ' + self.name + ' is currently replicating.  Forcing initialization of re-sync.');
+				self._persist.stop();
+				$rootScope.$evalAsync(function() {
+					self._persist.start().then(function() {
+						$rootScope.$evalAsync(function() {
+							console.log('Database: finished initializing re-sync of ' + self.name + '.');
+							deferred.resolve(true);
+						});
+					});
+				});
+			} else {
+				console.log('Database: ' + self.name + ' is not replicating.  Skipping forced sync.');
+			}
+			return deferred.promise;
 		};
 
 		Database.prototype.syncFrom = function(from) {

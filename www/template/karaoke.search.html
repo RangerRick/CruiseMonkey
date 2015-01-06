@@ -1,30 +1,32 @@
-<ion-view view-title="Karaoke Search" hide-back-button="true">
-<ion-nav-buttons side="primary">
-  <button menu-toggle="left" class="button button-icon icon ion-navicon"></button>
-</ion-nav-buttons>
-<style>
-.artist-entry {
-	left: 0;
-	right: 0;
-}
-</style>
-<ion-header-bar class="bar-subheader item-input-inset">
-	<label class="item-input-wrapper">
-		<i class="icon ion-ios7-search placeholder-icon"></i>
-		<input id="search" type="search" placeholder="Search Artists &amp; Songs" ng-model="searchString" ng-change="searchUpdated(searchString)" />
-	</label>
-	<button class="button button-clear" ng-if="searchString" ng-click="clearSearchString()">
-		<i class="icon ion-close-circled"></i>
-	</button>
-</ion-header-bar>
-<ion-content has-header="true" scroll="true">
-	<ion-list>
-		<ion-item class="artist-entry"
-			collection-repeat="entry in entries"
-			collection-item-width="'100%'"
-			collection-item-height="40" ng-style="{height: '40px'}">
-			{{entry.artist}} - {{entry.song}}
-		</ion-item>
-	</ion-list>
-</ion-content>
+<ion-view view-title="Karaoke Search" hide-back-button="true" cache-view="false">
+	<ion-nav-bar class="bar-stable bar-dark" animation="no-animation">
+		<ion-nav-buttons side="primary">
+			<button menu-toggle="left" class="button button-icon icon ion-navicon"></button>
+		</ion-nav-buttons>
+	</ion-nav-bar>
+	<style>
+	.artist-entry {
+		left: 0;
+		right: 0;
+	}
+	</style>
+	<ion-header-bar class="bar-subheader item-input-inset">
+		<label class="item-input-wrapper">
+			<i class="icon ion-ios7-search placeholder-icon"></i>
+			<input id="search" type="search" placeholder="Search Artists &amp; Songs" ng-model="searchString" ng-change="searchUpdated(searchString)" />
+		</label>
+		<button class="button button-clear" ng-if="searchString" ng-click="clearSearchString()">
+			<i class="icon ion-close-circled"></i>
+		</button>
+	</ion-header-bar>
+	<ion-content has-header="true" scroll="true">
+		<ion-list>
+			<ion-item class="artist-entry"
+				collection-repeat="entry in entries"
+				collection-item-width="'100%'"
+				collection-item-height="40" ng-style="{height: '40px'}">
+				{{entry.artist}} - {{entry.song}}
+			</ion-item>
+		</ion-list>
+	</ion-content>
 </ion-view>
