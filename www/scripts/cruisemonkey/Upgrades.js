@@ -33,12 +33,12 @@
 		}
 		var currentVersion = version.split('+')[0];
 
-		console.info('UpgradeService initializing.');
+		console.log('UpgradeService initializing.');
 
 		var actions = [];
 
 		var registerAction = function(version, affected, callback) {
-			console.debug('action registered for version ' + version + ': ' + affected);
+			console.log('action registered for version ' + version + ': ' + affected);
 			actions.push({
 				'version': version,
 				'affected': affected,
@@ -51,25 +51,25 @@
 
 			var def = $q.defer();
 
-			console.debug('UpgradeService.upgrade(): previous version = ' + previousVersion + ', current version = ' + currentVersion);
+			console.log('UpgradeService.upgrade(): previous version = ' + previousVersion + ', current version = ' + currentVersion);
 
 			if (!shouldUpgrade) {
-				console.info('Upgrades disabled.');
+				console.log('Upgrades disabled.');
 				$timeout(function() {
 					def.resolve(false);
 				});
 			} else if (compareVersions(currentVersion, previousVersion) > 0) {
-				console.info('Upgrade for ' + currentVersion + ' has not yet run.');
+				console.log('Upgrade for ' + currentVersion + ' has not yet run.');
 
 				var deferred = [];
 				angular.forEach(actions, function(action) {
 					var comparison = compareVersions(action.version, previousVersion);
 					if (comparison > 0) {
-						console.info('UpgradeService.upgrade(): performing upgrade: ' + action.version + ': ' + action.affected);
+						console.log('UpgradeService.upgrade(): performing upgrade: ' + action.version + ': ' + action.affected);
 						deferred.push(action.callback());
 						performed.push(action);
 					} else {
-						console.info('UpgradeService.upgrade(): skipping upgrade: ' + action.version + ': ' + action.affected);
+						console.log('UpgradeService.upgrade(): skipping upgrade: ' + action.version + ': ' + action.affected);
 					}
 				});
 				if (performed.length > 0 && previousVersion !== '0.0.0') {
@@ -86,7 +86,7 @@
 					def.resolve(true);
 				});
 			} else {
-				console.info('No upgrade necessary for version ' + currentVersion + '.');
+				console.log('No upgrade necessary for version ' + currentVersion + '.');
 				$timeout(function() {
 					def.resolve(true);
 				});

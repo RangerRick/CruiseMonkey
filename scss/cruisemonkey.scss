@@ -169,6 +169,13 @@ $tabs-dark-text:               $rciYellow;
 	}
 }
 
+.ion-spin, .ion-load-a, .ion-load-b, .ion-load-c, .ion-load-d, .ion-loop {
+	-webkit-animation: spin 1s infinite linear;
+	-moz-animation: spin 1s infinite linear;
+	-o-animation: spin 1s infinite linear;
+	animation: spin 1s infinite linear;
+}
+
 .cm-slider.bar {
 	height: 18px;
 	.slider-pager {

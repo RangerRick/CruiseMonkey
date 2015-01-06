@@ -7,7 +7,7 @@
 		'cruisemonkey.Settings'
 	])
 	.controller('CMAdvancedCtrl', ['$scope', '$rootScope', '$window', '_database', 'config.app.version', 'SettingsService', function($scope, $rootScope, $window, _database, version, SettingsService) {
-		console.info('Initializing CMAdvancedCtrl');
+		console.log('Initializing CMAdvancedCtrl');
 
 		$scope.settings = SettingsService.getSettings();
 
@@ -29,13 +29,13 @@
 
 		$scope.resetSettings = function() {
 			var updated = SettingsService.getDefaults();
-			console.info('resetting to', updated);
+			console.log('resetting to', updated);
 			$scope.settings = updated;
 			$scope.saveSettings();
 		};
 
 		$scope.saveSettings = function() {
-			console.info('saving=', $scope.settings);
+			console.log('saving=', $scope.settings);
 			SettingsService.saveSettings($scope.settings);
 		};
 

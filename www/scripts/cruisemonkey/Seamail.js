@@ -18,11 +18,11 @@
 
 		var getSeamailCount = function() {
 			if (!UserService.loggedIn()) {
-				console.debug('SeamailService: Skipping update, user is not logged in.');
+				console.log('SeamailService: Skipping update, user is not logged in.');
 				return;
 			}
 
-			console.debug('SeamailService: Checking for seamail updates.');
+			console.log('SeamailService: Checking for seamail updates.');
 			var twitarrRoot = SettingsService.getTwitarrRoot();
 			var user = UserService.get();
 
@@ -39,7 +39,7 @@
 				}
 			})
 			.success(function(data, status, headers, config) {
-				console.debug('SeamailService: Success!');
+				console.log('SeamailService: Success!');
 				if (data.status === 'ok') {
 					if (data.email_count > $rootScope.seamailCount) {
 						var message = 'You have ' + data.email_count + ' new messages in your Seamail inbox!';
@@ -49,7 +49,7 @@
 							/*
 							if (ionic.Platform.isWebView()) {
 								notifications.alert(message, function() {
-									console.info('Acknowledged notification message: ' + message);
+									console.log('Acknowledged notification message: ' + message);
 								});
 							} else {
 								notifications.status(message, 5000);
@@ -61,30 +61,30 @@
 				}
 			})
 			.error(function(data, status, headers, config) {
-				console.warn('SeamailService: Failed to get seamail update.');
+				console.log('SeamailService: Failed to get seamail update.');
 				/*
-				console.debug('data:', data);
-				console.debug('status:',status);
-				console.debug('headers:',headers);
-				console.debug('config:',config);
+				console.log('data:', data);
+				console.log('status:',status);
+				console.log('headers:',headers);
+				console.log('config:',config);
 				*/
 			});
 		};
 
 		var startSynchronization = function() {
 			if (interval) {
-				console.info('SeamailService.startSynchronization(): sync already active.');
+				console.log('SeamailService.startSynchronization(): sync already active.');
 				return;
 			}
 
-			console.info('SeamailService.startSynchronization(): starting synchronization.');
+			console.log('SeamailService.startSynchronization(): starting synchronization.');
 			interval = $interval(getSeamailCount, (10 * 60 * 1000)); // 10 minutes
 			getSeamailCount();
 		};
 
 		var stopSynchronization = function() {
 			if (!interval) {
-				console.info('SeamailService.startSynchronization(): sync not active.');
+				console.log('SeamailService.startSynchronization(): sync not active.');
 				return;
 			}
 

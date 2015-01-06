@@ -21,6 +21,11 @@ var addList = [
 	'https://github.com/VersoSolutions/CordovaClipboard.git',
 	'de.appplant.cordova.plugin.local-notification',
 	'https://github.com/EddyVerbruggen/Toast-PhoneGap-Plugin.git',
+	'https://github.com/Paldom/SpinnerDialog.git',
+
+/* android/ios only */
+	'https://github.com/driftyco/ionic-plugins-keyboard.git',
+	'https://github.com/RangerRick/cordova-certificate-plugin.git',
 ];
 
 // no need to configure below

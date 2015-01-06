@@ -18,32 +18,32 @@
 		'cruisemonkey.User'
 	])
 	.factory('EventService', ['$q', '$rootScope', '$timeout', '$location', 'uuid4', '_database', 'UserService', 'SettingsService', function($q, $rootScope, $timeout, $location, uuid4, _database, UserService, SettingsService) {
-		console.info('EventService: Initializing EventService.');
+		console.log('EventService: Initializing EventService.');
 
 		$rootScope.$on('cm.persist.connect', function(ev, db) {
-			console.debug('persistence connected: ' + db.name);
+			console.log('persistence connected: ' + db.name);
 		});
 		$rootScope.$on('cm.persist.disconnect', function(ev, db) {
-			console.debug('persistence disconnected: ' + db.name);
+			console.log('persistence disconnected: ' + db.name);
 		});
 		$rootScope.$on('cm.database.uptodate', function(ev, db) {
-			console.debug('persistence up to date: ' + db.name);
+			console.log('persistence up to date: ' + db.name);
 		});
 		$rootScope.$on('cm.database.complete', function(ev, db) {
-			console.debug('persistence complete: ', db.name);
+			console.log('persistence complete: ', db.name);
 		});
 		/*
 		$rootScope.$on('cm.database.change', function(ev, db, doc) {
-			console.debug('persistence changed: ' + db.name + ': ' + doc.id);
+			console.log('persistence changed: ' + db.name + ': ' + doc.id);
 		});
 		$rootScope.$on('cm.database.create', function(ev, db, doc) {
-			console.debug('persistence created an object: ' + db.name + ': ' + doc.id);
+			console.log('persistence created an object: ' + db.name + ': ' + doc.id);
 		});
 		$rootScope.$on('cm.database.update', function(ev, db, doc) {
-			console.debug('persistence updated an object: ' + db.name + ': ' + doc.id);
+			console.log('persistence updated an object: ' + db.name + ': ' + doc.id);
 		});
 		$rootScope.$on('cm.database.delete', function(ev, db, doc) {
-			console.debug('persistence deleted an object: ' + db.name + ': ' + doc.id);
+			console.log('persistence deleted an object: ' + db.name + ': ' + doc.id);
 		});
 		*/
 
@@ -54,7 +54,7 @@
 
 			var eventsdbName = replicate? databaseName + '.events' : remoteDatabase;
 
-			console.debug('Database replicate? ' + replicate + ': events database is "' + eventsdbName + '", remote database is "' + remoteDatabase + '"');
+			console.log('Database replicate? ' + replicate + ': events database is "' + eventsdbName + '", remote database is "' + remoteDatabase + '"');
 			var eventsdb = _database.get(eventsdbName, {
 				'view': {
 					'view': 'cruisemonkey/events-replication'
@@ -112,7 +112,7 @@
 		var favoritesdb = createFavoritesDb();
 
 		$rootScope.$on('cruisemonkey.user.updated', function(ev, user) {
-			console.debug('user updated:',user);
+			console.log('user updated:',user);
 			if (user.loggedIn) {
 				favoritesdb = createFavoritesDb(user);
 			} else {
@@ -150,7 +150,7 @@
 		var rejectedResult = function(reason) {
 			var deferred = $q.defer();
 			$timeout(function() {
-				console.error(reason);
+				console.log(reason);
 				deferred.reject(reason);
 			});
 			return deferred.promise;
@@ -198,10 +198,10 @@
 
 			if (args.length > 0 && !isString(args[args.length - 1])) {
 				var opt = args.pop();
-				//console.debug('last argument was options!',opt);
+				//console.log('last argument was options!',opt);
 				options = angular.extend({}, options, opt);
 			}
-			//console.debug('options=',options);
+			//console.log('options=',options);
 
 			var promises = [], i;
 
@@ -214,7 +214,7 @@
 					key:username
 				});
 				promises.push(favoritesdb.query('cruisemonkey/favorites-all', opts));
-				//console.debug('opts=',opts);
+				//console.log('opts=',opts);
 			}
 
 			$q.all(promises).then(function(results) {
@@ -230,13 +230,13 @@
 					result = results[i];
 					for (j=0; j < result.rows.length; j++) {
 						ev = new CMEvent(result.rows[j].doc);
-						//console.debug(ev.toString());
+						//console.log(ev.toString());
 						events.push(ev);
 					}
 				}
 				for (i=0; i < favresults.rows.length; i++) {
 					fav = new CMFavorite(favresults.rows[i].doc);
-					//console.debug(fav.toString());
+					//console.log(fav.toString());
 					favorites.push(fav);
 				}
 
@@ -260,7 +260,7 @@
 
 			if (eventToAdd.getUsername() === undefined) {
 				$timeout(function() {
-					console.warn('EventService.addEvent(): no username in the event!');
+					console.log('EventService.addEvent(): no username in the event!');
 					deferred.reject('no username specified');
 				});
 				return;
@@ -292,7 +292,7 @@
 
 			if (!ev.getRevision() || !ev.getId()) {
 				$timeout(function() {
-					console.warn('EventService.updateEvent(): Attempting to update event ' + ev.summary + ', but it is missing _rev or _id!');
+					console.log('EventService.updateEvent(): Attempting to update event ' + ev.summary + ', but it is missing _rev or _id!');
 					deferred.reject('bad event');
 				});
 				return deferred.promise;
@@ -317,7 +317,7 @@
 				ev = new CMEvent(doc);
 			}
 
-			console.debug('EventService.removeEvent(' + ev.getId() + ')');
+			console.log('EventService.removeEvent(' + ev.getId() + ')');
 			var deferred = $q.defer();
 
 			eventsdb.remove(ev.getRawData()).then(function(response) {
@@ -331,7 +331,7 @@
 
 		var _allEvents = null;
 		var getAllEvents = function() {
-			console.debug('EventService.getAllEvents()');
+			console.log('EventService.getAllEvents()');
 			if (_allEvents) {
 				return _allEvents;
 			}
@@ -367,7 +367,7 @@
 			});
 
 			_allEvents['finally'](function() {
-				console.debug('EventService.getAllEvents(): finished.');
+				console.log('EventService.getAllEvents(): finished.');
 				_allEvents = null;
 			});
 			return _allEvents;
@@ -382,7 +382,7 @@
 			var deferred = $q.defer();
 			_allFavorites = deferred.promise;
 
-			console.debug('EventService.getAllFavorites()');
+			console.log('EventService.getAllFavorites()');
 			favoritesdb.query('cruisemonkey/favorites-all', {include_docs:true}).then(function(results) {
 				var ret = [], i, fav;
 				for (i=0; i < results.rows.length; i++) {
@@ -395,7 +395,7 @@
 			});
 
 			_allFavorites['finally'](function() {
-				console.debug('EventService.getAllFavorites(): finished.');
+				console.log('EventService.getAllFavorites(): finished.');
 				_allFavorites = null;
 			});
 			return _allFavorites;
@@ -407,7 +407,7 @@
 				return _officialEvents;
 			}
 
-			console.debug('EventService.getOfficialEvents()');
+			console.log('EventService.getOfficialEvents()');
 
 			var deferred = $q.defer();
 			_officialEvents = deferred.promise;
@@ -419,7 +419,7 @@
 			});
 
 			_officialEvents['finally'](function() {
-				console.debug('EventService.getOfficialEvents(): finished.');
+				console.log('EventService.getOfficialEvents(): finished.');
 				_officialEvents = null;
 			});
 			return _officialEvents;
@@ -431,7 +431,7 @@
 				return _unofficialEvents;
 			}
 
-			console.debug('EventService.getUnofficialEvents()');
+			console.log('EventService.getUnofficialEvents()');
 
 			var deferred = $q.defer();
 			_unofficialEvents = deferred.promise;
@@ -443,7 +443,7 @@
 			});
 
 			_unofficialEvents['finally'](function() {
-				console.debug('EventService.getUnofficialEvents(): finished.');
+				console.log('EventService.getUnofficialEvents(): finished.');
 				_unofficialEvents = null;
 			});
 			return _unofficialEvents;
@@ -455,7 +455,7 @@
 				return _userEvents;
 			}
 
-			console.debug('EventService.getUserEvents()');
+			console.log('EventService.getUserEvents()');
 
 			var username = UserService.getUsername();
 			if (!username) {
@@ -473,7 +473,7 @@
 				deferred.reject(err);
 			});
 			_userEvents['finally'](function() {
-				console.debug('EventService.getUserEvents(): finished.');
+				console.log('EventService.getUserEvents(): finished.');
 				_userEvents = null;
 			});
 			return _userEvents;
@@ -485,7 +485,7 @@
 				return _myEvents;
 			}
 
-			console.debug('EventService.getMyEvents()');
+			console.log('EventService.getMyEvents()');
 
 			var username = UserService.getUsername();
 			if (!username) {
@@ -518,7 +518,7 @@
 			});
 
 			_myEvents['finally'](function() {
-				console.debug('EventService.getMyEvents(): finished.');
+				console.log('EventService.getMyEvents(): finished.');
 				_myEvents = null;
 			});
 			return _myEvents;
@@ -530,7 +530,7 @@
 				return _myFavorites;
 			}
 
-			console.debug('EventService.getMyFavorites()');
+			console.log('EventService.getMyFavorites()');
 
 			var username = UserService.getUsername();
 			if (!username) {
@@ -554,7 +554,7 @@
 			});
 
 			_myFavorites['finally'](function() {
-				console.debug('EventService.getMyFavorites(): finished.');
+				console.log('EventService.getMyFavorites(): finished.');
 				_myFavorites = null;
 			});
 			return _myFavorites;
@@ -566,7 +566,7 @@
 				return _isFavorite;
 			}
 
-			console.debug('EventService.isFavorite()');
+			console.log('EventService.isFavorite()');
 
 			var username = UserService.getUsername();
 			if (!username || !favoritesdb) {
@@ -577,24 +577,24 @@
 			_isFavorite = deferred.promise;
 
 			var docId = 'favorite:' + modelVersion + ':' + username + ':' + eventId;
-			console.debug('docId=',docId);
+			console.log('docId=',docId);
 			favoritesdb.get(docId).then(function(response) {
-				console.debug('response=',response);
+				console.log('response=',response);
 				deferred.resolve(response && response._id === docId && !response._deleted);
 			}, function(err) {
-				console.warn('error getting ' + docId, err);
+				console.log('error getting ' + docId, err);
 				deferred.resolve(false);
 			});
 
 			_isFavorite['finally'](function() {
-				console.debug('EventService.isFavorite(): finished.');
+				console.log('EventService.isFavorite(): finished.');
 				_isFavorite = null;
 			});
 			return _isFavorite;
 		};
 
 		var addFavorite = function(eventId) {
-			console.debug('EventService.addFavorite(' + eventId + ')');
+			console.log('EventService.addFavorite(' + eventId + ')');
 			var username = UserService.getUsername();
 			if (!username || !eventId || !favoritesdb) {
 				return rejectedResult('EventService.addFavorite(): user not logged in, or no eventId passed');
@@ -630,17 +630,17 @@
 					checkExisting.resolve(false);
 				}
 			}, function(err) {
-				console.warn('Checking for existing document ' + favId + ': error was: ' + err);
+				console.log('Checking for existing document ' + favId + ': error was: ' + err);
 				checkExisting.resolve(false);
 			});
 
 			checkExisting.promise.then(function() {
 				favoritesdb.put(fav).then(function(res) {
-					console.debug('EventService.addFavorite(): favorite added.');
+					console.log('EventService.addFavorite(): favorite added.');
 					fav._rev = res.rev;
 					deferred.resolve(new CMFavorite(fav));
 				}, function(err) {
-					console.error(err);
+					console.log(err);
 					deferred.reject(err);
 				});
 			});
@@ -649,7 +649,7 @@
 		};
 
 		var removeFavorite = function(eventId) {
-			console.debug('EventService.removeFavorite(' + eventId + ')');
+			console.log('EventService.removeFavorite(' + eventId + ')');
 			var username = UserService.getUsername();
 			if (!username || !eventId || !favoritesdb) {
 				return rejectedResult('EventService.removeFavorite(): user not logged in, or no eventId passed');
@@ -670,7 +670,7 @@
 				favoritesdb.bulkDocs(remove).then(function(results) {
 					deferred.resolve(results.length);
 				}, function(err) {
-					console.debug('bulk error:',err);
+					console.log('bulk error:',err);
 					deferred.reject(err);
 				});
 			}, function(err) {
@@ -687,7 +687,7 @@
 				i, entry,
 				start, end;
 
-			console.debug('now = ' + now);
+			console.log('now = ' + now);
 			if (eventList && eventList.length > 0) {
 				for (i=0; i < eventList.length; i++) {
 					entry = eventList[i];
@@ -699,10 +699,10 @@
 						start = entry.getStart().unix();
 						end   = entry.getEnd() === undefined? start : entry.getEnd().unix();
 
-						console.debug('now=' + now + ',start=' + start + ',end=' + end + ': ' + entry.getSummary());
+						console.log('now=' + now + ',start=' + start + ',end=' + end + ': ' + entry.getSummary());
 						if (now < start) {
 							// we're still before the current event
-							console.debug(i + ': now < start: inexact match');
+							console.log(i + ': now < start: inexact match');
 							matched = i;
 							break;
 						} else {
@@ -710,14 +710,14 @@
 
 							if (now <= end) {
 								// we're in the event, match!
-								console.debug(i + ': now <= end: exact match');
+								console.log(i + ': now <= end: exact match');
 								matched = i;
 								break;
 							} else {
 								var j = i+1;
 								nextEntry = eventList[j];
 								while (nextEntry) {
-									console.debug(j + '/' + eventList.length + ': nextEntry = ' + nextEntry);
+									console.log(j + '/' + eventList.length + ': nextEntry = ' + nextEntry);
 									if (nextEntry.getId().indexOf('day-') === 0) {
 										// next entry is a day marker, skip it
 										nextEntry = eventList[j++];
@@ -730,7 +730,7 @@
 
 									// the next entry is after now, we'll consider it the best match
 									if (now <= start) {
-										console.debug(j + ': now > end: inexact match');
+										console.log(j + ': now > end: inexact match');
 										matched = j;
 										break;
 									}
@@ -741,11 +741,11 @@
 					}
 				}
 
-				console.debug('matched = ' + matched);
+				console.log('matched = ' + matched);
 				entry = undefined;
 				if (matched > -1) {
 					entry = eventList[matched];
-					console.debug('matched ' + entry.getId());
+					console.log('matched ' + entry.getId());
 				}
 
 				if (matched === -1) {
@@ -753,7 +753,7 @@
 				}
 
 				if (entry.day === undefined && matched > 0 && eventList[matched - 1].day !== undefined) {
-					console.debug('entry ' + entry.getId() + ' was the first of the day, scrolling to the day marker instead.');
+					console.log('entry ' + entry.getId() + ' was the first of the day, scrolling to the day marker instead.');
 					entry = eventList[matched-1];
 				}
 				return entry;

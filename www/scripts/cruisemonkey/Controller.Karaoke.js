@@ -31,14 +31,14 @@
 				return;
 			}
 
-			console.debug('doUpdate: starting');
+			console.log('doUpdate: starting');
 			updating = true;
 			var entries = updateFunction(_karaokeList);
-			console.debug('doUpdate: matched ' + entries.length + ' entries');
+			console.log('doUpdate: matched ' + entries.length + ' entries');
 			updating = false;
 			scope.entries = entries;
 			scope.$broadcast('scroll.resize');
-			console.debug('doUpdate: finished');
+			console.log('doUpdate: finished');
 		};
 
 		var doUpdateDelayed = function(delay) {
@@ -46,7 +46,7 @@
 				$timeout.cancel(delayTimeout);
 			}
 			delayTimeout = $timeout(function() {
-				console.info('KaraokeService.doUpdateDelayed()');
+				console.log('KaraokeService.doUpdateDelayed()');
 				delayTimeout = null;
 				doUpdate();
 			}, delay || 500);
@@ -89,7 +89,7 @@
 		};
 	}])
 	.controller('CMKaraokeSearchCtrl', ['storage', '$rootScope', '$scope', '$state', 'KaraokeService', function(storage, $rootScope, $scope, $state, KaraokeService) {
-		console.info('Initializing CMKaraokeSearchCtrl');
+		console.log('Initializing CMKaraokeSearchCtrl');
 
 		KaraokeService.setScope($scope);
 		KaraokeService.setSortFunction(sortByArtist);
@@ -149,7 +149,7 @@
 				}
 			}
 
-			console.debug('returning ' + entries.length + ' entries');
+			console.log('returning ' + entries.length + ' entries');
 			return entries;
 		});
 
@@ -163,7 +163,7 @@
 		};
 
 		$scope.clearSearchString = function() {
-			console.info('clear search string');
+			console.log('clear search string');
 			var element = document.getElementById('search');
 			element.value = '';
 			if ("createEvent" in document) {

@@ -7,7 +7,7 @@
 		'angularLocalStorage'
 	])
 	.controller('CMDeckListCtrl', ['storage', '$scope', '$rootScope', '$ionicSlideBoxDelegate', '$timeout', '$state', '$stateParams', '$location', '$document', function(storage, $scope, $rootScope, $ionicSlideBoxDelegate, $timeout, $state, $stateParams, $location, $document) {
-		console.info('Initializing CMDeckListCtrl');
+		console.log('Initializing CMDeckListCtrl');
 
 		storage.bind($scope, 'deck', {
 			'defaultValue': 2,
@@ -19,7 +19,7 @@
 		}
 
 		if ($stateParams.deck) {
-			console.info('$stateParams.deck: ' + $stateParams.deck);
+			console.log('$stateParams.deck: ' + $stateParams.deck);
 			var passedDeck = 0;
 			if ($stateParams.deck.indexOf('-') > -1) {
 				var parts = $stateParams.deck.split('-');
@@ -28,7 +28,7 @@
 				passedDeck = parseInt($stateParams.deck, 10);
 			}
 			if (passedDeck && passedDeck > 0) {
-				console.info('passedDeck = ' + passedDeck);
+				console.log('passedDeck = ' + passedDeck);
 				$scope.deck = passedDeck;
 			}
 		}
@@ -98,7 +98,7 @@
 		});
 
 		$scope.slideChanged = function(index) {
-			console.info('slideBox.slideChanged: ' + index);
+			console.log('slideBox.slideChanged: ' + index);
 			$scope.deck = index + 2;
 		};
 

@@ -12,8 +12,8 @@
 	angular.module('cruisemonkey.Notifications', [
 		'ngCordova'
 	])
-	.factory('Notifications', ['$q', '$rootScope', '$timeout', '$ionicPopup', '$cordovaDialogs', '$cordovaLocalNotification', '$cordovaToast', function($q, $rootScope, $timeout, $ionicPopup, $cordovaDialogs, $cordovaLocalNotification, $cordovaToast) {
-		console.info('Initializing notification service.');
+	.factory('Notifications', ['$q', '$rootScope', '$timeout', '$ionicLoading', '$ionicPopup', '$cordovaDialogs', '$cordovaLocalNotification', '$cordovaSpinnerDialog', '$cordovaToast', function($q, $rootScope, $timeout, $ionicLoading, $ionicPopup, $cordovaDialogs, $cordovaLocalNotification, $cordovaSpinnerDialog, $cordovaToast) {
+		console.log('Initializing notification service.');
 		var newEvents = [];
 		var newSeamails = [];
 
@@ -25,16 +25,16 @@
 		*/
 
 		$rootScope.$on('cruisemonkey.notify.newEvent', function(ev, newEvent) {
-			console.debug('Notifications: A new event was added to the database:',newEvent);
+			console.log('Notifications: A new event was added to the database:',newEvent);
 			newEvents.push(newEvent);
 		});
 
 		$rootScope.$on('cruisemonkey.notify.newSeamail', function(ev, newSeamail) {
-			console.debug('Notifications: A new seamail message was received:',newSeamail);
+			console.log('Notifications: A new seamail message was received:',newSeamail);
 		});
 
 		$rootScope.$on('cruisemonkey.notify.alert', function(ev, alert) {
-			console.debug('Notifications: Alert: ' + alert.message);
+			console.log('Notifications: Alert: ' + alert.message);
 			if (isCordova) {
 				$cordovaDialogs.alert(alert.message, alert.title, alert.buttonName);
 			} else {
@@ -52,9 +52,29 @@
 			}
 		});
 
+		$rootScope.$on('cruisemonkey.notify.spinner', function(ev, spinner) {
+			var timeout = spinner.timeout || 3000;
+			if (isCordova) {
+				$cordovaSpinnerDialog.show(spinner.message);
+				$timeout(function() {
+					$cordovaSpinnerDialog.hide();
+				}, timeout);
+			} else {
+				var template = '<i class="icon ion-spin ion-load-a"></i>'; 
+				if (spinner.message) {
+					template += '<br/>' + spinner.message;
+				}
+				$ionicLoading.show({
+					template: template,
+					noBackdrop: true,
+					duration: timeout
+				});
+			}
+		});
+
 		$rootScope.$on('cruisemonkey.notify.toast', function(ev, toast) {
 			var timeout = toast.timeout || 3000;
-			console.debug('Notifications: Toast(' + timeout + '): ' + toast.message);
+			console.log('Notifications: Toast(' + timeout + '): ' + toast.message);
 			if (isCordova) {
 				var duration = 'short';
 				if (timeout >= 5000) {

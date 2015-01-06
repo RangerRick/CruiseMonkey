@@ -63,13 +63,13 @@
 		'cruisemonkey.Events'
 	])
 	.controller('CMEditEventCtrl', ['$q', '$scope', '$rootScope', 'UserService', function($q, $scope, $rootScope, UserService) {
-		console.info('Initializing CMEditEventCtrl');
+		console.log('Initializing CMEditEventCtrl');
 
 		if ($rootScope.editEvent) {
 			$scope.event = $rootScope.editEvent.toEditableBean();
 			delete $rootScope.editEvent;
 
-			console.debug('Found existing event to edit.');
+			console.log('Found existing event to edit.');
 		} else {
 			var ev = new CMEvent();
 			ev.setStart(moment());
@@ -78,7 +78,7 @@
 			ev.setPublic(true);
 			$scope.event = ev.toEditableBean();
 
-			console.debug('Created fresh event.');
+			console.log('Created fresh event.');
 		}
 	}])
 	.factory('EventCache', [function() {
@@ -155,7 +155,7 @@
 
 		var refreshing = null;
 		var doRefresh = function() {
-			console.debug('CMEventCtrl: refreshing view.');
+			console.log('CMEventCtrl: refreshing view.');
 			if (refreshing) {
 				return refreshing;
 			}
@@ -208,12 +208,12 @@
 				}
 
 				filteredEvents.sort(sortEvent);
-				console.debug('CMEventCtrl: got ' + filteredEvents.length + ' ' + $scope.eventType + ' events');
+				console.log('CMEventCtrl: got ' + filteredEvents.length + ' ' + $scope.eventType + ' events');
 				EventCache.put($scope.eventType, filteredEvents);
 				deferred.resolve(true);
 				updateEntries();
 			}, function(err) {
-				console.warn('CMEventCtrl: failed to get ' + $scope.eventType + ' events: ' + err);
+				console.log('CMEventCtrl: failed to get ' + $scope.eventType + ' events: ' + err);
 				deferred.resolve(false);
 			});
 
@@ -226,7 +226,7 @@
 
 		var updateEntries = function() {
 			var cached = withDays(EventCache.get($scope.eventType, $scope.searchString));
-			//console.debug('cached events:',cached);
+			//console.log('cached events:',cached);
 			$scope.entries = cached;
 			$scope.$broadcast('scroll.resize');
 		};
@@ -246,11 +246,11 @@
 					position += (offsetTop - scrollTop + clientTop);
 					scrollEl = scrollEl.parent();
 				}
-				console.debug('offset='+position);
+				console.log('offset='+position);
 				return position;
 				/* $scope.$broadcast('scroll.scrollTo', 0, position, true); */
 			} else {
-				console.debug("can't find element " + hash);
+				console.log("can't find element " + hash);
 				return 0;
 			}
 		};
@@ -259,13 +259,13 @@
 			refreshInterval = 5;
 		var refreshEvents = function(immediately) {
 			if (timeout) {
-				console.debug('CMEventCtrl.refreshEvents(): Refresh already in-flight.  Skipping.');
+				console.log('CMEventCtrl.refreshEvents(): Refresh already in-flight.  Skipping.');
 				return;
 			} else if (immediately) {
-				console.debug('CMEventCtrl.refreshEvents(): Refreshing immediately.');
+				console.log('CMEventCtrl.refreshEvents(): Refreshing immediately.');
 				doRefresh();
 			} else {
-				console.debug('CMEventCtrl.refreshEvents(): Refreshing in ' + refreshInterval + ' seconds.');
+				console.log('CMEventCtrl.refreshEvents(): Refreshing in ' + refreshInterval + ' seconds.');
 				timeout = $timeout(function() {
 					timeout = null;
 					doRefresh();
@@ -279,7 +279,7 @@
 				$timeout.cancel(updateDelayTimeout);
 			}
 			updateDelayTimeout = $timeout(function() {
-				//console.debug('CMEventCtrl.doUpdateDelayed()');
+				//console.log('CMEventCtrl.doUpdateDelayed()');
 				updateDelayTimeout = null;
 				updateEntries();
 			}, delay || 300);
@@ -291,7 +291,7 @@
 				return;
 			}
 			refreshDelayTimeout = $timeout(function() {
-				console.debug('CMEventCtrl.doRefreshDelayed()');
+				console.log('CMEventCtrl.doRefreshDelayed()');
 				refreshDelayTimeout = null;
 				doRefresh();
 			}, delay || 300);
@@ -308,10 +308,10 @@
 
 					previousEntry = $scope.entries[i-1];
 					nextEntry     = $scope.entries[i+1];
-					console.debug('previousEntry=',previousEntry);
-					console.debug('nextEntry=',nextEntry);
-					console.debug('i=',i);
-					console.debug('length=',$scope.entries.length);
+					console.log('previousEntry=',previousEntry);
+					console.log('nextEntry=',nextEntry);
+					console.log('i=',i);
+					console.log('length=',$scope.entries.length);
 					// if this is the first entry of the day...
 					if (previousEntry && previousEntry.getId().indexOf('day-') === 0) {
 						if ((i+1) === $scope.entries.length) {
@@ -355,7 +355,7 @@
 			var nextEvent = EventService.getNextEvent($scope.entries);
 			if (nextEvent) {
 				var hashLocation = findHash(nextEvent.getId());
-				console.debug('scrolling to hash location: ' + hashLocation);
+				console.log('scrolling to hash location: ' + hashLocation);
 				$ionicScrollDelegate.$getByHandle('eventScroll').scrollTo(0, hashLocation);
 			} else {
 				$ionicScrollDelegate.$getByHandle('eventScroll').scrollBottom();
@@ -368,7 +368,7 @@
 		};
 
 		$scope.clearSearchString = function() {
-			console.info('clear search string');
+			console.log('clear search string');
 			var element = document.getElementById('search');
 			element.value = '';
 			if ("createEvent" in document) {
@@ -394,7 +394,7 @@
 			$scope.closePopover();
 			$scope.$evalAsync(function() {
 				var i, entry, eventId = ev.getId();
-				console.debug('CMEventCtrl.onFavoriteChanged(' + eventId + ')');
+				console.log('CMEventCtrl.onFavoriteChanged(' + eventId + ')');
 
 				if (ev.isFavorite()) {
 					// Event was favorited, unfavorite it
@@ -419,7 +419,7 @@
 					}
 
 					if (!existing) {
-						console.warn('Somehow favorited an event that does not exist! (' + eventId + ')');
+						console.log('Somehow favorited an event that does not exist! (' + eventId + ')');
 						return;
 					}
 
@@ -446,7 +446,7 @@
 		};
 
 		$scope.onPublicChanged = function(ev) {
-			console.debug('onPublicChanged(' + ev.getId() + ')');
+			console.log('onPublicChanged(' + ev.getId() + ')');
 			$scope.closePopover();
 			$scope.$evalAsync(function() {
 				ev.setPublic(!ev.isPublic());
@@ -472,19 +472,19 @@
 			e.preventDefault();
 			e.stopPropagation();
 
-			console.debug('closing modal (cancel)');
+			console.log('closing modal (cancel)');
 			$scope.event = undefined;
 			$scope.eventData = undefined;
 			$scope.modal.hide();
 		};
 
 		$scope.saveModal = function(data) {
-			console.debug('closing modal (save)');
+			console.log('closing modal (save)');
 
 			var username = UserService.getUsername();
 
 			if (!username) {
-				console.error('No username!');
+				console.log('No username!');
 				$scope.modal.hide();
 				return;
 			}
@@ -493,7 +493,7 @@
 			ev.fromEditableBean(data);
 			ev.setUsername(username);
 
-			console.debug('saving=', ev.getRawData());
+			console.log('saving=', ev.getRawData());
 
 			if (ev.getRevision() && $scope.entries) {
 				// update the existing event in the UI
@@ -509,7 +509,7 @@
 			}
 
 			$q.when(EventService.addEvent(ev)).then(function(res) {
-				console.debug('event added:', res);
+				console.log('event added:', res);
 				$scope.modal.hide();
 				refreshEvents(true);
 			});
@@ -550,7 +550,7 @@
 			if (!user.username || user.username !== entry.getUsername()) {
 				return;
 			}
-			console.debug('openPopover:', $event, entry);
+			console.log('openPopover:', $event, entry);
 			$scope.popoverEntry = entry;
 			$scope.popover.show($event);
 		};
@@ -577,10 +577,10 @@
 			doRefresh();
 		});
 		$scope.$on('$ionicView.afterEnter', function(ev, info) {
-			$scope.eventTitle = 'Events: ' + ($scope.eventType === 'my'? 'Mine' : $scope.eventType.capitalize());
+			$scope.eventTitle = ($scope.eventType === 'my'? 'Mine' : $scope.eventType.capitalize());
 		});
 		$scope.$on('cm.database.syncComplete', function(ev, db) {
-			console.debug('CMEventCtrl: Sync complete: ' + db.name);
+			console.log('CMEventCtrl: Sync complete: ' + db.name);
 			refreshDelayed(100);
 		});
 		$rootScope.$on('cm.database.change', function(ev, db, doc) {
@@ -589,20 +589,20 @@
 
 		/*
 		$scope.$on('$ionicView.enter', function(ev, info) {
-			console.info('CMEventCtrl.enter:', info);
+			console.log('CMEventCtrl.enter:', info);
 			var eventType = info.stateName.replace('app.events.', '');
 			$scope.eventTitle = 'Events: ' + (eventType == 'my'? 'Mine' : eventType.capitalize());
 		});
 		$scope.$on('$ionicView.leave', function(ev, info) {
-			console.info('CMEventCtrl.leave:', info);
+			console.log('CMEventCtrl.leave:', info);
 		});
 		$scope.$on('$ionicView.unloaded', function(ev, info) {
-			console.info('CMEventCtrl.unloaded:', info);
+			console.log('CMEventCtrl.unloaded:', info);
 		});
 		*/
 	}])
 	.controller('OldCMEventCtrl', [ 'storage', '$scope', '$rootScope', '$interval', '$timeout', '$stateParams', '$location', '$q', '$ionicModal', '$ionicScrollDelegate', '$window', 'UserService', 'EventService', 'EventCache', function(storage, $scope, $rootScope, $interval, $timeout, $stateParams, $location, $q, $ionicModal, $ionicScrollDelegate, $window, UserService, EventService, EventCache) {
-		console.info('Initializing CMEventCtrl');
+		console.log('Initializing CMEventCtrl');
 
 		/*
 		var message = 'Updating ' + eventType.capitalize() + ' events...';
@@ -611,10 +611,10 @@
 		storage.bind($scope, 'searchString', {
 			'storeName': 'cm.event.' + eventType
 		});
-		console.debug('$scope.searchString: ' + $scope.searchString);
+		console.log('$scope.searchString: ' + $scope.searchString);
 
 		$scope.$on('cm.main.database-initialized', function() {
-			console.debug('CMEventCtrl: Database initialized.');
+			console.log('CMEventCtrl: Database initialized.');
 			$timeout(function() {
 				refreshEvents(true);
 			}, 100);

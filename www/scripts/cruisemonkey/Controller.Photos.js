@@ -35,27 +35,27 @@
 				}
 			})
 			.success(function(data, status, headers, config) {
-				console.debug('PhotoService.getNextPhoto(): data=',data);
-				console.debug('PhotoService.getNextPhoto(): status=',status);
+				console.log('PhotoService.getNextPhoto(): data=',data);
+				console.log('PhotoService.getNextPhoto(): status=',status);
 				if (data && data.status === 'ok') {
 					if (data.photos.length > 0) {
 						angular.forEach(data.photos, function(entry, index) {
 							entry.url = settings.getTwitarrRoot() + 'img/photos/md_' + entry.photo;
 						});
 						nextPage++;
-						console.debug('photos=',data.photos);
+						console.log('photos=',data.photos);
 						deferred.resolve(data.photos);
 					} else {
 						deferred.reject(data);
 					}
 				} else {
-					console.warn('Successful response, but status was ' + data.status);
+					console.log('Successful response, but status was ' + data.status);
 					deferred.reject(data);
 				}
 			})
 			.error(function(data, status, headers, config) {
-				console.warn('Bad response: ' + data);
-				console.debug('status=',status);
+				console.log('Bad response: ' + data);
+				console.log('status=',status);
 				deferred.reject(data);
 			});
 
@@ -111,7 +111,7 @@
 		};
 	}])
 	.controller('CMPhotoCtrl', ['$rootScope', '$scope', '$ionicSlideBoxDelegate', '$http', '$log', 'PhotoService', function($rootScope, $scope, $ionicSlideBoxDelegate, $http, log, photos) {
-		console.info('Initializing CMPhotoCtrl');
+		console.log('Initializing CMPhotoCtrl');
 
 		$scope.finished = false;
 		$scope.entries = [];
@@ -142,7 +142,7 @@
 		};
 
 		$scope.reload = function() {
-			console.debug('CMPhotoCtrl.reload()');
+			console.log('CMPhotoCtrl.reload()');
 			$scope.finished = false;
 			$scope.entries = [];
 			photos.reset();
@@ -159,14 +159,14 @@
 
 		$scope.loadMore = function(done) {
 			if ($scope.finished) {
-				console.info('CMPhotoCtrl.loadMore(): finished.');
+				console.log('CMPhotoCtrl.loadMore(): finished.');
 				done();
 				return;
 			}
 
 			photos.getMore().then(function(entries) {
 				angular.forEach(entries, function(entry, index) {
-					console.debug('CMPhotoCtrl.loadMore(): got new entry: ' + entry.url);
+					console.log('CMPhotoCtrl.loadMore(): got new entry: ' + entry.url);
 					this.push(entry);
 				}, $scope.entries);
 				if (!$scope.currentEntry) {

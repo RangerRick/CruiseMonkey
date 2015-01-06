@@ -5,7 +5,7 @@
 		'cruisemonkey.Config'
 	])
 	.controller('CMAboutCtrl', ['$scope', '$rootScope', 'EventService', 'config.app.version', function($scope, $rootScope, EventService, version) {
-		console.info('Initializing CMAboutCtrl');
+		console.log('Initializing CMAboutCtrl');
 		$scope.version = version;
 
 		$scope.goToSite = function(site) {

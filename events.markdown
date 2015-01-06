@@ -40,3 +40,4 @@ Sent when a user logs in or out.  Passed an Object representing the user with th
 * username: the user's username
 * password: the user's password
 * loggedIn: whether or not the user is logged in
+

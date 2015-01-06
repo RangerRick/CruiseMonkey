@@ -42,7 +42,7 @@
 			for (i=numItems; i <= 0; i--) {
 				key = $window.localStorage.key(i);
 				if (!key.startsWith('cruisemonkey.')) {
-					console.debug('Local Storage: removing key ' + key);
+					console.log('Local Storage: removing key ' + key);
 					$window.localStorage.removeItem(key);
 				}
 			}

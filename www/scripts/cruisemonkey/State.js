@@ -9,13 +9,13 @@
 		'ngCordova'
 	])
 	.factory('StateService', ['$rootScope', '$timeout', 'UserService', '$cordovaNetwork', function($rootScope, $timeout, UserService, $cordovaNetwork) {
-		console.info('StateService: Initializing.');
+		console.log('StateService: Initializing.');
 
 		var initWait = 5000;
 		var fsm = StateMachine.create({
 			initial: 'uninitialized',
 			error: function(eventName, from, to, args, errorCode, errorMessage) {
-				console.warn('StateService: event ' + eventName + ' failed: ' + from + ' -> ' + to + ' is illegal: ' + errorMessage);
+				console.log('StateService: event ' + eventName + ' failed: ' + from + ' -> ' + to + ' is illegal: ' + errorMessage);
 			},
 			events: [
 				{ name: 'initialize', to: 'initialized', from: [
@@ -39,7 +39,7 @@
 			],
 			callbacks: {
 				oninitialized: function(event, from, to, isCordova) {
-					console.info(event + ': ' + from + ' -> ' + to);
+					console.log(event + ': ' + from + ' -> ' + to);
 					$rootScope.$broadcast('state.' + to, 'state.' + from, isCordova);
 					if (isCordova) {
 						if ($cordovaNetwork.isOnline()) {
@@ -52,11 +52,11 @@
 					}
 				},
 				onoffline: function(event, from, to, data) {
-					console.info(event + ': ' + from + ' -> ' + to);
+					console.log(event + ': ' + from + ' -> ' + to);
 					$rootScope.$broadcast('state.' + to, 'state.' + from, data);
 				},
 				ononline: function(event, from, to, data) {
-					console.info(event + ': ' + from + ' -> ' + to);
+					console.log(event + ': ' + from + ' -> ' + to);
 					$rootScope.$broadcast('state.' + to, 'state.' + from, data);
 					if (UserService.loggedIn()) {
 						fsm.logIn(UserService.getUsername());
@@ -65,11 +65,11 @@
 					}
 				},
 				onloggedout: function(event, from, to, data) {
-					console.info(event + ': ' + from + ' -> ' + to);
+					console.log(event + ': ' + from + ' -> ' + to);
 					$rootScope.$broadcast('state.' + to, 'state.' + from, data);
 				},
 				onloggedin: function(event, from, to, username) {
-					console.info(event + ': ' + from + ' -> ' + to + ', username=' + username);
+					console.log(event + ': ' + from + ' -> ' + to + ', username=' + username);
 					$rootScope.$broadcast('state.' + to, 'state.' + from, username);
 				}
 			}
@@ -92,7 +92,7 @@
 					fsm.logIn(username);
 					return true;
 				} else {
-					console.warn("Can't log in.  Current state is: " + fsm.current);
+					console.log("Can't log in.  Current state is: " + fsm.current);
 					return false;
 				}
 			},
@@ -101,7 +101,7 @@
 					fsm.logOut();
 					return true;
 				} else {
-					console.warn("Can't log out.  Current state is: " + fsm.current);
+					console.log("Can't log out.  Current state is: " + fsm.current);
 					return false;
 				}
 			}

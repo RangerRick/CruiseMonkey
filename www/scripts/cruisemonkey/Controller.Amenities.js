@@ -14,7 +14,7 @@
 		};
 	})
 	.controller('CMAmenitiesCtrl', ['storage', '$rootScope', '$scope', '$timeout', '$location', 'DeckService', function(storage, $rootScope, $scope, $timeout, $location, DeckService) {
-		console.info('Initializing CMAmenitiesCtrl');
+		console.log('Initializing CMAmenitiesCtrl');
 
 		$scope.amenities = DeckService.getAmenities();
 
@@ -30,20 +30,20 @@
 		$scope.openAmenity = function(ev, amenity) {
 			if (amenity.getId()) {
 				var uniqueId = amenity.getUniqueId();
-				console.info('open amenity: ' + uniqueId);
+				console.log('open amenity: ' + uniqueId);
 				$location.path('/deck-plans/' + amenity.getUniqueId());
 			} else {
-				console.warn('amenity does not have an ID: ' + amenity.toString());
+				console.log('amenity does not have an ID: ' + amenity.toString());
 			}
 		};
 
 		storage.bind($scope, 'searchString', {
 			'storeName': 'cm.amenities'
 		});
-		console.debug('$scope.searchString: ' + $scope.searchString);
+		console.log('$scope.searchString: ' + $scope.searchString);
 
 		$scope.clearSearchString = function() {
-			console.info('clear search string');
+			console.log('clear search string');
 			var element = document.getElementById('search');
 			element.value = '';
 			if ("createEvent" in document) {

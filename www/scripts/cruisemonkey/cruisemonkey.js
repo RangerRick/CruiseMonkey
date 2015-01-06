@@ -25,10 +25,11 @@
 		'cruisemonkey.controllers.Photos',
 		'cruisemonkey.Database',
 		'cruisemonkey.Events',
+		'cruisemonkey.Initializer',
+		'cruisemonkey.Notifications',
 		'cruisemonkey.Seamail',
 		'cruisemonkey.Settings',
 		'cruisemonkey.State',
-		'cruisemonkey.Notifications',
 		'cruisemonkey.Upgrades',
 		'cruisemonkey.User'
 	])
@@ -154,47 +155,15 @@
 			})
 		;
 	}])
-	.run(['Notifications', '$rootScope', '$timeout', '$ionicPlatform', '$cordovaDialogs', '$cordovaSplashscreen', 'UserService', 'SettingsService', 'EventService', 'UpgradeService', '_database', function(notifications, $rootScope, $timeout, $ionicPlatform, $cordovaDialogs, $cordovaSplashscreen, UserService, SettingsService, EventService, UpgradeService, database) {
-		console.debug('CruiseMonkey run() called.');
+	/* EventService & Notifications are here just to make sure they initializes early */
+	.run(['$cordovaSplashscreen', 'EventService', 'Notifications', 'UpgradeService', function($cordovaSplashscreen, EventService, Notifications, UpgradeService) {
+		console.log('CruiseMonkey run() called.');
 
 		if (ionic.Platform.isWebView()) {
-			console.debug('Initializing ionic platform plugins and events.');
-			// Hide the accessory bar by default (remove this to show the accessory bar above the keyboard or form inputs)
-			if(window.cordova && window.cordova.plugins.Keyboard) {
-				cordova.plugins.Keyboard.hideKeyboardAccessoryBar(true);
-			}
-			if(window.StatusBar) {
-				// org.apache.cordova.statusbar required
-				StatusBar.styleLightContent();
-			}
-			$ionicPlatform.on('pause', function() {
-				console.warn('CruiseMonkey paused:', arguments);
-			});
-			$ionicPlatform.on('resign', function() {
-				console.warn('CruiseMonkey locked while in foreground:', arguments);
-			});
-			$ionicPlatform.on('resume', function() {
-				console.warn('CruiseMonkey resumed:', arguments);
-			});
-
-			if (window.plugins && window.plugins.backgroundFetch) {
-				window.plugins.backgroundFetch.configure(function() {
-					console.warn('Background Fetch Initiated');
-					$cordovaDialogs.alert('Background fetch happened!', function() {
-						console.warn('Alert callback was called!  Hellz yeah!');
-					}, 'Alert', 'Awesome!');
-					$timeout(function() {
-						window.plugins.backgroundFetch.finish();
-					});
-				});
-			}
+			$cordovaSplashscreen.hide();
 		}
 
 		UpgradeService.upgrade();
-
-		if (navigator.splashscreen) {
-			$cordovaSplashscreen.hide();
-		}
 	}])
 	;
 }());

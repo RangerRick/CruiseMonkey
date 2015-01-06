@@ -4,7 +4,7 @@
 	angular.module('cruisemonkey.controllers.Menu', [
 	])
 	.controller('CMMenuCtrl', ['$rootScope', '$scope', '$ionicPopover', 'UserService', function($rootScope, $scope, $ionicPopover, UserService) {
-		console.info('CMMenuCtrl initializing.');
+		console.log('CMMenuCtrl initializing.');
 
 		$ionicPopover.fromTemplateUrl('template/login.html', {
 			scope: $scope,
@@ -14,13 +14,13 @@
 		});
 
 		$scope.logOut = function() {
-			console.info('Logging out.');
+			console.log('Logging out.');
 			UserService.reset();
 		};
 
 		$scope.$on('cruisemonkey.user.updated', function(ev, newUser, oldUser) {
 			if (newUser.loggedIn && !oldUser.loggedIn) {
-				console.info('User "' + newUser.username + '" logged in.');
+				console.log('User "' + newUser.username + '" logged in.');
 			}
 			$scope.loginPopover.hide();
 		});

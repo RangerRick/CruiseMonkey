@@ -8,7 +8,7 @@
 		'cruisemonkey.User'
 	])
 	.controller('CMLoginCtrl', ['$scope', '$rootScope', '$location', '$http', 'UserService', 'SettingsService', 'Notifications', function($scope, $rootScope, $location, $http, UserService, SettingsService, notifications) {
-		console.info('Initializing CMLoginCtrl');
+		console.log('Initializing CMLoginCtrl');
 
 		$scope.oldUser = UserService.get();
 		$scope.user = UserService.get();
@@ -19,9 +19,10 @@
 		};
 
 		$scope.canSubmit = function(newUser) {
-			if (newUser.loggedIn === false && newUser.username && newUser.password) {
+			if (newUser.username && newUser.password) {
 				return true;
 			}
+			return false;
 		};
 
 		$scope.cancel = function() {
@@ -33,12 +34,12 @@
 			if (user.username) {
 				user.username = user.username.toLowerCase();
 			}
-			console.info('saving user: ' + user.username);
+			console.log('saving user: ' + user.username);
 			UserService.save(user);
 		};
 
 		$scope.logIn = function(user) {
-			console.debug('Logging in.');
+			console.log('Logging in.');
 			var twitarrRoot = SettingsService.getTwitarrRoot();
 
 			document.getElementById('loginPassword').blur();
@@ -59,7 +60,7 @@
 			}
 
 			var url = twitarrRoot + 'api/v2/user/auth';
-			console.debug('Logging in to ' + url);
+			console.log('Logging in to ' + url);
 
 			$http({
 				method: 'GET',
@@ -75,18 +76,18 @@
 				}
 			})
 			.success(function(data, status, headers, config) {
-				console.debug('success:',data);
+				console.log('success:',data);
 				user.key = data.key;
 				$scope.saveUser(user);
 				$rootScope.$broadcast('cruisemonkey.notify.toast', { message: 'Logged in as ' + user.username });
 			})
 			.error(function(data, status, headers, config) {
-				console.warn('failure!');
-				console.debug('url:',url);
-				console.debug('data:', data);
-				console.debug('status:',status);
-				console.debug('headers:',headers);
-				console.debug('config:',config);
+				console.log('failure!');
+				console.log('url:',url);
+				console.log('data:', data);
+				console.log('status:',status);
+				console.log('headers:',headers);
+				console.log('config:',config);
 				$rootScope.$broadcast('cruisemonkey.notify.alert', { message: 'Login failed.' });
 			});
 
