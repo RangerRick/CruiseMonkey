@@ -7,7 +7,7 @@
 		'ionic',
 		'ngCordova'
 	])
-	.factory('Initializer', ['$rootScope', '$cordovaKeyboard', '$cordovaStatusbar', '$ionicPlatform', function($rootScope, $cordovaKeyboard, $cordovaStatusbar, $ionicPlatform) {
+	.factory('Initializer', ['$rootScope', '$timeout', '$cordovaKeyboard', '$cordovaStatusbar', '$ionicPlatform', function($rootScope, $timeout, $cordovaKeyboard, $cordovaStatusbar, $ionicPlatform) {
 		console.log('CruiseMonkey Initializing.');
 
 		if (ionic.Platform.isWebView()) {
@@ -45,6 +45,6 @@
 			console.log('We are not inside a web view.');
 		}
 
-		return {}
+		return {};
 	}]);
 }());
