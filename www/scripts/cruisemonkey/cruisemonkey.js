@@ -33,13 +33,15 @@
 		'cruisemonkey.Upgrades',
 		'cruisemonkey.User'
 	])
-	.config(['$stateProvider', '$urlRouterProvider', '$compileProvider', '$ionicConfigProvider', function($stateProvider, $urlRouterProvider, $compileProvider, $ionicConfigProvider) {
+	.config(['$stateProvider', '$urlRouterProvider', '$compileProvider', '$httpProvider', '$ionicConfigProvider', function($stateProvider, $urlRouterProvider, $compileProvider, $httpProvider, $ionicConfigProvider) {
 		if (isMobile) {
 			ionic.Platform.fullScreen(false,true);
 		}
 
 		$compileProvider.aHrefSanitizationWhitelist(/^\s*(https?|ftp|mailto|file|tel):/);
 		$compileProvider.imgSrcSanitizationWhitelist(/^\s*(https?|file):/);
+
+		$httpProvider.defaults.useXDomain = true;
 
 		$ionicConfigProvider.views.maxCache(20);
 		$ionicConfigProvider.views.transition('none');
