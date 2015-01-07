@@ -44,6 +44,9 @@
 		$ionicConfigProvider.views.maxCache(20);
 		$ionicConfigProvider.views.transition('none');
 
+		$ionicConfigProvider.navBar.positionPrimaryButtons('left');
+		$ionicConfigProvider.navBar.positionSecondaryButtons('right');
+
 		$urlRouterProvider.otherwise('/app/events/official');
 
 		$stateProvider
