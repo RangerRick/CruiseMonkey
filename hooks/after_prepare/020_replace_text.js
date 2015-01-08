@@ -41,6 +41,8 @@ if (rootdir) {
     'platforms/android/assets/www',
     'platforms/android',
     'platforms/ios/www',
+    'platforms/android/build/intermediates/manifests/full/debug',
+    'platforms/android/build/intermediates/manifests/full/release',
   ];
 
   // CONFIGURE HERE
