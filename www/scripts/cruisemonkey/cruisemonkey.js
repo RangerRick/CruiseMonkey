@@ -43,6 +43,7 @@
 
 		$ionicConfigProvider.views.maxCache(20);
 		$ionicConfigProvider.views.transition('none');
+		$ionicConfigProvider.views.forwardCache(true);
 
 		$ionicConfigProvider.navBar.positionPrimaryButtons('left');
 		$ionicConfigProvider.navBar.positionSecondaryButtons('right');

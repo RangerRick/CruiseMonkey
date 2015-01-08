@@ -5,7 +5,16 @@ if [ -n "$SIGNING_PASS" ]; then
 	EXTRA_ARGS="-storepass $SIGNING_PASS -keypass $SIGNING_PASS"
 fi
 
-rsync -avr "platforms/android/ant-build/MainActivity-release-unsigned.apk" "platforms/android/ant-build/CruiseMonkey-release-unaligned.apk"
-jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore ~/share/android/android-release-key.keystore $EXTRA_ARGS "platforms/android/ant-build/CruiseMonkey-release-unaligned.apk" ranger
-rm -f "platforms/android/ant-build/CruiseMonkey-release.apk"
-zipalign -v 4 "platforms/android/ant-build/CruiseMonkey-release-unaligned.apk" "platforms/android/ant-build/CruiseMonkey-release.apk"
+APKFILE=`find platforms/android -name \*-debug.apk -o -name \*-release-unsigned.apk | xargs ls -1 -tr | tail -n 1`
+SIGNME=`echo "$APKFILE" | perl -p -e 's,-.*.apk,-signme.apk,g'`
+SIGNED=`echo "$APKFILE" | perl -p -e 's,-.*.apk,-signed.apk,g'`
+
+echo "source APK: $APKFILE"
+echo "signing: $SIGNME"
+
+rsync -avr "$APKFILE" "$SIGNME"
+jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore ~/share/android/android-release-key.keystore $EXTRA_ARGS "$SIGNME" ranger
+rm -f "$SIGNED"
+zipalign -v 4 "$SIGNME" "$SIGNED"
+
+echo "signed: $SIGNED"
