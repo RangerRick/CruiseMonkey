@@ -102,7 +102,6 @@ $button-small-height:             30px;
 $button-small-padding:            2px;
 $button-small-icon-size:          28px;
 
-$bar-height: 44px;
 $bar-dark-text: $rciYellow;
 
 $tabs-dark-bg:                 $dark;
@@ -175,19 +174,6 @@ $tabs-dark-text:               $rciYellow;
 	-moz-animation: spin 1s infinite linear;
 	-o-animation: spin 1s infinite linear;
 	animation: spin 1s infinite linear;
-}
-
-.has-search {
-	top: 44px;
-	&.has-header {
-		top: 88px;
-	}
-}
-
-.has-header {
-	&.has-search {
-		top: 88px;
-	}
 }
 
 .cm-slider.bar {

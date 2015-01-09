@@ -13,7 +13,7 @@
 	}
 	</style>
 	<cm-search-bar placeholder="Search Artists &amp; Songs" on-search-changed="onSearchChanged(searchString)" ng-model="searchString"></cm-search-bar>
-	<ion-content has-header="true" delegate-handle="karaoke-scroll" class="has-search">
+	<ion-content delegate-handle="karaoke-scroll" ng-class="'has-subheader'">
 		<div class="list">
 			<div class="item artist-entry"
 				collection-repeat="entry in entries | karaokeFilter:searchString track by entry[0]"

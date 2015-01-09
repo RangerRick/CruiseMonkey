@@ -5,7 +5,7 @@
 		</ion-nav-buttons>
 	</ion-nav-bar>
 	<cm-search-bar placeholder="Search Amenities" ng-model="searchString"></cm-search-bar>
-	<ion-content delegate-handle="amenities" class="has-search">
+	<ion-content delegate-handle="amenities" ng-class="'has-subheader'">
 		<ion-list class="event-list">
 			<span ng-repeat="amenity in amenities | amenityFilter:searchString">
 				<ion-item class="item-divider header yellow" ng-if="headerAmenities[amenity.getUniqueId()]" ng-bind-html="'Deck ' + amenity.getDeck().getFloor()"></ion-item>
