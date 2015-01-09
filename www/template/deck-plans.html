@@ -8,7 +8,7 @@
 		<ion-nav-buttons side="primary">
 			<button menu-toggle="left" class="button button-icon icon ion-navicon"></button>
 		</ion-nav-buttons>
-		<ion-nav-buttons side="secondary">
+		<ion-nav-buttons side="secondary" ng-if="showButtons">
 			<button class="button button-clear" ng-click="previous()"><i ng-class="hasPrevious? 'icon icon-cm ion-arrow-left-b':'icon ion-arrow-left-b icon-blank'"></i></button>
 			<button class="button button-clear" ng-click="next()"><i ng-class="hasNext? 'icon icon-cm ion-arrow-right-b':'icon ion-arrow-right-b icon-blank'"></i></button>
 		</ion-nav-buttons>

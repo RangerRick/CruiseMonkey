@@ -14,6 +14,8 @@
 			'storeName': 'cruisemonkey.deck'
 		});
 
+		$scope.showButtons = false;
+
 		if ($scope.deck !== undefined && isNaN($scope.deck)) {
 			$scope.deck = parseInt($scope.deck, 10);
 		}
@@ -78,11 +80,15 @@
 				$scope.hasNext = true;
 			}
 
-			if (ionic.Platform.isWebView()) {
-				$scope.showButtons = false;
-			} else {
-				$scope.showButtons = true;
-			}
+			ionic.Platform.ready(function() {
+				$rootScope.$evalAsync(function() {
+					if (ionic.Platform.isWebView()) {
+						$scope.showButtons = false;
+					} else {
+						$scope.showButtons = true;
+					}
+				});
+			});
 		};
 
 		$scope.$watch('deck', function(newValue, oldValue) {

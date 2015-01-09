@@ -118,8 +118,10 @@
 
 		var eventsdb, favoritesdb;
 		ionic.Platform.ready(function() {
-			eventsdb = createEventsDb();
-			favoritesdb = createFavoritesDb();
+			$rootScope.$evalAsync(function() {
+				eventsdb = createEventsDb();
+				favoritesdb = createFavoritesDb();
+			});
 		});
 
 		$rootScope.$on('cruisemonkey.user.updated', function(ev, user) {
