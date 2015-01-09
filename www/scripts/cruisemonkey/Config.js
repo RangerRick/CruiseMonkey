@@ -157,9 +157,9 @@
 			storage.set('cruisemonkey.settings.onaboat', true);
 
 			/* switch out the defaults with the shipboard ones */
-			defaultValue['database.root'] = 'http://jccc5.rccl.com/db/';
+			defaultValue['database.root'] = 'http://jcc5.rccl.com/db/';
 			defaultValue['database.name'] = 'cruisemonkey';
-			defaultValue['twitarr.root']  = 'http://jccc5.rccl.com/';
+			defaultValue['twitarr.root']  = 'http://jcc5.rccl.com/';
 
 			/* now override the user's settings */
 			var s = getSettings();
@@ -169,7 +169,7 @@
 			saveSettings(s);
 		}
 
-		upgrades.register('4.0.84', 'Reset all local storage.', function() {
+		upgrades.register('4.8.90', 'Reset all local storage.', function() {
 			clearOldStorage();
 		});
 
