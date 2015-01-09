@@ -12,9 +12,7 @@ bower install || exit 1
 
 bin/install-plugins.js || exit 1
 
-echo "<html><head><title>CruiseMonkey</title></head><body>" > .index.html
-commonmark README.markdown >> .index.html
-echo "</body></html>" >> .index.html
-mv .index.html index.html
+patch -p0 < bin/prepare-fix.ionic-scrollview.patch
 
-echo "Now, run 'ionic platform ios' or 'ionic platform android' to set up your build."
+ionic platform ios
+bin/crosswalk.sh

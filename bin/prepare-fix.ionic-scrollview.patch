@@ -1,0 +1,22 @@
+diff -Nurdbw www/lib/ionic/js.orig/ionic-angular.js www/lib/ionic/js/ionic-angular.js
+--- www/lib/ionic/js.orig/ionic-angular.js	2014-12-15 15:15:42.000000000 -0500
++++ www/lib/ionic/js/ionic-angular.js	2015-01-08 21:06:01.000000000 -0500
+@@ -7743,7 +7743,6 @@
+           }
+         });
+ 
+-        scrollView.resize();
+         dataSource.setData(value, beforeSiblings, afterSiblings);
+         collectionRepeatManager.resize();
+       }
+diff -Nurdbw www/lib/ionic/js.orig/ionic.bundle.js www/lib/ionic/js/ionic.bundle.js
+--- www/lib/ionic/js.orig/ionic.bundle.js	2015-01-08 21:05:27.000000000 -0500
++++ www/lib/ionic/js/ionic.bundle.js	2015-01-08 21:05:41.000000000 -0500
+@@ -48647,7 +48647,6 @@
+           }
+         });
+ 
+-        scrollView.resize();
+         dataSource.setData(value, beforeSiblings, afterSiblings);
+         collectionRepeatManager.resize();
+       }
