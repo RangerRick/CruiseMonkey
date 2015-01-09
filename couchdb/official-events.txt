@@ -11,6 +11,28 @@
 }
 
 {
+   "_id": "event:2015:official:a187d5a332ef5d0bca20ea99132d934d",
+   "type": "event",
+   "start": "2015-02-01 19:00",
+   "lastUpdated": "2015-01-06 12:00",
+   "isPublic": true,
+   "username": "official",
+   "summary": "Formal Night",
+   "description": "The first of two formal nights."
+}
+
+{
+   "_id": "event:2015:official:a187d5a332ef5d0bca20ea99132d984d",
+   "type": "event",
+   "start": "2015-02-05 19:00",
+   "lastUpdated": "2015-01-06 12:00",
+   "isPublic": true,
+   "username": "official",
+   "summary": "Formal Night",
+   "description": "The second of two formal nights."
+}
+
+{
    "_id": "event:2015:official:a187d5a332ef5d0bca20ea991300738b",
    "type": "event",
    "start": "2015-02-03 08:00",
