@@ -4,7 +4,7 @@
 			<button menu-toggle="left" class="button button-icon icon ion-navicon"></button>
 		</ion-nav-buttons>
 	</ion-nav-bar>
-	<cm-search-bar ng-model="searchString" style="margin-top: 44px"></cm-search-bar>
+	<cm-search-bar placeholder="Search Amenities" ng-model="searchString" style="margin-top: 44px"></cm-search-bar>
 	<ion-content scroll="true" style="margin-top: 44px">
 		<div class="event-list list">
 			<span ng-repeat="amenity in amenities | amenityFilter:searchString">

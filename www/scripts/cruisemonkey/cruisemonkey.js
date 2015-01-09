@@ -33,7 +33,7 @@
 		'cruisemonkey.Upgrades',
 		'cruisemonkey.User'
 	])
-	.directive('cmSearchBar', function() {
+	.directive('cmSearchBar', ['$timeout', function($timeout) {
 		return {
 			restrict: 'AE',
 			templateUrl: 'template/search.html',
@@ -43,8 +43,25 @@
 			},
 			replace: true,
 			link: function(scope, elem, attrs, ctrl) {
+				scope.placeholder = attrs.placeholder || 'Search';
+				scope.searchStringInternal = scope.searchString;
+
+				var timeout = null;
+				scope.updateSearchString = function() {
+					if (timeout) {
+						//console.log('search: update in progress');
+						return;
+					} else {
+						//console.log('search: updating model in 300ms');
+						timeout = $timeout(function() {
+							timeout = null;
+							scope.searchString = scope.searchStringInternal;
+							//console.log('search: finished updating model (new search string = ' + scope.searchString + ')');
+						}, 300);
+					}
+				};
 				scope.clearSearchString = function() {
-					console.log('Clear the search string!');
+					//console.log('Clear the search string!');
 					scope.searchString = '';
 				};
 				/*
@@ -54,7 +71,7 @@
 				*/
 			}
 		};
-	})
+	}])
 	.config(['$stateProvider', '$urlRouterProvider', '$compileProvider', '$ionicConfigProvider', function($stateProvider, $urlRouterProvider, $compileProvider, $ionicConfigProvider) {
 		if (isMobile) {
 			ionic.Platform.fullScreen(false,true);
