@@ -89,6 +89,8 @@
 		$ionicConfigProvider.navBar.positionPrimaryButtons('left');
 		$ionicConfigProvider.navBar.positionSecondaryButtons('right');
 
+		$ionicConfigProvider.tabs.position('bottom');
+
 		$urlRouterProvider.otherwise('/app/events/official');
 
 		$stateProvider

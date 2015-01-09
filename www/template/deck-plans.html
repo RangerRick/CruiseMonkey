@@ -3,16 +3,17 @@
 		color: transparent;
 	}
 </style>
-<ion-view view-title="Deck {{deck}}" hide-back-button="true">
-	<ion-nav-bar class="bar-stable bar-dark" animation="no-animation">
-		<ion-nav-buttons side="primary">
+<ion-view>
+	<ion-header-bar class="bar-stable bar-dark" animation="no-animation">
+		<div class="buttons">
 			<button menu-toggle="left" class="button button-icon icon ion-navicon"></button>
-		</ion-nav-buttons>
-		<ion-nav-buttons side="secondary">
+		</div>
+		<h1 class="title">Deck {{deck}}</h1>
+		<div class="buttons">
 			<button class="button button-clear" ng-click="previous()"><i ng-class="hasPrevious? 'icon icon-cm ion-arrow-left-b':'icon ion-arrow-left-b icon-blank'"></i></button>
 			<button class="button button-clear" ng-click="next()"><i ng-class="hasNext? 'icon icon-cm ion-arrow-right-b':'icon ion-arrow-right-b icon-blank'"></i></button>
-		</ion-nav-buttons>
-	</ion-nav-bar>
+		</div>
+	</ion-header-bar>
 	<ion-content has-header="true" scroll="true" style="margin-bottom: 18px">
 		<ion-slide-box show-pager="false" active-slide="currentSlide" on-slide-changed="slideChanged(index)">
 			<ion-slide ng-repeat="d in [2,3,4,5,6,7,8,9,10,11,12,13,14,15]">

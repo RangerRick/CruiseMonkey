@@ -104,56 +104,6 @@
 			console.log('Created fresh event.');
 		}
 	}])
-	.factory('EventCache', [function() {
-		var cache = {};
-
-		var getCacheEntry = function(name) {
-			if (cache[name]) {
-				return cache[name];
-			}
-			return [];
-		};
-
-		return {
-			get: function(name, searchString) {
-				var even = false, i, entry = null, ret = [];
-
-				var cacheEntry = getCacheEntry(name);
-				if (!searchString) {
-					for (i=0; i < cacheEntry.length; i++) {
-						ret.push(cacheEntry[i]);
-					}
-				} else {
-					for (i=0; i < cacheEntry.length; i++) {
-						entry = cacheEntry[i];
-						if (entry.matches(searchString)) {
-							ret.push(entry);
-						}
-					}
-				}
-
-				ret.sort(sortEvent);
-				for (i=0; i < ret.length; i++) {
-					ret[i].setEven(even);
-					even = !even;
-				}
-				return ret;
-			},
-			put: function(name, data) {
-				var evs = {}, i, entry, entries = [];
-				for (i=0; i < data.length; i++) {
-					entry = data[i];
-					evs[entry.getId()] = entry;
-				}
-
-				angular.forEach(evs, function(e) {
-					entries.push(e);
-				});
-				entries.sort(sortFunc);
-				cache[name] = entries;
-			}
-		};
-	}])
 	.controller('CMEventsBarCtrl', ['$scope', '$timeout', '$state', 'UserService', 'storage', function($scope, $timeout, $state, UserService, storage) {
 		$scope.loggedIn = UserService.get().loggedIn;
 
@@ -175,7 +125,7 @@
 			}
 		});
 	}])
-	.controller('CMEventCtrl', ['$q', '$scope', '$rootScope', '$timeout', '$cordovaKeyboard', '$ionicScrollDelegate', '$ionicPopover', '$ionicModal', 'EventService', 'UserService', 'EventCache', function($q, $scope, $rootScope, $timeout, $cordovaKeyboard, $ionicScrollDelegate, $ionicPopover, $ionicModal, EventService, UserService, EventCache) {
+	.controller('CMEventCtrl', ['$q', '$scope', '$rootScope', '$timeout', '$cordovaKeyboard', '$ionicScrollDelegate', '$ionicPopover', '$ionicModal', 'EventService', 'UserService', function($q, $scope, $rootScope, $timeout, $cordovaKeyboard, $ionicScrollDelegate, $ionicPopover, $ionicModal, EventService, UserService) {
 		var withDays = function(events) {
 			var ret = [],
 				ev, i,

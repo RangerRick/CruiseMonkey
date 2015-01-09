@@ -1,13 +1,14 @@
-<ion-view view-title="{{eventTitle}}" hide-back-button="true">
-	<ion-nav-bar class="bar-stable bar-dark" animation="no-animation">
-		<ion-nav-buttons side="primary">
+<ion-view>
+	<ion-header-bar class="bar-stable bar-dark" animation="no-animation">
+		<div class="buttons">
 			<button menu-toggle="left" class="button button-icon icon ion-navicon"></button>
-		</ion-nav-buttons>
-		<ion-nav-buttons side="secondary">
+		</div>
+		<h1 class="title">{{eventTitle}}</h1>
+		<div class="buttons">
 			<button class="button button-icon button-cm icon ion-ios-plus" ng-click="addEvent()" ng-if="loggedIn()"></button>
 			<button class="button button-icon button-cm icon ion-clock" ng-click="goToNow()"></button>
-		</ion-nav-buttons>
-	</ion-nav-bar>
+		</div>
+	</ion-header-bar>
 	<cm-search-bar placeholder="Search Events" ng-model="searchString"></cm-search-bar>
 	<ion-content scroll="true" padding="false" id="event-content" delegate-handle="eventScroll" ng-class="'has-subheader'">
 		<ion-list class="event-list">
