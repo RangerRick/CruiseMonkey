@@ -155,7 +155,9 @@
 
 		var forceSync = function() {
 			eventsdb.forceSync();
-			favoritesdb.forceSync();
+			if (favoritesdb) {
+				favoritesdb.forceSync();
+			}
 		};
 
 		$rootScope.$on('cruisemonkey.user.settings-changed', function(ev, settings) {
