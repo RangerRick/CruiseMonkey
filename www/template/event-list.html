@@ -8,8 +8,8 @@
 			<button class="button button-icon button-cm icon ion-clock" ng-click="goToNow()"></button>
 		</ion-nav-buttons>
 	</ion-nav-bar>
-	<cm-search-bar placeholder="Search Events" ng-model="searchString" style="margin-top: 44px"></cm-search-bar>
-	<ion-content scroll="true" padding="false" id="event-content" delegate-handle="eventScroll" style="margin-top: 44px">
+	<cm-search-bar placeholder="Search Events" ng-model="searchString"></cm-search-bar>
+	<ion-content scroll="true" padding="false" id="event-content" delegate-handle="eventScroll" class="has-search">
 		<ion-list class="event-list">
 			<span ng-repeat="entry in entries | eventFilter:searchString track by entry.getId()" id="{{entry.getId()}}">
 				<ion-item ng-if="isDay(entry)" class="item-divider event-header">{{prettyDate(entry.day)}}</ion-item>

@@ -7077,6 +7077,14 @@ a.button {
   -o-animation: spin 1s infinite linear;
   animation: spin 1s infinite linear; }
 
+.has-search {
+  top: 44px; }
+  .has-search.has-header {
+    top: 88px; }
+
+.has-header.has-search {
+  top: 88px; }
+
 .cm-slider.bar {
   height: 18px;
   background-color: #f4f4f4; }

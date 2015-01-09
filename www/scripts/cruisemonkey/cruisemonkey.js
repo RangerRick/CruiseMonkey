@@ -40,35 +40,37 @@
 			transclude: false,
 			scope: {
 				searchString: '=ngModel',
+				onSearchChanged: '&'
 			},
 			replace: true,
 			link: function(scope, elem, attrs, ctrl) {
 				scope.placeholder = attrs.placeholder || 'Search';
 				scope.searchStringInternal = scope.searchString;
 
+				var callChangeFunction = function() {
+					if (scope.onSearchChanged) {
+						$timeout(function() {
+							scope.onSearchChanged(scope.searchString);
+						});
+					}
+				};
+
 				var timeout = null;
 				scope.updateSearchString = function() {
 					if (timeout) {
-						//console.log('search: update in progress');
 						return;
 					} else {
-						//console.log('search: updating model in 300ms');
 						timeout = $timeout(function() {
 							timeout = null;
 							scope.searchString = scope.searchStringInternal;
-							//console.log('search: finished updating model (new search string = ' + scope.searchString + ')');
+							callChangeFunction();
 						}, 300);
 					}
 				};
 				scope.clearSearchString = function() {
-					//console.log('Clear the search string!');
-					scope.searchString = '';
+					scope.searchStringInternal = scope.searchString = '';
+					callChangeFunction();
 				};
-				/*
-				scope.$watch('searchString', function(newValue, oldValue) {
-					console.log('searchString changed: new=' + newValue + ', old=' + oldValue);
-				});
-				*/
 			}
 		};
 	}])

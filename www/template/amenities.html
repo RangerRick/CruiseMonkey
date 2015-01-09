@@ -4,17 +4,17 @@
 			<button menu-toggle="left" class="button button-icon icon ion-navicon"></button>
 		</ion-nav-buttons>
 	</ion-nav-bar>
-	<cm-search-bar placeholder="Search Amenities" ng-model="searchString" style="margin-top: 44px"></cm-search-bar>
-	<ion-content scroll="true" style="margin-top: 44px">
-		<div class="event-list list">
+	<cm-search-bar placeholder="Search Amenities" ng-model="searchString"></cm-search-bar>
+	<ion-content delegate-handle="amenities" class="has-search">
+		<ion-list class="event-list">
 			<span ng-repeat="amenity in amenities | amenityFilter:searchString">
-				<div class="item item-divider header yellow" ng-if="headerAmenities[amenity.getUniqueId()]" ng-bind-html="'Deck ' + amenity.getDeck().getFloor()"></div>
+				<ion-item class="item-divider header yellow" ng-if="headerAmenities[amenity.getUniqueId()]" ng-bind-html="'Deck ' + amenity.getDeck().getFloor()"></ion-item>
 				<a class="item item-icon-right item-text-wrap" ng-click="openAmenity($event, amenity)">
 					<div class="summary" ng-bind-html="amenity.getSummary()"></div>
 					<div class="description" ng-show="amenity.getDescription()" ng-bind-html="amenity.getDescription()"></div>
 					<i ng-if="amenity.getIcon()" class="icon {{amenity.getIcon()}}"></i>
 				</a>
 			</span>
-		</div>
+		</ion-list>
 	</ion-content>
 </ion-view>

@@ -12,8 +12,8 @@
 		line-height: 22px;
 	}
 	</style>
-	<cm-search-bar placeholder="Search Artists &amp; Songs" ng-model="searchString" style="margin-top: 44px"></cm-search-bar>
-	<ion-content has-header="true" scroll="true" style="margin-top: 44px">
+	<cm-search-bar placeholder="Search Artists &amp; Songs" on-search-changed="onSearchChanged(searchString)" ng-model="searchString"></cm-search-bar>
+	<ion-content has-header="true" delegate-handle="karaoke-scroll" class="has-search">
 		<div class="list">
 			<div class="item artist-entry"
 				collection-repeat="entry in entries | karaokeFilter:searchString track by entry[0]"

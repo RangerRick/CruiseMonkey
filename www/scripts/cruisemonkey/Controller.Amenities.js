@@ -13,32 +13,36 @@
 			return array;
 		};
 	})
-	.controller('CMAmenitiesCtrl', ['storage', '$rootScope', '$scope', '$timeout', '$location', 'DeckService', function(storage, $rootScope, $scope, $timeout, $location, DeckService) {
+	.controller('CMAmenitiesCtrl', ['storage', '$rootScope', '$scope', '$timeout', '$location', '$ionicScrollDelegate', 'DeckService', function(storage, $rootScope, $scope, $timeout, $location, $ionicScrollDelegate, DeckService) {
 		console.log('Initializing CMAmenitiesCtrl');
 
 		storage.bind($scope, 'searchString', {
 			'storeName': 'cruisemonkey.search.amenities'
 		});
 
-		$scope.amenities = DeckService.getAmenities();
+		$scope.$on('$ionicView.loaded', function(ev, info) {
+			$scope.amenities = DeckService.getAmenities();
 
-		$scope.headerAmenities = {};
-		var lastDeck = 0;
-		angular.forEach($scope.amenities, function(amenity, index) {
-			if (amenity.getDeck() !== lastDeck) {
-				$scope.headerAmenities[amenity.getUniqueId()] = true;
-			}
-			lastDeck = amenity.getDeck();
+			$scope.headerAmenities = {};
+			var lastDeck = 0;
+			angular.forEach($scope.amenities, function(amenity, index) {
+				if (amenity.getDeck() !== lastDeck) {
+					$scope.headerAmenities[amenity.getUniqueId()] = true;
+				}
+				lastDeck = amenity.getDeck();
+			});
+
+			$scope.openAmenity = function(ev, amenity) {
+				if (amenity.getId()) {
+					var uniqueId = amenity.getUniqueId();
+					console.log('open amenity: ' + uniqueId);
+					$location.path('/deck-plans/' + amenity.getUniqueId());
+				} else {
+					console.log('amenity does not have an ID: ' + amenity.toString());
+				}
+			};
+
+			$ionicScrollDelegate.$getByHandle('amenities').resize();
 		});
-
-		$scope.openAmenity = function(ev, amenity) {
-			if (amenity.getId()) {
-				var uniqueId = amenity.getUniqueId();
-				console.log('open amenity: ' + uniqueId);
-				$location.path('/deck-plans/' + amenity.getUniqueId());
-			} else {
-				console.log('amenity does not have an ID: ' + amenity.toString());
-			}
-		};
 	}]);
 }());

@@ -30,29 +30,30 @@
 				return karaokeList;
 			}
 
-			var searchFor = searchString.split(/\s+/);
+			var searchFor = searchString.split(/\s+/), match;
 
 			for (i=0; i < karaokeList.length; i++) {
+				match = true;
 				for (s=0; s < searchFor.length; s++) {
 					if (karaokeList[i][1].contains(searchFor[s])) {
-						entries.push(karaokeList[i]);
-						//console.log('filter('+searchString+'): search ' + searchFor[s] + ' matched artist:', karaokeList[i]);
-						break;
+						continue;
 					} else if (karaokeList[i][2].contains(searchFor[s])) {
-						entries.push(karaokeList[i]);
-						//console.log('filter('+searchString+'): search ' + searchFor[s] + ' matched song:', karaokeList[i]);
-						break;
+						continue;
 					} else {
-
+						match = false;
+						break;
 					}
+				}
+				if (match) {
+					entries.push(karaokeList[i]);
 				}
 			}
 
-			console.log('returning ' + entries.length + ' entries');
+			//console.log('returning ' + entries.length + ' entries');
 			return entries;
 		};
 	})
-	.controller('CMKaraokeSearchCtrl', ['storage', '$rootScope', '$scope', '$http', '$state', function(storage, $rootScope, $scope, $http, $state) {
+	.controller('CMKaraokeSearchCtrl', ['storage', '$scope', '$http', '$ionicScrollDelegate', function(storage, $scope, $http, $ionicScrollDelegate) {
 		console.log('Initializing CMKaraokeSearchCtrl');
 
 		storage.bind($scope, 'searchString', {
@@ -60,6 +61,13 @@
 		});
 
 		$scope.entries = [];
+
+		$scope.onSearchChanged = function(searchString) {
+			var delegate = $ionicScrollDelegate.$getByHandle('karaoke-scroll');
+			if (delegate.getScrollPosition().top != 0) {
+				delegate.scrollTop(false);
+			}
+		};
 
 		$scope.$on('$ionicView.loaded', function(ev, info) {
 			$http.get('scripts/cruisemonkey/karaoke-list.js').success(function(data, status, headers, config) {
@@ -79,38 +87,6 @@
 				console.log('Failed to get karaoke list: ' + status, data);
 			});
 		});
-
-		/*
-		KaraokeService.setScope($scope);
-		KaraokeService.setSortFunction(sortByArtist);
-		KaraokeService.setUpdateFunction();
-		*/
-
-		/*
-		$scope.searchUpdated = function(searchString) {
-			$scope.searchString = searchString;
-			KaraokeService.doUpdateDelayed();
-		};
-
-		$scope.clearSearchString = function() {
-			console.log('clear search string');
-			var element = document.getElementById('search');
-			element.value = '';
-			if ("createEvent" in document) {
-				var evt = document.createEvent('HTMLEvents');
-				evt.initEvent('change', false, true);
-				element.dispatchEvent(evt);
-			} else {
-				element.fireEvent('change');
-			}
-		};
-
-		$scope.$on('$destroy', function() {
-			KaraokeService.reset();
-		});
-
-		KaraokeService.initialize();
-		*/
 	}])
 	;
 }());
