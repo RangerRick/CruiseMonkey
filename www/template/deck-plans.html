@@ -8,7 +8,7 @@
 		<ion-nav-buttons side="primary">
 			<button menu-toggle="left" class="button button-icon icon ion-navicon"></button>
 		</ion-nav-buttons>
-		<ion-nav-buttons side="secondary" ng-if="showButtons">
+		<ion-nav-buttons side="secondary">
 			<button class="button button-clear" ng-click="previous()"><i ng-class="hasPrevious? 'icon icon-cm ion-arrow-left-b':'icon ion-arrow-left-b icon-blank'"></i></button>
 			<button class="button button-clear" ng-click="next()"><i ng-class="hasNext? 'icon icon-cm ion-arrow-right-b':'icon ion-arrow-right-b icon-blank'"></i></button>
 		</ion-nav-buttons>
@@ -18,7 +18,7 @@
 			<ion-slide ng-repeat="d in [2,3,4,5,6,7,8,9,10,11,12,13,14,15]">
 				<div class="box deck-plans" ng-switch="shouldBeVisible(d)">
 					<img ng-switch-when="true" ng-src="images/decks/deck{{d}}.png" id="deck{{d}}"></img>
-					<div ng-switch-default class="placeholder"><i class="icon ion-help-buoy"></i></div>
+					<div ng-switch-default class="placeholder"><!-- <i class="icon ion-help-buoy"></i> --></div>
 				</div>
 			</ion-slide>
 		</ion-slide-box>

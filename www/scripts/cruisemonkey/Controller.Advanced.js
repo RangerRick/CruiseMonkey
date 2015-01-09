@@ -12,7 +12,11 @@
 
 		$scope.settings = SettingsService.getSettings();
 
-		$scope.isIos = ionic.Platform.isIOS();
+		ionic.Platform.ready(function() {
+			$rootScope.$evalAsync(function() {
+				$scope.isIos = ionic.Platform.isIOS();
+			});
+		});
 
 		$scope.lastModified = function() {
 			var lm = EventService.getLastModified();

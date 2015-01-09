@@ -33,6 +33,28 @@
 		'cruisemonkey.Upgrades',
 		'cruisemonkey.User'
 	])
+	.directive('cmSearchBar', function() {
+		return {
+			restrict: 'AE',
+			templateUrl: 'template/search.html',
+			transclude: false,
+			scope: {
+				searchString: '=ngModel',
+			},
+			replace: true,
+			link: function(scope, elem, attrs, ctrl) {
+				scope.clearSearchString = function() {
+					console.log('Clear the search string!');
+					scope.searchString = '';
+				};
+				/*
+				scope.$watch('searchString', function(newValue, oldValue) {
+					console.log('searchString changed: new=' + newValue + ', old=' + oldValue);
+				});
+				*/
+			}
+		};
+	})
 	.config(['$stateProvider', '$urlRouterProvider', '$compileProvider', '$ionicConfigProvider', function($stateProvider, $urlRouterProvider, $compileProvider, $ionicConfigProvider) {
 		if (isMobile) {
 			ionic.Platform.fullScreen(false,true);

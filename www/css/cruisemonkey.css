@@ -7179,6 +7179,9 @@ a.tab-item:hover {
   /* font-size: 24px; */
   font-weight: bolder; }
 
+.bar .button {
+  padding-left: 2px;
+  padding-right: 2px; }
 .bar .button.button-clear .icon:before, .bar .button.button-clear.icon:before, .bar .button.button-clear.icon-left:before, .bar .button.button-clear.icon-right:before {
   font-size: 24px; }
 
@@ -7211,7 +7214,7 @@ ion-side-menu .item.active {
 #nav li.item > * {
   display: inline-block;
   width: 100%;
-  padding: 8px; }
+  padding: 4px; }
 
 #nav li.item > *.active {
   background-color: #ddf2ff; }

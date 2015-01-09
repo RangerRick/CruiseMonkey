@@ -62,6 +62,29 @@
 		'cruisemonkey.User',
 		'cruisemonkey.Events'
 	])
+	.filter('eventFilter', function() {
+		return function(cmEvent, searchString) {
+			var allArray = [], ret = [];
+			angular.forEach(cmEvent, function(obj, index) {
+				if (obj instanceof CMDay) {
+					allArray.push(obj);
+				} else if (obj && obj.matches(searchString)) {
+					allArray.push(obj);
+				}
+			});
+			for (var i=0; i < allArray.length; i++) {
+				if (allArray[i+1] && allArray[i] instanceof CMDay && allArray[i+1] instanceof CMDay) {
+					// this is a day header, and the next is a day header, do nothing
+				} else {
+					ret.push(allArray[i]);
+				}
+			}
+			if (ret.length > 0 && ret[ret.length-1] instanceof CMDay) {
+				ret.pop();
+			}
+			return ret;
+		};
+	})
 	.controller('CMEditEventCtrl', ['$q', '$scope', '$rootScope', 'UserService', function($q, $scope, $rootScope, UserService) {
 		console.log('Initializing CMEditEventCtrl');
 
@@ -228,9 +251,9 @@
 
 				filteredEvents.sort(sortEvent);
 				console.log('CMEventCtrl: got ' + filteredEvents.length + ' ' + $scope.eventType + ' events');
-				EventCache.put($scope.eventType, filteredEvents);
+				$scope.entries = withDays(filteredEvents);
+				$ionicScrollDelegate.resize();
 				deferred.resolve(true);
-				updateEntries();
 			}, function(err) {
 				console.log('CMEventCtrl: failed to get ' + $scope.eventType + ' events: ' + err);
 				deferred.resolve(false);
@@ -244,10 +267,12 @@
 		};
 
 		var updateEntries = function() {
+			/*
 			var cached = withDays(EventCache.get($scope.eventType, $scope.searchString));
 			//console.log('cached events:',cached);
 			$scope.entries = cached;
 			$scope.$broadcast('scroll.resize');
+			*/
 		};
 
 		var findHash = function(hash) {
@@ -378,24 +403,6 @@
 				$ionicScrollDelegate.$getByHandle('eventScroll').scrollTo(0, hashLocation);
 			} else {
 				$ionicScrollDelegate.$getByHandle('eventScroll').scrollBottom();
-			}
-		};
-
-		$scope.searchChanged = function(newSearchString) {
-			$scope.searchString = newSearchString;
-			updateDelayed();
-		};
-
-		$scope.clearSearchString = function() {
-			console.log('clear search string');
-			var element = document.getElementById('search');
-			element.value = '';
-			if ("createEvent" in document) {
-				var evt = document.createEvent('HTMLEvents');
-				evt.initEvent('change', false, true);
-				element.dispatchEvent(evt);
-			} else {
-				element.fireEvent('change');
 			}
 		};
 

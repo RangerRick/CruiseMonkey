@@ -354,6 +354,8 @@ CMEvent.prototype.matches = function(searchString) {
 		return true;
 	} else if (this.getLocation() !== undefined && this.getLocation().contains(searchString)) {
 		return true;
+	} else if (this.getUsername().contains(searchString)) {
+		return true;
 	}
 
 	return false;

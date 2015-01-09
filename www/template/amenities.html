@@ -4,23 +4,15 @@
 			<button menu-toggle="left" class="button button-icon icon ion-navicon"></button>
 		</ion-nav-buttons>
 	</ion-nav-bar>
-	<ion-content has-header="true" scroll="true">
-		<header class="bar bar-header item-input-inset">
-			<label class="item-input-wrapper">
-				<i class="icon ion-ios7-search placeholder-icon"></i>
-				<input id="search" type="search" placeholder="Search" ng-model="searchString" />
-			</label>
-			<button class="button button-clear" ng-if="searchString">
-				<i class="icon ion-close-circled" ng-click="clearSearchString()"></i>
-			</button>
-		</header>
+	<cm-search-bar ng-model="searchString" style="margin-top: 44px"></cm-search-bar>
+	<ion-content scroll="true" style="margin-top: 44px">
 		<div class="event-list list">
-			<span bindonce ng-repeat="amenity in amenities | amenityFilter:searchString">
-				<div class="item item-divider header" bo-if="headerAmenities[amenity.getUniqueId()]" bo-text="'Deck ' + amenity.getDeck().getFloor()"></div>
+			<span ng-repeat="amenity in amenities | amenityFilter:searchString">
+				<div class="item item-divider header yellow" ng-if="headerAmenities[amenity.getUniqueId()]" ng-bind-html="'Deck ' + amenity.getDeck().getFloor()"></div>
 				<a class="item item-icon-right item-text-wrap" ng-click="openAmenity($event, amenity)">
-					<div class="summary" bo-text="amenity.getSummary()"></div>
-					<div class="description" bo-show="amenity.getDescription()" bo-text="amenity.getDescription()"></div>
-					<i bo-if="amenity.getIcon()" class="icon {{amenity.getIcon()}}"></i>
+					<div class="summary" ng-bind-html="amenity.getSummary()"></div>
+					<div class="description" ng-show="amenity.getDescription()" ng-bind-html="amenity.getDescription()"></div>
+					<i ng-if="amenity.getIcon()" class="icon {{amenity.getIcon()}}"></i>
 				</a>
 			</span>
 		</div>

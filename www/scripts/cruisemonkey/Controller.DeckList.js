@@ -6,7 +6,7 @@
 		'ui.router',
 		'angularLocalStorage'
 	])
-	.controller('CMDeckListCtrl', ['storage', '$scope', '$rootScope', '$ionicSlideBoxDelegate', '$timeout', '$state', '$stateParams', '$location', '$document', function(storage, $scope, $rootScope, $ionicSlideBoxDelegate, $timeout, $state, $stateParams, $location, $document) {
+	.controller('CMDeckListCtrl', ['storage', '$scope', '$rootScope', '$ionicScrollDelegate', '$ionicSlideBoxDelegate', '$timeout', '$state', '$stateParams', '$location', '$document', function(storage, $scope, $rootScope, $ionicScrollDelegate, $ionicSlideBoxDelegate, $timeout, $state, $stateParams, $location, $document) {
 		console.log('Initializing CMDeckListCtrl');
 
 		storage.bind($scope, 'deck', {
@@ -14,7 +14,7 @@
 			'storeName': 'cruisemonkey.deck'
 		});
 
-		$scope.showButtons = false;
+		$scope.showButtons = true;
 
 		if ($scope.deck !== undefined && isNaN($scope.deck)) {
 			$scope.deck = parseInt($scope.deck, 10);
@@ -63,9 +63,9 @@
 		};
 
 		$scope.shouldBeVisible = function(deck) {
-			//return $scope.deck === deck;
+			return $scope.deck === deck;
 			/* pre-cache the one before and after */
-			return (deck >= ($scope.deck - 1) && deck <= ($scope.deck + 1));
+			//return (deck >= ($scope.deck - 1) && deck <= ($scope.deck + 1));
 		};
 
 		var updateUI = function() {
@@ -80,6 +80,8 @@
 				$scope.hasNext = true;
 			}
 
+			$ionicScrollDelegate.resize();
+			/*
 			ionic.Platform.ready(function() {
 				$rootScope.$evalAsync(function() {
 					if (ionic.Platform.isWebView()) {
@@ -89,6 +91,7 @@
 					}
 				});
 			});
+			*/
 		};
 
 		$scope.$watch('deck', function(newValue, oldValue) {

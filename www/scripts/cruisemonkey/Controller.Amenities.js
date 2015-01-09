@@ -16,6 +16,10 @@
 	.controller('CMAmenitiesCtrl', ['storage', '$rootScope', '$scope', '$timeout', '$location', 'DeckService', function(storage, $rootScope, $scope, $timeout, $location, DeckService) {
 		console.log('Initializing CMAmenitiesCtrl');
 
+		storage.bind($scope, 'searchString', {
+			'storeName': 'cruisemonkey.search.amenities'
+		});
+
 		$scope.amenities = DeckService.getAmenities();
 
 		$scope.headerAmenities = {};
@@ -34,24 +38,6 @@
 				$location.path('/deck-plans/' + amenity.getUniqueId());
 			} else {
 				console.log('amenity does not have an ID: ' + amenity.toString());
-			}
-		};
-
-		storage.bind($scope, 'searchString', {
-			'storeName': 'cruisemonkey.search.amenities'
-		});
-		console.log('$scope.searchString: ' + $scope.searchString);
-
-		$scope.clearSearchString = function() {
-			console.log('clear search string');
-			var element = document.getElementById('search');
-			element.value = '';
-			if ("createEvent" in document) {
-				var evt = document.createEvent('HTMLEvents');
-				evt.initEvent('change', false, true);
-				element.dispatchEvent(evt);
-			} else {
-				element.fireEvent('change');
 			}
 		};
 	}]);
