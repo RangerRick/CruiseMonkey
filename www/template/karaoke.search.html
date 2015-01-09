@@ -8,6 +8,8 @@
 	.artist-entry {
 		left: 0;
 		right: 0;
+		background-color: white;
+		line-height: 22px;
 	}
 	</style>
 	<ion-header-bar class="bar-subheader item-input-inset">
@@ -20,13 +22,13 @@
 		</button>
 	</ion-header-bar>
 	<ion-content has-header="true" scroll="true">
-		<ion-list>
-			<ion-item class="artist-entry"
+		<div class="list">
+			<div class="item artist-entry"
 				collection-repeat="entry in entries"
 				collection-item-width="'100%'"
-				collection-item-height="40" ng-style="{height: '40px'}">
+				collection-item-height="44" ng-style="{height: '44px'}">
 				{{entry.artist}} - {{entry.song}}
-			</ion-item>
-		</ion-list>
+			</div>
+		</div>
 	</ion-content>
 </ion-view>
