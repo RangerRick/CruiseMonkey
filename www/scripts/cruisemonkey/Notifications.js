@@ -12,12 +12,11 @@
 	angular.module('cruisemonkey.Notifications', [
 		'ngCordova'
 	])
-	.factory('Notifications', ['$q', '$rootScope', '$timeout', '$ionicLoading', '$ionicPopup', '$cordovaDialogs', '$cordovaLocalNotification', '$cordovaSpinnerDialog', '$cordovaToast', function($q, $rootScope, $timeout, $ionicLoading, $ionicPopup, $cordovaDialogs, $cordovaLocalNotification, $cordovaSpinnerDialog, $cordovaToast) {
+	.factory('Notifications', ['$q', '$rootScope', '$timeout', '$window', '$ionicLoading', '$ionicPopup', '$cordovaDialogs', '$cordovaLocalNotification', '$cordovaSpinnerDialog', '$cordovaToast', function($q, $rootScope, $timeout, $window, $ionicLoading, $ionicPopup, $cordovaDialogs, $cordovaLocalNotification, $cordovaSpinnerDialog, $cordovaToast) {
 		console.log('Initializing notification service.');
 		var newEvents = [];
 		var newSeamails = [];
 
-		var isCordova = ionic.Platform.isWebView();
 		toastr.options.preventDuplicates = true;
 		/*
 		toastr.options.closeButton = true;
@@ -35,58 +34,63 @@
 
 		$rootScope.$on('cruisemonkey.notify.alert', function(ev, alert) {
 			console.log('Notifications: Alert: ' + alert.message);
-			if (isCordova) {
-				$cordovaDialogs.alert(alert.message, alert.title, alert.buttonName);
-			} else {
-				var opts = {};
-				if (alert.title) {
-					opts.title = alert.title;
-					opts.message = alert.message;
+			ionic.Platform.ready(function() {
+				if (navigator.notification && navigator.notification.alert) {
+					$cordovaDialogs.alert(alert.message, alert.title, alert.buttonName);
 				} else {
-					opts.title = alert.message;
+					var opts = {};
+					if (alert.title) {
+						opts.title = alert.title;
+						opts.message = alert.message;
+					} else {
+						opts.title = alert.message;
+					}
+					if (alert.buttonName) {
+						opts.okText = alert.buttonName;
+					}
+					$ionicPopup.alert(opts);
 				}
-				if (alert.buttonName) {
-					opts.okText = alert.buttonName;
-				}
-				$ionicPopup.alert(opts);
-			}
+			});
 		});
 
 		$rootScope.$on('cruisemonkey.notify.spinner', function(ev, spinner) {
 			var timeout = spinner.timeout || 3000;
-			if (isCordova) {
-				$cordovaSpinnerDialog.show(spinner.message);
-				$timeout(function() {
-					$cordovaSpinnerDialog.hide();
-				}, timeout);
-			} else {
-				var template = '<i class="icon ion-spin ion-load-a"></i>'; 
-				if (spinner.message) {
-					template += '<br/>' + spinner.message;
+			ionic.Platform.ready(function() {
+				if ($window.plugins && $window.plugins.spinnerDialog) {
+					$cordovaSpinnerDialog.show(spinner.message);
+					$timeout(function() {
+						$cordovaSpinnerDialog.hide();
+					}, timeout);
+				} else {
+					var template = '<i class="icon ion-spin ion-load-a"></i>'; 
+					if (spinner.message) {
+						template += '<br/>' + spinner.message;
+					}
+					$ionicLoading.show({
+						template: template,
+						noBackdrop: true,
+						duration: timeout
+					});
 				}
-				$ionicLoading.show({
-					template: template,
-					noBackdrop: true,
-					duration: timeout
-				});
-			}
+			});
 		});
 
 		$rootScope.$on('cruisemonkey.notify.toast', function(ev, toast) {
 			var timeout = toast.timeout || 3000;
 			console.log('Notifications: Toast(' + timeout + '): ' + toast.message);
-			if (isCordova) {
-				var duration = 'short';
-				if (timeout >= 5000) {
-					duration = 'long';
+			ionicPlatform.ready(function() {
+				if ($window.plugins && $window.plugins.toast) {
+					var duration = 'short';
+					if (timeout >= 5000) {
+						duration = 'long';
+					}
+					$cordovaToast.show(toast.message, duration, 'top');
+				} else {
+					toastr.info(toast.message);
 				}
-				$cordovaToast.show(toast.message, duration, 'top');
-			} else {
-				toastr.info(toast.message);
-			}
+			});
 		});
 
-		return {
-		};
+		return {};
 	}]);
 }());

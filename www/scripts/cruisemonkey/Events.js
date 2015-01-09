@@ -116,8 +116,11 @@
 			return favoritesdb;
 		};
 
-		var eventsdb = createEventsDb();
-		var favoritesdb = createFavoritesDb();
+		var eventsdb, favoritesdb;
+		ionic.Platform.ready(function() {
+			eventsdb = createEventsDb();
+			favoritesdb = createFavoritesDb();
+		});
 
 		$rootScope.$on('cruisemonkey.user.updated', function(ev, user) {
 			console.log('user updated:',user);
@@ -135,7 +138,10 @@
 		var recreateDatabase = function() {
 			var deferred = $q.defer();
 
-			var destroy = [eventsdb.destroy()];
+			var destroy = [];
+			if (eventsdb) {
+				destroy.push(eventsdb.destroy());
+			}
 			if (favoritesdb) {
 				destroy.push(favoritesdb.destroy());
 			}
@@ -154,7 +160,9 @@
 		};
 
 		var forceSync = function() {
-			eventsdb.forceSync();
+			if (eventsdb) {
+				eventsdb.forceSync();
+			}
 			if (favoritesdb) {
 				favoritesdb.forceSync();
 			}
@@ -174,7 +182,9 @@
 			var syncs = [],
 				deferred = $q.defer();
 
-			syncs.push(eventsdb.syncFrom(fromDb));
+			if (eventsdb) {
+				syncs.push(eventsdb.syncFrom(fromDb));
+			}
 			if (favoritesdb) {
 				syncs.push(favoritesdb.syncFrom(fromDb));
 			}
@@ -252,6 +262,12 @@
 			var promises = [], i;
 
 			for (i=0; i < args.length; i++) {
+				if (!eventsdb) {
+					$rootScope.$evalAsync(function() {
+						deferred.reject("eventsdb not initialized");
+					});
+					return deferred.promise;
+				}
 				promises.push(eventsdb.query(args[i], angular.copy(options)));
 			}
 			if (username && favoritesdb) {
@@ -315,13 +331,19 @@
 			eventToAdd.setId('event:' + modelVersion + ':' + eventToAdd.getUsername() + ':' + uuid4.generate());
 
 			eventToAdd.refreshLastUpdated();
-			eventsdb.post(eventToAdd.getRawData()).then(function(response) {
-				eventToAdd.setId(response.id);
-				eventToAdd.setRevision(response.rev);
-				deferred.resolve(eventToAdd);
-			}, function(err) {
-				deferred.reject(err);
-			});
+			if (eventsdb) {
+				eventsdb.post(eventToAdd.getRawData()).then(function(response) {
+					eventToAdd.setId(response.id);
+					eventToAdd.setRevision(response.rev);
+					deferred.resolve(eventToAdd);
+				}, function(err) {
+					deferred.reject(err);
+				});
+			} else {
+				$rootScope.$evalAsync(function() {
+					deferred.reject("eventsdb not initialized");
+				});
+			}
 
 			return deferred.promise;
 		};
@@ -345,12 +367,18 @@
 			}
 
 			ev.refreshLastUpdated();
-			eventsdb.put(ev.getRawData()).then(function(response) {
-				ev.setRevision(response.rev);
-				deferred.resolve(ev);
-			}, function(err) {
-				deferred.reject(err);
-			});
+			if (eventsdb) {
+				eventsdb.put(ev.getRawData()).then(function(response) {
+					ev.setRevision(response.rev);
+					deferred.resolve(ev);
+				}, function(err) {
+					deferred.reject(err);
+				});
+			} else {
+				$rootScope.$evalAsync(function() {
+					deferred.reject("eventsdb not initialized");
+				});
+			}
 
 			return deferred.promise;
 		};
@@ -366,11 +394,17 @@
 			console.log('EventService.removeEvent(' + ev.getId() + ')');
 			var deferred = $q.defer();
 
-			eventsdb.remove(ev.getRawData()).then(function(response) {
-				deferred.resolve(response);
-			}, function(err) {
-				deferred.reject(err);
-			});
+			if (eventsdb) {
+				eventsdb.remove(ev.getRawData()).then(function(response) {
+					deferred.resolve(response);
+				}, function(err) {
+					deferred.reject(err);
+				});
+			} else {
+				$rootScope.$evalAsync(function() {
+					deferred.reject("eventsdb not initialized");
+				});
+			}
 
 			return deferred.promise;
 		};
