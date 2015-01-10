@@ -123,7 +123,7 @@
 									$cordovaSQLite.execute(db, 'SELECT COUNT(id) AS count FROM karaoke').then(function(res) {
 										var count = res.rows.length === 1? res.rows.item(0).count : -1;
 										console.log('Karaoke.loaded: There are ' + count + ' existing items in the database.');
-										if (parseInt(data.length) === parseInt(count.length) {
+										if (parseInt(data.length) === parseInt(count.length)) {
 											sqlitedb = db;
 											updateEntries();
 										} else {

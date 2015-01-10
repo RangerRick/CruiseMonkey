@@ -69,15 +69,7 @@
 				};
 				scope.clearSearchString = function() {
 					scope.searchStringInternal = scope.searchString = '';
-					/*
-					ionic.Platform.ready(function() {
-						scope.$evalAsync(function() {
-							if (ionic.Platform.isWebView()) {
-								$cordovaKeyboard.close();
-							}
-						});
-					});
-*/
+					angular.element(elem).find('input').blur();
 					callChangeFunction();
 				};
 			}
