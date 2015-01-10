@@ -40,8 +40,10 @@
 			console.log('persistence complete: ', db.name);
 		});
 		$rootScope.$on('cruisemonkey.database.change', function(ev, db, doc) {
-			console.log('persistence changed: ' + db.name + ': ' + doc.id);
-			$rootScope.lastModified = moment().valueOf();
+			if (db.name.endsWith('events')) {
+				console.log('persistence changed: ' + db.name + ': ' + doc.id);
+				$rootScope.lastModified = moment().valueOf();
+			}
 		});
 		/*
 		$rootScope.$on('cruisemonkey.database.create', function(ev, db, doc) {

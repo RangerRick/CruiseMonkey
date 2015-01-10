@@ -17,7 +17,7 @@
 	<ion-content delegate-handle="karaoke-scroll" ng-class="'has-subheader'">
 		<div class="list">
 			<div class="item artist-entry"
-				collection-repeat="entry in entries | karaokeFilter:searchString track by entry[0]"
+				collection-repeat="entry in entries track by entry[0]"
 				collection-item-width="'100%'"
 				collection-item-height="44" ng-style="{height: '44px'}">
 				{{entry[1]}} - {{entry[2]}}

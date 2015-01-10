@@ -214,6 +214,7 @@
 					setTwitarrRoot(root);
 				});
 			},
+			'getRemoteDatabaseRoot': getRemoteDatabaseRoot,
 			'getRemoteDatabaseUrl': function() {
 				return getRemoteDatabaseRoot() + getDatabaseName();
 			},

@@ -33,7 +33,7 @@
 		'cruisemonkey.Upgrades',
 		'cruisemonkey.User'
 	])
-	.directive('cmSearchBar', ['$timeout', function($timeout) {
+	.directive('cmSearchBar', ['$timeout', '$cordovaKeyboard', function($timeout, $cordovaKeyboard) {
 		return {
 			restrict: 'AE',
 			templateUrl: 'template/search.html',
@@ -69,6 +69,15 @@
 				};
 				scope.clearSearchString = function() {
 					scope.searchStringInternal = scope.searchString = '';
+					/*
+					ionic.Platform.ready(function() {
+						scope.$evalAsync(function() {
+							if (ionic.Platform.isWebView()) {
+								$cordovaKeyboard.close();
+							}
+						});
+					});
+*/
 					callChangeFunction();
 				};
 			}
