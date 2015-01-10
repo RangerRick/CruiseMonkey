@@ -1,9 +1,9 @@
 {
   "name": "CruiseMonkey",
-  "version": "4.9.0",
+  "version": "4.9.1",
   "minSdk": "14",
   "description": "Keep Track of Your Cruise",
-  "build": 40310,
+  "build": 40311,
   "scripts": {
     "jshint": "jshint -c .jshintrc www/scripts/cruisemonkey/*.js spec/*.js"
   },
