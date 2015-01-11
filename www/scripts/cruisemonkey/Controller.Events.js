@@ -497,11 +497,21 @@
 				}
 			}
 
-			$q.when(EventService.addEvent(ev)).then(function(res) {
-				console.log('event added:', res);
-				$scope.modal.hide();
-				refreshEvents(true);
-			});
+			if (ev.getRevision()) {
+				// updating an existing event
+				$q.when(EventService.updateEvent(ev)).then(function(res) {
+					console.log('event updated:', res);
+					$scope.modal.hide();
+					refreshEvents(true);
+				});
+			} else {
+				// saving a new event
+				$q.when(EventService.addEvent(ev)).then(function(res) {
+					console.log('event added:', res);
+					$scope.modal.hide();
+					refreshEvents(true);
+				});
+			}
 		};
 
 		$scope.addEvent = function() {
