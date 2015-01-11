@@ -1,6 +1,8 @@
 (function() {
 	'use strict';
 
+	/*global ionic: true*/
+
 	angular.module('cruisemonkey.controllers.Menu', [
 	])
 	.controller('CMMenuCtrl', ['$scope', '$templateCache', '$ionicPopover', '$cordovaKeyboard', 'UserService', function($scope, $templateCache, $ionicPopover, $cordovaKeyboard, UserService) {

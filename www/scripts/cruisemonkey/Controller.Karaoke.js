@@ -1,6 +1,9 @@
 (function() {
 	'use strict';
 
+	/*global ionic: true*/
+	/*global moment: true*/
+
 	var spaces = /\s+/;
 	var matchSong = function(artist, song, searchString) {
 		var searchFor = searchString.split(spaces), match, s;
@@ -117,7 +120,7 @@
 		$scope.onSearchChanged = function(searchString) {
 			updateEntries();
 			var delegate = $ionicScrollDelegate.$getByHandle('karaoke-scroll');
-			if (delegate.getScrollPosition().top != 0) {
+			if (delegate.getScrollPosition().top !== 0) {
 				delegate.scrollTop(false);
 			}
 		};

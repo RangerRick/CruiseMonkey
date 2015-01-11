@@ -1,6 +1,7 @@
 (function() {
 	'use strict';
 
+	/*global ionic: true*/
 	/*global moment: true*/
 	/*global Modernizr: true*/
 	/*global CMEvent: true*/

@@ -1,13 +1,14 @@
-/*global emit: true*/
-/*global moment: true*/
-/*global Modernizr: true*/
-/*global CMDay: true*/
-/*global CMEvent: true*/
-/*global CMFavorite: true*/
-/*global stringifyDate: true*/
-
 (function() {
 	'use strict';
+
+	/*global emit: true*/
+	/*global ionic: true*/
+	/*global moment: true*/
+	/*global Modernizr: true*/
+	/*global CMDay: true*/
+	/*global CMEvent: true*/
+	/*global CMFavorite: true*/
+	/*global stringifyDate: true*/
 
 	var modelVersion = '2015';
 
@@ -173,8 +174,8 @@
 		};
 
 		$rootScope.$on('cruisemonkey.user.settings-changed', function(ev, settings) {
-			if (settings.old.databaseRoot != settings.new.databaseRoot ||
-				settings.old.databaseName != settings.new.databaseName) {
+			if (settings.old.databaseRoot !== settings.new.databaseRoot ||
+				settings.old.databaseName !== settings.new.databaseName) {
 				console.log('Events: database settings have changed.  Re-creating databases.');
 				recreateDatabase();
 			} else {
@@ -265,15 +266,17 @@
 
 			var promises = [], i;
 
+			if (!eventsdb) {
+				$rootScope.$evalAsync(function() {
+					deferred.reject("eventsdb not initialized");
+				});
+				return deferred.promise;
+			}
+
 			for (i=0; i < args.length; i++) {
-				if (!eventsdb) {
-					$rootScope.$evalAsync(function() {
-						deferred.reject("eventsdb not initialized");
-					});
-					return deferred.promise;
-				}
 				promises.push(eventsdb.query(args[i], angular.copy(options)));
 			}
+
 			if (username && favoritesdb) {
 				var opts = angular.copy(options);
 				angular.extend(opts, {

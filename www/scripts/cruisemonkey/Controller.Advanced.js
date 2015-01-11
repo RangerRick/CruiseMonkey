@@ -1,6 +1,9 @@
 (function() {
 	'use strict';
 
+	/*global ionic: true*/
+	/*global moment: true*/
+
 	angular.module('cruisemonkey.controllers.Advanced', [
 		'cruisemonkey.Config',
 		'cruisemonkey.Database',

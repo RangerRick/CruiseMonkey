@@ -22,7 +22,7 @@
 
 		$scope.onSearchChanged = function(searchString) {
 			var delegate = $ionicScrollDelegate.$getByHandle('amenities');
-			if (delegate.getScrollPosition().top != 0) {
+			if (delegate.getScrollPosition().top !== 0) {
 				delegate.scrollTop(false);
 			}
 		};
