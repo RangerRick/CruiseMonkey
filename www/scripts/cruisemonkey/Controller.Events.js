@@ -120,7 +120,12 @@
 				console.log('app.events navigated, going to ' + newState + ' instead.');
 				$state.go(newState);
 			} else {
-				$scope.eventType  = info.stateName.replace('app.events.', '');
+				if (!info.stateName) {
+					console.log('unhandled state:',info.stateName);
+					$scope.eventType = 'official';
+				} else {
+					$scope.eventType  = info.stateName? info.stateName.replace('app.events.', '') : '';
+				}
 				$scope.eventTitle = ($scope.eventType === 'my'? 'Mine' : $scope.eventType.capitalize());
 			}
 		});
