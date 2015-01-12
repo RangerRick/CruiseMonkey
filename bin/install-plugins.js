@@ -25,7 +25,7 @@ var addList = [
 
 /* android/ios only */
 	'https://github.com/driftyco/ionic-plugins-keyboard.git',
-	'https://github.com/RangerRick/cordova-certificate-plugin.git',
+	'https://github.com/RangerRick/cordova-certificate-plugin.git#4.0.x',
 ];
 
 // no need to configure below
