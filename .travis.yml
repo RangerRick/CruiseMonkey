@@ -14,8 +14,8 @@ before_install:
   - 'bower install'
   - 'gem install compass'
   - 'sudo pip install couchapp'
-before_script:
-  - './setup-travis.sh'
+#before_script:
+#  - './setup-travis.sh'
 script: gulp test
 cache:
   directories:
