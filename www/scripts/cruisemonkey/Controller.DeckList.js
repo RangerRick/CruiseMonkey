@@ -81,17 +81,6 @@
 			}
 
 			$ionicScrollDelegate.resize();
-			/*
-			ionic.Platform.ready(function() {
-				$rootScope.$evalAsync(function() {
-					if (ionic.Platform.isWebView()) {
-						$scope.showButtons = false;
-					} else {
-						$scope.showButtons = true;
-					}
-				});
-			});
-			*/
 		};
 
 		$scope.$watch('deck', function(newValue, oldValue) {

@@ -46,15 +46,6 @@
 						if ($rootScope.foreground) {
 							// notifications.status(message, 5000);
 						} else {
-							/*
-							if (ionic.Platform.isWebView()) {
-								notifications.alert(message, function() {
-									console.log('Acknowledged notification message: ' + message);
-								});
-							} else {
-								notifications.status(message, 5000);
-							}
-							*/
 						}
 					}
 					$rootScope.seamailCount = data.email_count;

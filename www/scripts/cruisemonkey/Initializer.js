@@ -12,7 +12,7 @@
 
 		ionic.Platform.ready(function() {
 			$rootScope.$evalAsync(function() {
-				if (ionic.Platform.isWebView()) {
+				if ($rootScope.isCordova()) {
 					console.log('We are inside a web view: initializing ionic platform plugins and events.');
 
 					// Hide the accessory bar by default (remove this to show the accessory bar above the keyboard or form inputs)

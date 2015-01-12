@@ -218,8 +218,16 @@
 	.run(['$rootScope', '$window', '$cordovaSplashscreen', 'EventService', 'Notifications', 'SettingsService', 'UpgradeService', function($rootScope, $window, $cordovaSplashscreen, EventService, Notifications, SettingsService, UpgradeService) {
 		console.log('CruiseMonkey run() called.');
 
+		$rootScope.isCordova = function() {
+			if ($window.cordova) {
+				return true;
+			} else {
+				return false;
+			}
+		};
+
 		$rootScope.openUrl = function(url, target) {
-			if (ionic.Platform.isIOS()) {
+			if ($rootScope.isCordova() && ionic.Platform.isIOS()) {
 				var oic = SettingsService.shouldOpenInChrome();
 				if (oic) {
 					if (url.startsWith('http')) {
@@ -230,7 +238,7 @@
 			$window.open(url, target);
 		};
 
-		if (ionic.Platform.isWebView()) {
+		if ($rootScope.isCordova()) {
 			$cordovaSplashscreen.hide();
 		}
 

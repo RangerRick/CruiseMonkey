@@ -459,7 +459,7 @@
 			$scope.event = undefined;
 			$scope.eventData = undefined;
 			$scope.modal.hide();
-			if (ionic.Platform.isWebView()) {
+			if ($scope.isCordova()) {
 				$cordovaKeyboard.close();
 			}
 		};
@@ -472,7 +472,7 @@
 			if (!username) {
 				console.log('No username!');
 				$scope.modal.hide();
-				if (ionic.Platform.isWebView()) {
+				if ($scope.isCordova()) {
 					$cordovaKeyboard.close();
 				}
 				return;

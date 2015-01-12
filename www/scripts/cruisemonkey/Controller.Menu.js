@@ -18,7 +18,7 @@
 			}
 			$scope.user = newUser;
 			loginPopover.hide();
-			if (ionic.Platform.isWebView()) {
+			if ($scope.isCordova()) {
 				$cordovaKeyboard.close();
 			}
 		});

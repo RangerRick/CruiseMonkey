@@ -27,6 +27,10 @@
 			artist, song, matched,
 			i, j, s;
 
+		if (!karaokeList) {
+			karaokeList = [];
+		}
+
 		if (searchString === undefined || !searchString) {
 			return karaokeList;
 		}
@@ -80,13 +84,13 @@
 		};
 
 		var sqlitedb = null;
-		var entries = [];
+		var entries;
 		$scope.entries = [];
 
 		var updateEntries = function() {
 			ionic.Platform.ready(function() {
 				$scope.$evalAsync(function() {
-					if (ionic.Platform.isWebView()) {
+					if ($scope.isCordova()) {
 						// use SQLite
 						console.log('Karaoke.updateEntries: Using SQLite karaoke list.');
 						if (sqlitedb) {
@@ -168,7 +172,7 @@
 			console.log('Karaoke.loaded: got karaoke list with ' + data.length + ' entries.');
 			ionic.Platform.ready(function() {
 				$scope.$evalAsync(function() {
-					if (ionic.Platform.isWebView()) {
+					if ($scope.isCordova()) {
 						// we're inside a cordova container, use SQLite
 						console.log('Karaoke.loaded: Setting up SQLite database.');
 						var db = $cordovaSQLite.openDB({ name: "karaoke", bgType: 0 });
@@ -266,6 +270,11 @@
 						$ionicLoading.hide();
 						$interval.cancel(inter);
 						updateEntries();
+					} else {
+						if (entries) {
+							$ionicLoading.hide();
+							$interval.cancel(inter);
+						}
 					}
 				}, 1000);
 			}

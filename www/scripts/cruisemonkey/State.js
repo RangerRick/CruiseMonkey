@@ -75,7 +75,7 @@
 			}
 		});
 
-		fsm.initialize(ionic.Platform.isWebView());
+		fsm.initialize($rootScope.isCordova());
 
 		return {
 			currentState: function() {
