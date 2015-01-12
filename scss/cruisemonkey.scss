@@ -84,8 +84,11 @@ $gutterMonkey: url(../images/cruise-monkey-transparent-bg.png);
 /* $font-family-light-sans-serif: $defaultLightFont; */
 $dark: $rciNavyBlue;
 $light: white;
+
 $item-divider-bg: $dark;
 $item-divider-color: $light;
+$item-avatar-border-radius: 5px;
+
 $menu-animation-speed: 100ms;
 
 $item-default-bg:                 $light;

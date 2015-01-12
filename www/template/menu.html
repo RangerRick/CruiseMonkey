@@ -39,12 +39,15 @@
     </header>
     <ion-content class="has-header" menu-close>
       <ion-list>
-				<a class="item" ui-sref="app.events"     ui-sref-active="active">Events</a>
-				<a class="item" ui-sref="app.deck-plans" ui-sref-active="active">Deck Plans</a>
-				<a class="item" ui-sref="app.amenities"  ui-sref-active="active">Amenities</a>
-				<a class="item" ui-sref="app.karaoke"    ui-sref-active="active">Karaoke</a>
-				<a class="item" ui-sref="app.about"      ui-sref-active="active">About</a>
-				<a class="item" ui-sref="app.settings"   ui-sref-active="active">Settings</a>
+				<a class="item" ui-sref="app.events"         ui-sref-active="active">Events</a>
+				<a class="item" ui-sref="app.deck-plans"     ui-sref-active="active">Deck Plans</a>
+				<a class="item" ui-sref="app.amenities"      ui-sref-active="active">Amenities</a>
+				<a class="item" ui-sref="app.karaoke"        ui-sref-active="active">Karaoke</a>
+        <a class="item" ui-sref="app.twitarr-stream" ui-sref-active="active">Twit-Arr</a>
+
+        <a class="item" ui-sref="app.about"          ui-sref-active="active">About</a>
+				<a class="item" ui-sref="app.settings"       ui-sref-active="active">Settings</a>
+
         <a class="item" ng-if="user.loggedIn" ng-click="logOut()">Log Out</a>
         <a class="item" ng-if="!user.loggedIn" ng-click="logIn()">Log In</a>
       </ion-list>

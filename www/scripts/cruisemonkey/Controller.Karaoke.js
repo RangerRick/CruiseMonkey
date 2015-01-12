@@ -260,7 +260,6 @@
 				$ionicLoading.show({
 					template: 'Creating Karaoke index. This may take a minute...',
 					hideOnStateChange: true,
-					noBackdrop: true
 				});
 				var inter = $interval(function() {
 					if (sqlitedb) {

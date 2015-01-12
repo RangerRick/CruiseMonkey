@@ -4692,7 +4692,7 @@ a.item-content {
     max-width: 40px;
     max-height: 40px;
     width: 100%;
-    border-radius: 50%; }
+    border-radius: 5px; }
 
 .item-avatar-right, .item-avatar-right .item-content {
   padding-right: 60px;
@@ -4704,7 +4704,7 @@ a.item-content {
     max-width: 40px;
     max-height: 40px;
     width: 100%;
-    border-radius: 50%; }
+    border-radius: 5px; }
 
 .item-thumbnail-left, .item-thumbnail-left .item-content {
   padding-top: 5px;

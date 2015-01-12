@@ -3,7 +3,7 @@
 
 index.html
 .index.html
-.*.swp
+*.swp
 www.zip
 npm-debug.log
 node_modules/

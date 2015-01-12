@@ -23,6 +23,7 @@
 		'cruisemonkey.controllers.Menu',
 		'cruisemonkey.controllers.Navigation',
 		'cruisemonkey.controllers.Photos',
+		'cruisemonkey.controllers.Twitarr.Stream',
 		'cruisemonkey.Database',
 		'cruisemonkey.Events',
 		'cruisemonkey.Initializer',
@@ -30,6 +31,7 @@
 		'cruisemonkey.Seamail',
 		'cruisemonkey.Settings',
 		'cruisemonkey.State',
+		'cruisemonkey.Twitarr',
 		'cruisemonkey.Upgrades',
 		'cruisemonkey.User'
 	])
@@ -198,6 +200,15 @@
 					'menuContent': {
 						templateUrl: 'template/advanced.html',
 						controller: 'CMAdvancedCtrl'
+					}
+				}
+			})
+			.state('app.twitarr-stream', {
+				url: '/twitarr-stream',
+				views: {
+					'menuContent': {
+						templateUrl: 'template/twitarr-stream.html',
+						controller: 'CMTwitarrStreamCtrl'
 					}
 				}
 			})
