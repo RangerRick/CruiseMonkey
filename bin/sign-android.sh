@@ -5,6 +5,10 @@ if [ -n "$SIGNING_PASS" ]; then
 	EXTRA_ARGS="-storepass $SIGNING_PASS -keypass $SIGNING_PASS"
 fi
 
+sign_jar() {
+	local JAR="$1";
+}
+
 APKFILE=`find platforms/android -name \*-debug.apk -o -name \*-release-unsigned.apk | xargs ls -1 -tr | tail -n 1`
 SIGNME=`echo "$APKFILE" | perl -p -e 's,-.*.apk,-signme.apk,g'`
 SIGNED=`echo "$APKFILE" | perl -p -e 's,-.*.apk,-signed.apk,g'`

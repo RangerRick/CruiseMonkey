@@ -418,20 +418,21 @@
 		Database.prototype.stopReplication = function() {
 			var self = this;
 			var deferred = $q.defer();
-			if (self._persist) {
+
+			$rootScope.$evalAsync(function() {
 				console.log('Database: ' + self.name + ' is currently replicating.  Stopping replication.');
-				self._persist.stop();
-				$rootScope.$evalAsync(function() {
+				if (self._persist) {
+					self._persist.stop();
 					self._persist.removeAllListeners();
 					self._persist = undefined;
 					$rootScope.$evalAsync(function() {
 						console.log('Database: finished stopping replication of ' + self.name + '.');
 						deferred.resolve(true);
 					});
-				});
-			} else {
-				deferred.resolve(true);
-			}
+				} else {
+					deferred.resolve(true);
+				}
+			});
 			return deferred.promise;
 		};
 

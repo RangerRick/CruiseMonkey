@@ -29,7 +29,19 @@
 		});
 
 		$rootScope.$on('cruisemonkey.notify.newSeamail', function(ev, newSeamail) {
-			console.log('Notifications: A new seamail message was received:',newSeamail);
+			console.log('Notifications: There are ' + newSeamail + ' new seamail messages.');
+		});
+
+		$rootScope.$on('cruisemonkey.notify.newMentions', function(ev, newMentions) {
+			console.log('Notifications: There are ' + newMentions + ' unnoticed mentions.');
+		});
+
+		$rootScope.$on('cruisemonkey.notify.newAlerts', function(ev, newAlerts) {
+			console.log('Notifications: There are ' + newAlerts + ' unnoticed alerts.');
+		});
+
+		$rootScope.$on('cruisemonkey.notify.newAnnouncements', function(ev, newAnnouncements) {
+			console.log('Notifications: There are ' + newAnnouncements + ' unnoticed announcements.');
 		});
 
 		$rootScope.$on('cruisemonkey.notify.alert', function(ev, alert) {

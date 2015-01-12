@@ -105,7 +105,6 @@
 
 		var lookupUser = function(username) {
 			Twitarr.getUserInfo(username).then(function(user) {
-				console.log('got user:',user);
 				$scope.users[username] = user;
 			});
 		};
