@@ -143,6 +143,7 @@
 		$scope.doRefresh = function() {
 			console.log('Controller.Twitarr.Stream.doRefresh()');
 			$scope.loading.promise.then(function() {
+				$scope.done = false;
 				console.log('Controller.Twitarr.Stream.doRefresh(): ready');
 				$scope.loading = $q.defer();
 				Twitarr.getStream().then(function(res) {
@@ -158,6 +159,8 @@
 				}, function(err) {
 					console.log('Controller.Twitarr.Stream: failed to get entries:', err);
 					$scope.$broadcast('scroll.refreshComplete');
+					$scope.error = 'An error occurred getting posts from Twit-arr.' + (err[0]? '  (Error: ' + err[0] + ')':'');
+					$scope.done = true;
 					$scope.loading.resolve();
 				});
 			});
@@ -193,6 +196,7 @@
 					}, function(err) {
 						console.log('Controller.Twitarr.Stream: failed to get more entries:', err);
 						$scope.$broadcast('scroll.infiniteScrollComplete');
+						$scope.error = 'An error occurred getting posts from Twit-arr.' + (err[0]? '  (Error: ' + err[0] + ')':'');
 						$scope.loading.resolve();
 					});
 				} else {

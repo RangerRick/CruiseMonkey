@@ -8,6 +8,10 @@
 	<ion-content scroll="true" padding="false" delegate-handle="twitarr">
 		<ion-refresher pulling-text="Pull to refresh..." on-refresh="doRefresh()"></ion-refresher>
 		<ion-list>
+			<ion-item ng-if="error" class="item item-icon-left">
+				<i class="icon ion-alert-circled yellow"></i>
+				<span ng-bind-html="error" style="padding-left: 20px"></span>
+			</ion-item>
 			<a ng-repeat="entry in entries" class="item item-avatar item-text-wrap" href="#">
 				<img ng-src="{{twitarrRoot}}api/v2/user/photo/{{entry.author}}" />
 				<h2 ng-bind-html="users[entry.author]? users[entry.author].display_name : entry.author" ng-click="openUser(entry.author);"></h2>
