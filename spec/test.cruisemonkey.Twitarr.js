@@ -13,6 +13,8 @@ describe('Twit-Arr', function() {
 	'use strict';
 
 	var twit,
+		SettingsService,
+		UserService,
 		$httpBackend,
 		$rootScope,
 		$timeout;
@@ -24,10 +26,19 @@ describe('Twit-Arr', function() {
 	});
 
 	beforeEach(module('cruisemonkey.Twitarr', function($provide) {
-		/*
-		$provide.value('$cordovaNetwork', $cordovaNetwork);
+		UserService = {
+			get: function() {
+				return {
+				};
+			}
+		};
+		SettingsService = {
+			getTwitarrRoot: function() {
+				return 'https://jccc5.rylath.net/';
+			}
+		};
 		$provide.value('UserService', UserService);
-		*/
+		$provide.value('SettingsService', SettingsService);
 	}));
 
 	beforeEach(inject(function($injector) {

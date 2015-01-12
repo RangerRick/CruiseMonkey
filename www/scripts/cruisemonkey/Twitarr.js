@@ -106,13 +106,13 @@
 			if (user.loggedIn && user.key) {
 				console.log('Twitarr: doing status check');
 				getStatus().then(function(result) {
-					if (result.seamail_unread_count != scope.lastStatus.seamail_unread_count) {
+					if (result.seamail_unread_count !== scope.lastStatus.seamail_unread_count) {
 						$rootScope.$broadcast('cruisemonkey.notify.newSeamail', result.seamail_unread_count);
-					} else if (result.unnoticed_mentions != scope.lastStatus.unnoticed_mentions) {
+					} else if (result.unnoticed_mentions !== scope.lastStatus.unnoticed_mentions) {
 						$rootScope.$broadcast('cruisemonkey.notify.newMentions', result.unnoticed_mentions);
-					} else if (result.unnoticed_alerts != scope.lastStatus.unnoticed_alerts) {
+					} else if (result.unnoticed_alerts !== scope.lastStatus.unnoticed_alerts) {
 						$rootScope.$broadcast('cruisemonkey.notify.newAlerts', result.unnoticed_alerts);
-					} else if (result.unnoticed_announcements != scope.lastStatus.unnoticed_announcements) {
+					} else if (result.unnoticed_announcements !== scope.lastStatus.unnoticed_announcements) {
 						$rootScope.$broadcast('cruisemonkey.notify.newAnnouncements', result.unnoticed_announcements);
 					}
 					scope.lastStatus = result;
