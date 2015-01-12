@@ -1,6 +1,9 @@
 (function() {
 	'use strict';
 
+	/*jshint bitwise: false*/
+	/*global moment: true*/
+
 	var d3 = {};
 
 	function d3_ascending(a, b) {
@@ -12,22 +15,22 @@
 	function d3_bisector(compare) {
 		return {
 			left: function(a, x, lo, hi) {
-				if (arguments.length < 3) lo = 0;
-				if (arguments.length < 4) hi = a.length;
+				if (arguments.length < 3) { lo = 0; }
+				if (arguments.length < 4) { hi = a.length; }
 				while (lo < hi) {
 					var mid = lo + hi >>> 1;
-					if (compare(a[mid], x) < 0) lo = mid + 1;
-					else hi = mid;
+					if (compare(a[mid], x) < 0) { lo = mid + 1; }
+					else { hi = mid; }
 				}
 				return lo;
 			},
 			right: function(a, x, lo, hi) {
-				if (arguments.length < 3) lo = 0;
-				if (arguments.length < 4) hi = a.length;
+				if (arguments.length < 3) { lo = 0; }
+				if (arguments.length < 4) { hi = a.length; }
 				while (lo < hi) {
 					var mid = lo + hi >>> 1;
-					if (compare(a[mid], x) > 0) hi = mid;
-					else lo = mid + 1;
+					if (compare(a[mid], x) > 0) { hi = mid; }
+					else { lo = mid + 1; }
 				}
 				return lo;
 			}
@@ -39,9 +42,7 @@
 	d3.bisect = d3.bisectRight = d3_bisect.right;
 
 	d3.bisector = function(f) {
-		return d3_bisector(f.length === 1
-				? function(d, x) { return d3_ascending(f(d), x); }
-				: f);
+		return d3_bisector(f.length === 1? function(d, x) { return d3_ascending(f(d), x); } : f);
 	};
 
 	var post_bisect = d3.bisector(function(a, b) {
@@ -59,16 +60,20 @@
 		var result = text.match(hrefMatch), found;
 		if (result) {
 			for (var i=0; i < result.length; i++) {
-				if (found = result[i].match(userSubMatch)) {
+				found = result[i].match(userSubMatch);
+				if (found) {
 					//console.log('user link:', found);
 					text = text.replace(found.input, 'ng-click="openUser(\'' + found[1] + '\');"');
-				} else if (found = result[i].match(tagSubMatch)) {
-					//console.log('tag link:', found);
-					text = text.replace(found.input, 'ng-click="openTag(\'' + found[1] + '\');"');
 				} else {
-					found = result[i].match(urlSubMatch);
-					//console.log('external link:', found);
-					text = text.replace(found.input, 'ng-click="openUrl(\'' + found[1] + '\', \'_blank\');"');
+					found = result[i].match(tagSubMatch);
+					if (found) {
+						//console.log('tag link:', found);
+						text = text.replace(found.input, 'ng-click="openTag(\'' + found[1] + '\');"');
+					} else {
+						found = result[i].match(urlSubMatch);
+						//console.log('external link:', found);
+						text = text.replace(found.input, 'ng-click="openUrl(\'' + found[1] + '\', \'_blank\');"');
+					}
 				}
 			}
 		}
