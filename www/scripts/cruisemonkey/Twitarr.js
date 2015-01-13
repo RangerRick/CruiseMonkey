@@ -28,6 +28,9 @@
 				url: url,
 				cache: false,
 				timeout: requestTimeout,
+				params: {
+					'_x': moment().valueOf()
+				},
 				headers: {
 					Accept: 'application/json'
 				}
@@ -35,9 +38,7 @@
 
 			var user = UserService.get();
 			if (user.loggedIn && user.key) {
-				options.params = {
-					key: user.key
-				};
+				options.params.key = user.key;
 			}
 
 			return $http(options);
