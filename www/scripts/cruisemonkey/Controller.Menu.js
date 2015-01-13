@@ -5,12 +5,29 @@
 
 	angular.module('cruisemonkey.controllers.Menu', [
 	])
-	.controller('CMMenuCtrl', ['$scope', '$templateCache', '$ionicPopover', '$cordovaKeyboard', 'UserService', function($scope, $templateCache, $ionicPopover, $cordovaKeyboard, UserService) {
+	.controller('CMMenuCtrl', ['$scope', '$templateCache', '$ionicPopover', '$cordovaKeyboard', 'storage', 'UserService', function($scope, $templateCache, $ionicPopover, $cordovaKeyboard, storage, UserService) {
 		console.log('CMMenuCtrl initializing.');
+
+		var loginPopover;
 
 		/** set up the user in the scope **/
 		$scope.user = UserService.get();
-		var loginPopover;
+
+		storage.bind($scope, 'lastTab', {
+			'defaultValue': 'app.events.official',
+			'storeName': 'cruisemonkey.menu.last-tab'
+		});
+
+		$scope.$on('$ionicView.beforeEnter', function(ev, info) {
+			//console.log('Menu: beforeEnter:',ev,info);
+			if (info.stateName && info.stateName.startsWith('app.events.')) {
+				$scope.lastTab = info.stateName;
+			} else if (info.stateName === 'app.events') {
+				var newState = $scope.eventType? ('app.events.' + $scope.eventType) : 'app.events.official';
+				console.log('Menu: app.events navigated, going to ' + newState + ' instead.');
+				$state.go(newState);
+			}
+		});
 
 		$scope.$on('cruisemonkey.user.updated', function(ev, newUser, oldUser) {
 			if (newUser.loggedIn && !oldUser.loggedIn) {

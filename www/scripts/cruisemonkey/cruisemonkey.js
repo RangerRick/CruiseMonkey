@@ -159,7 +159,8 @@
 				}
 			})
 			.state('app.deck-plans', {
-				url: '/deck-plans/:deck',
+				cache: false,
+				url: '/deck-plans',
 				views: {
 					'menuContent': {
 						templateUrl: 'template/deck-plans.html',
@@ -217,6 +218,10 @@
 	/* EventService & Notifications are here just to make sure they initializes early */
 	.run(['$rootScope', '$window', '$cordovaSplashscreen', 'EventService', 'Notifications', 'SettingsService', 'UpgradeService', function($rootScope, $window, $cordovaSplashscreen, EventService, Notifications, SettingsService, UpgradeService) {
 		console.log('CruiseMonkey run() called.');
+
+		$rootScope.$on("$stateChangeError", function (event, toState, toParams, fromState, fromParams, error) {
+			console.log('ERROR: ' + fromState + ' -> ' + toState, event, fromState, fromParams, toState, toParams, error);
+		});
 
 		$rootScope.isCordova = function() {
 			if ($window.cordova) {

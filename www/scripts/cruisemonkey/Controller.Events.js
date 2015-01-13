@@ -113,22 +113,22 @@
 		});
 
 		$scope.$on('$ionicView.beforeEnter', function(ev, info) {
-			if (info.stateName === 'app.events') {
-				var newState = 'app.events.official';
-				if ($scope.eventType) {
-					newState = 'app.events.' + $scope.eventType;
-				}
-				console.log('app.events navigated, going to ' + newState + ' instead.');
-				$state.go(newState);
-			} else {
-				if (!info.stateName) {
-					console.log('unhandled state:',info.stateName);
-					$scope.eventType = 'official';
-				} else {
-					$scope.eventType  = info.stateName? info.stateName.replace('app.events.', '') : '';
-				}
+			if (info.stateName && info.stateName.startsWith('app.events')) {
+				$scope.eventType  = info.stateName.replace('app.events.', '');
 				$scope.eventTitle = ($scope.eventType === 'my'? 'Mine' : $scope.eventType.capitalize());
 			}
+			/*
+			if (info.stateName && info.stateName.startsWith('app.events')) {
+				if (info.stateName === 'app.events') {
+					var newState = $scope.eventType? ('app.events.' + $scope.eventType) : 'app.events.official';
+					console.log('app.events navigated, going to ' + newState + ' instead.');
+					$state.go(newState);
+				} else {
+					$scope.eventType  = info.stateName.replace('app.events.', '');
+					$scope.eventTitle = ($scope.eventType === 'my'? 'Mine' : $scope.eventType.capitalize());
+				}
+			}
+			*/
 		});
 	}])
 	.controller('CMEventCtrl', ['$q', '$scope', '$rootScope', '$timeout', '$cordovaKeyboard', '$ionicScrollDelegate', '$ionicPopover', '$ionicModal', 'EventService', 'UserService', function($q, $scope, $rootScope, $timeout, $cordovaKeyboard, $ionicScrollDelegate, $ionicPopover, $ionicModal, EventService, UserService) {
@@ -362,16 +362,6 @@
 			}
 		};
 
-		$scope.trash = function(ev) {
-			if (window.confirm('Are you sure you want to delete "' + ev.getSummary() + '"?')) {
-				$scope.closePopover();
-				removeEventFromDisplay(ev);
-				EventService.removeEvent(ev).then(function() {
-					refreshEvents(true);
-				});
-			}
-		};
-
 		$scope.onFavoriteChanged = function(ev) {
 			$scope.closePopover();
 			$scope.$evalAsync(function() {
@@ -424,17 +414,6 @@
 						*/
 					});
 				}
-			});
-		};
-
-		$scope.onPublicChanged = function(ev) {
-			console.log('onPublicChanged(' + ev.getId() + ')');
-			$scope.closePopover();
-			$scope.$evalAsync(function() {
-				ev.setPublic(!ev.isPublic());
-				$scope.$broadcast('scroll.resize');
-				refreshEvents(true);
-				EventService.updateEvent(ev);
 			});
 		};
 
@@ -528,33 +507,50 @@
 			$scope.modal.show();
 		};
 
-		$scope.editEvent = function(ev) {
-			$scope.closePopover();
-			$scope.$evalAsync(function() {
-				$scope.event = ev;
-				$scope.eventData = ev.toEditableBean();
+		$ionicPopover.fromTemplateUrl('template/event-popover.html').then(function(popover) {
+			popover.scope.trash = function(ev) {
+				if (window.confirm('Are you sure you want to delete "' + ev.getSummary() + '"?')) {
+					popover.hide();
+					removeEventFromDisplay(ev);
+					EventService.removeEvent(ev).then(function() {
+						refreshEvents(true);
+					});
+				}
+			};
 
-				$scope.modal.show();
-			});
-		};
+			popover.scope.togglePublic = function(ev) {
+				console.log('togglePublic(' + ev.getId() + ')');
+				popover.hide();
+				$scope.$evalAsync(function() {
+					ev.setPublic(!ev.isPublic());
+					$scope.$broadcast('scroll.resize');
+					refreshEvents(true);
+					EventService.updateEvent(ev);
+				});
+			};
 
-		$ionicPopover.fromTemplateUrl('template/event-popover.html', {
-			scope: $scope
-		}).then(function(popover) {
+			popover.scope.editEvent = function(ev) {
+				popover.hide();
+				$scope.$evalAsync(function() {
+					$scope.event = ev;
+					$scope.eventData = ev.toEditableBean();
+
+					$scope.modal.show();
+				});
+			};
+
 			$scope.popover = popover;
 		});
-		$scope.popoverEntry = null;
+
 		$scope.openPopover = function($event, entry) {
 			var user = UserService.get();
 			if (!user.username || user.username !== entry.getUsername()) {
 				return;
 			}
-			console.log('openPopover:', $event, entry);
-			$scope.popoverEntry = entry;
+
+			// console.log('openPopover:', $event, entry);
+			$scope.popover.scope.entry = entry;
 			$scope.popover.show($event);
-		};
-		$scope.closePopover = function() {
-			$scope.popover.hide();
 		};
 
 		/** CruiseMonkey events **/
@@ -569,10 +565,10 @@
 
 		/** Ionic Events **/
 		$scope.$on('popover.hidden', function() {
-			$scope.popoverEntry = null;
+			console.log('popover.hidden');
 		});
 		$scope.$on('popover.removed', function() {
-			$scope.popoverEntry = null;
+			console.log('popover.removed');
 		});
 		$scope.$on('$destroy', function() {
 			$scope.popover.remove();
@@ -582,13 +578,7 @@
 			$scope.searchString = '';
 		});
 		$scope.$on('$ionicView.beforeEnter', function(ev, info) {
-			//$scope.eventType = info.stateName.replace('app.events.', '');
 			doRefresh();
 		});
-		/*
-		$scope.$on('$ionicView.afterEnter', function(ev, info) {
-			$scope.eventTitle = ($scope.eventType === 'my'? 'Mine' : $scope.eventType.capitalize());
-		});
-*/
 	}]);
 }());

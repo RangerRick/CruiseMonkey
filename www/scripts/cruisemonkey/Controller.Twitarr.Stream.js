@@ -212,8 +212,5 @@
 		$scope.$on('$ionicView.loaded', function(ev, info) {
 			$scope.doRefresh();
 		});
-
-		$scope.$on('$ionicView.beforeEnter', function(ev, info) {
-		});
 	}]);
 }());

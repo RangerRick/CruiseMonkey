@@ -257,7 +257,7 @@
 		});
 
 		$scope.$on('$ionicView.beforeEnter', function(ev, info) {
-			console.log('beforeEnter: getting karaoke list');
+			console.log('Karaoke: getting karaoke list');
 			if (sqlitedb) {
 				updateEntries();
 			} else {
@@ -281,7 +281,7 @@
 		});
 
 		$scope.$on('$ionicView.afterLeave', function(ev, info) {
-			console.log('afterLeave: destroying karaoke list');
+			console.log('Karaoke: destroying karaoke list');
 			$scope.entries = [];
 		});
 	}])

@@ -6,7 +6,7 @@
 		'ui.router',
 		'angularLocalStorage'
 	])
-	.controller('CMDeckListCtrl', ['storage', '$scope', '$rootScope', '$ionicScrollDelegate', '$ionicSlideBoxDelegate', '$timeout', '$state', '$stateParams', '$location', '$document', function(storage, $scope, $rootScope, $ionicScrollDelegate, $ionicSlideBoxDelegate, $timeout, $state, $stateParams, $location, $document) {
+	.controller('CMDeckListCtrl', ['storage', '$scope', '$ionicScrollDelegate', '$ionicSlideBoxDelegate', '$timeout', '$location', '$document', function(storage, $scope, $ionicScrollDelegate, $ionicSlideBoxDelegate, $timeout, $location, $document) {
 		console.log('Initializing CMDeckListCtrl');
 
 		storage.bind($scope, 'deck', {
@@ -20,20 +20,6 @@
 			$scope.deck = parseInt($scope.deck, 10);
 		}
 
-		if ($stateParams.deck) {
-			console.log('$stateParams.deck: ' + $stateParams.deck);
-			var passedDeck = 0;
-			if ($stateParams.deck.indexOf('-') > -1) {
-				var parts = $stateParams.deck.split('-');
-				passedDeck = parseInt(parts.shift(), 10);
-			} else {
-				passedDeck = parseInt($stateParams.deck, 10);
-			}
-			if (passedDeck && passedDeck > 0) {
-				console.log('passedDeck = ' + passedDeck);
-				$scope.deck = passedDeck;
-			}
-		}
 		$scope.currentSlide = $scope.deck - 2;
 
 		var previous = function() {
@@ -84,19 +70,11 @@
 		};
 
 		$scope.$watch('deck', function(newValue, oldValue) {
-			$state.transitionTo('app.deck-plans', {
-				deck: $scope.deck
-			}, {
-				location: true,
-				inherit: true,
-				notify: false,
-				reload: false
-			});
 			updateUI();
 		});
 
 		$scope.slideChanged = function(index) {
-			console.log('slideBox.slideChanged: ' + index);
+			console.log('CMDeckListCtrl: slideBox.slideChanged: ' + index);
 			$scope.deck = index + 2;
 		};
 
