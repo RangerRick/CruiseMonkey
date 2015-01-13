@@ -14,6 +14,7 @@
 			</ion-item>
 			<a ng-repeat="entry in entries" class="item item-avatar item-text-wrap" href="#">
 				<img ng-src="{{twitarrRoot}}api/v2/user/photo/{{entry.author}}" />
+				<span class="item-note">{{entry.timestamp.fromNow(true)}}</span>
 				<h2 ng-bind-html="users[entry.author]? users[entry.author].display_name : entry.author" ng-click="openUser(entry.author);"></h2>
 				<p twitter-html="entry.text"></p>
 				<img ng-if="entry.photo" ng-src="{{twitarrRoot}}photo/medium_thumb/{{entry.photo.id}}" style="width: 100%; max-width: 400px" />
