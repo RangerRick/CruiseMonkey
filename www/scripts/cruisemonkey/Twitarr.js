@@ -7,9 +7,10 @@
 
 	angular.module('cruisemonkey.Twitarr', [
 		'cruisemonkey.Settings',
+		'cruisemonkey.Config',
 		'angularLocalStorage'
 	])
-	.factory('Twitarr', ['$q', '$rootScope', '$timeout', '$interval', '$http', 'storage', 'config.background.interval', 'config.request.timeout', 'SettingsService', 'UserService', function($q, $rootScope, $timeout, $interval, $http, storage, backgroundInterval, requestTimeout, SettingsService, UserService) {
+	.factory('Twitarr', ['$q', '$rootScope', '$timeout', '$interval', '$http', 'storage', 'config.background.interval', 'config.request.timeout', 'config.twitarr.enable-cachebusting', 'SettingsService', 'UserService', function($q, $rootScope, $timeout, $interval, $http, storage, backgroundInterval, requestTimeout, enableCachebusting, SettingsService, UserService) {
 		console.log('Initializing Twit-arr API.');
 
 		var scope = $rootScope.$new();
@@ -54,7 +55,7 @@
 				}
 			}
 
-			if (type === 'GET') {
+			if (type === 'GET' && enableCachebusting) {
 				params._x = moment().valueOf();
 			}
 			options.params = angular.extend({}, params);

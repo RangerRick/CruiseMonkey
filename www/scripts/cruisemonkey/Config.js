@@ -12,6 +12,7 @@
 	.value('config.request.timeout', 5000)
 	.value('config.background.interval', 30000)
 	.value('config.twitarr.root', 'https://jccc5.rylath.net/')
+	.value('config.twitarr.enable-cachebusting', true)
 	.value('config.app.version', '***VERSION***')
 	.value('config.app.build', '***BUILD***')
 	.value('config.upgrade', true);

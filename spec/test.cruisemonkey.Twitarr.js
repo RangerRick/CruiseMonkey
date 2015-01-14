@@ -39,6 +39,7 @@ describe('Twit-Arr', function() {
 		};
 		$provide.value('UserService', UserService);
 		$provide.value('SettingsService', SettingsService);
+		$provide.value('config.twitarr.enable-cachebusting', false);
 	}));
 
 	beforeEach(inject(function($injector) {

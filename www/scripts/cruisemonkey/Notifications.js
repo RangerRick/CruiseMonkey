@@ -236,20 +236,6 @@
 			});
 		});
 
-		ionic.Platform.ready(function() {
-			$rootScope.$evalAsync(function() {
-				if (window.plugin && window.plugin.notification && window.plugin.notification.local) {
-					console.log('Notifications: checking permissions');
-					$cordovaLocalNotification.hasPermission().then(function(granted) {
-						console.log('Notifications: do we have local notification permissions? ' + granted);
-						if (!granted) {
-							$cordovaLocalNotification.promptForPermission();
-						}
-					});
-				}
-			});
-		});
-
 		return {};
 	}]);
 }());
