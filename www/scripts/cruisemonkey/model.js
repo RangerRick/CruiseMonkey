@@ -307,7 +307,7 @@ CMEvent.prototype.toEditableBean = function() {
 	};
 
 	bean.isValid = function() {
-		if (bean.summary === undefined || bean.summary === '') { return false; }
+		if (bean.summary === undefined || bean.summary.trim() === '') { return false; }
 		if (bean.startDate === undefined || bean.startDate === '') { return false; }
 
 		if (bean.endDate && moment(bean.endDate).isBefore(moment(bean.startDate))) {

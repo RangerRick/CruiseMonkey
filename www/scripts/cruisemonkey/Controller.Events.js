@@ -457,6 +457,11 @@
 				return;
 			}
 
+			if (!data.isValid()) {
+				console.log('Cannot save, bean is invalid:',data);
+				return;
+			}
+
 			var ev = $scope.event;
 			ev.fromEditableBean(data);
 			ev.setUsername(username);
