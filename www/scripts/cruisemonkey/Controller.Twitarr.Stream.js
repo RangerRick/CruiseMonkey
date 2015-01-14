@@ -93,12 +93,13 @@
 			$compile(element.contents())(scope);
 		};
 	}])
-	.controller('CMTwitarrStreamCtrl', ['$q', '$scope', '$sce', '$compile', '$ionicScrollDelegate', 'Twitarr', 'SettingsService', function($q, $scope, $sce, $compile, $ionicScrollDelegate, Twitarr, SettingsService) {
+	.controller('CMTwitarrStreamCtrl', ['$q', '$scope', '$sce', '$compile', '$ionicScrollDelegate', 'SettingsService', 'Twitarr', 'UserService', function($q, $scope, $sce, $compile, $ionicScrollDelegate, SettingsService, Twitarr, UserService) {
 		console.log('Initializing CMTwitarrStream');
 
 		$scope.users = {};
 		$scope.entries = [];
 		$scope.twitarrRoot = SettingsService.getTwitarrRoot();
+		$scope.user = UserService.get();
 
 		$scope.loading = $q.defer();
 		$scope.loading.resolve();
@@ -110,28 +111,57 @@
 		};
 
 		var addEvents = function(events) {
+			$scope.user = UserService.get();
+			var i, j, k;
 			console.log('TwitarrStream: addEvents:',events);
-			for (var i=0; i < events.length; i++) {
+			for (i=0; i < events.length; i++) {
 				events[i].timestamp = moment(events[i].timestamp);
 				events[i].text = translateText(events[i].text);
 				$scope.entries.push(events[i]);
+				var users = [];
 				if (!$scope.users[events[i].author]) {
-					lookupUser(events[i].author);
+					users.push(events[i].author);
 				}
-				/*
-				var index = post_bisect($scope.entries, events[i]);
-				console.log('index of ' + events[i].id + ' is ' + index);
-
-				if ($scope.entries[index] && $scope.entries[index].id === events[i].id) {
-					$scope.entries[index] = events[i];
-				} else {
-					$scope.entries.splice(index, 0, events[i]);
+				if (events[i].likes) {
+					for (j=0; j < events[i].likes.length; j++) {
+						if (!$scope.users[events[i].likes[j]]) {
+							users.push(events[i].likes[j]);
+						}
+					}
 				}
-				*/
+				for (k=0; k < users.length; k++) {
+					lookupUser(users[k]);
+				}
 			}
 			if ($scope.entries.length > 500) {
 				$scope.entries = $scope.entries.slice(0, 500);
 			}
+		};
+
+		$scope.toggleLike = function(entry) {
+			console.log('Controller.Twitarr.Stream.toggleLike(' + entry.id + ')');
+			var user = UserService.get();
+			if (entry.likes && entry.likes.indexOf(user.username) >= 0) {
+				// we have already liked it, unlike it
+				Twitarr.unlike(entry.id).then(function(res) {
+					entry.likes.splice(entry.likes.indexOf(user.username), 1);
+				}, function(err) {
+					console.log('Unable to toggle like on ' + entry.id + ':' + err[0]);
+				});
+			} else {
+				Twitarr.like(entry.id).then(function(res) {
+					if (!entry.likes) {
+						entry.likes = [];
+					}
+					entry.likes.push(user.username);
+				}, function(err) {
+					console.log('Unable to toggle like on ' + entry.id + ':' + err[0]);
+				});
+			}
+		};
+
+		$scope.reply = function(entry) {
+			console.log('Controller.Twitarr.Stream.reply(' + entry.id + ')');
 		};
 
 		$scope.openUser = function(username) {

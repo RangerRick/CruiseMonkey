@@ -89,6 +89,8 @@ $item-divider-bg: $dark;
 $item-divider-color: $light;
 $item-avatar-border-radius: 5px;
 
+$input-color-placeholder: #ccc !important;
+
 $menu-animation-speed: 100ms;
 
 $item-default-bg:                 $light;
@@ -340,6 +342,42 @@ a.tab-item:hover {
 .add-event-form span.invalid {
 	float: right;
 	color: red;
+}
+
+.twitarr {
+	.item-note {
+		text-align: right;
+	}
+	.likes {
+		img, i {
+			width: 20px;
+			height: 20px;
+			border-radius: 2px;
+		}
+	}
+	.commands {
+		text-align: right;
+		.button {
+			padding-left: 0;
+			padding-right: 0;
+			min-height: 20px;
+			max-height: 30px;
+			min-width: 20px;
+			max-width: 30px;
+		}
+	}
+}
+
+.seamail {
+	.users {
+		img {
+			min-height: 20px;
+			max-height: 30px;
+			min-width: 20px;
+			max-width: 30px;
+			border-radius: 3px;
+		}
+	}
 }
 
 .list-entry {

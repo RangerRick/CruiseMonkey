@@ -7,17 +7,28 @@
 	</ion-header-bar>
 	<ion-content scroll="true" padding="false" delegate-handle="twitarr">
 		<ion-refresher pulling-text="Pull to refresh..." on-refresh="doRefresh()"></ion-refresher>
-		<ion-list>
+		<ion-list class="twitarr">
 			<ion-item ng-if="error" class="item item-icon-left">
 				<i class="icon ion-alert-circled yellow"></i>
 				<span ng-bind-html="error" style="padding-left: 20px"></span>
 			</ion-item>
 			<a ng-repeat="entry in entries" class="item item-avatar item-text-wrap" href="#">
 				<img ng-src="{{twitarrRoot}}api/v2/user/photo/{{entry.author}}" />
-				<span class="item-note">{{entry.timestamp.fromNow(true)}}</span>
+				<span class="item-note">
+					{{entry.timestamp.fromNow(true)}}<br>
+					<span ng-if="entry.likes" class="likes" ng-repeat="like in entry.likes">
+						<img ng-if="like !== user.username" ng-src="{{twitarrRoot}}api/v2/user/photo/{{like}}" title="{{users[like]? users[like].display_name : like}}" />
+					</span>
+				</span>
 				<h2 ng-bind-html="users[entry.author]? users[entry.author].display_name : entry.author" ng-click="openUser(entry.author);"></h2>
 				<p twitter-html="entry.text"></p>
 				<img ng-if="entry.photo" ng-src="{{twitarrRoot}}photo/medium_thumb/{{entry.photo.id}}" style="width: 100%; max-width: 400px" />
+				<!--
+				<div class="commands" ng-if="entry.author !== user.username">
+					<button ng-class="'button button-clear button-small icon ' + (entry.likes &amp;&amp; entry.likes.indexOf(user.username) >= 0? 'ion-ios-heart':'ion-ios-heart-outline')" ng-click="toggleLike(entry)"></button>
+					<button class="button button-clear button-small icon ion-reply" ng-click="reply(entry)"></button>
+				</div>
+				-->
 			</a>
 		</ion-list>
 		<ion-infinite-scroll on-infinite="loadMore()" ng-if="entries.length < 500 &amp;&amp; !done" distance="10%"></ion-infinite-scroll>

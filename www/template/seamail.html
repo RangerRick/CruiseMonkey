@@ -1,0 +1,18 @@
+<ion-view>
+	<ion-header-bar class="bar-stable bar-dark" animation="no-animation" ng-click="scrollTop()">
+		<div class="buttons">
+			<button menu-toggle="left" class="button button-icon icon ion-navicon"></button>
+		</div>
+		<h1 class="title">Seamail</h1>
+	</ion-header-bar>
+	<ion-content scroll="true" padding="false" delegate-handle="seamail">
+		<ion-refresher pulling-text="Pull to refresh..." on-refresh="doRefresh()"></ion-refresher>
+		<ion-list>
+			<ion-item ng-repeat="seamail in seamails track by seamail.id" class="seamail" ng-click="openSeamail(seamail)">
+				<div class="title">Subject: {{seamail.subject}} ({{seamail.messages}}) <i ng-if="seamail.is_unread" class="icon ion-record blue"></i></div>
+				<div class="time">Time: {{seamail.timestamp.format('dddd, MMMM Do, h:mma')}}</div>
+				<div class="users"><img ng-repeat="user in seamail.users" ng-src="{{twitarrRoot}}api/v2/user/photo/{{user.username}}" title="{{user.display_name}}" /></div>
+			</ion-item>
+		</ion-list>
+	</ion-content>
+</ion-view>

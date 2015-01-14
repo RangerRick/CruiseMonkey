@@ -3,6 +3,7 @@
 
 	/*global isMobile: true*/
 	/*global ionic: true*/
+	/*global moment: true*/
 
 	angular.module('cruisemonkey.Twitarr', [
 		'cruisemonkey.Settings',
@@ -22,26 +23,84 @@
 			}
 		});
 
-		var get = function(url) {
+		var call = function(type, url, params, data) {
 			var options = {
-				method: 'GET',
+				method: type,
 				url: url,
 				cache: false,
 				timeout: requestTimeout,
-				params: {
-					'_x': moment().valueOf()
-				},
 				headers: {
 					Accept: 'application/json'
 				}
 			};
 
 			var user = UserService.get();
-			if (user.loggedIn && user.key) {
-				options.params.key = user.key;
+
+			if (!params) {
+				params = {};
 			}
 
+			if (type === 'POST') {
+				if (!data.key) {
+					if (user.loggedIn && user.key) {
+						data.key = user.key;
+					}
+				}
+			} else {
+				if (!params.key) {
+					if (user.loggedIn && user.key) {
+						params.key = user.key;
+					}
+				}
+			}
+
+			if (type === 'GET') {
+				params._x = moment().valueOf();
+			}
+			options.params = angular.extend({}, params);
+
+			if (data) {
+				//options.data = angular.toJson(data);
+				options.data = data;
+			}
+
+			console.log('Making HTTP call with options:',options);
 			return $http(options);
+		};
+
+		var get = function(url, params) {
+			return call('GET', url, params);
+		};
+
+		var del = function(url, params) {
+			return call('DELETE', url, params);
+		};
+
+		var post = function(url, data) {
+			return call('POST', url, {}, data);
+		};
+
+		var getAlerts = function(shouldReset) {
+			shouldReset = shouldReset? true:false;
+			var url = SettingsService.getTwitarrRoot() + 'api/v2/alerts';
+			console.log('Twitarr.getAlerts(' + shouldReset + '): url=' + url);
+
+			var deferred = $q.defer();
+
+			get(url, {'no_reset':!shouldReset})
+				.success(function(data) {
+					if (data.unread_seamail) {
+						for (var i=0; i < data.unread_seamail.length; i++) {
+							data.unread_seamail[i].timestamp = moment(data.unread_seamail[i].timestamp);
+						}
+					}
+					deferred.resolve(data);
+				}).error(function(data, status) {
+					console.log('Twitarr.getAlerts(): Failed: ' + status, data);
+					deferred.reject([data, status]);
+				});
+
+			return deferred.promise;
 		};
 
 		var getStatus = function() {
@@ -49,16 +108,114 @@
 			console.log('Twitarr.getStatus(): url=' + url);
 
 			var deferred = $q.defer();
+
+			var user = UserService.get();
+			if (user.loggedIn) {
+				get(url)
+					.success(function(data) {
+						if (data.status === 'ok') {
+							deferred.resolve(data.user);
+						} else {
+							console.log('Twitarr.getStatus(): got a 200 response, but not OK.', data);
+							deferred.reject([data]);
+						}
+					}).error(function(data, status) {
+						console.log('Twitarr.getStatus(): Failed: ' + status, data);
+						deferred.reject([data, status]);
+					});
+			} else {
+				deferred.reject(['Not logged in.']);
+			}
+
+			return deferred.promise;
+		};
+
+		var getSeamail = function() {
+			var url = SettingsService.getTwitarrRoot() + 'api/v2/seamail';
+			var deferred = $q.defer();
+
+			console.log('Twitarr.getSeamail(): url=' + url);
 			get(url)
 				.success(function(data) {
-					if (data.status === 'ok') {
-						deferred.resolve(data.user);
-					} else {
-						console.log('Twitarr.getStatus(): got a 200 response, but not OK.', data);
-						deferred.reject();
+					if (data.seamail_meta) {
+						for (var i=0; i < data.seamail_meta.length; i++) {
+							data.seamail_meta[i].timestamp = moment(data.seamail_meta[i].timestamp);
+						}
 					}
+
+					deferred.resolve(data);
+				}).error(function(data, status, headers, config) {
+					console.log('Failed getSeamail(): ' + status, data);
+					deferred.reject([data, status]);
+				});
+
+			return deferred.promise;
+		};
+
+		var getSeamailMessages = function(id) {
+			var url = SettingsService.getTwitarrRoot() + 'api/v2/seamail/' + id;
+			var deferred = $q.defer();
+
+			console.log('Twitarr.getSeamailMessages(): url=' + url);
+			get(url)
+				.success(function(data) {
+					if (data.seamail && data.seamail.messages) {
+						for (var i=0; i < data.seamail.messages.length; i++) {
+							data.seamail.messages[i].timestamp = moment(data.seamail.messages[i].timestamp);
+						}
+					}
+					deferred.resolve(data);
+				}).error(function(data, status, headers, config) {
+					console.log('Failed getSeamailMessages(): ' + status, data);
+					deferred.reject([data, status]);
+				});
+
+			return deferred.promise;
+		};
+
+		var postSeamailMessage = function(id, text) {
+			var url = SettingsService.getTwitarrRoot() + 'api/v2/seamail/' + id + '/new_message';
+			var deferred = $q.defer();
+
+			console.log('Twitarr.postSeamailMessage(): url=' + url + ', text=',text);
+			post(url, { text: text })
+				.success(function(data) {
+					deferred.resolve(data);
 				}).error(function(data, status) {
-					console.log('Twitarr.getStatus(): Failed: ' + status, data);
+					console.log('Failed like(): ' + status, data);
+					deferred.reject([data, status]);
+				});
+
+			return deferred.promise;
+		};
+
+		var like = function(tweetId) {
+			var url = SettingsService.getTwitarrRoot() + 'api/v2/stream/' + tweetId + '/like';
+			var deferred = $q.defer();
+
+			console.log('Twitarr.like(): url=' + url);
+			post(url)
+				.success(function(data) {
+					deferred.resolve(data);
+				}).error(function(data, status, headers, config) {
+					console.log('Failed like(): ' + status, data);
+					deferred.reject([data, status]);
+				});
+
+			return deferred.promise;
+		};
+
+		var unlike = function(tweetId) {
+			var url = SettingsService.getTwitarrRoot() + 'api/v2/stream/' + tweetId + '/like';
+			var deferred = $q.defer();
+
+			console.log('Twitarr.unlike(): url=' + url);
+			del(url)
+				.success(function(data) {
+					deferred.resolve(data);
+				}).error(function(data, status, headers, config) {
+					console.log('Failed unlike(): ' + status, data);
+					deferred.reject([data, status]);
 				});
 
 			return deferred.promise;
@@ -138,6 +295,13 @@
 		return {
 			getStream: getStream,
 			getUserInfo: getUserInfo,
+			getStatus: getStatus,
+			getAlerts: getAlerts,
+			getSeamail: getSeamail,
+			getSeamailMessages: getSeamailMessages,
+			postSeamailMessage: postSeamailMessage,
+			like: like,
+			unlike: unlike,
 		};
 	}]);
 }());

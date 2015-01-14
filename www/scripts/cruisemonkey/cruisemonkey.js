@@ -5,6 +5,8 @@
 	/* global ionic: true */
 	/* global cordova: true */
 	/* global StatusBar: true */
+	/* global moment: true */
+
 	angular.module('cruisemonkey',
 	[
 		'ionic',
@@ -22,7 +24,8 @@
 		'cruisemonkey.controllers.Login',
 		'cruisemonkey.controllers.Menu',
 		'cruisemonkey.controllers.Navigation',
-		'cruisemonkey.controllers.Photos',
+		//'cruisemonkey.controllers.Photos',
+		'cruisemonkey.controllers.Seamail',
 		'cruisemonkey.controllers.Twitarr.Stream',
 		'cruisemonkey.Database',
 		'cruisemonkey.Events',
@@ -168,12 +171,23 @@
 					}
 				}
 			})
+			/*
 			.state('app.photos', {
 				url: '/photos',
 				views: {
 					'menuContent': {
 						templateUrl: 'template/photos.html',
 						controller: 'CMPhotoCtrl'
+					}
+				}
+			})
+*/
+			.state('app.seamail', {
+				url: '/seamail',
+				views: {
+					'menuContent': {
+						templateUrl: 'template/seamail.html',
+						controller: 'CMSeamailCtrl'
 					}
 				}
 			})

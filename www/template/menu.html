@@ -54,6 +54,10 @@
         <a class="item" ui-sref="app.about"             ui-sref-active="active">About</a>
 				<a class="item" ui-sref="app.settings"          ui-sref-active="active">Settings</a>
 
+        <span ng-if="user.loggedIn">
+          <a class="item" ui-sref="app.seamail"         ui-sref-active="active">Seamail<span ng-if="seamail" class="badge badge-assertive">{{seamail}}</span></a>
+        </span>
+
         <a class="item" ng-if="user.loggedIn" ng-click="logOut()">Log Out</a>
         <a class="item" ng-if="!user.loggedIn" ng-click="logIn()">Log In</a>
       </ion-list>

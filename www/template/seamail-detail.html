@@ -1,0 +1,23 @@
+<ion-modal-view>
+	<ion-header-bar class="bar-dark">
+		<h1 class="title">{{seamail.subject}}</h1>
+		<div class="buttons">
+			<button class="button yellow icon ion-close-circled" ng-click="closeModal()"></button>
+		</div>
+	</ion-header-bar>
+	<ion-content class="seamail">
+		<ion-list>
+			<ion-item class="item item-avatar item-button-right">
+				<img ng-src="{{twitarrRoot}}api/v2/user/photo/{{user.username}}" />
+				<input type="text" ng-model="newMessage.text" ng-trim="true" placeholder="Send a message">
+				<button class="button button-dark" ng-click="postMessage()">Send</button>
+			</ion-item>
+			<ion-item ng-repeat="message in seamail.messages track by $index" class="item item-avatar">
+				<img ng-src="{{twitarrRoot}}api/v2/user/photo/{{message.author}}" />
+				<h2>{{message.display_name}}</h2>
+				<p>{{message.text}}</p>
+				<span class="item-note">{{message.timestamp.fromNow(true)}}</span>
+			</ion-item>
+		</ion-list>
+	</ion-content>
+</ion-modal-view>

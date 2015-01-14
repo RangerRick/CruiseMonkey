@@ -22,3 +22,18 @@ if (typeof String.prototype.contains !== 'function') {
 		return comparator === undefined? true : (this.toLowerCase().indexOf(comparator.toLowerCase()) > -1);
 	};
 }
+
+if (typeof String.prototype.hashCode !== 'function') {
+	/* jshint bitwise: false */
+	String.prototype.hashCode = function() {
+		'use strict';
+		var hash=0, i, char;
+		if (this.length === 0) { return hash; }
+		for (i=0; i < this.length; i++) {
+			char = this.charCodeAt(i);
+			hash = ((hash<<5)-hash)+char;
+			hash = hash & hash; // convert to 32-bit integer
+		}
+		return hash;
+	};
+}
