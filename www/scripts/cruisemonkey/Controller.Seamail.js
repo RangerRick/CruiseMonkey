@@ -5,7 +5,7 @@
 		'cruisemonkey.Config',
 		'cruisemonkey.Twitarr',
 	])
-	.controller('CMSeamailCtrl', ['$scope', '$timeout', '$interval', '$ionicModal', '$ionicScrollDelegate', 'SettingsService', 'Twitarr', 'UserService', function($scope, $timeout, $interval, $ionicModal, $ionicScrollDelegate, SettingsService, Twitarr, UserService) {
+	.controller('CMSeamailCtrl', ['$scope', '$timeout', '$interval', '$ionicLoading', '$ionicModal', '$ionicScrollDelegate', 'SettingsService', 'Twitarr', 'UserService', function($scope, $timeout, $interval, $ionicLoading, $ionicModal, $ionicScrollDelegate, SettingsService, Twitarr, UserService) {
 		console.log('CMSeamailCtrl Initializing.');
 
 		$ionicModal.fromTemplateUrl('template/seamail-detail.html', {
@@ -60,6 +60,7 @@
 				} else {
 					$scope.seamails = [];
 				}
+				$ionicLoading.hide();
 				$scope.$broadcast('scroll.refreshComplete');
 			}, function(err) {
 				console.log('Failed to get seamail:',err);
@@ -96,6 +97,9 @@
 		});
 
 		$scope.$on('$ionicView.beforeEnter', function(ev, info) {
+			if (!$scope.seamails) {
+				$ionicLoading.show({template:'Loading...'});
+			}
 			$scope.doRefresh();
 		});
 	}]);
