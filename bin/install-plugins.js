@@ -19,13 +19,15 @@ var addList = [
 
 /* 3rd-party plugins */
 	'https://github.com/VersoSolutions/CordovaClipboard.git',
-	'de.appplant.cordova.plugin.local-notification',
+	'https://github.com/katzer/cordova-plugin-local-notifications.git',
+	//'de.appplant.cordova.plugin.local-notification',
 	'https://github.com/EddyVerbruggen/Toast-PhoneGap-Plugin.git',
 	'https://github.com/Paldom/SpinnerDialog.git',
 
 /* android/ios only */
 	'https://github.com/driftyco/ionic-plugins-keyboard.git',
 	'https://github.com/RangerRick/cordova-certificate-plugin.git#4.0.x',
+	'org.transistorsoft.cordova.plugin.background.fetch',
 ];
 
 // no need to configure below

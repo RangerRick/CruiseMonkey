@@ -259,6 +259,38 @@
 			return deferred.promise;
 		};
 
+		var sendSeamailNotification = function(seamail, count) {
+			console.log('Twitarr: Sending seamail local notification for:',seamail);
+
+			var options = {
+				id: 'seamail-' + seamail.id,
+				message: 'New Seamail: ' + seamail.subject,
+				data: seamail,
+			};
+			if (count) {
+				options.badge = count;
+			}
+
+			$rootScope.$broadcast('cruisemonkey.notify.local', options);
+		};
+
+		var sendSeamailNotifications = function() {
+			var newSeamails = [], i;
+			getSeamail().then(function(res) {
+				if (res.seamail_meta) {
+					for (i=0; i < res.seamail_meta.length; i++) {
+						if (res.seamail_meta[i].is_unread) {
+							newSeamails.push(res.seamail_meta[i]);
+						}
+					}
+				}
+
+				for (i=0; i < newSeamails.length; i++) {
+					sendSeamailNotification(res.seamail_meta[i], newSeamails.length);
+				}
+			});
+		};
+
 		var checkStatus = function() {
 			var user = UserService.get();
 			if (user.loggedIn && user.key) {
@@ -266,10 +298,13 @@
 				getStatus().then(function(result) {
 					if (result.seamail_unread_count !== scope.lastStatus.seamail_unread_count) {
 						$rootScope.$broadcast('cruisemonkey.notify.newSeamail', result.seamail_unread_count);
+						sendSeamailNotifications();
 					} else if (result.unnoticed_mentions !== scope.lastStatus.unnoticed_mentions) {
 						$rootScope.$broadcast('cruisemonkey.notify.newMentions', result.unnoticed_mentions);
+					/*
 					} else if (result.unnoticed_alerts !== scope.lastStatus.unnoticed_alerts) {
 						$rootScope.$broadcast('cruisemonkey.notify.newAlerts', result.unnoticed_alerts);
+					*/
 					} else if (result.unnoticed_announcements !== scope.lastStatus.unnoticed_announcements) {
 						$rootScope.$broadcast('cruisemonkey.notify.newAnnouncements', result.unnoticed_announcements);
 					}
