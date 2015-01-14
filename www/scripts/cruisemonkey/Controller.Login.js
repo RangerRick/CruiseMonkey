@@ -42,8 +42,14 @@
 			console.log('Logging in.');
 			var twitarrRoot = SettingsService.getTwitarrRoot();
 
-			document.getElementById('loginPassword').blur();
-			document.getElementById('loginUsername').blur();
+			var loginPasswordElement = document.getElementById('loginPassword');
+			var loginUsernameElement = document.getElementById('loginUsername');
+			if (loginPasswordElement) {
+				loginPasswordElement.blur();
+			}
+			if (loginUsernameElement) {
+				loginUsernameElement.blur();
+			}
 			document.activeElement.blur();
 
 			if (!user.username) {
@@ -89,5 +95,9 @@
 
 			return;
 		};
+
+		if ($scope.user.loggedIn) {
+			$scope.logIn($scope.user);
+		}
 	}]);
 }());
