@@ -79,6 +79,7 @@
 
 			$scope.viewSeamailModal.scope.refreshMessages().then(function() {
 				$scope.viewSeamailModal.show();
+				$scope.doRefresh();
 			});
 			seamailInterval = $interval(function() {
 				$scope.viewSeamailModal.scope.refreshMessages();
