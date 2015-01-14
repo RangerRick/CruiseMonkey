@@ -19,8 +19,8 @@ var addList = [
 
 /* 3rd-party plugins */
 	'https://github.com/VersoSolutions/CordovaClipboard.git',
-	'https://github.com/katzer/cordova-plugin-local-notifications.git',
-	//'de.appplant.cordova.plugin.local-notification',
+	//'https://github.com/katzer/cordova-plugin-local-notifications.git',
+	'de.appplant.cordova.plugin.local-notification',
 	'https://github.com/EddyVerbruggen/Toast-PhoneGap-Plugin.git',
 	'https://github.com/Paldom/SpinnerDialog.git',
 
