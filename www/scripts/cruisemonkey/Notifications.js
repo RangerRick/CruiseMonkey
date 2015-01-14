@@ -59,9 +59,14 @@
 			ionic.Platform.ready(function() {
 				$rootScope.$evalAsync(function() {
 					if (window.plugin && window.plugin.notification && window.plugin.notification.local) {
-						registered().then(function(granted) {
-							deferred.resolve(granted);
-						});
+						if (ionic.Platform.isIOS()) {
+							// for now, say we don't support iOS since it's crashy
+							deferred.resolve(false);
+						} else {
+							registered().then(function(granted) {
+								deferred.resolve(granted);
+							});
+						}
 					} else {
 						deferred.resolve(false);
 					}
@@ -86,8 +91,6 @@
 			notif.json = angular.toJson(data);
 			delete notif.data;
 
-			scope.seen[data.original_id] = notif.id;
-
 			canNotify().then(function(doNative) {
 				if (doNative) {
 					var options = angular.extend({}, {
@@ -102,6 +105,7 @@
 					$cordovaLocalNotification.add(options).then(function(res) {
 						console.log('Notifications: posted: ' + options.id);
 						printObj(res);
+						scope.seen[data.original_id] = notif.id;
 						deferred.resolve(res);
 					}, function(err) {
 						console.log('Notifications: failed to post ' + options.id);
@@ -110,6 +114,7 @@
 					});
 				} else {
 					$rootScope.$broadcast('cruisemonkey.notify.toast', { message: notif.message });
+					scope.seen[data.original_id] = notif.id;
 					deferred.resolve();
 				}
 			});
