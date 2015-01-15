@@ -263,7 +263,7 @@
 			}
 		};
 
-		var userPopover = undefined;
+		var userPopover;
 		$ionicPopover.fromTemplateUrl('template/user-detail.html', {
 			/* animation: 'slide-in-up' */
 		}).then(function(popup) {

@@ -104,7 +104,7 @@
 		$scope.loading = $q.defer();
 		$scope.loading.resolve();
 
-		var newestSeen = undefined;
+		var newestSeen;
 		$scope.unreadCount = 0;
 
 		$scope.updateTopVisible = function() {
