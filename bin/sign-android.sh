@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/sh -e
 
 EXTRA_ARGS=""
 if [ -n "$SIGNING_PASS" ]; then
