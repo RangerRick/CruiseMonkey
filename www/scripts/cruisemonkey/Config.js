@@ -9,7 +9,7 @@
 	.value('config.database.name', 'cruisemonkey-test')
 	.value('config.database.replicate', true)
 	.value('config.urls.openinchrome', false)
-	.value('config.request.timeout', 5000)
+	.value('config.request.timeout', 10000)
 	.value('config.background.interval', 30000)
 	.value('config.twitarr.root', 'https://jccc5.rylath.net/')
 	.value('config.twitarr.enable-cachebusting', true)
