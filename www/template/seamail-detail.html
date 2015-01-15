@@ -5,18 +5,22 @@
 			<button class="button yellow icon ion-close-circled" ng-click="closeModal()"></button>
 		</div>
 	</ion-header-bar>
-	<ion-content class="seamail">
+	<ion-header-bar ng-class="'bar-subheader'" style="height: 50px; padding: 1px;">
 		<ion-list>
 			<ion-item class="item item-avatar item-button-right">
-				<img ng-src="{{twitarrRoot}}api/v2/user/photo/{{user.username}}" />
-				<textarea required wrap="soft" ng-model="newMessage.text" ng-trim="true" placeholder="Send a message">
+				<img ng-src="{{twitarrRoot}}api/v2/user/photo/{{user.username}}">
+				<textarea required wrap="soft" ng-model="newMessage.text" ng-trim="true" placeholder="Add a message to this discussion..."></textarea>
 				<button class="button button-dark" ng-click="postMessage()">Send</button>
 			</ion-item>
+		</ion-list>
+	</ion-header-bar>
+	<ion-content class="seamail" style="top: 104px">
+		<ion-list>
 			<ion-item ng-repeat="message in seamail.messages track by $index" class="item item-avatar">
 				<img ng-src="{{twitarrRoot}}api/v2/user/photo/{{message.author}}" />
 				<h2>{{message.display_name}}</h2>
 				<p>{{message.text}}</p>
-				<span class="item-note">{{message.timestamp.fromNow(true)}}</span>
+				<span class="item-note">{{message.timestamp.fromNow()}}</span>
 			</ion-item>
 		</ion-list>
 	</ion-content>
