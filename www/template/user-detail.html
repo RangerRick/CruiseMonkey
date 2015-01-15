@@ -1,0 +1,16 @@
+<ion-popover-view class="user-detail" style="width: 160px; height: 220px;">
+	<!--
+	<ion-header-bar class="bar-dark">
+		<h1 class="title">{{user.display_name}}</h1>
+		<div class="buttons">
+			<button class="button yellow icon ion-close-circled" ng-click="closeModal()"></button>
+		</div>
+	</ion-header-bar>
+	-->
+	<ion-content scroll="false" class="profile-info">
+		<div class="row"><div class="col col-center"><img ng-src="{{twitarrRoot}}api/v2/user/photo/{{user.username}}" /></div></div>
+		<div class="row"><div class="col col-center"><p class="title">{{user.display_name}}</p></div></div>
+		<div class="row"><div class="col col-center"><p>@{{user.username}}</p></div></div>
+		<div class="row" ng-if="user.username !== me.username"><div class="col col-center"><button>Send Seamail</button></div></div>
+	</ion-content>
+</ion-popover-view>

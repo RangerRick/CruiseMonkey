@@ -230,7 +230,7 @@
 		;
 	}])
 	/* EventService & Notifications are here just to make sure they initializes early */
-	.run(['$rootScope', '$window', '$cordovaSplashscreen', 'EventService', 'Notifications', 'SettingsService', 'UpgradeService', function($rootScope, $window, $cordovaSplashscreen, EventService, Notifications, SettingsService, UpgradeService) {
+	.run(['$rootScope', '$window', '$cordovaSplashscreen', '$ionicPopover', 'EventService', 'Notifications', 'SettingsService', 'Twitarr', 'UpgradeService', 'UserService', function($rootScope, $window, $cordovaSplashscreen, $ionicPopover, EventService, Notifications, SettingsService, Twitarr, UpgradeService, UserService) {
 		console.log('CruiseMonkey run() called.');
 
 		$rootScope.$on("$stateChangeError", function (event, toState, toParams, fromState, fromParams, error) {
@@ -261,6 +261,35 @@
 			} else {
 				return false;
 			}
+		};
+
+		var userPopover = undefined;
+		$ionicPopover.fromTemplateUrl('template/user-detail.html', {
+			/* animation: 'slide-in-up' */
+		}).then(function(popup) {
+			popup.scope.closePopover = function() {
+				popup.hide();
+			};
+
+			userPopover = popup;
+		});
+
+		$rootScope.openUser = function(username, evt) {
+			console.log('Opening User: ' + username);
+			if (evt) {
+				evt.preventDefault();
+				evt.stopPropagation();
+			} else {
+				console.log('WARNING: click $event was not passed.');
+			}
+
+			userPopover.scope.twitarrRoot = SettingsService.getTwitarrRoot();
+			Twitarr.getUserInfo(username).then(function(user) {
+				userPopover.scope.user = user;
+				userPopover.scope.me = UserService.get();
+				console.log('openUser: user=',user);
+				userPopover.show(evt);
+			});
 		};
 
 		$rootScope.openUrl = function(url, target) {

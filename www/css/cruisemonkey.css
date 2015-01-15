@@ -7197,6 +7197,24 @@ a.tab-item:hover {
   float: right;
   color: red; }
 
+.user-detail .profile-info {
+  padding: 10px; }
+  .user-detail .profile-info img {
+    max-width: 100px;
+    max-height: 100px;
+    min-width: 50px;
+    min-height: 50px;
+    border-radius: 5px; }
+  .user-detail .profile-info p {
+    margin: 0; }
+  .user-detail .profile-info .row {
+    margin: 0;
+    padding: 0; }
+    .user-detail .profile-info .row .col {
+      text-align: center;
+      margin: 0;
+      padding: 3px; }
+
 .twitarr .item-note {
   text-align: right; }
 .twitarr .likes img, .twitarr .likes i {
@@ -7212,13 +7230,27 @@ a.tab-item:hover {
     max-height: 30px;
     min-width: 20px;
     max-width: 30px; }
+.twitarr .unread-count {
+  z-index: 10000;
+  position: fixed;
+  top: 44px;
+  right: 0;
+  padding: 2px 12px;
+  margin: 0 2px;
+  min-width: 40px;
+  text-align: center;
+  border-bottom-left-radius: 5px;
+  border-bottom-right-radius: 5px;
+  color: #febd11;
+  background-color: #061557; }
 
 .seamail .users img {
   min-height: 20px;
   max-height: 30px;
   min-width: 20px;
   max-width: 30px;
-  border-radius: 3px; }
+  border-radius: 5px;
+  padding: 2px; }
 
 .list-entry {
   border-bottom: 1px solid black;

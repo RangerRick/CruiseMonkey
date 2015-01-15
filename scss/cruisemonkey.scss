@@ -344,6 +344,31 @@ a.tab-item:hover {
 	color: red;
 }
 
+.user-detail {
+	.profile-info {
+		padding: 10px;
+		img {
+			max-width: 100px;
+			max-height: 100px;
+			min-width: 50px;
+			min-height: 50px;
+			border-radius: 5px;
+		}
+		p {
+			margin: 0;
+		}
+		.row {
+			.col {
+				text-align: center;
+				margin: 0;
+				padding: 3px;
+			}
+			margin: 0;
+			padding: 0;
+		}
+	}
+}
+
 .twitarr {
 	.item-note {
 		text-align: right;
@@ -366,6 +391,21 @@ a.tab-item:hover {
 			max-width: 30px;
 		}
 	}
+
+	.unread-count {
+		z-index: 10000;
+		position: fixed;
+		top: $bar-height;
+		right: 0;
+		padding: 2px 12px;
+		margin: 0 2px;
+		min-width: 40px;
+		text-align: center;
+		border-bottom-left-radius: 5px;
+		border-bottom-right-radius: 5px;
+		color: $rciYellow;
+		background-color: $rciNavyBlue;
+	}
 }
 
 .seamail {
@@ -375,7 +415,8 @@ a.tab-item:hover {
 			max-height: 30px;
 			min-width: 20px;
 			max-width: 30px;
-			border-radius: 3px;
+			border-radius: 5px;
+			padding: 2px;
 		}
 	}
 }
