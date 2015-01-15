@@ -63,7 +63,7 @@
 				found = result[i].match(userSubMatch);
 				if (found) {
 					//console.log('user link:', found);
-					text = text.replace(found.input, 'ng-click="openUser(\'' + found[1] + '\');"');
+					text = text.replace(found.input, 'ng-click="openUser(\'' + found[1] + '\', \$event);"');
 				} else {
 					found = result[i].match(tagSubMatch);
 					if (found) {
