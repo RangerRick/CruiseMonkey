@@ -468,7 +468,11 @@
 
 		var statusCheck;
 		$interval(function() {
-			if (scope.isForeground) {
+			if (ionic.Platform.isIOS() && scope.isForeground) {
+				// we check in the foreground 'cause we get toast notifications
+				checkStatus();
+			} else {
+				// anywhere else, just run regardless
 				checkStatus();
 			}
 		}, backgroundInterval);
