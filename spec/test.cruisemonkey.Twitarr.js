@@ -13,6 +13,7 @@ describe('Twit-Arr', function() {
 	'use strict';
 
 	var twit,
+		LocalNotifications,
 		SettingsService,
 		UserService,
 		$httpBackend,
@@ -26,6 +27,8 @@ describe('Twit-Arr', function() {
 	});
 
 	beforeEach(module('cruisemonkey.Twitarr', function($provide) {
+		LocalNotifications = {
+		};
 		UserService = {
 			get: function() {
 				return {
@@ -37,6 +40,7 @@ describe('Twit-Arr', function() {
 				return 'https://jccc5.rylath.net/';
 			}
 		};
+		$provide.value('LocalNotifications', LocalNotifications);
 		$provide.value('UserService', UserService);
 		$provide.value('SettingsService', SettingsService);
 		$provide.value('config.twitarr.enable-cachebusting', false);
