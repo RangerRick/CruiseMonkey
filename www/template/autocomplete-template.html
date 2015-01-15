@@ -1,0 +1,11 @@
+<div class="tags-wrapper">
+    <div id="tagsList" class="tags-cloud">
+        <span ng-repeat="selectedUser in selectedUsers" class="tag" style="padding: 4px 6px; display: inline">
+            <div class="navy" style="display:inline">{{selectedUser}} <i class="icon ion-close-circled" ng-click="removeTag($index)"></i></div>
+        </span>
+        <input type="text" placeholder="User(s)" id="searchInput" ng-keydown="checkKeyDown($event)" class="form-control" ng-model="searchText" ng-change="search()"/>
+    </div>
+    <div id="suggestions" class="suggestions-list">
+       <button ng-repeat="suggestion in suggestions" class="blockSpan" ng-mouseover="$parent.selectedIndex=$index" ng-class="{active : selectedIndex===$index}" ng-click="addToSelectedUsers($index)">{{suggestion}}</button>
+     </div>
+</div>

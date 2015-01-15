@@ -5,6 +5,64 @@
 		'cruisemonkey.Config',
 		'cruisemonkey.Twitarr',
 	])
+	.directive('autoComplete',['Twitarr',function(Twitarr) {
+		return {
+			restrict:'AE',
+			scope:{
+				selectedUsers:'=model'
+			},
+			templateUrl:'template/autocomplete-template.html',
+			link:function(scope,elem,attrs){
+				scope.suggestions=[];
+				scope.selectedUsers=[];
+				scope.selectedIndex=-1;
+
+				scope.removeTag=function(index){
+					scope.selectedUsers.splice(index,1);
+				};
+
+				scope.search=function(){
+					Twitarr.getAutocompleteUsers(scope.searchText).then(function(users) {
+						scope.suggestions=users;
+						scope.selectedIndex = -1;
+					});
+				};
+
+				scope.addToSelectedUsers=function(index){
+					console.log('addToSelectedUsers(' + index + ')');
+					if(scope.selectedUsers.indexOf(scope.suggestions[index])===-1){
+						scope.selectedUsers.push(scope.suggestions[index]);
+						scope.searchText='';
+						scope.suggestions=[];
+					}
+				};
+
+				scope.checkKeyDown=function(event){
+					if(event.keyCode===40){
+						event.preventDefault();
+						if(scope.selectedIndex+1 !== scope.suggestions.length){
+							scope.selectedIndex++;
+						}
+					}
+					else if(event.keyCode===38){
+						event.preventDefault();
+						if(scope.selectedIndex-1 !== -1){
+							scope.selectedIndex--;
+						}
+					}
+					else if(event.keyCode===13){
+						scope.addToSelectedUsers(scope.selectedIndex);
+					}
+				};
+
+				scope.$watch('selectedIndex',function(val){
+					if(val!==-1) {
+						scope.searchText = scope.suggestions[scope.selectedIndex];
+					}
+				});
+			}
+		};
+	}])
 	.controller('CMSeamailCtrl', ['$scope', '$timeout', '$interval', '$ionicLoading', '$ionicModal', '$ionicScrollDelegate', 'SettingsService', 'Twitarr', 'UserService', function($scope, $timeout, $interval, $ionicLoading, $ionicModal, $ionicScrollDelegate, SettingsService, Twitarr, UserService) {
 		console.log('CMSeamailCtrl Initializing.');
 
@@ -43,8 +101,19 @@
 			$scope.viewSeamailModal = modal;
 		});
 
+		$ionicModal.fromTemplateUrl('template/new-seamail.html', {
+			animation: 'slide-in-up',
+			focusFirstInput: true
+		}).then(function(modal) {
+			modal.scope.closeModal = function() {
+				modal.hide();
+			};
+			$scope.newSeamailModal = modal;
+		});
+
 		$scope.$on('$destroy', function() {
 			$scope.viewSeamailModal.remove();
+			$scope.newSeamailModal.remove();
 		});
 
 		$scope.scrollTop = function() {
@@ -64,6 +133,7 @@
 				$scope.$broadcast('scroll.refreshComplete');
 			}, function(err) {
 				console.log('Failed to get seamail:',err);
+				$ionicLoading.hide();
 				$scope.$broadcast('scroll.refreshComplete');
 			});
 		};
@@ -84,6 +154,11 @@
 			seamailInterval = $interval(function() {
 				$scope.viewSeamailModal.scope.refreshMessages();
 			}, 10000);
+		};
+
+		$scope.newSeamail = function() {
+			$scope.newSeamailModal.scope.newSeamail = {};
+			$scope.newSeamailModal.show();
 		};
 
 		$scope.$on('modal.hidden', function() {

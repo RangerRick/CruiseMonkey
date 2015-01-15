@@ -9,7 +9,7 @@
 		<ion-list>
 			<ion-item class="item item-avatar item-button-right">
 				<img ng-src="{{twitarrRoot}}api/v2/user/photo/{{user.username}}" />
-				<input type="text" ng-model="newMessage.text" ng-trim="true" placeholder="Send a message">
+				<textarea required wrap="soft" ng-model="newMessage.text" ng-trim="true" placeholder="Send a message">
 				<button class="button button-dark" ng-click="postMessage()">Send</button>
 			</ion-item>
 			<ion-item ng-repeat="message in seamail.messages track by $index" class="item item-avatar">
