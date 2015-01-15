@@ -18,12 +18,21 @@
 		storage.bind(scope, 'lastStatus', {
 			'storeName': 'cruisemonkey.twitarr.status',
 			'defaultValue': {
-				'seamail_unread_count': 0,
-				'unnoticed_mentions': 0,
-				'unnoticed_alerts': 0,
-				'unnoticed_announcements': 0
+				'mention_ids': [],
+				'seamail_ids': [],
+				'announcement_ids': []
 			}
 		});
+
+		if (!scope.lastStatus.mention_ids) {
+			scope.lastStatus.mention_ids = [];
+		}
+		if (!scope.lastStatus.seamail_ids) {
+			scope.lastStatus.seamail_ids = [];
+		}
+		if (!scope.lastStatus.announcement_ids) {
+			scope.lastStatus.announcement_ids = [];
+		}
 
 		var call = function(type, url, params, data) {
 			var options = {
@@ -74,7 +83,7 @@
 				options.data = data;
 			}
 
-			console.log('Making HTTP call with options:',options);
+			//console.log('Making HTTP call with options:',options);
 			return $http(options);
 		};
 
@@ -290,6 +299,25 @@
 			return deferred.promise;
 		};
 
+		var sendMentionNotification = function(mention, count) {
+			console.log('Twitarr: Sending mention local notification for:',mention);
+
+			var options = {
+				id: 'mention-' + mention.id,
+				message: 'Mentioned by @' + mention.author + ': ' + mention.text.replace(/<\S[^><]*>/g, ''),
+				data: mention,
+			};
+			if (count) {
+				options.badge = count;
+			}
+
+			$rootScope.$broadcast('cruisemonkey.notify.local', options);
+		};
+
+		var sendAnnouncementNotification = function(announcement, count) {
+			console.log('Twitarr: Sending announcement local notification for:',announcement);
+		};
+
 		var sendSeamailNotification = function(seamail, count) {
 			console.log('Twitarr: Sending seamail local notification for:',seamail);
 
@@ -323,27 +351,90 @@
 		};
 
 		var checkStatus = function() {
+			var deferred = $q.defer();
+
 			var user = UserService.get();
 			if (user.loggedIn && user.key) {
 				console.log('Twitarr: doing status check');
-				getStatus().then(function(result) {
-					if (result.seamail_unread_count !== scope.lastStatus.seamail_unread_count) {
-						$rootScope.$broadcast('cruisemonkey.notify.newSeamail', result.seamail_unread_count);
-						sendSeamailNotifications();
-					} else if (result.unnoticed_mentions !== scope.lastStatus.unnoticed_mentions) {
-						$rootScope.$broadcast('cruisemonkey.notify.newMentions', result.unnoticed_mentions);
-					/*
-					} else if (result.unnoticed_alerts !== scope.lastStatus.unnoticed_alerts) {
-						$rootScope.$broadcast('cruisemonkey.notify.newAlerts', result.unnoticed_alerts);
-					*/
-					} else if (result.unnoticed_announcements !== scope.lastStatus.unnoticed_announcements) {
-						$rootScope.$broadcast('cruisemonkey.notify.newAnnouncements', result.unnoticed_announcements);
+				getAlerts(false).then(function(alerts) {
+					console.log('alerts=',alerts);
+					var i,
+						new_mentions = [], mention,
+						new_announcements = [], announcement,
+						new_seamails = [], seamail;
+					var seen = {
+						mention_ids: [],
+						seamail_ids: [],
+						announcement_ids: []
+					};
+
+					if (alerts.tweet_mentions) {
+						for (i=0; i < alerts.tweet_mentions.length; i++) {
+							mention = alerts.tweet_mentions[i];
+							seen.mention_ids.push(mention.id);
+							if (scope.lastStatus.mention_ids.includes(mention.id)) {
+								//console.log('Twitarr.checkStatus: already seen mention: ' + mention.id);
+							} else {
+								console.log('Twitarr.checkStatus: new mention: ' + mention.id);
+								new_mentions.push(mention);
+							}
+						}
+						if (new_mentions.length > 0 && scope.isForeground) {
+							$rootScope.$broadcast('cruisemonkey.notify.newMentions', new_mentions);
+						}
 					}
-					scope.lastStatus = result;
+					if (alerts.announcements) {
+						for (i=0; i < alerts.announcements.length; i++) {
+							announcement = alerts.announcements[i];
+							seen.announcement_ids.push(announcement.id);
+							if (scope.lastStatus.announcement_ids.includes(announcement.id)) {
+								//console.log('Twitarr.checkStatus: already seen announcement: ' + announcement.id);
+							} else {
+								console.log('Twitarr.checkStatus: new announcement: ' + announcement.id);
+								new_announcements.push(announcement);
+							}
+						}
+						if (new_announcements.length > 0 && scope.isForeground) {
+							$rootScope.$broadcast('cruisemonkey.notify.newAnnouncements', new_announcements);
+						}
+					}
+					if (alerts.unread_seamail) {
+						for (i=0; i < alerts.unread_seamail.length; i++) {
+							seamail = alerts.unread_seamail[i];
+							seen.seamail_ids.push(seamail.id);
+							if (scope.lastStatus.seamail_ids.includes(seamail.id)) {
+								//console.log('Twitarr.checkStatus: already seen seamail: ' + seamail.id);
+							} else {
+								console.log('Twitarr.checkStatus: new seamail: ' + seamail.id);
+								new_seamails.push(seamail);
+							}
+						}
+						if (new_seamails.length > 0 && scope.isForeground) {
+							$rootScope.$broadcast('cruisemonkey.notify.newSeamail', new_seamails);
+						}
+					}
+
+					var count = new_mentions.length + new_announcements.length + new_seamails.length;
+
+					for (i=0; i < new_mentions.length; i++) {
+						sendMentionNotification(new_mentions[i], count);
+					}
+					for (i=0; i < new_announcements.length; i++) {
+						sendAnnouncementNotification(new_announcements[i], count);
+					}
+					for (i=0; i < new_seamails.length; i++) {
+						sendSeamailNotification(new_seamails[i], count);
+					}
+
+					scope.lastStatus = seen;
+					deferred.resolve(true);
 				});
 			} else {
 				console.log('Twitarr: skipping status check, user is not logged in');
+				deferred.resolve(false);
 			}
+
+			return deferred.promise;
 		};
 
 		var configureBackgroundFetch = function() {
@@ -354,17 +445,7 @@
 					fetcher.configure(function() {
 						$rootScope.$evalAsync(function() {
 							console.log('Twitarr: Background fetch initiated.');
-							getAlerts(false).then(function(alerts) {
-								console.log('Twitarr: Background fetch got:');
-								for (var prop in alerts) {
-									console.log('  ' + prop + '=' + alerts[prop]);
-								}
-								fetcher.finish();
-							}, function(err) {
-								console.log('Twitarr: Background fetch failed.');
-								for (var prop in err) {
-									console.log('  ' + prop + '=' + err[prop]);
-								}
+							checkStatus().then(function() {
 								fetcher.finish();
 							});
 						});
@@ -382,6 +463,7 @@
 		});
 		scope.$on('cruisemonkey.app.resumed', function() {
 			scope.isForeground = true;
+			LocalNotifications.clear();
 		});
 
 		var statusCheck;

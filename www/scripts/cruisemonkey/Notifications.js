@@ -128,15 +128,22 @@
 			return deferred.promise;
 		};
 
+		var clearNotifications = function() {
+			ionic.Platform.ready(function() {
+				if (window.plugin && window.plugin.notification && window.plugin.notification.local) {
+					$cordovaLocalNotification.cancelAll();
+				}
+			});
+		};
+
 		return {
 			canNotify: canNotify,
 			send: sendNotification,
+			clear: clearNotifications,
 		};
 	}])
 	.factory('Notifications', ['$q', '$rootScope', '$timeout', '$window', '$ionicLoading', '$ionicPopup', '$cordovaDialogs', '$cordovaSpinnerDialog', '$cordovaToast', 'LocalNotifications', function($q, $rootScope, $timeout, $window, $ionicLoading, $ionicPopup, $cordovaDialogs, $cordovaSpinnerDialog, $cordovaToast, LocalNotifications) {
 		console.log('Initializing notification service.');
-		var newEvents = [];
-		var newSeamails = [];
 
 		toastr.options.preventDuplicates = true;
 
@@ -154,7 +161,6 @@
 
 		$rootScope.$on('cruisemonkey.notify.newEvent', function(ev, newEvent) {
 			console.log('Notifications: A new event was added to the database:',newEvent);
-			newEvents.push(newEvent);
 		});
 
 		$rootScope.$on('cruisemonkey.notify.newSeamail', function(ev, newSeamail) {
