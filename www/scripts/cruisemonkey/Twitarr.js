@@ -24,6 +24,43 @@
 			}
 		});
 
+		var removeFromArray = function(arr, item) {
+			var what, a = [item], L = a.length, ax;
+			while (L && arr.length) {
+				what = a[--L];
+				while ((ax = arr.indexOf(what)) !== -1) {
+					arr.splice(ax, 1);
+				}
+			}
+			return arr;
+		};
+
+		var arrayIncludes = function(arr, searchElement) {
+			var O = Object(arr);
+			var len = parseInt(O.length) || 0;
+			if (len === 0) {
+				return false;
+			}
+			var n = 0;
+			var k;
+			if (n >= 0) {
+				k = n;
+			} else {
+				k = len + n;
+				if (k < 0) {k = 0;}
+			}
+			var currentElement;
+			while (k < len) {
+				currentElement = O[k];
+				if (searchElement === currentElement ||
+					 (searchElement !== searchElement && currentElement !== currentElement)) {
+					return true;
+				}
+				k++;
+			}
+			return false;
+		};
+
 		if (!scope.lastStatus.mention_ids) {
 			scope.lastStatus.mention_ids = [];
 		}
@@ -130,7 +167,7 @@
 			if (searchPrefix && searchPrefix.trim() !== '') {
 				get(url, {cache:true})
 					.success(function(data) {
-						data.names.remove(username);
+						removeFromArray(data.names, username);
 						deferred.resolve(data.names);
 					}).error(function(data, status) {
 						console.log('Twitarr.getAutocompleteUsers(): Failed: ' + status, data);
@@ -192,6 +229,22 @@
 			return deferred.promise;
 		};
 
+		var postSeamail = function(seamail) {
+			var url = SettingsService.getTwitarrRoot() + 'api/v2/seamail';
+			var deferred = $q.defer();
+
+			console.log('Twitarr.postSeamail(): url=' + url + ', seamail=',seamail);
+			post(url, seamail)
+				.success(function(data) {
+					deferred.resolve(data);
+				}).error(function(data, status) {
+					console.log('Failed postSeamail(): ' + status, data);
+					deferred.reject([data, status]);
+				});
+
+			return deferred.promise;
+		};
+
 		var getSeamailMessages = function(id) {
 			var url = SettingsService.getTwitarrRoot() + 'api/v2/seamail/' + id;
 			var deferred = $q.defer();
@@ -222,7 +275,7 @@
 				.success(function(data) {
 					deferred.resolve(data);
 				}).error(function(data, status) {
-					console.log('Failed like(): ' + status, data);
+					console.log('Failed postSeamailMessage(): ' + status, data);
 					deferred.reject([data, status]);
 				});
 
@@ -372,7 +425,7 @@
 						for (i=0; i < alerts.tweet_mentions.length; i++) {
 							mention = alerts.tweet_mentions[i];
 							seen.mention_ids.push(mention.id);
-							if (scope.lastStatus.mention_ids.includes(mention.id)) {
+							if (arrayIncludes(scope.lastStatus.mention_ids, mention.id)) {
 								//console.log('Twitarr.checkStatus: already seen mention: ' + mention.id);
 							} else {
 								console.log('Twitarr.checkStatus: new mention: ' + mention.id);
@@ -387,7 +440,7 @@
 						for (i=0; i < alerts.announcements.length; i++) {
 							announcement = alerts.announcements[i];
 							seen.announcement_ids.push(announcement.id);
-							if (scope.lastStatus.announcement_ids.includes(announcement.id)) {
+							if (arrayIncludes(scope.lastStatus.announcement_ids, announcement.id)) {
 								//console.log('Twitarr.checkStatus: already seen announcement: ' + announcement.id);
 							} else {
 								console.log('Twitarr.checkStatus: new announcement: ' + announcement.id);
@@ -402,7 +455,7 @@
 						for (i=0; i < alerts.unread_seamail.length; i++) {
 							seamail = alerts.unread_seamail[i];
 							seen.seamail_ids.push(seamail.id);
-							if (scope.lastStatus.seamail_ids.includes(seamail.id)) {
+							if (arrayIncludes(scope.lastStatus.seamail_ids, seamail.id)) {
 								//console.log('Twitarr.checkStatus: already seen seamail: ' + seamail.id);
 							} else {
 								console.log('Twitarr.checkStatus: new seamail: ' + seamail.id);
@@ -493,6 +546,7 @@
 			getAlerts: getAlerts,
 			getAutocompleteUsers: getAutocompleteUsers,
 			getSeamail: getSeamail,
+			postSeamail: postSeamail,
 			getSeamailMessages: getSeamailMessages,
 			postSeamailMessage: postSeamailMessage,
 			like: like,
