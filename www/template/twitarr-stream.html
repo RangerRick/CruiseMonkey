@@ -1,28 +1,32 @@
-<ion-view>
+<ion-view class="twitarr">
 	<ion-header-bar class="bar-stable bar-dark" animation="no-animation" ng-click="scrollTop()">
 		<div class="buttons">
 			<button menu-toggle="left" class="button button-icon icon ion-navicon"></button>
 		</div>
 		<h1 class="title">Twit-Arr</h1>
+		<div class="buttons">
+			<button class="button button-icon icon ion-refresh" ng-click="doRefresh(true, true)"></button>
+		</div>
 	</ion-header-bar>
-	<ion-content scroll="true" padding="false" delegate-handle="twitarr">
-		<ion-refresher pulling-text="Pull to refresh..." on-refresh="doRefresh()"></ion-refresher>
-		<ion-list class="twitarr">
+	<span class="unread-count" ng-if="unreadCount &amp;&amp; unreadCount > 0">{{unreadCount}}</span>
+	<ion-content scroll="true" padding="false" delegate-handle="twitarr" on-scroll="updateTopVisible()">
+		<ion-refresher pulling-text="Pull to refresh..." on-refresh="doRefresh(true)"></ion-refresher>
+		<ion-list>
 			<ion-item ng-if="error" class="item item-icon-left">
 				<i class="icon ion-alert-circled yellow"></i>
 				<span ng-bind-html="error" style="padding-left: 20px"></span>
 			</ion-item>
-			<a ng-repeat="entry in entries" class="item item-avatar item-text-wrap" href="#">
-				<img ng-src="{{twitarrRoot}}api/v2/user/photo/{{entry.author}}" />
+			<a ng-repeat="entry in entries" class="item item-avatar item-text-wrap" id="{{entry.id}}">
+				<img ng-src="{{twitarrRoot}}api/v2/user/photo/{{entry.author}}" ng-click="openUser(entry.author, $event)" />
 				<span class="item-note">
-					{{entry.timestamp.fromNow(true)}}<br>
 					<span ng-if="entry.likes" class="likes" ng-repeat="like in entry.likes">
-						<img ng-if="like !== user.username" ng-src="{{twitarrRoot}}api/v2/user/photo/{{like}}" title="{{users[like]? users[like].display_name : like}}" />
+						<img ng-if="like !== user.username" ng-src="{{twitarrRoot}}api/v2/user/photo/{{like}}" title="{{users[like]? users[like].display_name : like}}" ng-click="openUser(like, $event)" />
 					</span>
 				</span>
-				<h2 ng-bind-html="users[entry.author]? users[entry.author].display_name : entry.author" ng-click="openUser(entry.author);"></h2>
+				<h2 ng-bind-html="users[entry.author]? users[entry.author].display_name : entry.author" ng-click="openUser(entry.author, $event)"></h2>
 				<p twitter-html="entry.text"></p>
 				<img ng-if="entry.photo" ng-src="{{twitarrRoot}}photo/medium_thumb/{{entry.photo.id}}" style="width: 100%; max-width: 400px" />
+				<p class="timeframe">{{entry.timestamp.fromNow()}}</p>
 				<!--
 				<div class="commands" ng-if="entry.author !== user.username">
 					<button ng-class="'button button-clear button-small icon ' + (entry.likes &amp;&amp; entry.likes.indexOf(user.username) >= 0? 'ion-ios-heart':'ion-ios-heart-outline')" ng-click="toggleLike(entry)"></button>

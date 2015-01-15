@@ -83,9 +83,9 @@
 
 	angular.module('cruisemonkey.controllers.Twitarr.Stream', [
 		'cruisemonkey.Settings',
-		'cruisemonkey.Twitarr'
+		'cruisemonkey.Twitarr',
 	])
-	.directive('twitterHtml', ['$sce', '$parse', '$compile', function($sce, $parse, $compile) {
+	.directive('twitterHtml', ['$parse', '$compile', function($parse, $compile) {
 		return function(scope, element, attr) {
 			var text = translateText(scope.entry.text);
 			//console.log('twitterHtml.text=',text);
@@ -93,7 +93,7 @@
 			$compile(element.contents())(scope);
 		};
 	}])
-	.controller('CMTwitarrStreamCtrl', ['$q', '$scope', '$sce', '$compile', '$ionicScrollDelegate', 'SettingsService', 'Twitarr', 'UserService', function($q, $scope, $sce, $compile, $ionicScrollDelegate, SettingsService, Twitarr, UserService) {
+	.controller('CMTwitarrStreamCtrl', ['$q', '$scope', '$timeout', '$ionicLoading', '$ionicScrollDelegate', 'SettingsService', 'Twitarr', 'UserService', function($q, $scope, $timeout, $ionicLoading, $ionicScrollDelegate, SettingsService, Twitarr, UserService) {
 		console.log('Initializing CMTwitarrStream');
 
 		$scope.users = {};
@@ -103,6 +103,60 @@
 
 		$scope.loading = $q.defer();
 		$scope.loading.resolve();
+
+		var newestSeen = undefined;
+		$scope.unreadCount = 0;
+
+		$scope.updateTopVisible = function() {
+			//console.log('updateTopVisible()');
+			$timeout(function() {
+				var i, entry;
+				for (i=0; i < $scope.entries.length; i++) {
+					entry = $scope.entries[i];
+					var elm = angular.element(document.getElementById(entry.id));
+					var offset = elm.offset().top;
+					if (offset >= 0) {
+						console.log('updateTopVisible(): top = ' + entry.text);
+						$scope.setNewestSeen(entry);
+						break;
+					}
+				}
+			});
+		};
+
+		$scope.setNewestSeen = function(entry) {
+			var index = getIndex(entry),
+				newestIndex = getNewestSeenIndex();
+
+			console.log('setNewestSeen: index=' + index + ', newestIndex=' + newestIndex);
+			if (newestIndex === undefined || index <= newestIndex) {
+				newestSeen = entry;
+				updateUnreadCount(index);
+			}
+		};
+
+		var updateUnreadCount = function(index) {
+			$scope.unreadCount = index || getNewestSeenIndex();
+		};
+
+		var getIndex = function(entry) {
+			if (!entry) {
+				return undefined;
+			}
+			var i, index=0;
+			for (i=0; i < $scope.entries.length; i++) {
+				if ($scope.entries[i].id === entry.id) {
+					return index;
+				} else {
+					index++;
+				}
+			}
+			return undefined;
+		};
+
+		var getNewestSeenIndex = function() {
+			return getIndex(newestSeen);
+		};
 
 		var lookupUser = function(username) {
 			Twitarr.getUserInfo(username).then(function(user) {
@@ -164,18 +218,50 @@
 			console.log('Controller.Twitarr.Stream.reply(' + entry.id + ')');
 		};
 
-		$scope.openUser = function(username) {
-			console.log('Opening User: ' + username);
-		};
-
 		$scope.scrollTop = function() {
 			$ionicScrollDelegate.$getByHandle('twitarr').scrollTop(true);
 		};
 
+		var findHash = function(hash) {
+			var elm, scrollEl, position = 0;
+			elm = document.getElementById(hash);
+			if (elm) {
+				scrollEl = angular.element(elm);
+				while (scrollEl) {
+					if (scrollEl.hasClass('scroll-content')) {
+						break;
+					}
+					var offsetTop = scrollEl[0].offsetTop,
+						scrollTop = scrollEl[0].scrollTop,
+						clientTop = scrollEl[0].clientTop;
+					position += (offsetTop - scrollTop + clientTop);
+					scrollEl = scrollEl.parent();
+				}
+				console.log('offset='+position);
+				return position;
+				/* $scope.$broadcast('scroll.scrollTo', 0, position, true); */
+			} else {
+				console.log("can't find element " + hash);
+				return 0;
+			}
+		};
+
+		var goToEntry = function(hash) {
+			var hashLocation = findHash(hash);
+			console.log('scrolling to hash location: ' + hashLocation);
+			$ionicScrollDelegate.$getByHandle('twitarr').scrollTo(0, hashLocation);
+		};
+
 		$scope.done = false;
 
-		$scope.doRefresh = function() {
-			console.log('Controller.Twitarr.Stream.doRefresh()');
+		$scope.doRefresh = function(keepPosition, showLoading) {
+			console.log('Controller.Twitarr.Stream.doRefresh(' + keepPosition + ')');
+			if (showLoading) {
+				$ionicLoading.show({
+					template: 'Refreshing stream...'
+				});
+			}
+			var topEntry = $scope.entries[0];
 			$scope.loading.promise.then(function() {
 				$scope.done = false;
 				console.log('Controller.Twitarr.Stream.doRefresh(): ready');
@@ -188,13 +274,21 @@
 					if (res && res.stream_posts && res.stream_posts.length > 0) {
 						addEvents(res.stream_posts);
 						$scope.$broadcast('scroll.refreshComplete');
+						$timeout(function() {
+							if (keepPosition && topEntry) {
+								goToEntry(topEntry.id);
+							}
+						});
 					}
+					updateUnreadCount();
+					$ionicLoading.hide();
 					$scope.loading.resolve();
 				}, function(err) {
 					console.log('Controller.Twitarr.Stream: failed to get entries:', err);
 					$scope.$broadcast('scroll.refreshComplete');
 					$scope.error = 'An error occurred getting posts from Twit-arr.' + (err[0]? '  (Error: ' + err[0] + ')':'');
 					$scope.done = true;
+					$ionicLoading.hide();
 					$scope.loading.resolve();
 				});
 			});
@@ -225,6 +319,7 @@
 						if (res && res.stream_posts && res.stream_posts.length > 0) {
 							addEvents(res.stream_posts);
 						}
+						$scope.updateTopVisible();
 						$scope.$broadcast('scroll.infiniteScrollComplete');
 						$scope.loading.resolve();
 					}, function(err) {
