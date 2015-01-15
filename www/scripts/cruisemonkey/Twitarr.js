@@ -6,11 +6,12 @@
 	/*global moment: true*/
 
 	angular.module('cruisemonkey.Twitarr', [
-		'cruisemonkey.Settings',
 		'cruisemonkey.Config',
+		'cruisemonkey.Notifications',
+		'cruisemonkey.Settings',
 		'angularLocalStorage'
 	])
-	.factory('Twitarr', ['$q', '$rootScope', '$timeout', '$interval', '$http', 'storage', 'config.background.interval', 'config.request.timeout', 'config.twitarr.enable-cachebusting', 'SettingsService', 'UserService', function($q, $rootScope, $timeout, $interval, $http, storage, backgroundInterval, requestTimeout, enableCachebusting, SettingsService, UserService) {
+	.factory('Twitarr', ['$q', '$rootScope', '$timeout', '$interval', '$http', 'storage', 'config.background.interval', 'config.request.timeout', 'config.twitarr.enable-cachebusting', 'LocalNotifications', 'SettingsService', 'UserService', function($q, $rootScope, $timeout, $interval, $http, storage, backgroundInterval, requestTimeout, enableCachebusting, LocalNotifications, SettingsService, UserService) {
 		console.log('Initializing Twit-arr API.');
 
 		var scope = $rootScope.$new();
@@ -58,7 +59,15 @@
 			if (type === 'GET' && enableCachebusting) {
 				params._x = moment().valueOf();
 			}
+
 			options.params = angular.extend({}, params);
+
+			if (options.params.cache) {
+				// disable cachebusting for this request
+				options.cache = true;
+				delete options.params._x;
+				delete options.params.cache;
+			}
 
 			if (data) {
 				//options.data = angular.toJson(data);
@@ -100,6 +109,27 @@
 					console.log('Twitarr.getAlerts(): Failed: ' + status, data);
 					deferred.reject([data, status]);
 				});
+
+			return deferred.promise;
+		};
+
+		var getAutocompleteUsers = function(searchPrefix) {
+			var url = SettingsService.getTwitarrRoot() + 'api/v2/user/autocomplete/' + searchPrefix;
+			var deferred = $q.defer();
+			var username =UserService.get().username;
+
+			if (searchPrefix && searchPrefix.trim() !== '') {
+				get(url, {cache:true})
+					.success(function(data) {
+						data.names.remove(username);
+						deferred.resolve(data.names);
+					}).error(function(data, status) {
+						console.log('Twitarr.getAutocompleteUsers(): Failed: ' + status, data);
+						deferred.reject([data, status]);
+					});
+			} else {
+				deferred.resolve([]);
+			}
 
 			return deferred.promise;
 		};
@@ -316,11 +346,53 @@
 			}
 		};
 
+		var configureBackgroundFetch = function() {
+			ionic.Platform.ready(function() {
+				if (window.plugins && window.plugins.backgroundFetch) {
+					var fetcher = window.plugins.backgroundFetch;
+					console.log('Twitarr: Configuring background fetch.');
+					fetcher.configure(function() {
+						$rootScope.$evalAsync(function() {
+							console.log('Twitarr: Background fetch initiated.');
+							getAlerts(false).then(function(alerts) {
+								console.log('Twitarr: Background fetch got:');
+								for (var prop in alerts) {
+									console.log('  ' + prop + '=' + alerts[prop]);
+								}
+								fetcher.finish();
+							}, function(err) {
+								console.log('Twitarr: Background fetch failed.');
+								for (var prop in err) {
+									console.log('  ' + prop + '=' + err[prop]);
+								}
+								fetcher.finish();
+							});
+						});
+					});
+				}
+			});
+		};
+
+		scope.isForeground = true;
+		scope.$on('cruisemonkey.app.paused', function() {
+			scope.isForeground = false;
+		});
+		scope.$on('cruisemonkey.app.locked', function() {
+			scope.isForeground = false;
+		});
+		scope.$on('cruisemonkey.app.resumed', function() {
+			scope.isForeground = true;
+		});
+
 		var statusCheck;
 		$interval(function() {
-			checkStatus();
+			if (scope.isForeground) {
+				checkStatus();
+			}
 		}, backgroundInterval);
 		checkStatus();
+
+		configureBackgroundFetch();
 
 		$rootScope.$on('$destroy', function() {
 			if (statusCheck) {
@@ -333,6 +405,7 @@
 			getUserInfo: getUserInfo,
 			getStatus: getStatus,
 			getAlerts: getAlerts,
+			getAutocompleteUsers: getAutocompleteUsers,
 			getSeamail: getSeamail,
 			getSeamailMessages: getSeamailMessages,
 			postSeamailMessage: postSeamailMessage,

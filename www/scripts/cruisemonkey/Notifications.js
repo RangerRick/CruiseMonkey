@@ -22,6 +22,17 @@
 			'defaultValue': {}
 		});
 
+		scope.isForeground = true;
+		scope.$on('cruisemonkey.app.paused', function() {
+			scope.isForeground = false;
+		});
+		scope.$on('cruisemonkey.app.locked', function() {
+			scope.isForeground = false;
+		});
+		scope.$on('cruisemonkey.app.resumed', function() {
+			scope.isForeground = true;
+		});
+
 		var nextId = 1;
 
 		var printObj = function(obj) {
@@ -58,15 +69,10 @@
 
 			ionic.Platform.ready(function() {
 				$rootScope.$evalAsync(function() {
-					if (window.plugin && window.plugin.notification && window.plugin.notification.local) {
-						if (ionic.Platform.isIOS()) {
-							// for now, say we don't support iOS since it's crashy
-							deferred.resolve(false);
-						} else {
-							registered().then(function(granted) {
-								deferred.resolve(granted);
-							});
-						}
+					if (scope.isForeground === false && window.plugin && window.plugin.notification && window.plugin.notification.local) {
+						registered().then(function(granted) {
+							deferred.resolve(granted);
+						});
 					} else {
 						deferred.resolve(false);
 					}
