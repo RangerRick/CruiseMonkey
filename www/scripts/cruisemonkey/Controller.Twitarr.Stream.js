@@ -116,7 +116,7 @@
 					var elm = angular.element(document.getElementById(entry.id));
 					var offset = elm.offset().top;
 					if (offset >= 0) {
-						console.log('updateTopVisible(): top = ' + entry.text);
+						// console.log('updateTopVisible(): top = ' + entry.text);
 						$scope.setNewestSeen(entry);
 						break;
 					}
@@ -128,7 +128,7 @@
 			var index = getIndex(entry),
 				newestIndex = getNewestSeenIndex();
 
-			console.log('setNewestSeen: index=' + index + ', newestIndex=' + newestIndex);
+			// console.log('setNewestSeen: index=' + index + ', newestIndex=' + newestIndex);
 			if (newestIndex === undefined || index <= newestIndex) {
 				newestSeen = entry;
 				updateUnreadCount(index);
@@ -167,7 +167,7 @@
 		var addEvents = function(events) {
 			$scope.user = UserService.get();
 			var i, j, k;
-			console.log('TwitarrStream: addEvents:',events);
+			//console.log('TwitarrStream: addEvents:',events);
 			for (i=0; i < events.length; i++) {
 				events[i].timestamp = moment(events[i].timestamp);
 				events[i].text = translateText(events[i].text);
@@ -237,7 +237,7 @@
 					position += (offsetTop - scrollTop + clientTop);
 					scrollEl = scrollEl.parent();
 				}
-				console.log('offset='+position);
+				//console.log('offset='+position);
 				return position;
 				/* $scope.$broadcast('scroll.scrollTo', 0, position, true); */
 			} else {
@@ -264,7 +264,7 @@
 			var topEntry = $scope.entries[0];
 			$scope.loading.promise.then(function() {
 				$scope.done = false;
-				console.log('Controller.Twitarr.Stream.doRefresh(): ready');
+				//console.log('Controller.Twitarr.Stream.doRefresh(): ready');
 				$scope.loading = $q.defer();
 				Twitarr.getStream().then(function(res) {
 					if (res && (res.next_page === undefined || res.next_page === 0)) {
@@ -312,7 +312,7 @@
 				if ($scope.entries.length > 0) {
 					$scope.loading = $q.defer();
 					Twitarr.getStream(nextPage).then(function(res) {
-						console.log('Controller.Twitarr.Stream: loadMore found:',res);
+						//console.log('Controller.Twitarr.Stream: loadMore found:',res);
 						if (res && (res.next_page === undefined || res.next_page === 0)) {
 							$scope.done = true;
 						}
