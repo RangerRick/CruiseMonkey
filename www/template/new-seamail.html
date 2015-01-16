@@ -7,7 +7,7 @@
 	</ion-header-bar>
 	<ion-content>
 		<ion-list>
-			<auto-complete model="newSeamail.users" class="item"></auto-complete>
+			<auto-complete model="newSeamail.users" additional-user="sendTo" class="item"></auto-complete>
 			<label class="item item-input">
 				<input type="text" ng-model="newSeamail.subject" ng-trim="true" placeholder="Subject" required>
 			</label>
@@ -15,7 +15,7 @@
 				<textarea ng-model="newSeamail.text" ng-trim="true" placeholder="First message" style="height: 120px" required></textarea>
 			</label>
 			<div class="item">
-				<button class="button button-block" ng-click="postSeamail(newSeamail)" ng-disabled="form.$invalid">Send</button>
+				<button class="button button-block" ng-click="postSeamail(newSeamail, sendTo)" ng-disabled="form.$invalid">Send</button>
 			</div>
 		</ion-list>
 	</ion-content>

@@ -9,13 +9,15 @@
 		return {
 			restrict:'AE',
 			scope:{
-				selectedUsers:'=model'
+				selectedUsers:'=model',
+				additionalUser:'='
 			},
 			templateUrl:'template/autocomplete-template.html',
 			link:function(scope,elem,attrs){
 				scope.suggestions=[];
 				scope.selectedUsers=[];
 				scope.selectedIndex=-1;
+				console.log('additional user:',scope.additionalUser);
 
 				scope.removeTag=function(index){
 					scope.selectedUsers.splice(index,1);
@@ -23,6 +25,9 @@
 
 				scope.search=function(){
 					Twitarr.getAutocompleteUsers(scope.searchText).then(function(users) {
+						if (scope.additionalUser) {
+							removeFromArray(users, scope.additionalUser);
+						}
 						scope.suggestions=users;
 						scope.selectedIndex = -1;
 					});
@@ -104,31 +109,8 @@
 			$scope.viewSeamailModal = modal;
 		});
 
-		$ionicModal.fromTemplateUrl('template/new-seamail.html', {
-			animation: 'slide-in-up',
-			backdropClickToClose: false,
-			focusFirstInput: false
-		}).then(function(modal) {
-			modal.scope.closeModal = function() {
-				modal.hide();
-			};
-			modal.scope.postSeamail = function(seamail) {
-				Twitarr.postSeamail(seamail).then(function() {
-					modal.hide();
-					$scope.doRefresh();
-				}, function(err) {
-					$ionicPopup.alert({
-						title: 'Failed',
-						template: 'Failed to post Seamail: ' + err[0]
-					});
-				});
-			};
-			$scope.newSeamailModal = modal;
-		});
-
 		$scope.$on('$destroy', function() {
 			$scope.viewSeamailModal.remove();
-			$scope.newSeamailModal.remove();
 		});
 
 		$scope.scrollTop = function() {
@@ -169,11 +151,6 @@
 			seamailInterval = $interval(function() {
 				$scope.viewSeamailModal.scope.refreshMessages();
 			}, 10000);
-		};
-
-		$scope.newSeamail = function() {
-			$scope.newSeamailModal.scope.newSeamail = {};
-			$scope.newSeamailModal.show();
 		};
 
 		$scope.$on('modal.hidden', function() {

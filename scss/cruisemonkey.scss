@@ -417,6 +417,12 @@ a.tab-item:hover {
 			max-width: 30px;
 			border-radius: 5px;
 			padding: 2px;
+			vertical-align: middle;
+		}
+		.user {
+			padding: 10px;
+			display: table-cell;
+			vertical-align: middle;
 		}
 	}
 }

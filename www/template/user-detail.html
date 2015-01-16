@@ -11,6 +11,6 @@
 		<div class="row"><div class="col col-center"><img ng-src="{{twitarrRoot}}api/v2/user/photo/{{user.username}}" /></div></div>
 		<div class="row"><div class="col col-center"><p class="title">{{user.display_name}}</p></div></div>
 		<div class="row"><div class="col col-center"><p>@{{user.username}}</p></div></div>
-		<div class="row" ng-if="user.username !== me.username"><div class="col col-center"><button>Send Seamail</button></div></div>
+		<div class="row" ng-if="user.username !== me.username"><div class="col col-center"><button ng-click="sendSeamail(user.username)">Send Seamail</button></div></div>
 	</ion-content>
 </ion-popover-view>

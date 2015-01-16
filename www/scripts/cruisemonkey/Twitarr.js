@@ -24,43 +24,6 @@
 			}
 		});
 
-		var removeFromArray = function(arr, item) {
-			var what, a = [item], L = a.length, ax;
-			while (L && arr.length) {
-				what = a[--L];
-				while ((ax = arr.indexOf(what)) !== -1) {
-					arr.splice(ax, 1);
-				}
-			}
-			return arr;
-		};
-
-		var arrayIncludes = function(arr, searchElement) {
-			var O = Object(arr);
-			var len = parseInt(O.length) || 0;
-			if (len === 0) {
-				return false;
-			}
-			var n = 0;
-			var k;
-			if (n >= 0) {
-				k = n;
-			} else {
-				k = len + n;
-				if (k < 0) {k = 0;}
-			}
-			var currentElement;
-			while (k < len) {
-				currentElement = O[k];
-				if (searchElement === currentElement ||
-					 (searchElement !== searchElement && currentElement !== currentElement)) {
-					return true;
-				}
-				k++;
-			}
-			return false;
-		};
-
 		if (!scope.lastStatus.mention_ids) {
 			scope.lastStatus.mention_ids = [];
 		}

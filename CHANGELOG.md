@@ -1,8 +1,7 @@
-## 4.0.95 (2015-01-15)
-
+<a name="4.9.5"</a>
+## 4.9.5 (2015-01-15)
 
 #### Bug Fixes
-
 
 * **seamail**
   *  refresh the view when a seamail is marked read ((23a1e651))
@@ -22,7 +21,6 @@
 
 #### Features
 
-
 * **twitarr**
   *  add date stamp to the tweet list ((4176fd98))
   *  check status when logged in ((cc9da1ac))
@@ -37,6 +35,4 @@
   *  local notifications on new seamail(s) ((14f0f444))
   *  view and respond to seamails ((c920d6bc))
 * **ui**  handle keyboard input in search better ((f5d4e3e5))
-
-
 

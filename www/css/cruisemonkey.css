@@ -7250,7 +7250,12 @@ a.tab-item:hover {
   min-width: 20px;
   max-width: 30px;
   border-radius: 5px;
-  padding: 2px; }
+  padding: 2px;
+  vertical-align: middle; }
+.seamail .users .user {
+  padding: 10px;
+  display: table-cell;
+  vertical-align: middle; }
 
 .list-entry {
   border-bottom: 1px solid black;

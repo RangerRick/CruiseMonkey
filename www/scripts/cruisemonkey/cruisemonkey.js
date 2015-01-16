@@ -230,7 +230,7 @@
 		;
 	}])
 	/* EventService & Notifications are here just to make sure they initializes early */
-	.run(['$rootScope', '$window', '$cordovaSplashscreen', '$ionicPopover', 'EventService', 'Notifications', 'SettingsService', 'Twitarr', 'UpgradeService', 'UserService', function($rootScope, $window, $cordovaSplashscreen, $ionicPopover, EventService, Notifications, SettingsService, Twitarr, UpgradeService, UserService) {
+	.run(['$rootScope', '$window', '$cordovaSplashscreen', '$ionicModal', '$ionicPopover', 'EventService', 'Notifications', 'SettingsService', 'Twitarr', 'UpgradeService', 'UserService', function($rootScope, $window, $cordovaSplashscreen, $ionicModal, $ionicPopover, EventService, Notifications, SettingsService, Twitarr, UpgradeService, UserService) {
 		console.log('CruiseMonkey run() called.');
 
 		$rootScope.$on("$stateChangeError", function (event, toState, toParams, fromState, fromParams, error) {
@@ -263,6 +263,37 @@
 			}
 		};
 
+		var newSeamailModal;
+		$ionicModal.fromTemplateUrl('template/new-seamail.html', {
+			animation: 'slide-in-up',
+			focusFirstInput: true
+		}).then(function(modal) {
+			modal.scope.closeModal = function() {
+				modal.hide();
+			};
+			modal.scope.postSeamail = function(seamail, sendTo) {
+				if (sendTo) {
+					seamail.users.push(sendTo);
+				}
+				Twitarr.postSeamail(seamail).then(function() {
+					modal.hide();
+					$rootScope.$broadcast('cruisemonkey.notify.newSeamail', 1);
+				}, function(err) {
+					$ionicPopup.alert({
+						title: 'Failed',
+						template: 'Failed to post Seamail: ' + err[0]
+					});
+				});
+			};
+			newSeamailModal = modal;
+		});
+
+		$rootScope.newSeamail = function(sendTo) {
+			userPopover.hide();
+			newSeamailModal.scope.sendTo = sendTo;
+			newSeamailModal.show();
+		};
+
 		var userPopover;
 		$ionicPopover.fromTemplateUrl('template/user-detail.html', {
 			/* animation: 'slide-in-up' */
@@ -270,7 +301,10 @@
 			popup.scope.closePopover = function() {
 				popup.hide();
 			};
-
+			popup.scope.sendSeamail = function(sendTo) {
+				console.log('Opening a seamail dialog to ' + sendTo);
+				$rootScope.newSeamail(sendTo);
+			};
 			userPopover = popup;
 		});
 
@@ -291,6 +325,11 @@
 				userPopover.show(evt);
 			});
 		};
+
+		$rootScope.$on('$destroy', function() {
+			newSeamailModal.remove();
+			userPopover.remove();
+		});
 
 		$rootScope.openUrl = function(url, target) {
 			if ($rootScope.isCordova() && ionic.Platform.isIOS()) {
