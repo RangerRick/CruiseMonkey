@@ -33,9 +33,24 @@ if (process.env.TARGET) {
     }
   }
 
+function puts(error, stdout, stderr) {
+	if (stdout) {
+		console.log('INFO:  ' + stdout);
+	}
+	if (stderr) {
+		console.log('DEBUG: ' + stderr);
+	}
+	if (error) {
+		console.log('ERROR: ' + error);
+	}
+}
+
 if (rootdir) {
   var ourconfigfile = path.join(rootdir, "package.json");
   var configobj = JSON.parse(fs.readFileSync(ourconfigfile, 'utf8'));
+  var exec = require('child_process').exec;
+
+  exec('/usr/libexec/PlistBuddy -c "Set :CFBundleVersion ' + configobj.build + '" platforms/ios/CruiseMonkey/CruiseMonkey-Info.plist', puts);
 
   var roots = [
     'platforms/android/assets/www',
