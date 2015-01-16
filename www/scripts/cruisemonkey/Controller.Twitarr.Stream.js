@@ -244,10 +244,10 @@
 			}
 		};
 
-		var goToEntry = function(hash) {
+		var goToEntry = function(hash, shouldAnimate) {
 			var hashLocation = findHash(hash);
 			console.log('scrolling to hash location: ' + hashLocation);
-			$ionicScrollDelegate.$getByHandle('twitarr').scrollTo(0, hashLocation);
+			$ionicScrollDelegate.$getByHandle('twitarr').scrollTo(0, hashLocation, shouldAnimate);
 		};
 
 		$scope.done = false;
@@ -261,7 +261,7 @@
 			}
 			var topEntry = $scope.entries[0];
 			if (keepPosition && currentTop) {
-				goToEntry(currentTop.id);
+				goToEntry(currentTop.id, false);
 			}
 			$scope.loading.promise.then(function() {
 				$scope.done = false;
@@ -278,9 +278,9 @@
 						$timeout(function() {
 							if (keepPosition) {
 								if (currentTop) {
-									goToEntry(currentTop.id);
+									goToEntry(currentTop.id, false);
 								} else if (topEntry) {
-									goToEntry(topEntry.id);
+									goToEntry(topEntry.id, false);
 								}
 							}
 						});
