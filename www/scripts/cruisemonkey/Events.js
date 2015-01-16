@@ -128,7 +128,7 @@
 		});
 
 		$rootScope.$on('cruisemonkey.user.updated', function(ev, user) {
-			console.log('user updated:',user);
+			console.log('user updated:',user.username);
 			if (user.loggedIn) {
 				favoritesdb = createFavoritesDb(user);
 			} else {

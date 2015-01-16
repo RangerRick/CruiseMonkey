@@ -207,7 +207,7 @@
 				'doc_ids': ['_design/cruisemonkey']
 			}).on('complete', function(info) {
 				$rootScope.$evalAsync(function() {
-					console.log('Database.syncDesignDocs: design doc synced');
+					//console.log('Database.syncDesignDocs: design doc synced');
 					deferred.resolve(true);
 				});
 			}).on('error', function(err) {
@@ -390,7 +390,7 @@
 
 			from.info().then(function(info) {
 				var sequenceNum = info.update_seq;
-				console.log('current sequence: ' + sequenceNum);
+				//console.log('current sequence: ' + sequenceNum);
 				to.syncDesignDocs(from).then(function() {
 					to.updateFrom(from).then(function() {
 						console.log('Database.continuouslyReplicateFrom: finished initial update.');

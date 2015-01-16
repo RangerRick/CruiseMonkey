@@ -147,7 +147,7 @@
 		var getAlerts = function(shouldReset) {
 			shouldReset = shouldReset? true:false;
 			var url = SettingsService.getTwitarrRoot() + 'api/v2/alerts';
-			console.log('Twitarr.getAlerts(' + shouldReset + '): url=' + url);
+			//console.log('Twitarr.getAlerts(' + shouldReset + '): url=' + url);
 
 			var deferred = $q.defer();
 
@@ -432,9 +432,8 @@
 
 			var user = UserService.get();
 			if (user.loggedIn && user.key) {
-				console.log('Twitarr: doing status check');
+				//console.log('Twitarr: doing status check');
 				getAlerts(false).then(function(alerts) {
-					console.log('alerts=',alerts);
 					var i,
 						new_mentions = [], mention,
 						new_announcements = [], announcement,
