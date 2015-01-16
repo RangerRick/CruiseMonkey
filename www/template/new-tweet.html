@@ -1,0 +1,37 @@
+<ion-modal-view ng-class="'fit twitarr'">
+	<ion-header-bar class="bar-dark">
+		<h1 class="title">New Tweet</h1>
+		<div class="buttons">
+			<button class="button yellow icon ion-close-circled" ng-click="closeModal()"></button>
+		</div>
+	</ion-header-bar>
+	<ion-content>
+		<ion-list>
+			<label class="item item-input">
+				<input type="text" ng-model="tweet.text" ng-trim="true" placeholder="Post Text" required ui-keypress="{13:'postTweet(tweet)'}">
+			</label>
+			<div class="item" ng-if="photo">
+				<img ng-src="photo" />
+			</div>
+			<div class="item">
+				<div class="row">
+					<div class="col col-75" style="text-align: left">
+						<!--
+						<button class="button" ng-click="addPhoto()" ng-if="canCamera">Add Photo</button>
+						<button class="button" ng-click="takePhoto()" ng-if="canCamera">Take Photo</button>
+						-->
+					</div>
+					<div class="col" style="text-align: right">
+						<button class="button" ng-click="postTweet(tweet)" ng-disabled="form.$invalid">Send</button>
+					</div>
+				</div>
+			</div>
+			<!--
+			<auto-complete model="newSeamail.users" additional-user="sendTo" class="item"></auto-complete>
+			<label class="item item-input">
+				<textarea ng-model="newSeamail.text" ng-trim="true" placeholder="First message" style="height: 120px" required></textarea>
+			</label>
+			-->
+		</ion-list>
+	</ion-content>
+</ion-modal-view>
