@@ -20,7 +20,7 @@
 			'defaultValue': {
 				'mention_ids': [],
 				'seamail_ids': [],
-				'announcement_ids': []
+				'announcement_timestamps': []
 			}
 		});
 
@@ -67,8 +67,11 @@
 		if (!scope.lastStatus.seamail_ids) {
 			scope.lastStatus.seamail_ids = [];
 		}
-		if (!scope.lastStatus.announcement_ids) {
-			scope.lastStatus.announcement_ids = [];
+		if (!scope.lastStatus.announcement_timestamps) {
+			scope.lastStatus.announcement_timestamps = [];
+		}
+		if (scope.lastStatus.announcement_ids) {
+			delete scope.lastStatus.announcement_ids;
 		}
 
 		var call = function(type, url, params, data) {
@@ -369,6 +372,17 @@
 
 		var sendAnnouncementNotification = function(announcement, count) {
 			console.log('Twitarr: Sending announcement local notification for:',announcement);
+
+			var options = {
+				id: 'announcement-' + announcement.timestamp.valueOf(),
+				message: 'New Announcement: ' + announcement.text,
+				data: announcement,
+			};
+			if (count) {
+				options.badge = count;
+			}
+
+			$rootScope.$broadcast('cruisemonkey.notify.local', options);
 		};
 
 		var sendSeamailNotification = function(seamail, count) {
@@ -418,7 +432,7 @@
 					var seen = {
 						mention_ids: [],
 						seamail_ids: [],
-						announcement_ids: []
+						announcement_timestamps: []
 					};
 
 					if (alerts.tweet_mentions) {
@@ -439,11 +453,12 @@
 					if (alerts.announcements) {
 						for (i=0; i < alerts.announcements.length; i++) {
 							announcement = alerts.announcements[i];
-							seen.announcement_ids.push(announcement.id);
-							if (arrayIncludes(scope.lastStatus.announcement_ids, announcement.id)) {
+							announcement.timestamp = moment(announcement.timestamp);
+							seen.announcement_timestamps.push(announcement.timestamp.valueOf());
+							if (arrayIncludes(scope.lastStatus.announcement_timestamps, announcement.timestamp.valueOf())) {
 								//console.log('Twitarr.checkStatus: already seen announcement: ' + announcement.id);
 							} else {
-								console.log('Twitarr.checkStatus: new announcement: ' + announcement.id);
+								console.log('Twitarr.checkStatus: new announcement: ' + announcement.text);
 								new_announcements.push(announcement);
 							}
 						}
