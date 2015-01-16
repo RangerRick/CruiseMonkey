@@ -90,6 +90,11 @@
 			if (!params) {
 				params = {};
 			}
+			params = angular.copy(params);
+			if (!data) {
+				data = {};
+			}
+			data = angular.copy(data);
 
 			if (type === 'POST') {
 				if (!data.key) {
@@ -123,7 +128,7 @@
 				options.data = data;
 			}
 
-			//console.log('Making HTTP call with options:',options);
+			console.log('Making HTTP call with options:',options);
 			return $http(options);
 		};
 
@@ -239,7 +244,12 @@
 			console.log('Twitarr.postSeamail(): url=' + url + ', seamail=',seamail);
 			post(url, seamail)
 				.success(function(data) {
-					deferred.resolve(data);
+					if (data.errors && data.errors.length > 0) {
+						console.log('Failed postSeamail(): ' + data.errors[0]);
+						deferred.reject(data.errors);
+					} else {
+						deferred.resolve(data);
+					}
 				}).error(function(data, status) {
 					console.log('Failed postSeamail(): ' + status, data);
 					deferred.reject([data, status]);

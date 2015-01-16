@@ -1,24 +1,23 @@
-<ion-modal-view ng-class="'fit'">
+<ion-modal-view ng-class="'fit seamail'">
+<!--
 	<ion-header-bar class="bar-dark">
 		<h1 class="title">New Seamail</h1>
 		<div class="buttons">
 			<button class="button yellow icon ion-close-circled" ng-click="closeModal()"></button>
 		</div>
 	</ion-header-bar>
-	<ion-content class="seamail">
+	-->
+	<ion-content>
 		<ion-list>
-			<label class="item item-input">
-				<div auto-complete model="newSeamail.users"></div>
-				<!-- <input type="text" ng-model="newSeamail.users" ng-trim="true" placeholder="User(s)" required> -->
-			</label>
+			<auto-complete model="newSeamail.users" class="item"></auto-complete>
 			<label class="item item-input">
 				<input type="text" ng-model="newSeamail.subject" ng-trim="true" placeholder="Subject" required>
 			</label>
 			<label class="item item-input">
 				<textarea ng-model="newSeamail.text" ng-trim="true" placeholder="First message" style="height: 120px" required></textarea>
 			</label>
-			<div class="padding">
-				<button class="button button-block" ng-click="postMessage()" ng-disabled="form.$invalid">Send</button>
+			<div class="item">
+				<button class="button button-block" ng-click="postSeamail(newSeamail)" ng-disabled="form.$invalid">Send</button>
 			</div>
 		</ion-list>
 	</ion-content>

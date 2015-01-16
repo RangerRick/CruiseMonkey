@@ -63,7 +63,7 @@
 			}
 		};
 	}])
-	.controller('CMSeamailCtrl', ['$scope', '$timeout', '$interval', '$ionicLoading', '$ionicModal', '$ionicScrollDelegate', 'SettingsService', 'Twitarr', 'UserService', function($scope, $timeout, $interval, $ionicLoading, $ionicModal, $ionicScrollDelegate, SettingsService, Twitarr, UserService) {
+	.controller('CMSeamailCtrl', ['$scope', '$timeout', '$interval', '$ionicLoading', '$ionicModal', '$ionicPopup', '$ionicScrollDelegate', 'SettingsService', 'Twitarr', 'UserService', function($scope, $timeout, $interval, $ionicLoading, $ionicModal, $ionicPopup, $ionicScrollDelegate, SettingsService, Twitarr, UserService) {
 		console.log('CMSeamailCtrl Initializing.');
 
 		$ionicModal.fromTemplateUrl('template/seamail-detail.html', {
@@ -91,7 +91,10 @@
 						modal.scope.refreshMessages();
 					});
 				} else {
-					console.log('not posting message.');
+					$ionicPopup.alert({
+						title: 'Invalid Message',
+						template: 'Please enter something to post. ;)'
+					});
 				}
 			};
 			modal.scope.newMessage = { text: '' };
@@ -103,10 +106,22 @@
 
 		$ionicModal.fromTemplateUrl('template/new-seamail.html', {
 			animation: 'slide-in-up',
-			focusFirstInput: true
+			backdropClickToClose: false,
+			focusFirstInput: false
 		}).then(function(modal) {
 			modal.scope.closeModal = function() {
 				modal.hide();
+			};
+			modal.scope.postSeamail = function(seamail) {
+				Twitarr.postSeamail(seamail).then(function() {
+					modal.hide();
+					$scope.doRefresh();
+				}, function(err) {
+					$ionicPopup.alert({
+						title: 'Failed',
+						template: 'Failed to post Seamail: ' + err[0]
+					});
+				});
 			};
 			$scope.newSeamailModal = modal;
 		});
