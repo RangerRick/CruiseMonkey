@@ -1,8 +1,10 @@
 <div class="tags-wrapper">
 	<div id="tagsList" class="tags-cloud">
 		To:
-		<div ng-if="additionalUser" class="tag navy" style="display:inline; padding: 4px 6px;">{{additionalUser}}</div>
-		<div ng-repeat="selectedUser in selectedUsers" class="tag navy" style="display:inline; padding: 4px 6px;" ng-click="removeTag($index)">{{selectedUser}} <i class="icon ion-close-circled"></i></div>
+		<ion-scroll direction="x">
+			<div ng-if="additionalUser" class="tag navy" style="display:inline; padding: 4px 6px;">{{additionalUser}}</div>
+			<div ng-repeat="selectedUser in selectedUsers" class="tag navy" style="display:inline; padding: 4px 6px;" ng-click="removeTag($index)">{{selectedUser}} <i class="icon ion-close-circled"></i></div>
+		</ion-scroll>
 		<input type="text" placeholder="User(s)" id="searchInput" ng-keydown="checkKeyDown($event)" class="form-control" ng-model="searchText" ng-change="search()" />
 	</div>
 	<ul id="suggestions" class="suggestions-list">

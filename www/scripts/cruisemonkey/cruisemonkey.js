@@ -230,7 +230,7 @@
 		;
 	}])
 	/* EventService & Notifications are here just to make sure they initializes early */
-	.run(['$rootScope', '$window', '$cordovaCamera', '$cordovaSplashscreen', '$ionicModal', '$ionicPopover', '$ionicPopup', 'EventService', 'Notifications', 'SettingsService', 'Twitarr', 'UpgradeService', 'UserService', function($rootScope, $window, $cordovaCamera, $cordovaSplashscreen, $ionicModal, $ionicPopover, $ionicPopup, EventService, Notifications, SettingsService, Twitarr, UpgradeService, UserService) {
+	.run(['$rootScope', '$window', '$cordovaCamera', '$cordovaKeyboard', '$cordovaSplashscreen', '$ionicModal', '$ionicPopover', '$ionicPopup', 'EventService', 'Notifications', 'SettingsService', 'Twitarr', 'UpgradeService', 'UserService', function($rootScope, $window, $cordovaCamera, $cordovaKeyboard, $cordovaSplashscreen, $ionicModal, $ionicPopover, $ionicPopup, EventService, Notifications, SettingsService, Twitarr, UpgradeService, UserService) {
 		console.log('CruiseMonkey run() called.');
 
 		$rootScope.$on("$stateChangeError", function (event, toState, toParams, fromState, fromParams, error) {
@@ -418,6 +418,12 @@
 				}
 			}
 			$window.open(url, target);
+		};
+
+		$rootScope.closeKeyboard = function() {
+			if ($rootScope.isCordova()) {
+				$cordovaKeyboard.close();
+			}
 		};
 
 		if ($rootScope.isCordova()) {

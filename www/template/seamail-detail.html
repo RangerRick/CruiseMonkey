@@ -8,7 +8,7 @@
 	<ion-header-bar ng-class="'bar-subheader'" style="height: 50px; padding: 1px;">
 		<ion-list>
 			<ion-item class="users">
-				<span ng-repeat="u in seamail.users" class="user" ng-if="u.username != user.username"><img ng-src="{{twitarrRoot}}api/v2/user/photo/{{u.username}}"> {{u.display_name}}</span>
+				<span ng-repeat="u in seamail.users track by u.username" class="user" ng-if="u.username != user.username"><img ng-src="{{twitarrRoot}}api/v2/user/photo/{{u.username}}"> {{u.display_name}}</span>
 			</ion-item>
 			<ion-item class="item item-avatar item-button-right">
 				<img ng-src="{{twitarrRoot}}api/v2/user/photo/{{user.username}}">

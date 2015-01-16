@@ -6,11 +6,11 @@
 		<h1 class="title">Amenities</h1>
 	</ion-header-bar>
 	<cm-search-bar placeholder="Search Amenities" ng-model="searchString" on-search-changed="onSearchChanged(searchString)"></cm-search-bar>
-	<ion-content delegate-handle="amenities" ng-class="'has-subheader'">
+	<ion-content delegate-handle="amenities" ng-class="'has-subheader'" ng-click="closeKeyboard()">
 		<ion-list class="event-list">
 			<span ng-repeat="amenity in amenities | amenityFilter:searchString">
 				<ion-item class="item-divider header yellow" ng-if="headerAmenities[amenity.getUniqueId()]" ng-bind-html="'Deck ' + amenity.getDeck().getFloor()"></ion-item>
-				<a class="item item-icon-right item-text-wrap" ng-click="openAmenity($event, amenity)">
+				<a class="item item-icon-right item-text-wrap">
 					<div class="summary" ng-bind-html="amenity.getSummary()"></div>
 					<div class="description" ng-show="amenity.getDescription()" ng-bind-html="amenity.getDescription()"></div>
 					<i ng-if="amenity.getIcon()" class="icon {{amenity.getIcon()}}"></i>

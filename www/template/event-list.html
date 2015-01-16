@@ -10,7 +10,7 @@
 		</div>
 	</ion-header-bar>
 	<cm-search-bar placeholder="Search Events" ng-model="searchString"></cm-search-bar>
-	<ion-content scroll="true" padding="false" id="event-content" delegate-handle="eventScroll" ng-class="'has-subheader'">
+	<ion-content scroll="true" padding="false" id="event-content" delegate-handle="eventScroll" ng-class="'has-subheader'" ng-click="closeKeyboard()">
 		<ion-list class="event-list">
 			<span ng-repeat="entry in entries | eventFilter:searchString track by entry.getId()" id="{{entry.getId()}}">
 				<ion-item ng-if="isDay(entry)" class="item-divider event-header">{{prettyDate(entry.day)}}</ion-item>

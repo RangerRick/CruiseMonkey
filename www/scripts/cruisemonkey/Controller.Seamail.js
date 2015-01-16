@@ -30,6 +30,9 @@
 						if (scope.additionalUser) {
 							removeFromArray(users, scope.additionalUser);
 						}
+						for (var i=0; i < scope.selectedUsers.length; i++) {
+							removeFromArray(users, scope.selectedUsers[i]);
+						}
 						scope.suggestions=users;
 						scope.selectedIndex = -1;
 					});

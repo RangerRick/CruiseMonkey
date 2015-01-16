@@ -363,7 +363,6 @@
 		};
 
 		$scope.onFavoriteChanged = function(ev) {
-			$scope.closePopover();
 			$scope.$evalAsync(function() {
 				var i, entry, eventId = ev.getId();
 				console.log('CMEventCtrl.onFavoriteChanged(' + eventId + ')');
