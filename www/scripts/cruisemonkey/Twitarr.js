@@ -490,6 +490,7 @@
 						if (new_mentions.length > 0 && scope.isForeground) {
 							$rootScope.$broadcast('cruisemonkey.notify.newMentions', new_mentions);
 						}
+						$rootScope.$broadcast('cruisemonkey.notify.unseenMentions', alerts.tweet_mentions.length);
 					}
 					if (alerts.announcements) {
 						for (i=0; i < alerts.announcements.length; i++) {
@@ -521,6 +522,7 @@
 						if (new_seamails.length > 0 && scope.isForeground) {
 							$rootScope.$broadcast('cruisemonkey.notify.newSeamail', new_seamails);
 						}
+						$rootScope.$broadcast('cruisemonkey.notify.unreadSeamail', alerts.unread_seamail.length);
 					}
 
 					var count = new_mentions.length + new_announcements.length + new_seamails.length;

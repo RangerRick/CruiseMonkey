@@ -1,5 +1,5 @@
 <script type="text/ng-template" id="template/login.html">
-  <ion-popover-view ng-class="'fit'">
+  <ion-modal-view ng-class="'fit'">
     <ion-content scroll="false" ng-controller="CMLoginCtrl">
       <div class="item bar bar-dark">
         <h1 class="title">Log In</h1>
@@ -19,7 +19,7 @@
         <button class="button button-full button-positive" ng-click="logIn(user)" ng-disabled="form.$invalid || !canSubmit(user)" style="margin-top: 0; margin-bottom: 0">Log In</button>
       </form>
     </ion-content>
-  </ion-popover-view>
+  </ion-modal-view>
 </script>
 <ion-side-menus>
   <ion-side-menu-content edge-drag-threshold="true" drag-content="true">
@@ -55,7 +55,7 @@
 				<a class="item" ui-sref="app.settings"          ui-sref-active="active">Settings</a>
 
         <span ng-if="user.loggedIn">
-          <a class="item" ui-sref="app.seamail"         ui-sref-active="active">Seamail<span ng-if="seamail" class="badge badge-assertive">{{seamail}}</span></a>
+          <a class="item" ui-sref="app.seamail"         ui-sref-active="active">Seamail<span ng-if="unreadSeamail" class="badge badge-assertive">{{unreadSeamail}}</span></a>
         </span>
 
         <a class="item" ng-if="user.loggedIn" ng-click="logOut()">Log Out</a>
