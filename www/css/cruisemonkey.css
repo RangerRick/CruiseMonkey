@@ -7113,6 +7113,7 @@ a.button {
 
 ion-popover-view.fit {
   height: auto !important;
+  min-height: 80px;
   opacity: 1; }
 
 ion-popover-view.fit ion-content {
@@ -7122,7 +7123,8 @@ ion-popover-view.fit ion-content {
   margin-top: 10px !important; }
 
 ion-modal-view.fit {
-  height: auto !important; }
+  height: auto !important;
+  min-height: 80px; }
 
 ion-modal-view.fit ion-content {
   position: relative !important; }

@@ -5,12 +5,13 @@
 // add your plugins to this list--either the identifier, the filesystem location or the URL
 var addList = [
 /* upstream cordova plugins */
-//	'org.apache.cordova.camera',
+	'org.apache.cordova.camera',
 	'org.apache.cordova.console',
 //	'org.apache.cordova.device',
 //	'org.apache.cordova.device-orientation',
 	'org.apache.cordova.dialogs',
-//	'org.apache.cordova.file',
+	'org.apache.cordova.file',
+	'org.apache.cordova.file-transfer',
 	'org.apache.cordova.inappbrowser',
 	'org.apache.cordova.network-information',
 	'org.apache.cordova.splashscreen',
@@ -29,6 +30,7 @@ var addList = [
 	'https://github.com/driftyco/ionic-plugins-keyboard.git',
 	'https://github.com/RangerRick/cordova-certificate-plugin.git#4.0.x',
 	'org.transistorsoft.cordova.plugin.background.fetch',
+//	'https://github.com/wymsee/cordova-imagePicker.git',
 ];
 
 // no need to configure below

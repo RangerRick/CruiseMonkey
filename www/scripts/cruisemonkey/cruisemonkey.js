@@ -230,7 +230,7 @@
 		;
 	}])
 	/* EventService & Notifications are here just to make sure they initializes early */
-	.run(['$rootScope', '$window', '$cordovaSplashscreen', '$ionicModal', '$ionicPopover', '$ionicPopup', 'EventService', 'Notifications', 'SettingsService', 'Twitarr', 'UpgradeService', 'UserService', function($rootScope, $window, $cordovaSplashscreen, $ionicModal, $ionicPopover, $ionicPopup, EventService, Notifications, SettingsService, Twitarr, UpgradeService, UserService) {
+	.run(['$rootScope', '$window', '$cordovaCamera', '$cordovaSplashscreen', '$ionicModal', '$ionicPopover', '$ionicPopup', 'EventService', 'Notifications', 'SettingsService', 'Twitarr', 'UpgradeService', 'UserService', function($rootScope, $window, $cordovaCamera, $cordovaSplashscreen, $ionicModal, $ionicPopover, $ionicPopup, EventService, Notifications, SettingsService, Twitarr, UpgradeService, UserService) {
 		console.log('CruiseMonkey run() called.');
 
 		$rootScope.$on("$stateChangeError", function (event, toState, toParams, fromState, fromParams, error) {
@@ -299,8 +299,52 @@
 			animation: 'slide-in-up',
 			focusFirstInput: true
 		}).then(function(modal) {
+			if (navigator.camera) {
+				var cameraOptions = {
+					correctOrientation: true,
+					encodingType: Camera.EncodingType.JPEG,
+					destinationType: Camera.DestinationType.FILE_URI,
+					mediaType: Camera.MediaType.PICTURE,
+					quality: 80,
+					saveToPhotoAlbum: true,
+				};
+			}
+
+			var doPhoto = function(type) {
+				var options = angular.copy(cameraOptions);
+				options.sourceType = type;
+				if (type === Camera.PictureSourceType.PHOTOLIBRARY) {
+					options.saveToPhotoAlbum = false;
+				}
+				$cordovaCamera.getPicture(options).then(function(results) {
+					/*
+					$window.resolveLocalFileSystemURL(results, function(path) {
+						console.log('matched path: ' + path.toURL());
+						modal.scope.photo = path.toURL();
+					}, function(err) {
+						console.log('err='+err);
+						$ionicPopup.alert({
+							title: 'Failed',
+							template: 'An error occurred while processing your photo.'
+						});
+					});
+					*/
+				}, function(err) {
+					$ionicPopup.alert({
+						title: 'Failed',
+						template: 'An error occurred while processing your photo: ' + err
+					});
+				});
+			};
+
 			modal.scope.closeModal = function() {
 				modal.hide();
+			};
+			modal.scope.addPhoto = function() {
+				doPhoto(Camera.PictureSourceType.PHOTOLIBRARY);
+			};
+			modal.scope.takePhoto = function() {
+				doPhoto(Camera.PictureSourceType.CAMERA);
 			};
 			modal.scope.postTweet = function(tweet) {
 				Twitarr.postTweet(tweet).then(function() {
@@ -317,6 +361,9 @@
 		});
 
 		$rootScope.newTweet = function(replyTo) {
+			/*
+			newTweetModal.scope.canCamera = (navigator.camera? true:false);
+			*/
 			newTweetModal.scope.tweet = { text: '' };
 			if (replyTo) {
 				newTweetModal.scope.tweet.parent = replyTo.id;

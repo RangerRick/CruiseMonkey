@@ -105,6 +105,7 @@
 		$scope.loading.resolve();
 
 		var newestSeen;
+		var currentTop;
 		$scope.unreadCount = 0;
 
 		$scope.updateTopVisible = function() {
@@ -117,6 +118,7 @@
 					var offset = elm.offset().top;
 					if (offset >= 0) {
 						// console.log('updateTopVisible(): top = ' + entry.text);
+						currentTop = entry;
 						$scope.setNewestSeen(entry);
 						break;
 					}
@@ -258,6 +260,9 @@
 				});
 			}
 			var topEntry = $scope.entries[0];
+			if (keepPosition && currentTop) {
+				goToEntry(currentTop.id);
+			}
 			$scope.loading.promise.then(function() {
 				$scope.done = false;
 				//console.log('Controller.Twitarr.Stream.doRefresh(): ready');
@@ -271,8 +276,12 @@
 						addEvents(res.stream_posts);
 						$scope.$broadcast('scroll.refreshComplete');
 						$timeout(function() {
-							if (keepPosition && topEntry) {
-								goToEntry(topEntry.id);
+							if (keepPosition) {
+								if (currentTop) {
+									goToEntry(currentTop.id);
+								} else if (topEntry) {
+									goToEntry(topEntry.id);
+								}
 							}
 						});
 					}
