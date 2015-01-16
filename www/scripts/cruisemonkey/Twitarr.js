@@ -132,7 +132,7 @@
 					}
 					deferred.resolve(data);
 				}).error(function(data, status) {
-					console.log('Twitarr.getAlerts(): Failed: ' + status, data);
+					console.log('Twitarr.getAlerts(): Failed: ' + status, angular.toJson(data));
 					deferred.reject([data, status]);
 				});
 
@@ -150,7 +150,7 @@
 						removeFromArray(data.names, username);
 						deferred.resolve(data.names);
 					}).error(function(data, status) {
-						console.log('Twitarr.getAutocompleteUsers(): Failed: ' + status, data);
+						console.log('Twitarr.getAutocompleteUsers(): Failed: ' + status, angular.toJson(data));
 						deferred.reject([data, status]);
 					});
 			} else {
@@ -177,7 +177,7 @@
 							deferred.reject([data]);
 						}
 					}).error(function(data, status) {
-						console.log('Twitarr.getStatus(): Failed: ' + status, data);
+						console.log('Twitarr.getStatus(): Failed: ' + status, angular.toJson(data));
 						deferred.reject([data, status]);
 					});
 			} else {
@@ -202,7 +202,7 @@
 
 					deferred.resolve(data);
 				}).error(function(data, status, headers, config) {
-					console.log('Failed getSeamail(): ' + status, data);
+					console.log('Failed getSeamail(): ' + status, angular.toJson(data));
 					deferred.reject([data, status]);
 				});
 
@@ -223,7 +223,7 @@
 						deferred.resolve(data);
 					}
 				}).error(function(data, status) {
-					console.log('Failed postSeamail(): ' + status, data);
+					console.log('Failed postSeamail(): ' + status, angular.toJson(data));
 					deferred.reject([data, status]);
 				});
 
@@ -244,7 +244,7 @@
 					}
 					deferred.resolve(data);
 				}).error(function(data, status, headers, config) {
-					console.log('Failed getSeamailMessages(): ' + status, data);
+					console.log('Failed getSeamailMessages(): ' + status, angular.toJson(data));
 					deferred.reject([data, status]);
 				});
 
@@ -260,7 +260,7 @@
 				.success(function(data) {
 					deferred.resolve(data);
 				}).error(function(data, status) {
-					console.log('Failed postSeamailMessage(): ' + status, data);
+					console.log('Failed postSeamailMessage(): ' + status, angular.toJson(data));
 					deferred.reject([data, status]);
 				});
 
@@ -276,7 +276,7 @@
 				.success(function(data) {
 					deferred.resolve(data);
 				}).error(function(data, status, headers, config) {
-					console.log('Failed like(): ' + status, data);
+					console.log('Failed like(): ' + status, angular.toJson(data));
 					deferred.reject([data, status]);
 				});
 
@@ -292,7 +292,7 @@
 				.success(function(data) {
 					deferred.resolve(data);
 				}).error(function(data, status, headers, config) {
-					console.log('Failed unlike(): ' + status, data);
+					console.log('Failed unlike(): ' + status, angular.toJson(data));
 					deferred.reject([data, status]);
 				});
 
@@ -312,7 +312,7 @@
 				.success(function(data) {
 					deferred.resolve(data);
 				}).error(function(data, status, headers, config) {
-					console.log('Failed getStream(): ' + status, data);
+					console.log('Failed getStream(): ' + status, angular.toJson(data));
 					deferred.reject([data, status]);
 				});
 
@@ -329,7 +329,7 @@
 				.success(function(data) {
 					deferred.resolve(data);
 				}).error(function(data, status, headers, config) {
-					console.log('Failed postTweet(): ' + status, data);
+					console.log('Failed postTweet(): ' + status, angular.toJson(data));
 					deferred.reject([data, status]);
 				});
 
@@ -355,7 +355,7 @@
 				}).then(function(res) {
 					deferred.resolve(res);
 				}, function(err) {
-					console.log('Failed postPhoto(): ' + err);
+					console.log('Failed postPhoto(): ' + angular.toJson(err));
 					deferred.reject(err);
 				}, function(progress) {
 					deferred.notify(progress);
@@ -367,7 +367,7 @@
 				}).then(function(res) {
 					deferred.resolve(res);
 				}, function(err) {
-					console.log('Failed postPhoto(): ' + err);
+					console.log('Failed postPhoto(): ' + angular.toJson(err));
 					deferred.reject(err);
 				}, function(progress) {
 					deferred.notify(progress);
@@ -391,7 +391,7 @@
 						deferred.resolve(undefined);
 					}
 				}).error(function(data, status) {
-					console.log('Failed getUserInfo(): ' + status, data);
+					console.log('Failed getUserInfo(): ' + status, angular.toJson(data));
 					deferred.reject(data);
 				});
 			return deferred.promise;

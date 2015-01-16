@@ -166,28 +166,30 @@
 			});
 		};
 
-		var addEvents = function(events) {
+		var addTweets = function(tweets) {
 			$scope.user = UserService.get();
 			var i, j, k;
-			//console.log('TwitarrStream: addEvents:',events);
-			for (i=0; i < events.length; i++) {
-				events[i].timestamp = moment(events[i].timestamp);
-				events[i].text = translateText(events[i].text);
-				$scope.entries.push(events[i]);
+			//console.log('TwitarrStream: addTweets:',tweets);
+			for (i=0; i < tweets.length; i++) {
+				tweets[i].timestamp = moment(tweets[i].timestamp);
+				tweets[i].text = translateText(tweets[i].text);
+				$scope.entries.push(tweets[i]);
+				/*
 				var users = [];
-				if (!$scope.users[events[i].author]) {
-					users.push(events[i].author);
+				if (!$scope.users[tweets[i].author]) {
+					users.push(tweets[i].author);
 				}
-				if (events[i].likes) {
-					for (j=0; j < events[i].likes.length; j++) {
-						if (!$scope.users[events[i].likes[j]]) {
-							users.push(events[i].likes[j]);
+				if (tweets[i].likes) {
+					for (j=0; j < tweets[i].likes.length; j++) {
+						if (!$scope.users[tweets[i].likes[j]]) {
+							users.push(tweets[i].likes[j]);
 						}
 					}
 				}
 				for (k=0; k < users.length; k++) {
 					lookupUser(users[k]);
 				}
+				*/
 			}
 			if ($scope.entries.length > 500) {
 				$scope.entries = $scope.entries.slice(0, 500);
@@ -275,7 +277,7 @@
 					}
 					$scope.entries = [];
 					if (res && res.stream_posts && res.stream_posts.length > 0) {
-						addEvents(res.stream_posts);
+						addTweets(res.stream_posts);
 						$scope.$broadcast('scroll.refreshComplete');
 						if (keepPosition) {
 							if (currentTop) {
@@ -322,7 +324,7 @@
 							$scope.done = true;
 						}
 						if (res && res.stream_posts && res.stream_posts.length > 0) {
-							addEvents(res.stream_posts);
+							addTweets(res.stream_posts);
 						}
 						$scope.updateTopVisible();
 						$scope.$broadcast('scroll.infiniteScrollComplete');
