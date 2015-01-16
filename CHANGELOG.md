@@ -1,7 +1,43 @@
+<a name="4.9.6"</a>
+## 4.9.6 (2015-01-16)
+
+
+#### Bug Fixes
+
+
+* **seamail**
+  *  fix seamail layout; also new seamail from user detail ((52b7160f))
+  *  fix layout so messages scroll but input does not ((5d535caf))
+* **twitarr**
+  *  don't scroll when repositioning ((61065ba3))
+  *  add postSeamail, move Array prototypes to Twitarr ((94ea5785))
+  *  make sure user popups open in the right place ((5a40cbf1))
+* **ui**  lots of minor UI cleanups ((7b1c8a28))
+* **http**  use a longer timeout for the slow server ((75baa048))
+
+#### Features
+
+
+* **announcements**  post announcement notifications ((477abe55))
+* **twitarr**
+  *  tweet posting and replying ((67dc1fbd))
+  *  tweet posting and replying ((6af7d8de))
+  *  tweet posting now works ((12ae4bbd))
+  *  UI updates (user detail, refresh timeline updates) ((1a33e166))
+* **ui**  add user detail view ((ab04a286))
+* **seamail**
+  *  put the header back in ((fa897817))
+  *  create new seamail threads ((20ea182b))
+  *  user detail when clicking avatar ((333622e2))
+
+
+
 <a name="4.9.5"</a>
 ## 4.9.5 (2015-01-15)
 
+
 #### Bug Fixes
+
 
 * **seamail**
   *  refresh the view when a seamail is marked read ((23a1e651))
@@ -20,6 +56,7 @@
 * **initialization**  do not use isWebView() for Cordova detection ((ff08a292))
 
 #### Features
+
 
 * **twitarr**
   *  add date stamp to the tweet list ((4176fd98))
