@@ -128,7 +128,7 @@
 				options.data = data;
 			}
 
-			console.log('Making HTTP call with options:',options);
+			//console.log('Making HTTP call with options:',options);
 			return $http(options);
 		};
 
