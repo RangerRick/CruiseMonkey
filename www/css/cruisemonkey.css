@@ -7111,25 +7111,32 @@ a.button {
   .button.ion-navicon {
     display: none; } }
 
+/*
 ion-popover-view.fit {
-  height: auto !important;
-  opacity: 1; }
+	height: auto !important;
+	opacity: 1;
+}
 
 ion-popover-view.fit ion-content {
-  position: relative !important; }
+	position: relative !important;
+}
 
 .platform-android ion-popover-view.fit {
-  margin-top: 10px !important; }
+	margin-top: 10px !important;
+}
 
 ion-modal-view.fit {
-  height: auto !important; }
+	height: auto !important;
+}
 
 ion-modal-view.fit ion-content {
-  position: relative !important; }
+	position: relative !important;
+}
 
 .platform-android ion-modal-view.fit {
-  margin-top: 10px !important; }
-
+	margin-top: 10px !important;
+}
+*/
 .help .item ul {
   list-style: disc;
   padding-left: 10px; }

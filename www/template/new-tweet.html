@@ -7,31 +7,32 @@
 	</ion-header-bar>
 	<ion-content>
 		<ion-list>
-			<label class="item item-input">
-				<input type="text" ng-model="tweet.text" ng-trim="true" placeholder="Post Text" required ui-keypress="{13:'postTweet(tweet)'}">
-			</label>
-			<div class="item" ng-if="photo">
-				<img ng-src="photo" />
+			<div class="item item-input-inset">
+				<label class="item-input-wrapper">
+					<input type="text" ng-model="tweet.text" ng-trim="true" placeholder="Post Text" required ui-keypress="{13:'postTweet(tweet)'}">
+				</label>
+				<button class="button" ng-click="postTweet(tweet)" ng-disabled="photoUploading || !tweet.text">Send</button>
+			</div>
+			<div class="item item-image" ng-if="tweet.photo">
+				<img ng-src="{{twitarrRoot}}photo/small_thumb/{{tweet.photo}}" />
+			</div>
+			<div class="item" ng-if="photoUploading">
+				<progress value="{{photoUploading.loaded}}" max="{{photoUploading.total}}"></progress>
 			</div>
 			<div class="item">
-				<div class="row">
-					<div class="col col-75" style="text-align: left">
-						<!--
-						<button class="button" ng-click="addPhoto()" ng-if="canCamera">Add Photo</button>
-						<button class="button" ng-click="takePhoto()" ng-if="canCamera">Take Photo</button>
-						-->
-					</div>
-					<div class="col" style="text-align: right">
-						<button class="button" ng-click="postTweet(tweet)" ng-disabled="form.$invalid">Send</button>
-					</div>
-				</div>
+				<span ng-if="!canCamera">
+					<input type="file" ng-file-select="" ng-model="picFile" name="file" accept="image/*" ng-multiple="false" required="" size="0"></input>
+					<button ng-click="uploadPic(picFile)">Upload</button>
+				</span>
+				<!--
+				<form ng-if="!canCamera" method="post" action="{{uploadUrl}}" enctype="multipart/form-data">
+					<input id="uploadInput" type="file" name="files" accept="image/*" />
+					<input type="submit" class="button" value="Upload" />
+				</form>
+				-->
+				<button class="button" ng-click="addPhoto()" ng-if="canCamera">Add Photo</button>
+				<button class="button" ng-click="takePhoto()" ng-if="canCamera">Take Photo</button>
 			</div>
-			<!--
-			<auto-complete model="newSeamail.users" additional-user="sendTo" class="item"></auto-complete>
-			<label class="item item-input">
-				<textarea ng-model="newSeamail.text" ng-trim="true" placeholder="First message" style="height: 120px" required></textarea>
-			</label>
-			-->
 		</ion-list>
 	</ion-content>
 </ion-modal-view>

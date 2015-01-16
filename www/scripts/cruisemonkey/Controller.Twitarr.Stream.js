@@ -247,7 +247,9 @@
 		var goToEntry = function(hash, shouldAnimate) {
 			var hashLocation = findHash(hash);
 			console.log('scrolling to hash location: ' + hashLocation);
-			$ionicScrollDelegate.$getByHandle('twitarr').scrollTo(0, hashLocation, shouldAnimate);
+			$timeout(function() {
+				$ionicScrollDelegate.$getByHandle('twitarr').scrollTo(0, hashLocation, shouldAnimate);
+			});
 		};
 
 		$scope.done = false;
@@ -275,15 +277,13 @@
 					if (res && res.stream_posts && res.stream_posts.length > 0) {
 						addEvents(res.stream_posts);
 						$scope.$broadcast('scroll.refreshComplete');
-						$timeout(function() {
-							if (keepPosition) {
-								if (currentTop) {
-									goToEntry(currentTop.id, false);
-								} else if (topEntry) {
-									goToEntry(topEntry.id, false);
-								}
+						if (keepPosition) {
+							if (currentTop) {
+								goToEntry(currentTop.id, false);
+							} else if (topEntry) {
+								goToEntry(topEntry.id, false);
 							}
-						});
+						}
 					}
 					updateUnreadCount();
 					$ionicLoading.hide();

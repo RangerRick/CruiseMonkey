@@ -13,6 +13,7 @@
 		'ionic',
 		'ngCordova',
 		'ui.router',
+		'angularFileUpload',
 		'angularLocalStorage',
 		'pasvaz.bindonce',
 		'cruisemonkey.Config',
@@ -231,7 +232,7 @@
 		;
 	}])
 	/* EventService & Notifications are here just to make sure they initializes early */
-	.run(['$rootScope', '$window', '$cordovaCamera', '$cordovaKeyboard', '$cordovaSplashscreen', '$ionicModal', '$ionicPopover', '$ionicPopup', 'EventService', 'Notifications', 'SettingsService', 'Twitarr', 'UpgradeService', 'UserService', function($rootScope, $window, $cordovaCamera, $cordovaKeyboard, $cordovaSplashscreen, $ionicModal, $ionicPopover, $ionicPopup, EventService, Notifications, SettingsService, Twitarr, UpgradeService, UserService) {
+	.run(['$rootScope', '$window', '$sce', '$cordovaCamera', '$cordovaKeyboard', '$cordovaSplashscreen', '$ionicModal', '$ionicPopover', '$ionicPopup', '$upload', 'EventService', 'Notifications', 'SettingsService', 'Twitarr', 'UpgradeService', 'UserService', function($rootScope, $window, $sce, $cordovaCamera, $cordovaKeyboard, $cordovaSplashscreen, $ionicModal, $ionicPopover, $ionicPopup, $upload, EventService, Notifications, SettingsService, Twitarr, UpgradeService, UserService) {
 		console.log('CruiseMonkey run() called.');
 
 		$rootScope.$on("$stateChangeError", function (event, toState, toParams, fromState, fromParams, error) {
@@ -298,7 +299,7 @@
 		var newTweetModal;
 		$ionicModal.fromTemplateUrl('template/new-tweet.html', {
 			animation: 'slide-in-up',
-			focusFirstInput: true
+			focusFirstInput: false
 		}).then(function(modal) {
 			if (navigator.camera) {
 				var cameraOptions = {
@@ -318,10 +319,24 @@
 					options.saveToPhotoAlbum = false;
 				}
 				$cordovaCamera.getPicture(options).then(function(results) {
-					/*
 					$window.resolveLocalFileSystemURL(results, function(path) {
 						console.log('matched path: ' + path.toURL());
-						modal.scope.photo = path.toURL();
+						//modal.scope.photo = path.toURL();
+						Twitarr.postPhoto(path.toURL()).then(function(res) {
+							//console.log('res=' + angular.toJson(res));
+							var response = angular.fromJson(res.response);
+							modal.scope.tweet.photo = response.files[0].photo;
+							delete modal.scope.photoUploading;
+						}, function(err) {
+							$ionicPopup.alert({
+								title: 'Failed',
+								template: 'An error occurred while uploading your photo.'
+							});
+							delete modal.scope.photoUploading;
+						}, function(progress) {
+							console.log('progress=' + angular.toJson(progress));
+							modal.scope.photoUploading = progress;
+						});
 					}, function(err) {
 						console.log('err='+err);
 						$ionicPopup.alert({
@@ -329,7 +344,6 @@
 							template: 'An error occurred while processing your photo.'
 						});
 					});
-					*/
 				}, function(err) {
 					$ionicPopup.alert({
 						title: 'Failed',
@@ -358,13 +372,39 @@
 					});
 				});
 			};
+
+			modal.scope.twitarrRoot = SettingsService.getTwitarrRoot();
+
+			modal.scope.uploadPic = function(pic) {
+				console.log('Upload Picture:',pic);
+				Twitarr.postPhoto(pic[0]).then(function(res) {
+					//console.log('res=' + angular.toJson(res));
+					modal.scope.tweet.photo = res.data.files[0].photo;
+					delete modal.scope.photoUploading;
+				}, function(err) {
+					$ionicPopup.alert({
+						title: 'Failed',
+						template: 'An error occurred while uploading your photo.'
+					});
+					delete modal.scope.photoUploading;
+				}, function(progress) {
+					console.log('progress=' + angular.toJson(progress));
+					modal.scope.photoUploading = progress;
+				});
+			};
+			modal.scope.$watch('picFile', function(value) {
+				console.log('File is: ' + value);
+			});
+			/*
+			modal.scope.user = UserService.get();
+			modal.scope.uploadUrl = $sce.trustAsResourceUrl(modal.scope.twitarrRoot + 'api/v2/photo?key=' + modal.scope.user.key);
+			*/
+
 			newTweetModal = modal;
 		});
 
 		$rootScope.newTweet = function(replyTo) {
-			/*
 			newTweetModal.scope.canCamera = (navigator.camera? true:false);
-			*/
 			newTweetModal.scope.tweet = { text: '' };
 			if (replyTo) {
 				newTweetModal.scope.tweet.parent = replyTo.id;

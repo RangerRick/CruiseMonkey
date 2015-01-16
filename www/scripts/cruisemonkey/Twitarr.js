@@ -6,14 +6,17 @@
 	/* global moment: true */
 	/* global removeFromArray: true */
 	/* global arrayIncludes: true */
+	/* global File: true */
+	/* global FileTransfer: true */
 
 	angular.module('cruisemonkey.Twitarr', [
 		'cruisemonkey.Config',
 		'cruisemonkey.Notifications',
 		'cruisemonkey.Settings',
+		'angularFileUpload',
 		'angularLocalStorage'
 	])
-	.factory('Twitarr', ['$q', '$rootScope', '$timeout', '$interval', '$http', 'storage', 'config.background.interval', 'config.request.timeout', 'config.twitarr.enable-cachebusting', 'LocalNotifications', 'SettingsService', 'UserService', function($q, $rootScope, $timeout, $interval, $http, storage, backgroundInterval, requestTimeout, enableCachebusting, LocalNotifications, SettingsService, UserService) {
+	.factory('Twitarr', ['$q', '$rootScope', '$timeout', '$interval', '$http', '$cordovaFile', '$upload', 'storage', 'config.background.interval', 'config.request.timeout', 'config.twitarr.enable-cachebusting', 'LocalNotifications', 'SettingsService', 'UserService', function($q, $rootScope, $timeout, $interval, $http, $cordovaFile, $upload, storage, backgroundInterval, requestTimeout, enableCachebusting, LocalNotifications, SettingsService, UserService) {
 		console.log('Initializing Twit-arr API.');
 
 		var scope = $rootScope.$new();
@@ -97,7 +100,7 @@
 				options.data = data;
 			}
 
-			console.log('Making HTTP call with options:',options);
+			//console.log('Making HTTP call with options:',options);
 			return $http(options);
 		};
 
@@ -333,6 +336,49 @@
 			return deferred.promise;
 		};
 
+		var postPhoto = function(image) {
+			var url = SettingsService.getTwitarrRoot() + 'api/v2/photo';
+			var user = UserService.get();
+			if (user.key) {
+				url += '?key=' + user.key;
+			}
+
+			var deferred = $q.defer();
+
+			console.log('Twitarr.postPhoto(): url=' + url +', image=',image);
+			if (image instanceof File) {
+				$upload.upload({
+					'url': url,
+					'file': image,
+					'fileFormDataName': 'files',
+					'fileName': 'image.jpg',
+				}).then(function(res) {
+					deferred.resolve(res);
+				}, function(err) {
+					console.log('Failed postPhoto(): ' + err);
+					deferred.reject(err);
+				}, function(progress) {
+					deferred.notify(progress);
+				});
+			} else if (FileTransfer) {
+				$cordovaFile.uploadFile(url, image, {
+					'fileKey': 'files',
+					'fileName': 'image.jpg',
+				}).then(function(res) {
+					deferred.resolve(res);
+				}, function(err) {
+					console.log('Failed postPhoto(): ' + err);
+					deferred.reject(err);
+				}, function(progress) {
+					deferred.notify(progress);
+				});
+			} else {
+				deferred.reject('File upload not supported.');
+			}
+
+			return deferred.promise;
+		};
+
 		var getUserInfo = function(username) {
 			var url = SettingsService.getTwitarrRoot() + 'api/v2/user/view/' + username;
 			var deferred = $q.defer();
@@ -552,6 +598,7 @@
 		return {
 			getStream: getStream,
 			postTweet: postTweet,
+			postPhoto: postPhoto,
 			getUserInfo: getUserInfo,
 			getStatus: getStatus,
 			getAlerts: getAlerts,

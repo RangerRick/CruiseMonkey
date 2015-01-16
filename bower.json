@@ -20,7 +20,8 @@
     "pouchdb-all-dbs": "*",
     "pouchdb-persist": "*",
     "toastr": "*",
-    "angular-bind-html-compile": "~1.0.1"
+    "angular-bind-html-compile": "~1.0.1",
+    "ng-file-upload": "~2.1.1"
   },
   "devDependencies": {
     "angular-mocks": "*",
