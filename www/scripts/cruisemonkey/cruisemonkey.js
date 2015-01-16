@@ -230,7 +230,7 @@
 		;
 	}])
 	/* EventService & Notifications are here just to make sure they initializes early */
-	.run(['$rootScope', '$window', '$cordovaSplashscreen', '$ionicModal', '$ionicPopover', 'EventService', 'Notifications', 'SettingsService', 'Twitarr', 'UpgradeService', 'UserService', function($rootScope, $window, $cordovaSplashscreen, $ionicModal, $ionicPopover, EventService, Notifications, SettingsService, Twitarr, UpgradeService, UserService) {
+	.run(['$rootScope', '$window', '$cordovaSplashscreen', '$ionicModal', '$ionicPopover', '$ionicPopup', 'EventService', 'Notifications', 'SettingsService', 'Twitarr', 'UpgradeService', 'UserService', function($rootScope, $window, $cordovaSplashscreen, $ionicModal, $ionicPopover, $ionicPopup, EventService, Notifications, SettingsService, Twitarr, UpgradeService, UserService) {
 		console.log('CruiseMonkey run() called.');
 
 		$rootScope.$on("$stateChangeError", function (event, toState, toParams, fromState, fromParams, error) {

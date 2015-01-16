@@ -24,6 +24,7 @@ if (typeof String.prototype.contains !== 'function') {
 }
 
 var removeFromArray = function(arr, item) {
+	'use strict';
 	var what, a = [item], L = a.length, ax;
 	while (L && arr.length) {
 		what = a[--L];
@@ -35,6 +36,7 @@ var removeFromArray = function(arr, item) {
 };
 
 var arrayIncludes = function(arr, searchElement) {
+	'use strict';
 	var O = Object(arr);
 	var len = parseInt(O.length) || 0;
 	if (len === 0) {

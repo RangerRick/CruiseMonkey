@@ -1,6 +1,8 @@
 (function() {
 	'use strict';
 
+	/* global removeFromArray: true */
+
 	angular.module('cruisemonkey.controllers.Seamail', [
 		'cruisemonkey.Config',
 		'cruisemonkey.Twitarr',

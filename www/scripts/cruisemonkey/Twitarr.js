@@ -1,9 +1,11 @@
 (function() {
 	'use strict';
 
-	/*global isMobile: true*/
-	/*global ionic: true*/
-	/*global moment: true*/
+	/* global isMobile: true */
+	/* global ionic: true */
+	/* global moment: true */
+	/* global removeFromArray: true */
+	/* global arrayIncludes: true */
 
 	angular.module('cruisemonkey.Twitarr', [
 		'cruisemonkey.Config',
