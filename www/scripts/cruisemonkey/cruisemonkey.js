@@ -4,6 +4,7 @@
 	/* global isMobile: true */
 	/* global ionic: true */
 	/* global cordova: true */
+	/* global Camera: true */
 	/* global StatusBar: true */
 	/* global moment: true */
 
