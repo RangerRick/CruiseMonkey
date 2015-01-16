@@ -197,25 +197,21 @@
 			var user = UserService.get();
 			if (entry.likes && entry.likes.indexOf(user.username) >= 0) {
 				// we have already liked it, unlike it
+				entry.likes.splice(entry.likes.indexOf(user.username), 1);
 				Twitarr.unlike(entry.id).then(function(res) {
-					entry.likes.splice(entry.likes.indexOf(user.username), 1);
 				}, function(err) {
 					console.log('Unable to toggle like on ' + entry.id + ':' + err[0]);
 				});
 			} else {
+				if (!entry.likes) {
+					entry.likes = [];
+				}
+				entry.likes.push(user.username);
 				Twitarr.like(entry.id).then(function(res) {
-					if (!entry.likes) {
-						entry.likes = [];
-					}
-					entry.likes.push(user.username);
 				}, function(err) {
 					console.log('Unable to toggle like on ' + entry.id + ':' + err[0]);
 				});
 			}
-		};
-
-		$scope.reply = function(entry) {
-			console.log('Controller.Twitarr.Stream.reply(' + entry.id + ')');
 		};
 
 		$scope.scrollTop = function() {

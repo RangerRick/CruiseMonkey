@@ -56,15 +56,19 @@
 				params = {};
 			}
 			params = angular.copy(params);
-			if (!data) {
-				data = {};
-			}
 			data = angular.copy(data);
 
-			if (type === 'POST') {
+			if (type === 'POST' || type === 'DELETE') {
+				/*
 				if (!data.key) {
 					if (user.loggedIn && user.key) {
 						data.key = user.key;
+					}
+				}
+				*/
+				if (!params.key) {
+					if (user.loggedIn && user.key) {
+						params.key = user.key;
 					}
 				}
 			} else {
@@ -93,7 +97,7 @@
 				options.data = data;
 			}
 
-			//console.log('Making HTTP call with options:',options);
+			console.log('Making HTTP call with options:',options);
 			return $http(options);
 		};
 
@@ -101,8 +105,8 @@
 			return call('GET', url, params);
 		};
 
-		var del = function(url, params) {
-			return call('DELETE', url, params);
+		var del = function(url, data) {
+			return call('DELETE', url, {}, data);
 		};
 
 		var post = function(url, data) {
@@ -306,6 +310,23 @@
 					deferred.resolve(data);
 				}).error(function(data, status, headers, config) {
 					console.log('Failed getStream(): ' + status, data);
+					deferred.reject([data, status]);
+				});
+
+			return deferred.promise;
+		};
+
+		var postTweet = function(tweet) {
+			var url = SettingsService.getTwitarrRoot() + 'api/v2/stream';
+
+			var deferred = $q.defer();
+
+			console.log('Twitarr.postTweet(): url=' + url);
+			post(url, tweet)
+				.success(function(data) {
+					deferred.resolve(data);
+				}).error(function(data, status, headers, config) {
+					console.log('Failed postTweet(): ' + status, data);
 					deferred.reject([data, status]);
 				});
 
@@ -530,6 +551,7 @@
 
 		return {
 			getStream: getStream,
+			postTweet: postTweet,
 			getUserInfo: getUserInfo,
 			getStatus: getStatus,
 			getAlerts: getAlerts,

@@ -294,6 +294,36 @@
 			newSeamailModal.show();
 		};
 
+		var newTweetModal;
+		$ionicModal.fromTemplateUrl('template/new-tweet.html', {
+			animation: 'slide-in-up',
+			focusFirstInput: true
+		}).then(function(modal) {
+			modal.scope.closeModal = function() {
+				modal.hide();
+			};
+			modal.scope.postTweet = function(tweet) {
+				Twitarr.postTweet(tweet).then(function() {
+					modal.hide();
+					$rootScope.$broadcast('cruisemonkey.notify.tweetPosted', tweet);
+				}, function(err) {
+					$ionicPopup.alert({
+						title: 'Failed',
+						template: 'Failed to post Tweet: ' + err[0]
+					});
+				});
+			};
+			newTweetModal = modal;
+		});
+
+		$rootScope.newTweet = function(replyTo) {
+			newTweetModal.scope.tweet = { text: '' };
+			if (replyTo) {
+				newTweetModal.scope.tweet.parent = replyTo.id;
+			}
+			newTweetModal.show();
+		};
+
 		var userPopover;
 		$ionicPopover.fromTemplateUrl('template/user-detail.html', {
 			/* animation: 'slide-in-up' */
