@@ -86,7 +86,7 @@ var testSource = [
   paths.spec
 ];
 
-gulp.task('test', function(done) {
+gulp.task('test', ['lint'], function(done) {
   gulp.src(testSource)
     .pipe(karma({
       configFile: 'karma.conf.js',

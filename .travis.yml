@@ -16,7 +16,7 @@ before_install:
   - 'sudo pip install couchapp'
 #before_script:
 #  - './setup-travis.sh'
-script: gulp test && npm run jshint
+script: gulp test
 cache:
   directories:
     - node_modules

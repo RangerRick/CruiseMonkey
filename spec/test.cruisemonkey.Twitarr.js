@@ -24,6 +24,7 @@ describe('Twit-Arr', function() {
 		console.info('--------------------------------------------------------------------------------');
 		jasmine.clock().install();
 		angular.module('ngCordova', []);
+		angular.module('angularFileUpload', []);
 	});
 
 	beforeEach(module('cruisemonkey.Twitarr', function($provide) {
@@ -40,7 +41,9 @@ describe('Twit-Arr', function() {
 				return 'https://jccc5.rylath.net/';
 			}
 		};
-		$provide.value('LocalNotifications', LocalNotifications);
+		$provide.value('$upload', {});
+		$provide.value('$cordovaFile', {});
+		$provide.value('LocalNotifications', {});
 		$provide.value('UserService', UserService);
 		$provide.value('SettingsService', SettingsService);
 		$provide.value('config.twitarr.enable-cachebusting', false);

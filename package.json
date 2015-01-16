@@ -5,17 +5,15 @@
   "description": "Keep Track of Your Cruise",
   "build": 40326,
   "scripts": {
-    "jshint": "jshint -c .jshintrc www/scripts/cruisemonkey/*.js spec/*.js"
+    /* "jshint": "jshint -c .jshintrc www/scripts/cruisemonkey/*.js spec/*.js" */
   },
   "dependencies": {
     "gulp": "^3.5.6",
     "gulp-concat": "^2.2.0",
-    "gulp-jshint": "*",
     "gulp-minify-css": "^0.3.0",
     "gulp-rename": "^1.2.0",
     "gulp-sass": "^0.7.1",
-    "gulp-util": "*",
-    "jshint-stylish": "*"
+    "gulp-util": "*"
   },
   "devDependencies": {
     "bower": "*",
@@ -23,12 +21,14 @@
     "cordova-android": "*",
     "fs.extra": "*",
     "gulp-jasmine": "*",
+    "gulp-jshint": "*",
     "gulp-karma": "*",
     "jshint": "*",
+    "jshint-stylish": "*",
     "karma": "*",
-    "karma-jasmine": "*",
     "karma-chrome-launcher": "*",
     "karma-firefox-launcher": "*",
+    "karma-jasmine": "*",
     "karma-phantomjs-launcher": "*",
     "karma-safari-launcher": "*",
     "karma-webdriver-launcher": "*",
