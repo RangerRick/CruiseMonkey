@@ -785,6 +785,9 @@
 						// this is an event
 						start = entry.getStart().unix();
 						end   = entry.getEnd() === undefined? start : entry.getEnd().unix();
+						if (end - start > 43200) {
+							end = start + 43200;
+						}
 
 						console.log('now=' + now + ',start=' + start + ',end=' + end + ': ' + entry.getSummary());
 						if (now < start) {

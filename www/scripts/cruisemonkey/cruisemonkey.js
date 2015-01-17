@@ -122,7 +122,7 @@
 				url: '/official',
 				views: {
 					'events-official': {
-						templateUrl: 'template/event-list.html',
+						templateUrl: 'template/event-list-official.html',
 						controller: 'CMEventCtrl'
 					}
 				}
@@ -131,7 +131,7 @@
 				url: '/unofficial',
 				views: {
 					'events-unofficial': {
-						templateUrl: 'template/event-list.html',
+						templateUrl: 'template/event-list-unofficial.html',
 						controller: 'CMEventCtrl'
 					}
 				}
@@ -140,7 +140,7 @@
 				url: '/my',
 				views: {
 					'events-my': {
-						templateUrl: 'template/event-list.html',
+						templateUrl: 'template/event-list-my.html',
 						controller: 'CMEventCtrl'
 					}
 				}
@@ -149,7 +149,7 @@
 				url: '/all',
 				views: {
 					'events-all': {
-						templateUrl: 'template/event-list.html',
+						templateUrl: 'template/event-list-all.html',
 						controller: 'CMEventCtrl'
 					}
 				}
@@ -265,19 +265,23 @@
 			}
 		};
 
+		var newSeamailScope = $rootScope.$new();
 		var newSeamailModal;
 		$ionicModal.fromTemplateUrl('template/new-seamail.html', {
 			animation: 'slide-in-up',
-			focusFirstInput: true
+			focusFirstInput: true,
+			scope: newSeamailScope
 		}).then(function(modal) {
-			modal.scope.closeModal = function() {
+			newSeamailScope.closeModal = function() {
 				modal.hide();
 			};
-			modal.scope.postSeamail = function(seamail, sendTo) {
+			newSeamailScope.postSeamail = function(seamail, sendTo) {
+				var message = angular.copy(seamail);
 				if (sendTo) {
-					seamail.users.push(sendTo);
+					message.users.push(sendTo);
 				}
-				Twitarr.postSeamail(seamail).then(function() {
+				console.log('postSeamail: seamail=' + angular.toJson(message));
+				Twitarr.postSeamail(message).then(function() {
 					modal.hide();
 					$rootScope.$broadcast('cruisemonkey.notify.newSeamail', 1);
 				}, function(err) {
@@ -292,7 +296,8 @@
 
 		$rootScope.newSeamail = function(sendTo) {
 			userPopover.hide();
-			newSeamailModal.scope.sendTo = sendTo;
+			newSeamailScope.newSeamail = { users: [] };
+			newSeamailScope.sendTo = sendTo;
 			newSeamailModal.show();
 		};
 
@@ -407,6 +412,14 @@
 			newTweetModal.scope.canCamera = (navigator.camera? true:false);
 			newTweetModal.scope.tweet = { text: '' };
 			if (replyTo) {
+				/*
+				newTweetModal.scope.tweet.text = '';
+				if (replyTo.mentions) {
+					for (var i=0; i < replyTo.mentions.length; i++) {
+						newTweetModal.scope.tweet.text += '@' + replyTo.mentions[i] + ' ';
+					}
+				}
+				*/
 				newTweetModal.scope.tweet.parent = replyTo.id;
 			}
 			newTweetModal.show();

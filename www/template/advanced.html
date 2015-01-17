@@ -8,7 +8,7 @@
 	<ion-content has-header="true" scroll="true">
 		<div class="list">
 			<div class="card">
-				<div class="item item-divider">Network Configuration</div>
+				<div class="item item-divider yellow">Network Configuration</div>
 				<form name="networkForm" class="network-form" novalidate>
 					<div class="item item-text-wrap">
 						Configure various advanced network options, including which servers to use.
@@ -31,13 +31,13 @@
 						</label>
 						<span style="padding: 10px">Open URLs in Chrome?</span>
 					</div>
-					<button class="button button-full button-positive" ng-click="saveSettings()" ng-disabled="form.$invalid || isUnchanged()">Save</button>
+					<button class="button button-full button-dark" ng-click="saveSettings()" ng-disabled="form.$invalid || isUnchanged()">Save</button>
 					<button class="button button-full button-assertive" ng-click="resetSettings()" ng-disabled="form.$invalid">Reset to Defaults</button>
 				</form>
 			</div>
 
 			<div class="card">
-				<div class="item item-divider">Force Database Sync</div>
+				<div class="item item-divider yellow">Force Database Sync</div>
 				<div class="item item-text-wrap">
 					The shipboard network can be pretty flaky, especially with hundreds of geeks hitting it at once.
 					CruiseMonkey will attempt to force a sync every 15 minutes, but if you'd like to force one now,
@@ -48,14 +48,14 @@
 			</div>
 
 			<div class="card">
-				<div class="item item-divider">Reset Your Cache</div>
+				<div class="item item-divider yellow">Reset Your Cache</div>
 				<div class="item item-text-wrap">
 					This will clear your local client cache and re-sync from the CruiseMonkey server.  Any events
 					or favorites you have created will come back, as long as CruiseMonkey had previously synced them
 					to the server.  If you are not online when you hit this, it <em>will</em> leave you with an
 					empty CruiseMonkey!
 				</div>
-				<button class="button button-full button-positive" ng-click="resetDatabase()">Reset Cache</button>
+				<button class="button button-full button-dark" ng-click="resetDatabase()">Reset Cache</button>
 			</div>
 		</div>
 	</ion-content>

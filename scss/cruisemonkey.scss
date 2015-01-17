@@ -106,6 +106,7 @@ $button-small-padding:            2px;
 $button-small-icon-size:          28px;
 
 $bar-dark-text: $rciYellow;
+$button-dark-text: $rciYellow;
 
 $tabs-dark-bg:                 $dark;
 $tabs-dark-border:             $rciLightBlue;
@@ -121,6 +122,24 @@ $tabs-dark-text:               $rciYellow;
 }
 
 @import "www/lib/ionic/scss/ionic";
+
+$button-yellow-bg: $rciYellow;
+$button-yellow-text: $rciNavyBlue;
+$button-yellow-border: $rciNavyBlue;
+$button-yellow-active-bg: $button-light-active-bg;
+$button-yellow-active-border: $rciNavyBlue;
+
+$button-navy-bg: $rciNavyBlue;
+$button-navy-text: $rciYellow;
+$button-navy-border: darken($rciNavyBlue, 10%);
+$button-navy-active-bg: $rciLightBlue;
+$button-navy-active-border: $rciNavyBlue;
+
+$button-blue-bg: $rciLightBlue;
+$button-blue-text: $rciNavyBlue;
+$button-blue-border: $rciNavyBlue;
+$button-blue-active-bg: $button-light-active-bg;
+$button-blue-active-border: $rciNavyBlue;
 
 .item-complex .item-content,
 .item-radio .item-content {
@@ -195,25 +214,21 @@ $tabs-dark-text:               $rciYellow;
 
 .button {
 	&.button-cm, &.button-yellow {
-		color: $rciYellow;
-		&.active {
-			opacity: 1;
-			color: $rciYellow;
-		}
+		@include button-style($button-yellow-bg, $button-yellow-border, $button-yellow-active-bg, $button-yellow-active-border, $button-yellow-text);
+		@include button-clear($button-yellow-bg);
+		@include button-outline($button-yellow-border);
 	}
+
 	&.button-navy {
-		color: $rciNavyBlue;
-		&.active {
-			opacity: 1;
-			color: $rciNavyBlue;
-		}
+		@include button-style($button-navy-bg, $button-navy-border, $button-navy-active-bg, $button-navy-active-border, $button-navy-text);
+		@include button-clear($button-navy-bg);
+		@include button-outline($button-navy-border);
 	}
+
 	&.button-blue {
-		color: $rciLightBlue;
-		&.active {
-			opacity: 1;
-			color: $rciLightBlue;
-		}
+		@include button-style($button-blue-bg, $button-blue-border, $button-blue-active-bg, $button-blue-active-border, $button-blue-text);
+		@include button-clear($button-blue-bg);
+		@include button-outline($button-blue-border);
 	}
 }
 
@@ -226,33 +241,6 @@ $tabs-dark-text:               $rciYellow;
 		display: none;
 	}
 }
-
-/*
-ion-popover-view.fit {
-	height: auto !important;
-	opacity: 1;
-}
-
-ion-popover-view.fit ion-content {
-	position: relative !important;
-}
-
-.platform-android ion-popover-view.fit {
-	margin-top: 10px !important;
-}
-
-ion-modal-view.fit {
-	height: auto !important;
-}
-
-ion-modal-view.fit ion-content {
-	position: relative !important;
-}
-
-.platform-android ion-modal-view.fit {
-	margin-top: 10px !important;
-}
-*/
 
 .help {
 	.item {
@@ -324,8 +312,8 @@ a.tab-item:hover {
 
 .bar {
 	.button {
-		padding-left: 2px;
-		padding-right: 2px;
+		padding-left: 6px;
+		padding-right: 6px;
 	}
 	.button.button-clear .icon:before, .button.button-clear.icon:before, .button.button-clear.icon-left:before, .button.button-clear.icon-right:before {
 		font-size: 24px;
@@ -412,19 +400,42 @@ a.tab-item:hover {
 
 .seamail {
 	.users {
+		padding: 0;
+		margin: 0;
 		img {
-			min-height: 20px;
-			max-height: 30px;
-			min-width: 20px;
-			max-width: 30px;
-			border-radius: 5px;
+			min-height: 15px;
+			max-height: 20px;
+			min-width: 15px;
+			max-width: 20px;
+			border-radius: 3px;
 			padding: 2px;
 			vertical-align: middle;
 		}
 		.user {
-			padding: 10px;
+			padding-left: 10px;
+			padding-right: 10px;
 			display: table-cell;
 			vertical-align: middle;
+		}
+	}
+	.bar-subheader {
+		padding: 0;
+		.row {
+			padding: 0;
+		}
+		img {
+			display: inline;
+			min-height: 30px;
+			max-height: 36px;
+			min-width: 30px;
+			max-width: 36px;
+			border-radius: 5px;
+			padding: 2px;
+			vertical-align: middle;
+		}
+		textarea {
+			display: inline;
+			height: 36px;
 		}
 	}
 }
@@ -482,6 +493,14 @@ ion-side-menu {
 	}
 	.even {
 		background-color: $alternateBG;
+	}
+
+	.item-note {
+		.button {
+			padding-left: 2px;
+			padding-right: 2px;
+			min-width: 36px;
+		}
 	}
 
 	.event-header {

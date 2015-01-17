@@ -1,8 +1,11 @@
 <ion-modal-view ng-class="'fit seamail'">
 	<ion-header-bar class="bar-dark">
+		<div class="buttons">
+			<button class="button button-clear button-yellow" ng-click="closeModal()">Close</button>
+		</div>
 		<h1 class="title">New Seamail</h1>
 		<div class="buttons">
-			<button class="button yellow icon ion-close-circled" ng-click="closeModal()"></button>
+			<button class="button button-clear button-yellow" ng-click="postSeamail(newSeamail, sendTo)" ng-disabled="form.$invalid">Send</button>
 		</div>
 	</ion-header-bar>
 	<ion-content>
@@ -12,11 +15,8 @@
 				<input type="text" ng-model="newSeamail.subject" ng-trim="true" placeholder="Subject" required>
 			</label>
 			<label class="item item-input">
-				<textarea ng-model="newSeamail.text" ng-trim="true" placeholder="First message" style="height: 120px" required></textarea>
+				<textarea ng-model="newSeamail.text" ng-trim="true" placeholder="First message" required></textarea>
 			</label>
-			<div class="item">
-				<button class="button button-block" ng-click="postSeamail(newSeamail, sendTo)" ng-disabled="form.$invalid">Send</button>
-			</div>
 		</ion-list>
 	</ion-content>
 </ion-modal-view>

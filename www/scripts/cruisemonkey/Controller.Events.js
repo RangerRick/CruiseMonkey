@@ -131,7 +131,7 @@
 			*/
 		});
 	}])
-	.controller('CMEventCtrl', ['$q', '$scope', '$rootScope', '$timeout', '$cordovaKeyboard', '$ionicScrollDelegate', '$ionicPopover', '$ionicModal', 'EventService', 'UserService', function($q, $scope, $rootScope, $timeout, $cordovaKeyboard, $ionicScrollDelegate, $ionicPopover, $ionicModal, EventService, UserService) {
+	.controller('CMEventCtrl', ['$q', '$scope', '$rootScope', '$timeout', '$cordovaKeyboard', '$ionicActionSheet', '$ionicScrollDelegate', '$ionicPopover', '$ionicModal', 'EventService', 'UserService', function($q, $scope, $rootScope, $timeout, $cordovaKeyboard, $ionicActionSheet, $ionicScrollDelegate, $ionicPopover, $ionicModal, EventService, UserService) {
 		var withDays = function(events) {
 			var ret = [],
 				ev, i,
@@ -178,8 +178,6 @@
 							ev = events[i];
 							if (ev.isPublic() && ev.getUsername() !== 'official') {
 								filteredEvents.push(ev);
-							} else if (user.loggedIn && ev.getUsername() === user.username) {
-								filteredEvents.push(ev);
 							}
 						}
 						break;
@@ -208,7 +206,7 @@
 				filteredEvents.sort(sortEvent);
 				console.log('CMEventCtrl: got ' + filteredEvents.length + ' ' + $scope.eventType + ' events');
 				$scope.entries = withDays(filteredEvents);
-				$ionicScrollDelegate.resize();
+				$ionicScrollDelegate.$getByHandle($scope.eventType + '-event-scroll').resize();
 				deferred.resolve(true);
 			}, function(err) {
 				console.log('CMEventCtrl: failed to get ' + $scope.eventType + ' events: ' + err);
@@ -231,9 +229,9 @@
 			*/
 		};
 
-		var findHash = function(hash) {
+		var findElementById = function(id) {
 			var elm, scrollEl, position = 0;
-			elm = document.getElementById(hash);
+			elm = document.getElementById(id);
 			if (elm) {
 				scrollEl = angular.element(elm);
 				while (scrollEl) {
@@ -250,7 +248,7 @@
 				return position;
 				/* $scope.$broadcast('scroll.scrollTo', 0, position, true); */
 			} else {
-				console.log("can't find element " + hash);
+				console.log("can't find element " + id);
 				return 0;
 			}
 		};
@@ -352,14 +350,20 @@
 		};
 
 		$scope.goToNow = function() {
-			var nextEvent = EventService.getNextEvent($scope.entries);
-			if (nextEvent) {
-				var hashLocation = findHash(nextEvent.getId());
-				console.log('scrolling to hash location: ' + hashLocation);
-				$ionicScrollDelegate.$getByHandle('eventScroll').scrollTo(0, hashLocation);
-			} else {
-				$ionicScrollDelegate.$getByHandle('eventScroll').scrollBottom();
-			}
+			$timeout(function() {
+				var id, nextEvent = EventService.getNextEvent($scope.entries);
+				console.log('next event=', nextEvent);
+				if (nextEvent) {
+					id = $scope.eventType + '-' + nextEvent.getId();
+					var idLocation = findElementById(id);
+					console.log('scrolling to id location: ' + idLocation);
+					$ionicScrollDelegate.$getByHandle($scope.eventType + '-event-scroll').scrollTo(0, idLocation);
+					//$ionicScrollDelegate.scrollTo(0, idLocation);
+				} else {
+					$ionicScrollDelegate.$getByHandle($scope.eventType + '-event-scroll').scrollBottom();
+					//$ionicScrollDelegate.scrollBottom();
+				}
+			});
 		};
 
 		$scope.onFavoriteChanged = function(ev) {
@@ -512,39 +516,37 @@
 		};
 
 		$ionicPopover.fromTemplateUrl('template/event-popover.html').then(function(popover) {
-			popover.scope.trash = function(ev) {
-				if (window.confirm('Are you sure you want to delete "' + ev.getSummary() + '"?')) {
-					popover.hide();
-					removeEventFromDisplay(ev);
-					EventService.removeEvent(ev).then(function() {
-						refreshEvents(true);
-					});
-				}
-			};
-
-			popover.scope.togglePublic = function(ev) {
-				console.log('togglePublic(' + ev.getId() + ')');
-				popover.hide();
-				$scope.$evalAsync(function() {
-					ev.setPublic(!ev.isPublic());
-					$scope.$broadcast('scroll.resize');
-					refreshEvents(true);
-					EventService.updateEvent(ev);
-				});
-			};
-
-			popover.scope.editEvent = function(ev) {
-				popover.hide();
-				$scope.$evalAsync(function() {
-					$scope.event = ev;
-					$scope.eventData = ev.toEditableBean();
-
-					$scope.modal.show();
-				});
-			};
 
 			$scope.popover = popover;
 		});
+
+		$scope.trash = function(ev) {
+			if (window.confirm('Are you sure you want to delete "' + ev.getSummary() + '"?')) {
+				removeEventFromDisplay(ev);
+				EventService.removeEvent(ev).then(function() {
+					refreshEvents(true);
+				});
+			}
+		};
+
+		$scope.togglePublic = function(ev) {
+			console.log('togglePublic(' + ev.getId() + ')');
+			$scope.$evalAsync(function() {
+				ev.setPublic(!ev.isPublic());
+				$scope.$broadcast('scroll.resize');
+				refreshEvents(true);
+				EventService.updateEvent(ev);
+			});
+		};
+
+		$scope.editEvent = function(ev) {
+			$scope.$evalAsync(function() {
+				$scope.event = ev;
+				$scope.eventData = ev.toEditableBean();
+
+				$scope.modal.show();
+			});
+		};
 
 		$scope.openPopover = function($event, entry) {
 			var user = UserService.get();
@@ -552,9 +554,29 @@
 				return;
 			}
 
-			// console.log('openPopover:', $event, entry);
+			var hideSheet = $ionicActionSheet.show({
+				buttons: [
+					{ text: 'Edit' }
+				],
+				destructiveText: 'Delete',
+				cancelText: 'Cancel',
+				destructiveButtonClicked: function() {
+					hideSheet();
+					$scope.trash(entry);
+				},
+				buttonClicked: function(index) {
+					console.log('buttonClicked: '+index);
+					console.log('entry=',entry);
+					if (index === 0) {
+						hideSheet();
+						$scope.editEvent(entry);
+					}
+				}
+			});
+			/*
 			$scope.popover.scope.entry = entry;
 			$scope.popover.show($event);
+			*/
 		};
 
 		/** CruiseMonkey events **/

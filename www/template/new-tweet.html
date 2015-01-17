@@ -1,8 +1,11 @@
 <ion-modal-view ng-class="'fit twitarr'">
 	<ion-header-bar class="bar-dark">
+		<div class="buttons">
+			<button class="button button-clear button-yellow" ng-click="closeModal()">Close</button>
+		</div>
 		<h1 class="title">New Tweet</h1>
 		<div class="buttons">
-			<button class="button yellow icon ion-close-circled" ng-click="closeModal()"></button>
+			<button class="button button-clear button-yellow" ng-click="postTweet(tweet)" ng-disabled="photoUploading || !tweet.text">Send</button>
 		</div>
 	</ion-header-bar>
 	<ion-content>
@@ -11,7 +14,6 @@
 				<label class="item-input-wrapper">
 					<input type="text" ng-model="tweet.text" ng-trim="true" placeholder="Post Text" required ui-keypress="{13:'postTweet(tweet)'}">
 				</label>
-				<button class="button" ng-click="postTweet(tweet)" ng-disabled="photoUploading || !tweet.text">Send</button>
 			</div>
 			<div class="item item-image" ng-if="tweet.photo">
 				<img ng-src="{{twitarrRoot}}photo/small_thumb/{{tweet.photo}}" />
@@ -19,17 +21,17 @@
 			<div class="item" ng-if="photoUploading">
 				<progress value="{{photoUploading.loaded}}" max="{{photoUploading.total}}"></progress>
 			</div>
+			<span ng-if="!canCamera">
+				<div class="row">
+					<div class="col col-80">
+						<input type="file" ng-file-select="" ng-model="picFile" name="file" accept="image/*" ng-multiple="false" required="" size="0"></input>
+					</div>
+					<div class="col col-20">
+						<button class="button button-clear button-dark" ng-click="uploadPic(picFile)" style="float: right"><i class="icon ion-ios-upload"></i></button>
+					</div>
+				</div>
+			</span>
 			<div class="item">
-				<span ng-if="!canCamera">
-					<input type="file" ng-file-select="" ng-model="picFile" name="file" accept="image/*" ng-multiple="false" required="" size="0"></input>
-					<button ng-click="uploadPic(picFile)">Upload</button>
-				</span>
-				<!--
-				<form ng-if="!canCamera" method="post" action="{{uploadUrl}}" enctype="multipart/form-data">
-					<input id="uploadInput" type="file" name="files" accept="image/*" />
-					<input type="submit" class="button" value="Upload" />
-				</form>
-				-->
 				<button class="button" ng-click="addPhoto()" ng-if="canCamera">Add Photo</button>
 				<button class="button" ng-click="takePhoto()" ng-if="canCamera">Take Photo</button>
 			</div>

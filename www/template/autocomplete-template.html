@@ -1,11 +1,15 @@
 <div class="tags-wrapper">
 	<div id="tagsList" class="tags-cloud">
-		To:
-		<ion-scroll direction="x">
-			<div ng-if="additionalUser" class="tag navy" style="display:inline; padding: 4px 6px;">{{additionalUser}}</div>
-			<div ng-repeat="selectedUser in selectedUsers" class="tag navy" style="display:inline; padding: 4px 6px;" ng-click="removeTag($index)">{{selectedUser}} <i class="icon ion-close-circled"></i></div>
-		</ion-scroll>
-		<input type="text" placeholder="User(s)" id="searchInput" ng-keydown="checkKeyDown($event)" class="form-control" ng-model="searchText" ng-change="search()" />
+		<div class="row">
+			<div class="col col-10">To:</div>
+			<ion-scroll direction="x" class="col col-90">
+				<div ng-if="additionalUser" class="tag navy" style="display:inline; padding: 4px 6px;">{{additionalUser}}</div>
+				<div ng-repeat="selectedUser in selectedUsers" class="tag navy" style="display:inline; padding: 4px 6px;" ng-click="removeTag($index)">{{selectedUser}} <i class="icon ion-close-circled"></i></div>
+			</ion-scroll>
+		</div>
+		<div class="row">
+			<input type="text" placeholder="User(s)" id="searchInput" ng-keydown="checkKeyDown($event)" class="form-control" ng-model="searchText" ng-change="search()" />
+		</div>
 	</div>
 	<ul id="suggestions" class="suggestions-list">
 		<li ng-click="addToSelectedUsers($index)" ng-repeat="suggestion in suggestions" class="blockSpan" ng-mouseover="$parent.selectedIndex=$index" ng-class="{active : selectedIndex===$index}">{{suggestion}}</li>

@@ -1,23 +1,24 @@
 <ion-modal-view class="seamail">
 	<ion-header-bar class="bar-dark">
-		<h1 class="title">{{seamail.subject}}</h1>
 		<div class="buttons">
-			<button class="button yellow icon ion-close-circled" ng-click="closeModal()"></button>
+			<button class="button button-yellow button-clear" ng-click="closeModal()">Close</button>
+		</div>
+		<h1 class="title">{{seamail.subject}}</h1>
+	</ion-header-bar>
+	<ion-header-bar ng-class="'bar-subheader'">
+		<div class="row">
+			<div class="col col-20">
+				<img ng-src="{{twitarrRoot}}api/v2/user/photo/{{user.username}}">
+			</div>
+			<div class="col col-60">
+				<textarea required wrap="soft" ng-model="newMessage.text" ng-trim="true" placeholder="Add a message to this discussion..." style="resize: none"></textarea>
+			</div>
+			<div class="col col-20">
+				<button class="button button-small button-navy" style="float: right" ng-click="postMessage()">Send</button>
+			</div>
 		</div>
 	</ion-header-bar>
-	<ion-header-bar ng-class="'bar-subheader'" style="height: 50px; padding: 1px;">
-		<ion-list>
-			<ion-item class="users">
-				<span ng-repeat="u in seamail.users track by u.username" class="user" ng-if="u.username != user.username"><img ng-src="{{twitarrRoot}}api/v2/user/photo/{{u.username}}"> {{u.display_name}}</span>
-			</ion-item>
-			<ion-item class="item item-avatar item-button-right">
-				<img ng-src="{{twitarrRoot}}api/v2/user/photo/{{user.username}}">
-				<textarea required wrap="soft" ng-model="newMessage.text" ng-trim="true" placeholder="Add a message to this discussion..."></textarea>
-				<button class="button button-dark" ng-click="postMessage()">Send</button>
-			</ion-item>
-		</ion-list>
-	</ion-header-bar>
-	<ion-content class="seamail" style="top: 175px">
+	<ion-content class="seamail">
 		<ion-list>
 			<ion-item ng-repeat="message in seamail.messages track by $index" class="item item-avatar">
 				<img ng-src="{{twitarrRoot}}api/v2/user/photo/{{message.author}}" />

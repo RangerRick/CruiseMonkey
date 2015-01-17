@@ -87,7 +87,7 @@
 				var promise = Twitarr.getSeamailMessages(modal.scope.seamail.id);
 				promise.then(function(res) {
 					if (res.seamail && res.seamail.messages) {
-						console.log('Refreshed messages:',res);
+						console.log('Refreshed messages:' + angular.toJson(res));
 						modal.scope.seamail = res.seamail;
 					}
 				});
