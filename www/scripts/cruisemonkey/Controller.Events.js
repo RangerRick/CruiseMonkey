@@ -426,38 +426,38 @@
 
 				// official
 				if (ev.getUsername() === 'official') {
-					filteredEvents['official'].push(ev);
+					filteredEvents.official.push(ev);
 				}
 
 				// unofficial
 				if (ev.isPublic() && ev.getUsername() !== 'official') {
-					filteredEvents['unofficial'].push(ev);
+					filteredEvents.unofficial.push(ev);
 				}
 
 				// all
 				if (ev.isPublic()) {
-					filteredEvents['all'].push(ev);
+					filteredEvents.all.push(ev);
 				}
 
 				// my
 				if (ev.getUsername() === user.username) {
-					filteredEvents['my'].push(ev);
+					filteredEvents.my.push(ev);
 				} else if (ev.isPublic() && ev.isFavorite()) {
-					filteredEvents['my'].push(ev);
+					filteredEvents.my.push(ev);
 				}
 			}
 
-			filteredEvents['official']   = withDays(filteredEvents['official']);
-			filteredEvents['unofficial'] = withDays(filteredEvents['unofficial']);
-			filteredEvents['all']        = withDays(filteredEvents['all']);
-			filteredEvents['my']         = withDays(filteredEvents['my']);
+			filteredEvents.official   = withDays(filteredEvents.official);
+			filteredEvents.unofficial = withDays(filteredEvents.unofficial);
+			filteredEvents.all        = withDays(filteredEvents.all);
+			filteredEvents.my         = withDays(filteredEvents.my);
 
 			$scope.filteredEvents = filteredEvents;
 
-			console.log('CMEventCtrl._updateFilter: official events: ' + filteredEvents['official'].length);
-			console.log('CMEventCtrl._updateFilter: unofficial events: ' + filteredEvents['unofficial'].length);
-			console.log('CMEventCtrl._updateFilter: all events: ' + filteredEvents['all'].length);
-			console.log('CMEventCtrl._updateFilter: my events: ' + filteredEvents['my'].length);
+			console.log('CMEventCtrl._updateFilter: official events: ' + filteredEvents.official.length);
+			console.log('CMEventCtrl._updateFilter: unofficial events: ' + filteredEvents.unofficial.length);
+			console.log('CMEventCtrl._updateFilter: all events: ' + filteredEvents.all.length);
+			console.log('CMEventCtrl._updateFilter: my events: ' + filteredEvents.my.length);
 
 			$timeout(function() {
 				$ionicScrollDelegate.$getByHandle($scope.eventType + '-event-scroll').resize();
