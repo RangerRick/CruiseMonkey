@@ -52,7 +52,7 @@
 
 		Database.prototype.createDb = function() {
 			var self = this;
-			self.db = new PouchDB(self.name, {size:50});
+			self.db = new PouchDB(self.name);
 			self.db.setMaxListeners(30);
 
 			console.log('Database.createDb: ' + self.name + ': configuring event listeners.');
