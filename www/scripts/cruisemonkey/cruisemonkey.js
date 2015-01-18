@@ -463,19 +463,7 @@
 		});
 
 		$rootScope.openUrl = function(url, target) {
-			Cordova.inCordova().then(function() {
-				if (ionic.Platform.isIOS()) {
-					var oic = SettingsService.shouldOpenInChrome();
-					if (oic) {
-						if (url.startsWith('http')) {
-							url = url.replace(/^http/, 'googlechrome');
-						}
-					}
-				}
-				$window.open(url, target);
-			}, function() {
-				$window.open(url, target);
-			});
+			$window.open(url, target);
 		};
 
 		$rootScope.closeKeyboard = function() {

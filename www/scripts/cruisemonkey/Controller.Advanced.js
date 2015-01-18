@@ -15,12 +15,6 @@
 
 		$scope.settings = SettingsService.getSettings();
 
-		ionic.Platform.ready(function() {
-			$rootScope.$evalAsync(function() {
-				$scope.isIos = ionic.Platform.isIOS();
-			});
-		});
-
 		$scope.lastModified = function() {
 			var lm = EventService.getLastModified();
 			return moment(lm);
