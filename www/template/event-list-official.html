@@ -3,7 +3,7 @@
 		<div class="buttons">
 			<button menu-toggle="left" class="button button-icon icon ion-navicon"></button>
 		</div>
-		<h1 class="title">{{eventTitle}}</h1>
+		<h1 class="title" ng-click="scrollTop()">{{eventTitle}}</h1>
 		<div class="buttons">
 			<button class="button button-icon icon-yellow ion-ios-plus-empty" ng-click="addEvent()" ng-if="loggedIn()"></button>
 			<button class="button button-icon icon-yellow ion-ios-clock-outline" ng-click="goToNow()"></button>

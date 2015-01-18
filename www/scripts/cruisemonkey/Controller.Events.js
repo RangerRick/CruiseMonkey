@@ -206,7 +206,9 @@
 				filteredEvents.sort(sortEvent);
 				console.log('CMEventCtrl: got ' + filteredEvents.length + ' ' + $scope.eventType + ' events');
 				$scope.entries = withDays(filteredEvents);
-				$ionicScrollDelegate.$getByHandle($scope.eventType + '-event-scroll').resize();
+				$timeout(function() {
+					$ionicScrollDelegate.$getByHandle($scope.eventType + '-event-scroll').resize();
+				});
 				deferred.resolve(true);
 			}, function(err) {
 				console.log('CMEventCtrl: failed to get ' + $scope.eventType + ' events: ' + err);
@@ -441,9 +443,7 @@
 			$scope.event = undefined;
 			$scope.eventData = undefined;
 			$scope.modal.hide();
-			if ($scope.isCordova()) {
-				$cordovaKeyboard.close();
-			}
+			$scope.closeKeyboard();
 		};
 
 		$scope.saveModal = function(data) {
@@ -454,9 +454,7 @@
 			if (!username) {
 				console.log('No username!');
 				$scope.modal.hide();
-				if ($scope.isCordova()) {
-					$cordovaKeyboard.close();
-				}
+				$scope.closeKeyboard();
 				return;
 			}
 
@@ -478,7 +476,7 @@
 					existing = $scope.entries[i];
 					if (existing.getId() === eventId) {
 						$scope.entries[i] = ev;
-						$scope.$broadcast('scroll.resize');
+						$ionicScrollDelegate.$getByHandle($scope.eventType + '-event-scroll').resize();
 						break;
 					}
 				}
@@ -533,7 +531,9 @@
 			console.log('togglePublic(' + ev.getId() + ')');
 			$scope.$evalAsync(function() {
 				ev.setPublic(!ev.isPublic());
-				$scope.$broadcast('scroll.resize');
+				$timeout(function() {
+					$ionicScrollDelegate.$getByHandle($scope.eventType + '-event-scroll').resize();
+				});
 				refreshEvents(true);
 				EventService.updateEvent(ev);
 			});
@@ -556,6 +556,7 @@
 
 			var hideSheet = $ionicActionSheet.show({
 				buttons: [
+					{ text: entry.isPublic()? 'Make Private':'Make Public' },
 					{ text: 'Edit' }
 				],
 				destructiveText: 'Delete',
@@ -565,11 +566,14 @@
 					$scope.trash(entry);
 				},
 				buttonClicked: function(index) {
-					console.log('buttonClicked: '+index);
-					console.log('entry=',entry);
 					if (index === 0) {
 						hideSheet();
+						$scope.togglePublic(entry);
+					} else if (index === 1) {
+						hideSheet();
 						$scope.editEvent(entry);
+					} else {
+						console.log('Controller.Events.openPopover: unhandled index ' + index);
 					}
 				}
 			});
@@ -577,6 +581,11 @@
 			$scope.popover.scope.entry = entry;
 			$scope.popover.show($event);
 			*/
+		};
+
+		$scope.scrollTop = function() {
+			var delegate = $ionicScrollDelegate.$getByHandle($scope.eventType + '-event-scroll');
+			delegate.scrollTop(true);
 		};
 
 		/** CruiseMonkey events **/

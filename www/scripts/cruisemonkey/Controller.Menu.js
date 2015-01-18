@@ -57,9 +57,7 @@
 			}
 			$scope.user = newUser;
 			loginModal.hide();
-			if ($scope.isCordova()) {
-				$cordovaKeyboard.close();
-			}
+			$scope.closeKeyboard();
 		});
 
 		$scope.$on('$destroy', function() {

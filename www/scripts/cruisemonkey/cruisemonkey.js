@@ -26,11 +26,11 @@
 		'cruisemonkey.controllers.Login',
 		'cruisemonkey.controllers.Menu',
 		'cruisemonkey.controllers.Navigation',
-		//'cruisemonkey.controllers.Photos',
 		'cruisemonkey.controllers.Seamail',
 		'cruisemonkey.controllers.Twitarr.Stream',
 		'cruisemonkey.Database',
 		'cruisemonkey.Events',
+		'cruisemonkey.Images',
 		'cruisemonkey.Initializer',
 		'cruisemonkey.Notifications',
 		'cruisemonkey.Seamail',
@@ -79,6 +79,29 @@
 					angular.element(elem).find('input').blur();
 					callChangeFunction();
 				};
+			}
+		};
+	}])
+	.factory('Cordova', ['$q', '$rootScope', '$window', function($q, $rootScope, $window) {
+		var deferred;
+
+		return {
+			inCordova: function() {
+				if (deferred) {
+					return deferred.promise;
+				}
+
+				deferred = $q.defer();
+				ionic.Platform.ready(function() {
+					$rootScope.$evalAsync(function() {
+						if ($window.cordova) {
+							deferred.resolve(true);
+						} else {
+							deferred.reject(false);
+						}
+					});
+				});
+				return deferred.promise;
 			}
 		};
 	}])
@@ -173,17 +196,6 @@
 					}
 				}
 			})
-			/*
-			.state('app.photos', {
-				url: '/photos',
-				views: {
-					'menuContent': {
-						templateUrl: 'template/photos.html',
-						controller: 'CMPhotoCtrl'
-					}
-				}
-			})
-*/
 			.state('app.seamail', {
 				url: '/seamail',
 				views: {
@@ -232,7 +244,7 @@
 		;
 	}])
 	/* EventService & Notifications are here just to make sure they initializes early */
-	.run(['$rootScope', '$window', '$sce', '$cordovaCamera', '$cordovaKeyboard', '$cordovaSplashscreen', '$ionicModal', '$ionicPopover', '$ionicPopup', '$upload', 'EventService', 'Notifications', 'SettingsService', 'Twitarr', 'UpgradeService', 'UserService', function($rootScope, $window, $sce, $cordovaCamera, $cordovaKeyboard, $cordovaSplashscreen, $ionicModal, $ionicPopover, $ionicPopup, $upload, EventService, Notifications, SettingsService, Twitarr, UpgradeService, UserService) {
+	.run(['$q', '$rootScope', '$timeout', '$window', '$state', '$cordovaCamera', '$cordovaKeyboard', '$cordovaSplashscreen', '$ionicModal', '$ionicPopover', '$ionicPopup', '$upload', 'storage', 'Cordova', 'EventService', 'Images', 'Notifications', 'SettingsService', 'Twitarr', 'UpgradeService', 'UserService', function($q, $rootScope, $timeout, $window, $state, $cordovaCamera, $cordovaKeyboard, $cordovaSplashscreen, $ionicModal, $ionicPopover, $ionicPopup, $upload, storage, Cordova, EventService, Images, Notifications, SettingsService, Twitarr, UpgradeService, UserService) {
 		console.log('CruiseMonkey run() called.');
 
 		$rootScope.$on("$stateChangeError", function (event, toState, toParams, fromState, fromParams, error) {
@@ -256,14 +268,6 @@
 				yy : '%d years'
 			}
 		});
-
-		$rootScope.isCordova = function() {
-			if ($window.cordova) {
-				return true;
-			} else {
-				return false;
-			}
-		};
 
 		var newSeamailScope = $rootScope.$new();
 		var newSeamailModal;
@@ -393,35 +397,31 @@
 					});
 					delete modal.scope.photoUploading;
 				}, function(progress) {
-					console.log('progress=' + angular.toJson(progress));
+					//console.log('progress=' + angular.toJson(progress));
 					modal.scope.photoUploading = progress;
 				});
 			};
-			modal.scope.$watch('picFile', function(value) {
-				console.log('File is: ' + value);
-			});
-			/*
-			modal.scope.user = UserService.get();
-			modal.scope.uploadUrl = $sce.trustAsResourceUrl(modal.scope.twitarrRoot + 'api/v2/photo?key=' + modal.scope.user.key);
-			*/
 
 			newTweetModal = modal;
 		});
 
 		$rootScope.newTweet = function(replyTo) {
 			newTweetModal.scope.canCamera = (navigator.camera? true:false);
-			newTweetModal.scope.tweet = { text: '' };
 			if (replyTo) {
-				/*
-				newTweetModal.scope.tweet.text = '';
+				var text = '';
 				if (replyTo.mentions) {
 					for (var i=0; i < replyTo.mentions.length; i++) {
-						newTweetModal.scope.tweet.text += '@' + replyTo.mentions[i] + ' ';
+						text += '@' + replyTo.mentions[i] + ' ';
 					}
 				}
-				*/
-				newTweetModal.scope.tweet.parent = replyTo.id;
+				newTweetModal.scope.tweet = {
+					text: text,
+					parent: replyTo.id
+				};
+			} else {
+				newTweetModal.scope.tweet = { text: '' };
 			}
+			console.log('Creating new tweet: ' + angular.toJson(newTweetModal.scope.tweet));
 			newTweetModal.show();
 		};
 
@@ -463,26 +463,47 @@
 		});
 
 		$rootScope.openUrl = function(url, target) {
-			if ($rootScope.isCordova() && ionic.Platform.isIOS()) {
-				var oic = SettingsService.shouldOpenInChrome();
-				if (oic) {
-					if (url.startsWith('http')) {
-						url = url.replace(/^http/, 'googlechrome');
+			Cordova.inCordova().then(function() {
+				if (ionic.Platform.isIOS()) {
+					var oic = SettingsService.shouldOpenInChrome();
+					if (oic) {
+						if (url.startsWith('http')) {
+							url = url.replace(/^http/, 'googlechrome');
+						}
 					}
 				}
-			}
-			$window.open(url, target);
+				$window.open(url, target);
+			}, function() {
+				$window.open(url, target);
+			});
 		};
 
 		$rootScope.closeKeyboard = function() {
-			if ($rootScope.isCordova()) {
+			Cordova.inCordova().then(function() {
 				$cordovaKeyboard.close();
-			}
+			});
 		};
 
-		if ($rootScope.isCordova()) {
-			$cordovaSplashscreen.hide();
+		storage.bind($rootScope, 'currentView', {
+			'storeName': 'cruisemonkey.navigation.current-view'
+		});
+
+		/* restore previous view */
+		var lastView = $rootScope.currentView;
+		$rootScope.$on('$ionicView.enter', function(ev, info) {
+			$rootScope.currentView = info.stateName;
+		});
+
+		if (lastView && lastView !== '') {
+			$timeout(function() {
+				console.log('restoring view: ' + lastView);
+				$state.go(lastView);
+			});
 		}
+
+		Cordova.inCordova().then(function() {
+			$cordovaSplashscreen.hide();
+		});
 
 		UpgradeService.upgrade();
 	}])

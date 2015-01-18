@@ -20,6 +20,10 @@
 			'storeName': 'cruisemonkey.search.amenities'
 		});
 
+		$scope.scrollTop = function() {
+			$ionicScrollDelegate.$getByHandle('amenities').scrollTop(true);
+		};
+
 		$scope.onSearchChanged = function(searchString) {
 			var delegate = $ionicScrollDelegate.$getByHandle('amenities');
 			if (delegate.getScrollPosition().top !== 0) {

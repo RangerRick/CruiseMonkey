@@ -13,7 +13,7 @@
 
 		storage.bind($rootScope, 'seamailCount', {
 			'defaultValue': 0,
-			'storeName': 'cm.seamail.count'
+			'storeName': 'cruisemonkey.seamail.count'
 		});
 
 		var getSeamailCount = function() {

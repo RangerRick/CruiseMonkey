@@ -82,6 +82,7 @@
 	};
 
 	angular.module('cruisemonkey.controllers.Twitarr.Stream', [
+		'cruisemonkey.Images',
 		'cruisemonkey.Settings',
 		'cruisemonkey.Twitarr',
 	])
@@ -93,8 +94,8 @@
 			$compile(element.contents())(scope);
 		};
 	}])
-	.controller('CMTwitarrStreamCtrl', ['$q', '$scope', '$timeout', '$ionicLoading', '$ionicScrollDelegate', 'SettingsService', 'Twitarr', 'UserService', function($q, $scope, $timeout, $ionicLoading, $ionicScrollDelegate, SettingsService, Twitarr, UserService) {
-		console.log('Initializing CMTwitarrStream');
+	.controller('CMTwitarrStreamCtrl', ['$q', '$scope', '$timeout', '$ionicLoading', '$ionicScrollDelegate', 'Images', 'SettingsService', 'Twitarr', 'UserService', function($q, $scope, $timeout, $ionicLoading, $ionicScrollDelegate, Images, SettingsService, Twitarr, UserService) {
+		console.log('Initializing CMTwitarrStreamCtrl');
 
 		$scope.users = {};
 		$scope.entries = [];
@@ -135,6 +136,10 @@
 				newestSeen = entry;
 				updateUnreadCount(index);
 			}
+		};
+
+		$scope.getImage = function(url) {
+			return Images.get(url);
 		};
 
 		var updateUnreadCount = function(index) {

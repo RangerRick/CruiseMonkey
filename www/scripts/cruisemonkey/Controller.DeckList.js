@@ -14,6 +14,11 @@
 			'storeName': 'cruisemonkey.deck'
 		});
 
+		$scope.scrollTop = function() {
+			var delegate = $ionicScrollDelegate.$getByHandle('deck-list');
+			delegate.scrollTop(true);
+		};
+
 		$scope.showButtons = true;
 
 		if ($scope.deck !== undefined && isNaN($scope.deck)) {

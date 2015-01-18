@@ -54,7 +54,7 @@
 	.filter('karaokeFilter', function() {
 		return searchFilter;
 	})
-	.controller('CMKaraokeSearchCtrl', ['storage', '$q', '$scope', '$http', '$timeout', '$interval', '$cordovaSQLite', '$ionicLoading', '$ionicScrollDelegate', '_database', 'SettingsService', function(storage, $q, $scope, $http, $timeout, $interval, $cordovaSQLite, $ionicLoading, $ionicScrollDelegate, _database, SettingsService) {
+	.controller('CMKaraokeSearchCtrl', ['storage', '$q', '$scope', '$http', '$timeout', '$interval', '$cordovaSQLite', '$ionicLoading', '$ionicScrollDelegate', '_database', 'Cordova', 'SettingsService', function(storage, $q, $scope, $http, $timeout, $interval, $cordovaSQLite, $ionicLoading, $ionicScrollDelegate, _database, Cordova, SettingsService) {
 		console.log('Initializing CMKaraokeSearchCtrl');
 
 		storage.bind($scope, 'searchString', {
@@ -88,36 +88,32 @@
 		$scope.entries = [];
 
 		var updateEntries = function() {
-			ionic.Platform.ready(function() {
-				$scope.$evalAsync(function() {
-					if ($scope.isCordova()) {
-						// use SQLite
-						console.log('Karaoke.updateEntries: Using SQLite karaoke list.');
-						if (sqlitedb) {
-							var query = getQuery($scope.searchString);
-							console.log('Karaoke.updateEntries: Search query is: ' + query);
-							$cordovaSQLite.execute(sqlitedb, query).then(function(res) {
-								console.log('Karaoke.updateEntries: got results: ' + res.rows.length);
-								var results = [], entry;
-								for (var i=0; i < res.rows.length; i++) {
-									entry = res.rows.item(i);
-									results.push([entry.id, entry.artist, entry.song]);
-								}
-								$scope.entries = results;
-							}, function(err) {
-								for (var prop in err) {
-									console.log('Karaoke.updateEntries: error selecting: ' + prop + '=' + err[prop]);
-								}
-							});
-						} else {
-							console.log('Karaoke.updateEntries: Whups!  Sqlitedb is not set.');
+			Cordova.inCordova().then(function() {
+				// use SQLite
+				console.log('Karaoke.updateEntries: Using SQLite karaoke list.');
+				if (sqlitedb) {
+					var query = getQuery($scope.searchString);
+					console.log('Karaoke.updateEntries: Search query is: ' + query);
+					$cordovaSQLite.execute(sqlitedb, query).then(function(res) {
+						console.log('Karaoke.updateEntries: got results: ' + res.rows.length);
+						var results = [], entry;
+						for (var i=0; i < res.rows.length; i++) {
+							entry = res.rows.item(i);
+							results.push([entry.id, entry.artist, entry.song]);
 						}
-					} else {
-						// just pull in the raw js list
-						console.log('Karaoke.updateEntries: Using in-memory karaoke list.');
-						$scope.entries = searchFilter(entries, $scope.searchString);
-					}
-				});
+						$scope.entries = results;
+					}, function(err) {
+						for (var prop in err) {
+							console.log('Karaoke.updateEntries: error selecting: ' + prop + '=' + err[prop]);
+						}
+					});
+				} else {
+					console.log('Karaoke.updateEntries: Whups!  Sqlitedb is not set.');
+				}
+			}, function() {
+				// just pull in the raw js list
+				console.log('Karaoke.updateEntries: Using in-memory karaoke list.');
+				$scope.entries = searchFilter(entries, $scope.searchString);
 			});
 		};
 
@@ -170,91 +166,90 @@
 
 		$http.get('scripts/cruisemonkey/karaoke-list.js').success(function(data, status, headers, config) {
 			console.log('Karaoke.loaded: got karaoke list with ' + data.length + ' entries.');
-			ionic.Platform.ready(function() {
-				$scope.$evalAsync(function() {
-					if ($scope.isCordova()) {
-						// we're inside a cordova container, use SQLite
-						console.log('Karaoke.loaded: Setting up SQLite database.');
-						var db = $cordovaSQLite.openDB({ name: "karaoke", bgType: 0 });
-						executeCommands(db, [
-							'CREATE TABLE IF NOT EXISTS karaoke (id INTEGER, artist TEXT, song TEXT, UNIQUE(artist, song) ON CONFLICT REPLACE);',
-							'PRAGMA case_sensitive_like=OFF;',
-							//'PRAGMA synchronous = OFF;',
-							'PRAGMA temp_store = MEMORY;',
-							'PRAGMA auto_vacuum = NONE;'
-						]).then(function() {
-							console.log('Karaoke.loaded: Finished setting up database.');
-							$cordovaSQLite.execute(db, 'SELECT COUNT(id) AS count FROM karaoke').then(function(res) {
-								var count = res.rows.length === 1? res.rows.item(0).count : -1;
-								console.log('Karaoke.loaded: There are ' + count + ' existing items in the database.');
-								if (parseInt(data.length) === parseInt(count)) {
+			Cordova.inCordova().then(function() {
+				// we're inside a cordova container, use SQLite
+				console.log('Karaoke.loaded: Setting up SQLite database.');
+				var db = $cordovaSQLite.openDB({ name: "karaoke", bgType: 0 });
+				executeCommands(db, [
+					'CREATE TABLE IF NOT EXISTS karaoke (id INTEGER, artist TEXT, song TEXT, UNIQUE(artist, song) ON CONFLICT REPLACE);',
+					'PRAGMA case_sensitive_like=OFF;',
+					//'PRAGMA synchronous = OFF;',
+					'PRAGMA temp_store = MEMORY;',
+					'PRAGMA auto_vacuum = NONE;'
+				]).then(function() {
+					console.log('Karaoke.loaded: Finished setting up database.');
+					$cordovaSQLite.execute(db, 'SELECT COUNT(id) AS count FROM karaoke').then(function(res) {
+						var count = res.rows.length === 1? res.rows.item(0).count : -1;
+						console.log('Karaoke.loaded: There are ' + count + ' existing items in the database.');
+						if (parseInt(data.length) === parseInt(count)) {
+							executeCommands(db, [
+								//'PRAGMA synchronous = NORMAL;',
+								'PRAGMA journal_mode = DELETE;',
+								'PRAGMA temp_store = DEFAULT;',
+								//'VACUUM;',
+							]).then(function() {
+								console.log('Karaoke.loaded: Pragmas reset.  Ready.');
+								$scope.$evalAsync(function() {
+									sqlitedb = db;
+									updateEntries();
+								});
+							}, function(err) {
+								printDbErr('Karaoke.loaded: failed to reset pragmas.', err);
+							});
+						} else {
+							console.log('Karaoke.loaded: Document count does not match.');
+							$cordovaSQLite.execute(db, 'DELETE FROM karaoke').then(function() {
+								console.log('Karaoke.loaded: deleted old entries.');
+
+								$cordovaSQLite.insertCollection(db, 'INSERT INTO karaoke (id, artist, song) values (?, ?, ?)', data).then(function(res) {
+									console.log('Karaoke.loaded: inserted new entries.');
 									executeCommands(db, [
 										//'PRAGMA synchronous = NORMAL;',
 										'PRAGMA journal_mode = DELETE;',
 										'PRAGMA temp_store = DEFAULT;',
 										//'VACUUM;',
 									]).then(function() {
-										console.log('Karaoke.loaded: Pragmas reset.  Ready.');
-										$scope.$evalAsync(function() {
-											sqlitedb = db;
-											updateEntries();
+										console.log('Karaoke.loaded: Pragmas reset.  Vacuuming database.');
+										db.executeSql('VACUUM;', undefined, function() {
+											console.log('Karaoke.loaded: finished vacuum.  Ready.');
+											$scope.$evalAsync(function() {
+												sqlitedb = db;
+												updateEntries();
+											});
+										}, function(err) {
+											printDbErr('Karaoke.loaded: Failed to VACUUM the database.', err);
+											$scope.$evalAsync(function() {
+												sqlitedb = db;
+												updateEntries();
+											});
 										});
 									}, function(err) {
 										printDbErr('Karaoke.loaded: failed to reset pragmas.', err);
 									});
-								} else {
-									console.log('Karaoke.loaded: Document count does not match.');
-									$cordovaSQLite.execute(db, 'DELETE FROM karaoke').then(function() {
-										console.log('Karaoke.loaded: deleted old entries.');
+								}, function(err) {
+									printDbErr('Karaoke.loaded: failed to insert data.', err);
+								});
 
-										$cordovaSQLite.insertCollection(db, 'INSERT INTO karaoke (id, artist, song) values (?, ?, ?)', data).then(function(res) {
-											console.log('Karaoke.loaded: inserted new entries.');
-											executeCommands(db, [
-												//'PRAGMA synchronous = NORMAL;',
-												'PRAGMA journal_mode = DELETE;',
-												'PRAGMA temp_store = DEFAULT;',
-												//'VACUUM;',
-											]).then(function() {
-												console.log('Karaoke.loaded: Pragmas reset.  Vacuuming database.');
-												db.executeSql('VACUUM;', undefined, function() {
-													console.log('Karaoke.loaded: finished vacuum.  Ready.');
-													$scope.$evalAsync(function() {
-														sqlitedb = db;
-														updateEntries();
-													});
-												}, function(err) {
-													printDbErr('Karaoke.loaded: Failed to VACUUM the database.', err);
-													$scope.$evalAsync(function() {
-														sqlitedb = db;
-														updateEntries();
-													});
-												});
-											}, function(err) {
-												printDbErr('Karaoke.loaded: failed to reset pragmas.', err);
-											});
-										}, function(err) {
-											printDbErr('Karaoke.loaded: failed to insert data.', err);
-										});
-
-									}, function(err) {
-										printDbErr('Failed to delete existing entries from the database.', err);
-									});
-								}
 							}, function(err) {
-								printDbErr('Karaoke.loaded: failed to get document count:',err);
+								printDbErr('Failed to delete existing entries from the database.', err);
 							});
-						}, function(err) {
-							printDbErr('Karaoke.loaded: failed command: ' + err[0], err[1]);
-						});
-					} else {
-						entries = data;
-					}
-					updateEntries();
+						}
+					}, function(err) {
+						printDbErr('Karaoke.loaded: failed to get document count:',err);
+					});
 				});
+			}, function() {
+				entries = data;
+				updateEntries();
 			});
 		}).error(function(data, status, headers, config) {
 			console.log('Failed to get karaoke list: ' + status, data);
 		});
+
+		$scope.scrollTop = function() {
+			var delegate = $ionicScrollDelegate.$getByHandle('karaoke-scroll');
+			delegate.scrollTop(true);
+		};
 
 		$scope.$on('$ionicView.beforeEnter', function(ev, info) {
 			console.log('Karaoke: getting karaoke list');

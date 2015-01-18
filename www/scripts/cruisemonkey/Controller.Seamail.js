@@ -19,7 +19,7 @@
 				scope.suggestions=[];
 				scope.selectedUsers=[];
 				scope.selectedIndex=-1;
-				console.log('additional user:',scope.additionalUser);
+				//console.log('additional user:',scope.additionalUser);
 
 				scope.removeTag=function(index){
 					scope.selectedUsers.splice(index,1);
@@ -39,7 +39,7 @@
 				};
 
 				scope.addToSelectedUsers=function(index){
-					console.log('addToSelectedUsers(' + index + ')');
+					//console.log('addToSelectedUsers(' + index + ')');
 					if(scope.selectedUsers.indexOf(scope.suggestions[index])===-1){
 						scope.selectedUsers.push(scope.suggestions[index]);
 						scope.searchText='';

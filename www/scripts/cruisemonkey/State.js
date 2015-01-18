@@ -8,7 +8,7 @@
 		'cruisemonkey.User',
 		'ngCordova'
 	])
-	.factory('StateService', ['$rootScope', '$timeout', 'UserService', '$cordovaNetwork', function($rootScope, $timeout, UserService, $cordovaNetwork) {
+	.factory('StateService', ['$rootScope', '$timeout', 'UserService', '$cordovaNetwork', 'Cordova', function($rootScope, $timeout, UserService, $cordovaNetwork, Cordova) {
 		console.log('StateService: Initializing.');
 
 		var initWait = 5000;
@@ -75,7 +75,11 @@
 			}
 		});
 
-		fsm.initialize($rootScope.isCordova());
+		Cordova.inCordova().then(function() {
+			fsm.initialize(true);
+		}, function() {
+			fsm.initialize(false);
+		});
 
 		return {
 			currentState: function() {
