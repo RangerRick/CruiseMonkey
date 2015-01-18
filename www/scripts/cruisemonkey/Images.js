@@ -3,6 +3,7 @@
 
 	/* global LocalFileSystem: true */
 	/* global cordova: true */
+	/* global ionic: true */
 	/* global moment: true */
 
 	angular.module('cruisemonkey.Images', [
@@ -41,6 +42,11 @@
 
 			Cordova.inCordova().then(function() {
 				try {
+					if (ionic.Platform.isIOS()) {
+						if (!(file instanceof String)) {
+							file = file.toURL();
+						}
+					}
 					$window.resolveLocalFileSystemURL(file, function(res) {
 						$rootScope.$evalAsync(function() {
 							console.log('resolveLocalFileSystemURL = ' + angular.toJson(res));
@@ -250,7 +256,7 @@
 
 		Cordova.inCordova().then(function() {
 			getCacheDirectory().then(function(cacheDirectory) {
-				console.log('Images: checking for old cache files in ' + cacheDirectory);
+				console.log('Images: checking for old cache files in ' + angular.toJson(cacheDirectory));
 				getEntryFromFile(cacheDirectory).then(function(dir) {
 					var reader = dir.createReader();
 					reader.readEntries(function(entries) {
