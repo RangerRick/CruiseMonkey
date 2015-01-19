@@ -207,9 +207,7 @@
 					// Event was favorited, unfavorite it
 					ev.setFavorite(undefined);
 
-					EventService.removeFavorite(eventId).then(function() {
-						_refreshEvents();
-					});
+					EventService.removeFavorite(eventId);
 				} else {
 					var existing;
 					for (i=0; i < $scope.allEvents.length; i++) {
@@ -229,9 +227,7 @@
 					existing.setFavorite(new CMFavorite());
 
 					EventService.addFavorite(eventId).then(function(fav) {
-						_refreshEvents();
 					}, function() {
-						_refreshEvents();
 						$scope.$broadcast('cruisemonkey.notify.alert', { message: 'Failed to favorite ' + ev.getSummary() + '!' });
 					});
 				}
@@ -331,9 +327,7 @@
 
 		$scope.trash = function(ev) {
 			if (window.confirm('Are you sure you want to delete "' + ev.getSummary() + '"?')) {
-				EventService.removeEvent(ev).then(function() {
-					_refreshEvents();
-				});
+				EventService.removeEvent(ev);
 			}
 		};
 
@@ -341,9 +335,7 @@
 			console.log('togglePublic(' + ev.getId() + ')');
 			$scope.$evalAsync(function() {
 				ev.setPublic(!ev.isPublic());
-				EventService.updateEvent(ev).then(function() {
-					_refreshEvents();
-				});
+				EventService.updateEvent(ev);
 			});
 		};
 
@@ -499,7 +491,7 @@
 			_refreshDelayed(100);
 		});
 		$scope.$on('cruisemonkey.database.change', function(ev, db, doc) {
-			_refreshDelayed(1000);
+			_refreshDelayed(100);
 		});
 
 		/** Ionic Events **/
