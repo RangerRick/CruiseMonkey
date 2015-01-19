@@ -7265,6 +7265,11 @@ a.tab-item:hover {
       margin: 0;
       padding: 3px; }
 
+.karaoke .artist-entry {
+  font-size: 14px; }
+  .karaoke .artist-entry .song {
+    margin-left: 10px; }
+
 .twitarr .item-note {
   text-align: right; }
 .twitarr .likes img, .twitarr .likes i {
@@ -7329,6 +7334,9 @@ a.tab-item:hover {
   .seamail .bar-subheader textarea {
     display: inline;
     height: 36px; }
+
+.searchable .highlight {
+  background-color: #febd11; }
 
 .list-entry {
   border-bottom: 1px solid black;

@@ -9,10 +9,10 @@
 			<button class="button button-icon icon-yellow ion-ios-clock-outline" ng-click="goToNow()"></button>
 		</div>
 	</ion-header-bar>
-	<cm-search-bar placeholder="Search Events" ng-model="searchString" on-search-changed="onSearchChanged(searchString)"></cm-search-bar>
+	<cm-search-bar placeholder="Search Events" ng-model="searchString['official']" on-search-changed="onSearchChanged(searchString['official'])"></cm-search-bar>
 	<ion-content scroll="true" padding="false" id="official-event-content" delegate-handle="official-event-scroll" ng-class="'has-subheader'" ng-click="closeKeyboard()">
-		<ion-list class="event-list">
-			<span ng-repeat="entry in filteredEvents['official'] | eventFilter:searchString track by entry.getId()" id="official-{{entry.getId()}}">
+		<ion-list class="event-list searchable">
+			<span ng-repeat="entry in filteredEvents['official'] | eventFilter:searchString['official'] track by entry.getId()" id="official-{{entry.getId()}}">
 				<ion-item ng-if="isDay(entry)" class="item-divider event-header">{{prettyDate(entry.day)}}</ion-item>
 				<ion-item ng-if="!isDay(entry)" ng-class="'list-entry item-text-wrap ' + (entry.isEven()? 'even':'odd')">
 					<span class="item-note">
@@ -21,11 +21,11 @@
 						<button class="button button-small button-clear button-navy" ng-click="openPopover($event, entry)" ng-show="(user.username &amp;&amp; user.username == entry.getUsername())"><i class="icon ion-android-more-vertical"></i></button>
 					</span>
 					<span>
-					<div class="summary">{{entry.getSummary()}}</div>
+					<div class="summary" ng-bind-html="highlight(entry.getSummary(), searchString['official'])"></div>
 					<div class="time">Time: {{entry.getDisplayTime()}}</div>
 					<div class="createdBy" ng-if="entry.getUsername() != 'official'" ng-bind-html="'Created By: ' + entry.getUsername()"></div>
-					<div class="location" ng-if="entry.getLocation()">Location: {{entry.getLocation()}}</div>
-					<div class="description" ng-if="entry.getDescription()">{{entry.getDescription()}}</div>
+					<div class="location" ng-if="entry.getLocation()">Location: <span ng-bind-html="highlight(entry.getLocation(), searchString['official'])"></span></div>
+					<div class="description" ng-if="entry.getDescription()" ng-bind-html="highlight(entry.getDescription(), searchString['official'])"></div>
 					</span>
 				</ion-item>
 			</span>

@@ -2,7 +2,6 @@
   "name": "CruiseMonkey",
   "private": "true",
   "dependencies": {
-    "angular-bindonce": "*",
     "angular-cookies": "*",
     "angular-ui-router": "*",
     "angular-uuid4": "*",
@@ -21,8 +20,7 @@
     "pouchdb-persist": "*",
     "toastr": "*",
     "ng-file-upload": "~2.1.1",
-    "pouchdb-quick-search": "~1.0.1",
-    "angular-async-locks": "https://github.com/BorisKozo/angular-async-locks.git"
+    "pouchdb-quick-search": "~1.0.1"
   },
   "devDependencies": {
     "angular-mocks": "*",

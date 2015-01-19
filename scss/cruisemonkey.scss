@@ -367,6 +367,15 @@ a.tab-item:hover {
 	}
 }
 
+.karaoke {
+	.artist-entry {
+		font-size: 14px;
+		.song {
+			margin-left: 10px;
+		}
+	}
+}
+
 .twitarr {
 	.item-note {
 		text-align: right;
@@ -449,6 +458,12 @@ a.tab-item:hover {
 			height: 36px;
 		}
 	}
+}
+
+.searchable {
+	.highlight {
+		background-color: $rciYellow;
+	}	
 }
 
 .list-entry {

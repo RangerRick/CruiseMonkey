@@ -25,7 +25,7 @@
 			return ret;
 		};
 	})
-	.controller('CMAmenitiesCtrl', ['storage', '$rootScope', '$scope', '$timeout', '$location', '$ionicScrollDelegate', 'DeckService', function(storage, $rootScope, $scope, $timeout, $location, $ionicScrollDelegate, DeckService) {
+	.controller('CMAmenitiesCtrl', ['storage', '$rootScope', '$scope', '$sce', '$timeout', '$location', '$ionicScrollDelegate', 'DeckService', function(storage, $rootScope, $scope, $sce, $timeout, $location, $ionicScrollDelegate, DeckService) {
 		console.log('Initializing CMAmenitiesCtrl');
 
 		storage.bind($scope, 'searchString', {

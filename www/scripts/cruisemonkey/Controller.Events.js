@@ -59,7 +59,6 @@
 		'ui.router',
 		'ionic',
 		'angularLocalStorage',
-		'pasvaz.bindonce',
 		'cruisemonkey.User',
 		'cruisemonkey.Events'
 	])
@@ -120,7 +119,7 @@
 			}
 		});
 	}])
-	.controller('CMEventCtrl', ['$q', '$scope', '$rootScope', '$timeout', '$cordovaKeyboard', '$ionicActionSheet', '$ionicScrollDelegate', '$ionicPopover', '$ionicModal', 'EventService', 'UserService', function($q, $scope, $rootScope, $timeout, $cordovaKeyboard, $ionicActionSheet, $ionicScrollDelegate, $ionicPopover, $ionicModal, EventService, UserService) {
+	.controller('CMEventCtrl', ['$q', '$scope', '$rootScope', '$sce', '$timeout', '$cordovaKeyboard', '$ionicActionSheet', '$ionicScrollDelegate', '$ionicPopover', '$ionicModal', 'storage', 'EventService', 'UserService', function($q, $scope, $rootScope, $sce, $timeout, $cordovaKeyboard, $ionicActionSheet, $ionicScrollDelegate, $ionicPopover, $ionicModal, storage, EventService, UserService) {
 		var withDays = function(events) {
 			var ret = [],
 				ev, i,
@@ -515,12 +514,22 @@
 		});
 
 		$scope.$on('$ionicView.loaded', function(ev, info) {
-			$scope.searchString = '';
-			_refreshEvents();
+			var defaultSearchString = {
+				'official': '',
+				'unofficial': '',
+				'all': '',
+				'my': ''
+			};
+			storage.bind($scope, 'searchString', {
+				'defaultValue': defaultSearchString,
+				'storeName': 'cruisemonkey.events.search-string'
+			});
+			if (!$scope.searchString || !$scope.searchString.official) {
+				$scope.searchString = defaultSearchString;
+			}
 		});
 		$scope.$on('$ionicView.beforeEnter', function(ev, info) {
 			_refreshEvents();
-			//_updateFilter();
 		});
 	}]);
 }());

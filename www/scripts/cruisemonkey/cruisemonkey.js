@@ -15,7 +15,6 @@
 		'ui.router',
 		'angularFileUpload',
 		'angularLocalStorage',
-		'pasvaz.bindonce',
 		'cruisemonkey.Config',
 		'cruisemonkey.controllers.About',
 		'cruisemonkey.controllers.Advanced',
@@ -252,7 +251,7 @@
 		;
 	}])
 	/* EventService & Notifications are here just to make sure they initializes early */
-	.run(['$q', '$rootScope', '$timeout', '$window', '$state', '$cordovaCamera', '$cordovaKeyboard', '$cordovaSplashscreen', '$ionicModal', '$ionicPopover', '$ionicPopup', '$upload', 'storage', 'Cordova', 'EventService', 'Images', 'Notifications', 'SettingsService', 'Twitarr', 'UpgradeService', 'UserService', function($q, $rootScope, $timeout, $window, $state, $cordovaCamera, $cordovaKeyboard, $cordovaSplashscreen, $ionicModal, $ionicPopover, $ionicPopup, $upload, storage, Cordova, EventService, Images, Notifications, SettingsService, Twitarr, UpgradeService, UserService) {
+	.run(['$q', '$rootScope', '$sce', '$timeout', '$window', '$state', '$cordovaCamera', '$cordovaKeyboard', '$cordovaSplashscreen', '$ionicModal', '$ionicPopover', '$ionicPopup', '$upload', 'storage', 'Cordova', 'EventService', 'Images', 'Notifications', 'SettingsService', 'Twitarr', 'UpgradeService', 'UserService', function($q, $rootScope, $sce, $timeout, $window, $state, $cordovaCamera, $cordovaKeyboard, $cordovaSplashscreen, $ionicModal, $ionicPopover, $ionicPopup, $upload, storage, Cordova, EventService, Images, Notifications, SettingsService, Twitarr, UpgradeService, UserService) {
 		console.log('CruiseMonkey run() called.');
 
 		$rootScope.$on("$stateChangeError", function (event, toState, toParams, fromState, fromParams, error) {
@@ -463,6 +462,23 @@
 				console.log('openUser: user=',user);
 				userPopover.show(evt);
 			});
+		};
+
+		var regexpEscape = function(s) {
+			return s.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
+		};
+
+		var highlightReplace = function(match) {
+			return '<span class="highlight">' + match + '</span>';
+		};
+		$rootScope.highlight = function(text, searchString) {
+			if (searchString) {
+				var re = new RegExp('('+regexpEscape(searchString)+')', 'gim');
+				var replaced = text.replace(re, highlightReplace);
+				return $sce.trustAsHtml(replaced);
+			} else {
+				return text;
+			}
 		};
 
 		$rootScope.$on('$destroy', function() {
