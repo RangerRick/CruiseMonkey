@@ -154,9 +154,9 @@
 							seen[username] = 1;
 						}
 					}
-					for (username in seen) {
-						if (!$scope.userImages[username]) {
-							users.push(username);
+					for (var u in seen) {
+						if (!$scope.userImages[u]) {
+							users.push(u);
 						}
 					}
 					Images.getAll(users.map(function(username) {

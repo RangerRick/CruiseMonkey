@@ -402,7 +402,7 @@
 
 		var _refreshEvents = function() {
 			$scope.user = UserService.get();
-			console.log('CMEventCtrl._refreshEvents()');
+			//console.log('CMEventCtrl._refreshEvents()');
 			EventService.getAllEvents().then(function(events) {
 				events.sort(sortEvent);
 				$scope.allEvents = events;
@@ -468,10 +468,12 @@
 				}
 			}
 
+			/*
 			console.log('CMEventCtrl._updateFilter: official events: ' + filteredEvents.official.length);
 			console.log('CMEventCtrl._updateFilter: unofficial events: ' + filteredEvents.unofficial.length);
 			console.log('CMEventCtrl._updateFilter: all events: ' + filteredEvents.all.length);
 			console.log('CMEventCtrl._updateFilter: my events: ' + filteredEvents.my.length);
+			*/
 
 			filteredEvents.official   = withDays(filteredEvents.official);
 			filteredEvents.unofficial = withDays(filteredEvents.unofficial);
