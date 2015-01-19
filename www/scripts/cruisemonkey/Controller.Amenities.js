@@ -1,6 +1,8 @@
 (function() {
 	'use strict';
 
+	/* global CMDeck: true */
+
 	angular.module('cruisemonkey.controllers.Amenities', ['angularLocalStorage', 'cruisemonkey.Decks'])
 	.filter('amenityFilter', function() {
 		return function(input, searchString) {
