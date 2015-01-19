@@ -1,3 +1,27 @@
+<a name="4.9.7"</a>
+## 4.9.7 (2015-01-19)
+
+
+#### Bug Fixes
+
+
+* **menu**  fix seamail count, also change login to modal ((e73409bc))
+* **images**  fix image cache on IOS ((f991d74f))
+* **events**
+  *  refactor event view, responsiveness should be MUCH better ((5f56729e))
+  *  public icon is just an indicator ((0dda1735))
+* ****
+  *  too many to count ((de0666e5))
+  *  tons of bug fixes thanks to feedback from the best tester ;) ((538d6250))
+* **logging**  don't say 'Synchronizing Events' on startup ((4576be03))
+
+#### Features
+
+
+* **twitarr**  implemented image cache ((3fbbafcc))
+
+
+
 <a name="4.9.6"</a>
 ## 4.9.6 (2015-01-16)
 
