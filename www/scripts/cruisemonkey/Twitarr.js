@@ -147,7 +147,12 @@
 			if (searchPrefix && searchPrefix.trim() !== '') {
 				get(url, {cache:true})
 					.success(function(data) {
-						removeFromArray(data.names, username);
+						for (var i=0; i < data.names.length; i++) {
+							data.names[i] = data.names[i].toLowerCase();
+						}
+						if (username) {
+							removeFromArray(data.names, username.toLowerCase());
+						}
 						deferred.resolve(data.names);
 					}).error(function(data, status) {
 						console.log('Twitarr.getAutocompleteUsers(): Failed: ' + status, angular.toJson(data));

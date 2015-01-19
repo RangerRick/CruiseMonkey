@@ -191,6 +191,14 @@ $button-blue-active-border: $rciNavyBlue;
 	}
 }
 
+.favorite {
+	&.button-clear {
+		&.active, &.activated {
+			opacity: 1
+		}
+	}
+}
+
 .ion-spin, .ion-load-a, .ion-load-b, .ion-load-c, .ion-load-d, .ion-loop {
 	-webkit-animation: spin 1s infinite linear;
 	-moz-animation: spin 1s infinite linear;
@@ -402,6 +410,7 @@ a.tab-item:hover {
 	.users {
 		padding: 0;
 		margin: 0;
+		min-height: 25px;
 		img {
 			min-height: 15px;
 			max-height: 20px;
@@ -414,8 +423,10 @@ a.tab-item:hover {
 		.user {
 			padding-left: 10px;
 			padding-right: 10px;
-			display: table-cell;
+			white-space: nowrap;
+			/* display: table-cell; */
 			vertical-align: middle;
+			/* max-height: 30px; */
 		}
 	}
 	.bar-subheader {

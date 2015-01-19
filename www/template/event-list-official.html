@@ -9,7 +9,7 @@
 			<button class="button button-icon icon-yellow ion-ios-clock-outline" ng-click="goToNow()"></button>
 		</div>
 	</ion-header-bar>
-	<cm-search-bar placeholder="Search Events" ng-model="searchString"></cm-search-bar>
+	<cm-search-bar placeholder="Search Events" ng-model="searchString" on-search-changed="onSearchChanged(searchString)"></cm-search-bar>
 	<ion-content scroll="true" padding="false" id="official-event-content" delegate-handle="official-event-scroll" ng-class="'has-subheader'" ng-click="closeKeyboard()">
 		<ion-list class="event-list">
 			<span ng-repeat="entry in filteredEvents['official'] | eventFilter:searchString track by entry.getId()" id="official-{{entry.getId()}}">
@@ -17,6 +17,8 @@
 				<ion-item ng-if="!isDay(entry)" ng-class="'list-entry item-text-wrap ' + (entry.isEven()? 'even':'odd')">
 					<span class="item-note">
 						<button id="official-{{entry.getId()}}-favorite" ng-click="onFavoriteChanged(entry)" class="button button-small button-clear button-navy" ng-hide="user.username &amp;&amp; user.username === entry.getUsername()"><i class="icon" ng-class="entry.isFavorite()? 'active ion-ios-heart':'ion-ios-heart-outline'"></i></button>
+						<button class="favorite button button-small button-clear button-navy" ng-show="(user.username &amp;&amp; user.username == entry.getUsername())"><i ng-class="'icon ' + (entry.isPublic()? 'ion-eye':'ion-eye-disabled')"></i></button>
+						<button class="button button-small button-clear button-navy" ng-click="openPopover($event, entry)" ng-show="(user.username &amp;&amp; user.username == entry.getUsername())"><i class="icon ion-android-more-vertical"></i></button>
 					</span>
 					<span>
 					<div class="summary">{{entry.getSummary()}}</div>

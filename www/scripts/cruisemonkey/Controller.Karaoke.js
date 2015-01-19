@@ -54,7 +54,7 @@
 	.filter('karaokeFilter', function() {
 		return searchFilter;
 	})
-	.controller('CMKaraokeSearchCtrl', ['storage', '$q', '$scope', '$http', '$timeout', '$interval', '$cordovaSQLite', '$ionicLoading', '$ionicScrollDelegate', '_database', 'Cordova', 'SettingsService', function(storage, $q, $scope, $http, $timeout, $interval, $cordovaSQLite, $ionicLoading, $ionicScrollDelegate, _database, Cordova, SettingsService) {
+	.controller('CMKaraokeSearchCtrl', ['storage', '$q', '$scope', '$http', '$timeout', '$interval', '$window', '$ionicLoading', '$ionicScrollDelegate', '_database', 'Cordova', 'SettingsService', function(storage, $q, $scope, $http, $timeout, $interval, $window, $ionicLoading, $ionicScrollDelegate, _database, Cordova, SettingsService) {
 		console.log('Initializing CMKaraokeSearchCtrl');
 
 		storage.bind($scope, 'searchString', {
@@ -66,55 +66,80 @@
 			'storeName': 'cruisemonkey.karaoke-last-updated'
 		});
 
-		var getQuery = function(searchString) {
-			var query = 'SELECT id, artist, song FROM karaoke';
-			if (searchString) {
-				var searchFor = searchString.split(spaces);
-				if (searchFor.length > 0) {
-					query += ' WHERE';
-				}
-				for (var i=0; i < searchFor.length; i++) {
-					var escaped = searchFor[i].replace('\'', '\\\'').replace('%', '\\%');
-					query += ' (artist LIKE \'%' + escaped + '%\' OR song LIKE \'%' + escaped + '%\') AND';
-				}
-				query = query.replace(/ AND$/, '');
+		var sortSongs = function(a, b) {
+			var comp = a.artist.localeCompare(b.artist);
+			if (comp === 0) {
+				return a.song.localeCompare(b.song);
+			} else {
+				return comp;
 			}
-			query += ' ORDER BY artist, song';
-			return query;
 		};
 
-		var sqlitedb = null;
-		var entries;
-		$scope.entries = [];
+		var db = _database.get('karaoke');
 
 		var updateEntries = function() {
-			Cordova.inCordova().then(function() {
-				// use SQLite
-				console.log('Karaoke.updateEntries: Using SQLite karaoke list.');
-				if (sqlitedb) {
-					var query = getQuery($scope.searchString);
-					console.log('Karaoke.updateEntries: Search query is: ' + query);
-					$cordovaSQLite.execute(sqlitedb, query).then(function(res) {
-						console.log('Karaoke.updateEntries: got results: ' + res.rows.length);
-						var results = [], entry;
-						for (var i=0; i < res.rows.length; i++) {
-							entry = res.rows.item(i);
-							results.push([entry.id, entry.artist, entry.song]);
+			$http.get('scripts/cruisemonkey/karaoke-list.js').success(function(data, status, headers, config) {
+				if ($scope.searchString && $scope.searchString.trim() !== '') {
+					var searchString = $scope.searchString.toLowerCase(), entries = [];
+					for (var i=0; i < data.length; i++) {
+						if (data[i][1].toLowerCase().contains(searchString)) {
+							entries.push(data[i]);
+						} else if (data[i][2].toLowerCase().contains(searchString)) {
+							entries.push(data[i]);
 						}
-						$scope.entries = results;
-					}, function(err) {
-						for (var prop in err) {
-							console.log('Karaoke.updateEntries: error selecting: ' + prop + '=' + err[prop]);
-						}
-					});
+					}
+					$scope.entries = entries;
+					$ionicLoading.hide();
 				} else {
-					console.log('Karaoke.updateEntries: Whups!  Sqlitedb is not set.');
+					$scope.entries = data;
+					$ionicLoading.hide();
 				}
-			}, function() {
-				// just pull in the raw js list
-				console.log('Karaoke.updateEntries: Using in-memory karaoke list.');
-				$scope.entries = searchFilter(entries, $scope.searchString);
+			}).error(function(data, status, headers, config) {
+				console.log('Failed to get karaoke list: ' + status, data);
+				$ionicLoading.hide();
 			});
+
+
+			/*
+			var handleResults = function(res) {
+				var entries = [], i;
+				for (i=0; i < res.rows.length; i++) {
+					entries.push(res.rows[i].doc);
+				}
+				//console.log('all docs:',entries);
+				entries.sort(function(a, b) {
+					var comp = a.artist.localeCompare(b.artist);
+					if (comp === 0) {
+						return a.song.localeCompare(b.song);
+					} else {
+						return comp;
+					}
+				});
+				$scope.entries = entries;
+				$ionicLoading.hide();
+			};
+
+			if ($scope.searchString && $scope.searchString.trim() !== '') {
+				console.log('Using search: ' + $scope.searchString);
+				db.pouch().search({
+					query: $scope.searchString,
+					fields: ['lc_artist', 'lc_song'],
+					include_docs: true
+				}).then(function(res) {
+					$scope.$evalAsync(function() {
+						handleResults(res);
+					});
+				}).catch(function(err) {
+					$scope.$evalAsync(function() {
+						console.log('Failed search: ' + angular.toJson(err));
+					});
+				});
+			} else {
+				db.allDocs({ 'include_docs':true }).then(function(res) {
+					handleResults(res);
+				});
+			}
+			*/
 		};
 
 		$scope.onSearchChanged = function(searchString) {
@@ -125,126 +150,62 @@
 			}
 		};
 
+		/*
 		$scope.$on('cruisemonkey.database.change', function(ev, db, doc) {
 			if (db.name.endsWith('karaoke')) {
 				updateEntries();
 			}
 		});
+		*/
 
-		var printDbErr = function(message, err) {
-			console.log(message);
-			for (var prop in err) {
-				console.log('  ' + prop + '=' + err[prop]);
-			}
-		};
-
-		var executeCommands = function(db, c) {
-			var commands = c.splice(0);
-			var deferred = $q.defer();
-
-			var doCommand = function() {
-				if (commands.length === 0) {
-					console.log('Karaoke.executeCommands: finished processing.');
-					deferred.resolve(true);
-				} else {
-					var command = commands.shift();
-					console.log('Karaoke.executeCommands: executing: ' + command);
-					$cordovaSQLite.execute(db, command).then(function(res) {
-						doCommand();
-					}, function(err) {
-						deferred.reject([command, err]);
-					});
-				}
-			};
-
-			doCommand();
-
-			return deferred.promise;
+		/*
+		var onError = function(err) {
+			console.log('Karaoke.loaded: database error: ' + angular.toJson(err));
 		};
 
 		console.log('Karaoke.loaded: initializing database');
 
+		var reinitialize = function(data) {
+			db.destroy().then(function() {
+				db = _database.get('karaoke');
+
+				var docs = [];
+				for (var i=0; i < data.length; i++) {
+					docs.push({
+						artist: data[i][1],
+						lc_artist: data[i][1].toLowerCase(),
+						song: data[i][2],
+						lc_song: data[i][2].toLowerCase()
+					});
+				}
+				db.bulkDocs(docs).then(function(res) {
+					console.log('Karaoke.loaded: Finished adding karaoke songs: ' + res.length);
+					updateEntries();
+				}, function(err) {
+					console.log('Karaoke.loaded: Failed to add songs: ' + angular.toJson(err));
+				});
+			}, function(err) {
+				console.log('Karaoke.loaded: destroy failed: ' + angular.toJson(err));
+			});
+		};
+
 		$http.get('scripts/cruisemonkey/karaoke-list.js').success(function(data, status, headers, config) {
 			console.log('Karaoke.loaded: got karaoke list with ' + data.length + ' entries.');
-			Cordova.inCordova().then(function() {
-				// we're inside a cordova container, use SQLite
-				console.log('Karaoke.loaded: Setting up SQLite database.');
-				var db = $cordovaSQLite.openDB({ name: "karaoke", bgType: 0 });
-				executeCommands(db, [
-					'CREATE TABLE IF NOT EXISTS karaoke (id INTEGER, artist TEXT, song TEXT, UNIQUE(artist, song) ON CONFLICT REPLACE);',
-					'PRAGMA case_sensitive_like=OFF;',
-					//'PRAGMA synchronous = OFF;',
-					'PRAGMA temp_store = MEMORY;',
-					'PRAGMA auto_vacuum = NONE;'
-				]).then(function() {
-					console.log('Karaoke.loaded: Finished setting up database.');
-					$cordovaSQLite.execute(db, 'SELECT COUNT(id) AS count FROM karaoke').then(function(res) {
-						var count = res.rows.length === 1? res.rows.item(0).count : -1;
-						console.log('Karaoke.loaded: There are ' + count + ' existing items in the database.');
-						if (parseInt(data.length) === parseInt(count)) {
-							executeCommands(db, [
-								//'PRAGMA synchronous = NORMAL;',
-								'PRAGMA journal_mode = DELETE;',
-								'PRAGMA temp_store = DEFAULT;',
-								//'VACUUM;',
-							]).then(function() {
-								console.log('Karaoke.loaded: Pragmas reset.  Ready.');
-								$scope.$evalAsync(function() {
-									sqlitedb = db;
-									updateEntries();
-								});
-							}, function(err) {
-								printDbErr('Karaoke.loaded: failed to reset pragmas.', err);
-							});
-						} else {
-							console.log('Karaoke.loaded: Document count does not match.');
-							$cordovaSQLite.execute(db, 'DELETE FROM karaoke').then(function() {
-								console.log('Karaoke.loaded: deleted old entries.');
 
-								$cordovaSQLite.insertCollection(db, 'INSERT INTO karaoke (id, artist, song) values (?, ?, ?)', data).then(function(res) {
-									console.log('Karaoke.loaded: inserted new entries.');
-									executeCommands(db, [
-										//'PRAGMA synchronous = NORMAL;',
-										'PRAGMA journal_mode = DELETE;',
-										'PRAGMA temp_store = DEFAULT;',
-										//'VACUUM;',
-									]).then(function() {
-										console.log('Karaoke.loaded: Pragmas reset.  Vacuuming database.');
-										db.executeSql('VACUUM;', undefined, function() {
-											console.log('Karaoke.loaded: finished vacuum.  Ready.');
-											$scope.$evalAsync(function() {
-												sqlitedb = db;
-												updateEntries();
-											});
-										}, function(err) {
-											printDbErr('Karaoke.loaded: Failed to VACUUM the database.', err);
-											$scope.$evalAsync(function() {
-												sqlitedb = db;
-												updateEntries();
-											});
-										});
-									}, function(err) {
-										printDbErr('Karaoke.loaded: failed to reset pragmas.', err);
-									});
-								}, function(err) {
-									printDbErr('Karaoke.loaded: failed to insert data.', err);
-								});
-
-							}, function(err) {
-								printDbErr('Failed to delete existing entries from the database.', err);
-							});
-						}
-					}, function(err) {
-						printDbErr('Karaoke.loaded: failed to get document count:',err);
-					});
-				});
-			}, function() {
-				entries = data;
-				updateEntries();
+			db.info().then(function(info) {
+				if (info.doc_count !== data.length) {
+					console.log('Document count does not match.  Reloading.');
+					reinitialize(data);
+				}
+			}, function(err) {
+				console.log('error doing info: ' + angular.toJson(err));
+				reinitialize(data);
 			});
 		}).error(function(data, status, headers, config) {
 			console.log('Failed to get karaoke list: ' + status, data);
+			updateEntries();
 		});
+*/
 
 		$scope.scrollTop = function() {
 			var delegate = $ionicScrollDelegate.$getByHandle('karaoke-scroll');
@@ -252,27 +213,11 @@
 		};
 
 		$scope.$on('$ionicView.beforeEnter', function(ev, info) {
-			console.log('Karaoke: getting karaoke list');
-			if (sqlitedb) {
-				updateEntries();
-			} else {
-				$ionicLoading.show({
-					template: 'Creating Karaoke index. This may take a minute...',
-					hideOnStateChange: true,
-				});
-				var inter = $interval(function() {
-					if (sqlitedb) {
-						$ionicLoading.hide();
-						$interval.cancel(inter);
-						updateEntries();
-					} else {
-						if (entries) {
-							$ionicLoading.hide();
-							$interval.cancel(inter);
-						}
-					}
-				}, 1000);
-			}
+			$ionicLoading.show({
+				template: 'Creating Karaoke index. This may take a minute...',
+				hideOnStateChange: true,
+			});
+			updateEntries();
 		});
 
 		$scope.$on('$ionicView.afterLeave', function(ev, info) {

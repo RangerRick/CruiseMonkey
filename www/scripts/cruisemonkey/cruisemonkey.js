@@ -41,6 +41,14 @@
 		'cruisemonkey.User'
 	])
 	.directive('cmSearchBar', ['$timeout', '$cordovaKeyboard', function($timeout, $cordovaKeyboard) {
+		var nullSafeLowerCase = function(s) {
+			if (s) {
+				return s.trim().toLowerCase();
+			} else {
+				return s;
+			}
+		};
+
 		return {
 			restrict: 'AE',
 			templateUrl: 'template/search.html',
@@ -52,7 +60,7 @@
 			replace: true,
 			link: function(scope, elem, attrs, ctrl) {
 				scope.placeholder = attrs.placeholder || 'Search';
-				scope.searchStringInternal = scope.searchString;
+				scope.searchStringInternal = nullSafeLowerCase(scope.searchString);
 
 				var callChangeFunction = function() {
 					if (scope.onSearchChanged) {
@@ -69,9 +77,9 @@
 					} else {
 						timeout = $timeout(function() {
 							timeout = null;
-							scope.searchString = scope.searchStringInternal;
+							scope.searchString = nullSafeLowerCase(scope.searchStringInternal);
 							callChangeFunction();
-						}, 300);
+						}, 500);
 					}
 				};
 				scope.clearSearchString = function() {

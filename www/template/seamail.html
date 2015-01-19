@@ -11,11 +11,15 @@
 	<ion-content scroll="true" padding="false" delegate-handle="seamail" ng-click="closeKeyboard()">
 		<ion-refresher pulling-text="Pull to refresh..." on-refresh="doRefresh()"></ion-refresher>
 		<ion-list>
-			<ion-item ng-repeat="seamail in seamails track by seamail.id" ng-click="openSeamail(seamail)">
+			<ion-item ng-repeat="seamail in seamails track by seamail.id" ng-click="openSeamail(seamail)" class="item-text-wrap">
 				<div class="title"><i ng-if="seamail.is_unread" class="icon ion-record blue"></i> {{seamail.subject}}</div>
 				<div class="messages">{{seamail.messages}}</div>
 				<div class="time">{{seamail.timestamp.format('dddd, MMMM Do, h:mma')}}</div>
-				<div class="users"><img ng-repeat="user in seamail.users" ng-src="{{twitarrRoot}}api/v2/user/photo/{{user.username}}" title="{{user.display_name}}" ng-click="openUser(user.username, $event)" /></div>
+				<ion-scroll class="users" direction="x">
+					<span class="user" ng-click="openUser(user.username, $event)" ng-repeat="user in seamail.users">
+						<img ng-src="{{userImages[user.username]}}" title="{{user.display_name}}" /> {{user.username}}
+					</span>
+				</ion-scroll>
 			</ion-item>
 		</ion-list>
 	</ion-content>

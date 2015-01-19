@@ -7071,6 +7071,9 @@ a.button {
     opacity: 1;
     color: #0073bb; }
 
+.favorite.button-clear.active, .favorite.button-clear.activated {
+  opacity: 1; }
+
 .ion-spin, .ion-loading-a, .ion-loading-b, .ion-loading-c, .ion-loading-d, .ion-looping, .ion-refreshing, .ion-ios7-reloading, .ion-load-a, .ion-load-b, .ion-load-c, .ion-load-d, .ion-loop {
   -webkit-animation: spin 1s infinite linear;
   -moz-animation: spin 1s infinite linear;
@@ -7293,7 +7296,8 @@ a.tab-item:hover {
 
 .seamail .users {
   padding: 0;
-  margin: 0; }
+  margin: 0;
+  min-height: 25px; }
   .seamail .users img {
     min-height: 15px;
     max-height: 20px;
@@ -7305,8 +7309,10 @@ a.tab-item:hover {
   .seamail .users .user {
     padding-left: 10px;
     padding-right: 10px;
-    display: table-cell;
-    vertical-align: middle; }
+    white-space: nowrap;
+    /* display: table-cell; */
+    vertical-align: middle;
+    /* max-height: 30px; */ }
 .seamail .bar-subheader {
   padding: 0; }
   .seamail .bar-subheader .row {

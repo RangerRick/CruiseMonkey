@@ -223,6 +223,14 @@
 			return deferred.promise;
 		};
 
+		var getAllImageUrls = function(urls) {
+			var promises = [];
+			for (var i=0; i < urls.length; i++) {
+				promises.push(getImageUrl(urls[i]));
+			}
+			return $q.all(promises);
+		};
+
 		var _getFileInfo = function(entry) {
 			var deferred = $q.defer();
 			entry.getMetadata(function(metadata) {
@@ -298,7 +306,8 @@
 		});
 
 		return {
-			get: getImageUrl
+			get: getImageUrl,
+			getAll: getAllImageUrls,
 		};
 	}]);
 }());

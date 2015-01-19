@@ -28,7 +28,7 @@
 				scope.search=function(){
 					Twitarr.getAutocompleteUsers(scope.searchText).then(function(users) {
 						if (scope.additionalUser) {
-							removeFromArray(users, scope.additionalUser);
+							removeFromArray(users, scope.additionalUser.toLowerCase());
 						}
 						for (var i=0; i < scope.selectedUsers.length; i++) {
 							removeFromArray(users, scope.selectedUsers[i]);
@@ -73,7 +73,7 @@
 			}
 		};
 	}])
-	.controller('CMSeamailCtrl', ['$scope', '$timeout', '$interval', '$ionicLoading', '$ionicModal', '$ionicPopup', '$ionicScrollDelegate', 'SettingsService', 'Twitarr', 'UserService', function($scope, $timeout, $interval, $ionicLoading, $ionicModal, $ionicPopup, $ionicScrollDelegate, SettingsService, Twitarr, UserService) {
+	.controller('CMSeamailCtrl', ['$scope', '$timeout', '$interval', '$ionicLoading', '$ionicModal', '$ionicPopup', '$ionicScrollDelegate', 'Images', 'SettingsService', 'Twitarr', 'UserService', function($scope, $timeout, $interval, $ionicLoading, $ionicModal, $ionicPopup, $ionicScrollDelegate, Images, SettingsService, Twitarr, UserService) {
 		console.log('CMSeamailCtrl Initializing.');
 
 		$ionicModal.fromTemplateUrl('template/seamail-detail.html', {
@@ -83,12 +83,28 @@
 			modal.scope.closeModal = function() {
 				modal.hide();
 			};
+
+			modal.scope.updateUserImages = function() {
+				var twitarrRoot = SettingsService.getTwitarrRoot();
+				var users = modal.scope.seamail.users.map(function(entry) {
+					return entry.username;
+				});
+				Images.getAll(users.map(function(username) {
+					return twitarrRoot + 'api/v2/user/photo/' + username;
+				})).then(function(res) {
+					for (var i=0; i < users.length; i++) {
+						modal.scope.userImages[users[i]] = res[i];
+					}
+				});
+			};
+
 			modal.scope.refreshMessages = function() {
 				var promise = Twitarr.getSeamailMessages(modal.scope.seamail.id);
 				promise.then(function(res) {
 					if (res.seamail && res.seamail.messages) {
 						console.log('Refreshed messages:' + angular.toJson(res));
 						modal.scope.seamail = res.seamail;
+						modal.scope.updateUserImages();
 					}
 				});
 				return promise;
@@ -108,9 +124,11 @@
 				}
 			};
 			modal.scope.newMessage = { text: '' };
+			/*
 			modal.scope.$watch('newMessage', function(newValue) {
 				console.log('message text: ' + newValue.text);
 			});
+*/
 			$scope.viewSeamailModal = modal;
 		});
 
@@ -118,15 +136,36 @@
 			$scope.viewSeamailModal.remove();
 		});
 
+		$scope.userImages = [];
+
 		$scope.scrollTop = function() {
 			$ionicScrollDelegate.$getByHandle('seamail').scrollTop(true);
 		};
 
 		$scope.doRefresh = function() {
-			console.log('do refresh');
+			console.log('Refreshing seamail.');
 			$scope.twitarrRoot = SettingsService.getTwitarrRoot();
 			Twitarr.getSeamail().then(function(res) {
 				if (res && res.seamail_meta) {
+					var seen = {}, i, j, users = [];
+					for (i=0; i < res.seamail_meta.length; i++) {
+						for (j=0; j < res.seamail_meta[i].users.length; j++) {
+							var username = res.seamail_meta[i].users[j].username;
+							seen[username] = 1;
+						}
+					}
+					for (username in seen) {
+						if (!$scope.userImages[username]) {
+							users.push(username);
+						}
+					}
+					Images.getAll(users.map(function(username) {
+						return $scope.twitarrRoot + 'api/v2/user/photo/' + username;
+					})).then(function(res) {
+						for (i=0; i < users.length; i++) {
+							$scope.userImages[users[i]] = res[i];
+						}
+					});
 					$scope.seamails = res.seamail_meta;
 				} else {
 					$scope.seamails = [];
@@ -145,6 +184,7 @@
 			if (!seamail.messages) {
 				seamail.messages = [];
 			}
+			$scope.viewSeamailModal.scope.userImages = [];
 			$scope.viewSeamailModal.scope.user = UserService.get();
 			$scope.viewSeamailModal.scope.seamail = seamail;
 			$scope.viewSeamailModal.scope.twitarrRoot = SettingsService.getTwitarrRoot();

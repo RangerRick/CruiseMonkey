@@ -250,6 +250,17 @@
 			focusFirstInput: true
 		}).then(function(modal) {
 			$scope.modal = modal;
+
+			$scope.$watch('eventData', function(ev) {
+				if (ev) {
+					var startDate = moment(ev.startDate);
+					var endDate = moment(ev.endDate);
+					if (endDate.isBefore(startDate)) {
+						console.log('end date ' + endDate.format() + ' is before start date ' + startDate.format());
+						$scope.modal.eventData.endDate = angular.copy(ev.startDate);
+					}
+				}
+			});
 		});
 
 		$scope.cancelModal = function(e) {
@@ -377,12 +388,20 @@
 			});
 		};
 
+		$scope.onSearchChanged = function(searchString) {
+			var delegate = $ionicScrollDelegate.$getByHandle($scope.eventType + '-event-scroll');
+			if (delegate.getScrollPosition().top !== 0) {
+				delegate.scrollTop(false);
+			}
+		};
+
 		$scope.scrollTop = function() {
 			var delegate = $ionicScrollDelegate.$getByHandle($scope.eventType + '-event-scroll');
 			delegate.scrollTop(true);
 		};
 
 		var _refreshEvents = function() {
+			$scope.user = UserService.get();
 			console.log('CMEventCtrl._refreshEvents()');
 			EventService.getAllEvents().then(function(events) {
 				events.sort(sortEvent);
@@ -437,6 +456,8 @@
 				// all
 				if (ev.isPublic()) {
 					filteredEvents.all.push(ev);
+				} else if (ev.getUsername() === user.username) {
+					filteredEvents.all.push(ev);
 				}
 
 				// my
@@ -447,17 +468,17 @@
 				}
 			}
 
+			console.log('CMEventCtrl._updateFilter: official events: ' + filteredEvents.official.length);
+			console.log('CMEventCtrl._updateFilter: unofficial events: ' + filteredEvents.unofficial.length);
+			console.log('CMEventCtrl._updateFilter: all events: ' + filteredEvents.all.length);
+			console.log('CMEventCtrl._updateFilter: my events: ' + filteredEvents.my.length);
+
 			filteredEvents.official   = withDays(filteredEvents.official);
 			filteredEvents.unofficial = withDays(filteredEvents.unofficial);
 			filteredEvents.all        = withDays(filteredEvents.all);
 			filteredEvents.my         = withDays(filteredEvents.my);
 
 			$scope.filteredEvents = filteredEvents;
-
-			console.log('CMEventCtrl._updateFilter: official events: ' + filteredEvents.official.length);
-			console.log('CMEventCtrl._updateFilter: unofficial events: ' + filteredEvents.unofficial.length);
-			console.log('CMEventCtrl._updateFilter: all events: ' + filteredEvents.all.length);
-			console.log('CMEventCtrl._updateFilter: my events: ' + filteredEvents.my.length);
 
 			$timeout(function() {
 				$ionicScrollDelegate.$getByHandle($scope.eventType + '-event-scroll').resize();
@@ -496,7 +517,8 @@
 			_refreshEvents();
 		});
 		$scope.$on('$ionicView.beforeEnter', function(ev, info) {
-			_updateFilter();
+			_refreshEvents();
+			//_updateFilter();
 		});
 	}]);
 }());
