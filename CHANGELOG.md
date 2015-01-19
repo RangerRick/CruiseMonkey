@@ -1,3 +1,26 @@
+<a name="5.0.0"</a>
+## 5.0.0 (2015-01-19)
+
+
+#### Bug Fixes
+
+
+* **twitarr**  image upload works on Android now ((b72fc7a6))
+* **images**  use xhr rather than native download ((29dd8337))
+* **events**
+  *  clean up layout of long summaries ((08590dc5))
+  *  avoid round-trips, improve event-change responsiveness ((1ee487cf))
+* **amenities**  search now shows deck headers properly ((1182b034))
+
+#### Features
+
+
+* **events**  make username clickable ((3f599400))
+* **settings**  make refresh configurable ((0b24ee76))
+* **search**  search highlights matches, other tweaks ((4a581bd5))
+
+
+
 <a name="4.9.7"</a>
 ## 4.9.7 (2015-01-19)
 
