@@ -16,7 +16,7 @@
 		'angularFileUpload',
 		'angularLocalStorage'
 	])
-	.factory('Twitarr', ['$q', '$rootScope', '$timeout', '$interval', '$http', '$cordovaFileTransfer', '$upload', 'storage', 'config.background.interval', 'config.request.timeout', 'config.twitarr.enable-cachebusting', 'LocalNotifications', 'SettingsService', 'UserService', function($q, $rootScope, $timeout, $interval, $http, $cordovaFileTransfer, $upload, storage, backgroundInterval, requestTimeout, enableCachebusting, LocalNotifications, SettingsService, UserService) {
+	.factory('Twitarr', ['$q', '$rootScope', '$timeout', '$interval', '$http', '$cordovaFileTransfer', '$upload', 'storage', 'config.request.timeout', 'config.twitarr.enable-cachebusting', 'LocalNotifications', 'SettingsService', 'UserService', function($q, $rootScope, $timeout, $interval, $http, $cordovaFileTransfer, $upload, storage, requestTimeout, enableCachebusting, LocalNotifications, SettingsService, UserService) {
 		console.log('Initializing Twit-arr API.');
 
 		var scope = $rootScope.$new();
@@ -453,7 +453,7 @@
 
 			var user = UserService.get();
 			if (user.loggedIn && user.key) {
-				//console.log('Twitarr: doing status check');
+				console.log('Twitarr: doing status check');
 				getAlerts(false).then(function(alerts) {
 					var i,
 						new_mentions = [], mention,
@@ -566,8 +566,7 @@
 			LocalNotifications.clear();
 		});
 
-		var statusCheck;
-		$interval(function() {
+		var statusIntervalCallback = function() {
 			if (ionic.Platform.isIOS() && scope.isForeground) {
 				// we check in the foreground 'cause we get toast notifications
 				checkStatus();
@@ -575,10 +574,23 @@
 				// anywhere else, just run regardless
 				checkStatus();
 			}
-		}, backgroundInterval);
+		};
+
+		var statusCheck = $interval(statusIntervalCallback, SettingsService.getBackgroundInterval());
 		checkStatus();
 
 		configureBackgroundFetch();
+
+
+		$rootScope.$on('cruisemonkey.user.settings-changed', function(ev, settings) {
+			if (settings.old && settings.new.backgroundInterval !== settings.old.backgroundInterval) {
+				console.log('Twitarr: background interval refresh has changed from ' + settings.old.backgroundInterval + ' to ' + settings.new.backgroundInterval + '.');
+				if (statusCheck) {
+					$interval.cancel(statusCheck);
+				}
+				statusCheck = $interval(statusIntervalCallback, settings.new.backgroundInterval);
+			}
+		});
 
 		$rootScope.$on('$destroy', function() {
 			if (statusCheck) {

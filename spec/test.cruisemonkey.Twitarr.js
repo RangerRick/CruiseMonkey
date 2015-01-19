@@ -39,6 +39,9 @@ describe('Twit-Arr', function() {
 		SettingsService = {
 			getTwitarrRoot: function() {
 				return 'https://jccc5.rylath.net/';
+			},
+			getBackgroundInterval: function() {
+				return 10000;
 			}
 		};
 		$provide.value('$upload', {});

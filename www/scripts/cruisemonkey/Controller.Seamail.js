@@ -102,7 +102,7 @@
 				var promise = Twitarr.getSeamailMessages(modal.scope.seamail.id);
 				promise.then(function(res) {
 					if (res.seamail && res.seamail.messages) {
-						console.log('Refreshed messages:' + angular.toJson(res));
+						//console.log('Refreshed messages:' + angular.toJson(res));
 						modal.scope.seamail = res.seamail;
 						modal.scope.updateUserImages();
 					}
@@ -179,7 +179,7 @@
 			});
 		};
 
-		var seamailInterval = null;
+		var seamailInterval;
 		$scope.openSeamail = function(seamail) {
 			if (!seamail.messages) {
 				seamail.messages = [];
@@ -189,19 +189,20 @@
 			$scope.viewSeamailModal.scope.seamail = seamail;
 			$scope.viewSeamailModal.scope.twitarrRoot = SettingsService.getTwitarrRoot();
 
+			seamailInterval = $interval(function() {
+				$scope.viewSeamailModal.scope.refreshMessages();
+			}, 10000);
+
 			$scope.viewSeamailModal.scope.refreshMessages().then(function() {
 				$scope.viewSeamailModal.show();
 				$scope.doRefresh();
 			});
-			seamailInterval = $interval(function() {
-				$scope.viewSeamailModal.scope.refreshMessages();
-			}, 10000);
 		};
 
 		$scope.$on('modal.hidden', function() {
 			if (seamailInterval) {
 				$interval.cancel(seamailInterval);
-				seamailInterval = null;
+				seamailInterval = undefined;
 			}
 		});
 

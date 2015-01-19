@@ -13,17 +13,31 @@
 					<div class="item item-text-wrap">
 						Configure various advanced network options, including which servers to use.
 					</div>
-					<label class="item item-input">
+					<label class="item item-input item-stacked-label">
 						<span class="input-label">Database Host</span>
 						<input type="text" name="databaseRoot" ng-model="settings.databaseRoot" />
 					</label>
-					<label class="item item-input">
+					<label class="item item-input item-stacked-label">
 						<span class="input-label">Database Name</span>
 						<input type="text" name="databaseName" ng-model="settings.databaseName" />
 					</label>
-					<label class="item item-input">
+					<label class="item item-input item-stacked-label">
 						<span class="input-label">Twit-Arr URL</span>
 						<input type="url" name="twitarrRoot" ng-model="settings.twitarrRoot" />
+					</label>
+					<label class="item item-input item-stacked-label">
+						<span class="input-label">
+							Status Check Interval
+						</span>
+						<div style="white-space: normal; margin-left: 20px; padding: 5px">
+							how often CruiseMonkey checks for @mentions or seamail while you're using it
+						</div>
+						<div class="range row">
+							<div class="col col-10">
+								<span>{{backgroundInterval}}s</span>
+							</div>
+							<input class="col col-90" type="range" name="bgi" ng-model="$parent.backgroundInterval" min="10" max="60" value="{{backgroundInterval}}" />
+						</div>
 					</label>
 					<button class="button button-full button-dark" ng-click="saveSettings()" ng-disabled="form.$invalid || isUnchanged()">Save</button>
 					<button class="button button-full button-assertive" ng-click="resetSettings()" ng-disabled="form.$invalid">Reset to Defaults</button>

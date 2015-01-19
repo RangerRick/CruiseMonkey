@@ -8,7 +8,6 @@
 	.value('config.database.root', 'https://jccc5.rylath.net/db/')
 	.value('config.database.name', 'cruisemonkey-test')
 	.value('config.database.replicate', true)
-	.value('config.urls.openinchrome', false)
 	.value('config.request.timeout', 10000)
 	.value('config.background.interval', 30000)
 	.value('config.twitarr.root', 'https://jccc5.rylath.net/')
@@ -23,16 +22,16 @@
 		'cruisemonkey.Upgrades'
 	])
 	.factory('SettingsService', ['storage', '$rootScope', '$location', '$window', 'UpgradeService',
-			'config.database.root', 'config.database.name', 'config.database.replicate', 'config.urls.openinchrome', 'config.twitarr.root',
+			'config.database.root', 'config.database.name', 'config.database.replicate', 'config.twitarr.root', 'config.background.interval',
 			function(storage, $rootScope, $location, $window, upgrades,
-			databaseRoot, databaseName, databaseReplicate, openInChrome, twitarrRoot) {
+			databaseRoot, databaseName, databaseReplicate, twitarrRoot, backgroundInterval) {
 
 		var defaultValue = {
 			'database.root': databaseRoot,
 			'database.name': databaseName,
 			'database.replicate': databaseReplicate,
-			'urls.openinchrome': openInChrome,
-			'twitarr.root': twitarrRoot
+			'twitarr.root': twitarrRoot,
+			'background.interval': backgroundInterval,
 		};
 
 		storage.bind($rootScope, '_settings', {
@@ -85,15 +84,6 @@
 			$rootScope._settings['database.replicate'] = angular.copy(shouldReplicate);
 		};
 
-		var shouldOpenInChrome = function() {
-			var oic = $rootScope._settings['urls.openinchrome'] || defaultValue['urls.openinchrome'];
-			if (!oic) { oic = false; }
-			return oic;
-		};
-		var setOpenInChrome = function(shouldOpenInChrome) {
-			$rootScope._settings['urls.openinchrome'] = angular.copy(shouldOpenInChrome);
-		};
-
 		var getTwitarrRoot = function() {
 			var twRoot = $rootScope._settings['twitarr.root'] || defaultValue['twitarr.root'];
 			if (!twRoot.endsWith('/')) {
@@ -105,13 +95,26 @@
 			$rootScope._settings['twitarr.root'] = angular.copy(root);
 		};
 
+		var getBackgroundInterval = function() {
+			var backgroundInterval = $rootScope._settings['background.interval'] || defaultValue['background.interval'];
+			return backgroundInterval;
+		};
+		var setBackgroundInterval = function(ival) {
+			ival = parseInt(ival);
+			if (ival >= 10000) {
+				$rootScope._settings['background.interval'] = ival;
+			} else {
+				console.log('SettingsService.setBackgroundInterval: interval must be at least 10 seconds!');
+			}
+		};
+
 		var getDefaultSettings = function() {
 			return angular.copy({
 				databaseRoot: defaultValue['database.root'],
 				databaseName: defaultValue['database.name'],
 				databaseReplicate: defaultValue['database.replicate'],
-				openInChrome: defaultValue['urls.openinchrome'],
-				twitarrRoot: defaultValue['twitarr.root']
+				twitarrRoot: defaultValue['twitarr.root'],
+				backgroundInterval: defaultValue['background.interval'],
 			});
 		};
 
@@ -120,17 +123,17 @@
 				databaseRoot: getDatabaseRoot(),
 				databaseName: getDatabaseName(),
 				databaseReplicate: shouldDatabaseReplicate(),
-				openInChrome: shouldOpenInChrome(),
-				twitarrRoot: getTwitarrRoot()
+				twitarrRoot: getTwitarrRoot(),
+				backgroundInterval: getBackgroundInterval(),
 			});
 		};
 
 		var saveSettings = function(newSettings) {
-			$rootScope._settings['database.root']      = newSettings.databaseRoot;
-			$rootScope._settings['database.name']      = newSettings.databaseName;
-			$rootScope._settings['database.replicate'] = newSettings.databaseReplicate;
-			$rootScope._settings['urls.openinchrome']  = newSettings.openInChrome;
-			$rootScope._settings['twitarr.root']       = newSettings.twitarrRoot;
+			setDatabaseRoot(newSettings.databaseRoot);
+			setDatabaseName(newSettings.databaseName);
+			setDatabaseReplicate(newSettings.databaseReplicate);
+			setTwitarrRoot(newSettings.twitarrRoot);
+			setBackgroundInterval(newSettings.backgroundInterval);
 		};
 
 		var getRemoteDatabaseRoot = function() {
@@ -201,19 +204,16 @@
 					setDatabaseReplicate(shouldReplicate);
 				});
 			},
-			'shouldOpenInChrome': shouldOpenInChrome,
-			'setOpenInChrome': function(oic) {
-				if (!oic) {
-					oic = false;
-				}
-				broadcastChanges(function() {
-					setOpenInChrome(oic);
-				});
-			},
 			'getTwitarrRoot': getTwitarrRoot,
 			'setTwitarrRoot': function(root) {
 				broadcastChanges(function() {
 					setTwitarrRoot(root);
+				});
+			},
+			'getBackgroundInterval': getBackgroundInterval,
+			'setBackgroundInterval': function(ival) {
+				broadcastChanges(function() {
+					setBackgroundInterval(ival);
 				});
 			},
 			'getRemoteDatabaseRoot': getRemoteDatabaseRoot,

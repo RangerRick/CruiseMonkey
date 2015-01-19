@@ -175,6 +175,7 @@
 							console.log('Images.getImageUrl: downloading remote file from url: ' + url);
 							$http.get(url,
 								{
+									cache: true,
 									responseType: 'blob'
 								}).success(function(data, status, headers, config) {
 									var contentType = headers('Content-Type'), ext = '';
