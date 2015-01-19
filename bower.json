@@ -21,7 +21,8 @@
     "pouchdb-persist": "*",
     "toastr": "*",
     "ng-file-upload": "~2.1.1",
-    "pouchdb-quick-search": "~1.0.1"
+    "pouchdb-quick-search": "~1.0.1",
+    "angular-async-locks": "https://github.com/BorisKozo/angular-async-locks.git"
   },
   "devDependencies": {
     "angular-mocks": "*",
