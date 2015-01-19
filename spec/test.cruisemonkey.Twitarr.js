@@ -43,6 +43,7 @@ describe('Twit-Arr', function() {
 		};
 		$provide.value('$upload', {});
 		$provide.value('$cordovaFile', {});
+		$provide.value('$cordovaFileTransfer', {});
 		$provide.value('LocalNotifications', {});
 		$provide.value('UserService', UserService);
 		$provide.value('SettingsService', SettingsService);

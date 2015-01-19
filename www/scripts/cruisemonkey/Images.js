@@ -42,12 +42,14 @@
 
 			Cordova.inCordova().then(function() {
 				try {
+					/*
 					if (ionic.Platform.isIOS()) {
 						if (!(file instanceof String)) {
 							file = file.toURL();
 						}
 					}
-					$window.resolveLocalFileSystemURL(file, function(res) {
+					*/
+					$window.resolveLocalFileSystemURL(file.toURL(), function(res) {
 						$rootScope.$evalAsync(function() {
 							console.log('resolveLocalFileSystemURL = ' + angular.toJson(res));
 							if (res && res.fullPath) {
@@ -165,43 +167,51 @@
 
 					_findMatchingFile(cacheDirectory, hash).then(function(localFile) {
 						$rootScope.$evalAsync(function() {
-							console.log('Images: found matching cached file: ' + angular.toJson(localFile));
+							console.log('Images.getImageUrl: found matching cached file: ' + angular.toJson(localFile));
 							inFlight[hash].resolve(localFile.toURL());
 						});
 					}, function(err) {
-						console.log('Images: no existing match, creating file.');
-						cacheDirectory.getFile(hash, { create: true }, function(localFile) {
-							$rootScope.$evalAsync(function() {
-								console.log('Images: successfully created file: ' + angular.toJson(localFile));
-								console.log('Images: downloading remote file from url: ' + url);
-								$http.head(url)
-									.success(function(data, status, headers, config) {
-										var contentType = headers('Content-Type'), ext = '';
-										switch(contentType) {
-											case 'image/jpeg':
-												ext = '.jpg';
-												break;
-											case 'image/png':
-												ext = '.png';
-												break;
-											case 'image/gif':
-												ext = '.gif';
-												break;
-											default:
-												ext = '';
-												console.log('Unhandled mime-type from URL ' + url + ': ' + contentType);
-												inFlight[hash].reject(err);
-												return;
-										}
+						$rootScope.$evalAsync(function() {
+							console.log('Images.getImageUrl: downloading remote file from url: ' + url);
+							$http.get(url,
+								{
+									responseType: 'blob'
+								}).success(function(data, status, headers, config) {
+									var contentType = headers('Content-Type'), ext = '';
+									switch(contentType) {
+										case 'image/jpeg':
+											ext = '.jpg';
+											break;
+										case 'image/png':
+											ext = '.png';
+											break;
+										case 'image/gif':
+											ext = '.gif';
+											break;
+										default:
+											ext = '';
+											console.log('Images.getImageUrl: unhandled mime-type from URL ' + url + ': ' + contentType);
+											inFlight[hash].reject(err);
+											return;
+									}
 
-										var localUrl = localFile.toURL() + ext;
-
-										$cordovaFileTransfer.download(url, localUrl, {}, true).then(function(res) {
-											inFlight[hash].resolve(localUrl);
+									cacheDirectory.getFile(hash + ext, {create:true}, function(file) {
+										console.log('Images.getImageUrl: created local file: ' + angular.toJson(file));
+										file.createWriter(function(writer) {
+											writer.onwrite = function() {
+												$rootScope.$evalAsync(function() {
+													console.log('Images.getImageUrl: wrote file to ' + file.toURL());
+													inFlight[hash].resolve(file.toURL());
+												});
+											};
+											writer.onerror = onError;
+											writer.write(data);
 										}, onError);
-									}).error(function(data, status) {
-										onError([data, status]);
-									});
+									}, onError);
+								}).error(function(data, status) {
+									onError([data, status]);
+								});
+						cacheDirectory.getFile(hash, { create: true }, function(localFile) {
 							});
 						}, onError);
 					});
@@ -209,7 +219,7 @@
 					inFlight[hash].promise.then(function(match) {
 						deferred.resolve(match);
 					}, function(err) {
-						console.log('Images: Failed to get cached file for ' + url + ': ' + angular.toJson(err));
+						console.log('Images.getImageUrl(): Failed to get cached file for ' + url + ': ' + angular.toJson(err));
 						deferred.resolve(url);
 					});
 				}, function(err) {

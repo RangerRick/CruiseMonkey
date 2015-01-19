@@ -16,7 +16,7 @@
 		'angularFileUpload',
 		'angularLocalStorage'
 	])
-	.factory('Twitarr', ['$q', '$rootScope', '$timeout', '$interval', '$http', '$cordovaFile', '$upload', 'storage', 'config.background.interval', 'config.request.timeout', 'config.twitarr.enable-cachebusting', 'LocalNotifications', 'SettingsService', 'UserService', function($q, $rootScope, $timeout, $interval, $http, $cordovaFile, $upload, storage, backgroundInterval, requestTimeout, enableCachebusting, LocalNotifications, SettingsService, UserService) {
+	.factory('Twitarr', ['$q', '$rootScope', '$timeout', '$interval', '$http', '$cordovaFileTransfer', '$upload', 'storage', 'config.background.interval', 'config.request.timeout', 'config.twitarr.enable-cachebusting', 'LocalNotifications', 'SettingsService', 'UserService', function($q, $rootScope, $timeout, $interval, $http, $cordovaFileTransfer, $upload, storage, backgroundInterval, requestTimeout, enableCachebusting, LocalNotifications, SettingsService, UserService) {
 		console.log('Initializing Twit-arr API.');
 
 		var scope = $rootScope.$new();
@@ -366,10 +366,10 @@
 					deferred.notify(progress);
 				});
 			} else if (FileTransfer) {
-				$cordovaFile.uploadFile(url, image, {
+				$cordovaFileTransfer.upload(url, image, {
 					'fileKey': 'files',
 					'fileName': 'image.jpg',
-				}).then(function(res) {
+				}, true).then(function(res) {
 					deferred.resolve(res);
 				}, function(err) {
 					console.log('Failed postPhoto(): ' + angular.toJson(err));
