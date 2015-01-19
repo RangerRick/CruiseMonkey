@@ -23,7 +23,7 @@
 					<span>
 					<div class="summary" ng-bind-html="highlight(entry.getSummary(), searchString['all'])"></div>
 					<div class="time">Time: {{entry.getDisplayTime()}}</div>
-					<div class="createdBy" ng-if="entry.getUsername() != 'official'" ng-bind-html="'Created By: ' + entry.getUsername()"></div>
+					<div class="createdBy" ng-if="entry.getUsername() != 'official'" ng-bind-html="'Created By: ' + entry.getUsername()" ng-click="openUser(entry.getUsername(), $event)"></div>
 					<div class="location" ng-if="entry.getLocation()">Location: <span ng-bind-html="highlight(entry.getLocation(), searchString['all'])"></span></div>
 					<div class="description" ng-if="entry.getDescription()" ng-bind-html="highlight(entry.getDescription(), searchString['all'])"></div>
 					</span>
