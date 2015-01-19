@@ -2,6 +2,7 @@ function CMDeck(floor, amenities) {
 	'use strict';
 	var self = this;
 
+	self.type = 'deck';
 	self._floor = floor;
 	self._amenities = [];
 
@@ -22,6 +23,11 @@ CMDeck.prototype.getAmenities = function() {
 	return this._amenities;
 };
 
+CMDeck.prototype.matches = function(searchString) {
+	'use strict';
+	return true;
+};
+
 CMDeck.prototype.toString = function() {
 	'use strict';
 	var ret = 'CMDeck[floor=' + this._floor + ',amenities=[';
@@ -39,6 +45,7 @@ function CMAmenity(id, summary, icon, category, description) {
 	'use strict';
 	var self = this;
 
+	self.type = 'amenity';
 	self._id = id;
 	self._summary = summary;
 	self._icon = icon;
@@ -232,6 +239,7 @@ CMAmenity.prototype.toString = function() {
 			'getAmenities': function() {
 				var amenities = [];
 				angular.forEach(_deckInfo, function(deck, index) {
+					amenities.push(deck);
 					angular.forEach(deck.getAmenities(), function(amenity, index) {
 						amenities.push(amenity);
 					});

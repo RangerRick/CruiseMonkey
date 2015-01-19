@@ -160,7 +160,7 @@
 
 			/* switch out the defaults with the shipboard ones */
 			defaultValue['database.root'] = 'http://jcc5.rccl.com/db/';
-			defaultValue['database.name'] = 'cruisemonkey';
+			defaultValue['database.name'] = 'cruisemonkey-2015';
 			defaultValue['twitarr.root']  = 'http://jcc5.rccl.com/';
 
 			/* now override the user's settings */

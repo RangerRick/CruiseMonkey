@@ -4,13 +4,23 @@
 	angular.module('cruisemonkey.controllers.Amenities', ['angularLocalStorage', 'cruisemonkey.Decks'])
 	.filter('amenityFilter', function() {
 		return function(input, searchString) {
-			var array = [];
+			var allArray = [], ret = [];
 			angular.forEach(input, function(obj, index) {
 				if (obj.matches(searchString)) {
-					array.push(obj);
+					allArray.push(obj);
 				}
 			});
-			return array;
+			for (var i=0; i < allArray.length; i++) {
+				if (allArray[i+1] && allArray[i] instanceof CMDeck && allArray[i+1] instanceof CMDeck) {
+					// this is a deck header, and the next is a deck header, do nothing
+				} else {
+					ret.push(allArray[i]);
+				}
+			}
+			if (ret.length > 0 && ret[ret.length-1] instanceof CMDeck) {
+				ret.pop();
+			}
+			return ret;
 		};
 	})
 	.controller('CMAmenitiesCtrl', ['storage', '$rootScope', '$scope', '$timeout', '$location', '$ionicScrollDelegate', 'DeckService', function(storage, $rootScope, $scope, $timeout, $location, $ionicScrollDelegate, DeckService) {
@@ -33,15 +43,6 @@
 
 		$scope.$on('$ionicView.loaded', function(ev, info) {
 			$scope.amenities = DeckService.getAmenities();
-
-			$scope.headerAmenities = {};
-			var lastDeck = 0;
-			angular.forEach($scope.amenities, function(amenity, index) {
-				if (amenity.getDeck() !== lastDeck) {
-					$scope.headerAmenities[amenity.getUniqueId()] = true;
-				}
-				lastDeck = amenity.getDeck();
-			});
 
 			$scope.openAmenity = function(ev, amenity) {
 				if (amenity.getId()) {
