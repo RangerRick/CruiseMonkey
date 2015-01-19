@@ -328,6 +328,17 @@
 				};
 			}
 
+			var onError = function(err) {
+				$rootScope.$evalAsync(function() {
+					console.log('NewTweet.doPhoto: ERROR: ' + angular.toJson(err));
+					$ionicPopup.alert({
+						title: 'Failed',
+						template: 'An error occurred while uploading your photo.'
+					});
+					delete modal.scope.photoUploading;
+				});
+			};
+
 			var doPhoto = function(type) {
 				var options = angular.copy(cameraOptions);
 				options.sourceType = type;
@@ -336,36 +347,21 @@
 				}
 				$cordovaCamera.getPicture(options).then(function(results) {
 					$window.resolveLocalFileSystemURL(results, function(path) {
-						console.log('matched path: ' + path.toURL());
-						//modal.scope.photo = path.toURL();
-						Twitarr.postPhoto(path.toURL()).then(function(res) {
-							//console.log('res=' + angular.toJson(res));
-							var response = angular.fromJson(res.response);
-							modal.scope.tweet.photo = response.files[0].photo;
-							delete modal.scope.photoUploading;
-						}, function(err) {
-							$ionicPopup.alert({
-								title: 'Failed',
-								template: 'An error occurred while uploading your photo.'
+						$rootScope.$evalAsync(function() {
+							console.log('matched path: ' + path.toURL());
+							Twitarr.postPhoto(path.toURL()).then(function(res) {
+								var response = angular.fromJson(res.response);
+								modal.scope.tweet.photo = response.files[0].photo;
+								delete modal.scope.photoUploading;
+							},
+							onError,
+							function(progress) {
+								console.log('progress=' + angular.toJson(progress));
+								modal.scope.photoUploading = progress;
 							});
-							delete modal.scope.photoUploading;
-						}, function(progress) {
-							console.log('progress=' + angular.toJson(progress));
-							modal.scope.photoUploading = progress;
 						});
-					}, function(err) {
-						console.log('err='+err);
-						$ionicPopup.alert({
-							title: 'Failed',
-							template: 'An error occurred while processing your photo.'
-						});
-					});
-				}, function(err) {
-					$ionicPopup.alert({
-						title: 'Failed',
-						template: 'An error occurred while processing your photo: ' + err
-					});
-				});
+					}, onError);
+				}, onError);
 			};
 
 			modal.scope.closeModal = function() {
@@ -392,8 +388,11 @@
 			modal.scope.twitarrRoot = SettingsService.getTwitarrRoot();
 
 			modal.scope.uploadPic = function(pic) {
-				console.log('Upload Picture:',pic);
-				Twitarr.postPhoto(pic[0]).then(function(res) {
+				if (pic instanceof Array) {
+					pic = pic[0];
+				}
+				console.log('Upload Picture: ' + angular.toJson(pic));
+				Twitarr.postPhoto(pic).then(function(res) {
 					//console.log('res=' + angular.toJson(res));
 					modal.scope.tweet.photo = res.data.files[0].photo;
 					delete modal.scope.photoUploading;
@@ -407,6 +406,11 @@
 					//console.log('progress=' + angular.toJson(progress));
 					modal.scope.photoUploading = progress;
 				});
+			};
+
+			modal.scope.fileSelected = function(files, evt) {
+				console.log('File(s) selected: ' + angular.toJson(files));
+				modal.scope.uploadPic(files);
 			};
 
 			newTweetModal = modal;

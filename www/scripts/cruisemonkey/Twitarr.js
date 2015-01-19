@@ -350,36 +350,20 @@
 
 			var deferred = $q.defer();
 
-			console.log('Twitarr.postPhoto(): url=' + url +', image=',image);
-			if (image instanceof File) {
-				$upload.upload({
-					'url': url,
-					'file': image,
-					'fileFormDataName': 'files',
-					'fileName': 'image.jpg',
-				}).then(function(res) {
-					deferred.resolve(res);
-				}, function(err) {
-					console.log('Failed postPhoto(): ' + angular.toJson(err));
-					deferred.reject(err);
-				}, function(progress) {
-					deferred.notify(progress);
-				});
-			} else if (FileTransfer) {
-				$cordovaFileTransfer.upload(url, image, {
-					'fileKey': 'files',
-					'fileName': 'image.jpg',
-				}, true).then(function(res) {
-					deferred.resolve(res);
-				}, function(err) {
-					console.log('Failed postPhoto(): ' + angular.toJson(err));
-					deferred.reject(err);
-				}, function(progress) {
-					deferred.notify(progress);
-				});
-			} else {
-				deferred.reject('File upload not supported.');
-			}
+			console.log('Twitarr.postPhoto(): url=' + url +', image=' + image);
+			$upload.upload({
+				'url': url,
+				'file': image,
+				'fileFormDataName': 'files',
+				'fileName': 'image.jpg',
+			}).then(function(res) {
+				deferred.resolve(res);
+			}, function(err) {
+				console.log('Failed postPhoto(): ' + angular.toJson(err));
+				deferred.reject(err);
+			}, function(progress) {
+				deferred.notify(progress);
+			});
 
 			return deferred.promise;
 		};
