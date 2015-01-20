@@ -142,6 +142,14 @@
 			$ionicScrollDelegate.$getByHandle('seamail').scrollTop(true);
 		};
 
+		$scope.updateUserImage = function(username) {
+			if (!$scope.userImages[username]) {
+				Images.get($scope.twitarrRoot + 'api/v2/user/photo/' + username).then(function(url) {
+					$scope.userImages[username] = url;
+				});
+			}
+		};
+
 		$scope.doRefresh = function() {
 			console.log('Refreshing seamail.');
 			$scope.twitarrRoot = SettingsService.getTwitarrRoot();
@@ -150,22 +158,10 @@
 					var seen = {}, i, j, users = [];
 					for (i=0; i < res.seamail_meta.length; i++) {
 						for (j=0; j < res.seamail_meta[i].users.length; j++) {
-							var username = res.seamail_meta[i].users[j].username;
-							seen[username] = 1;
+							var user = res.seamail_meta[i].users[j];
+							$scope.updateUserImage(user.username);
 						}
 					}
-					for (var u in seen) {
-						if (!$scope.userImages[u]) {
-							users.push(u);
-						}
-					}
-					Images.getAll(users.map(function(username) {
-						return $scope.twitarrRoot + 'api/v2/user/photo/' + username;
-					})).then(function(res) {
-						for (i=0; i < users.length; i++) {
-							$scope.userImages[users[i]] = res[i];
-						}
-					});
 					$scope.seamails = res.seamail_meta;
 				} else {
 					$scope.seamails = [];
