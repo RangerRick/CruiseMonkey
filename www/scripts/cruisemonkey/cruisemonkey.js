@@ -409,8 +409,10 @@
 			};
 
 			modal.scope.fileSelected = function(files, evt) {
-				console.log('File(s) selected: ' + angular.toJson(files));
-				modal.scope.uploadPic(files);
+				$timeout(function() {
+					console.log('File(s) selected: ' + angular.toJson(files));
+					modal.scope.uploadPic(files);
+				}, 10);
 			};
 
 			newTweetModal = modal;
@@ -420,6 +422,7 @@
 			newTweetModal.scope.canCamera = (navigator.camera? true:false);
 			if (replyTo) {
 				var text = '';
+				text += '@' + replyTo.author + ' ';
 				if (replyTo.mentions) {
 					for (var i=0; i < replyTo.mentions.length; i++) {
 						text += '@' + replyTo.mentions[i] + ' ';
