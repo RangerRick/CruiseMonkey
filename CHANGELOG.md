@@ -1,3 +1,20 @@
+<a name="5.0.1"</a>
+## 5.0.1 (2015-01-20)
+
+
+#### Bug Fixes
+
+
+* **events**  events with carriage returns display correctly ((365ea62d))
+* **performance**  clean up navigation in event views ((1a130dcc))
+
+#### Features
+
+
+* **twitarr**  click an image in twitarr to view it ((d8a07bed))
+
+
+
 <a name="5.0.0"</a>
 ## 5.0.0 (2015-01-19)
 
