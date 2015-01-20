@@ -4,9 +4,8 @@
 	/*global ionic: true*/
 
 	angular.module('cruisemonkey.controllers.Menu', [
-		'cruisemonkey.Twitarr'
 	])
-	.controller('CMMenuCtrl', ['$scope', '$state', '$templateCache', '$ionicModal', '$cordovaKeyboard', 'storage', 'UserService', 'Twitarr', function($scope, $state, $templateCache, $ionicModal, $cordovaKeyboard, storage, UserService, Twitarr) {
+	.controller('CMMenuCtrl', ['$scope', '$state', '$timeout', '$ionicModal', 'storage', 'UserService', function($scope, $state, $timeout, $ionicModal, storage, UserService) {
 		console.log('CMMenuCtrl initializing.');
 
 		var loginModal;
