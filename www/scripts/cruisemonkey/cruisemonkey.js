@@ -469,7 +469,7 @@
 		};
 
 		var regexpEscape = function(s) {
-			return s.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
+			return s.replace(/[-\/\\^$*+?.()|[\]{}]/gm, '\\$&');
 		};
 
 		var highlightReplace = function(match) {

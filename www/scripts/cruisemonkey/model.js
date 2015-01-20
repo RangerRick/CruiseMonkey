@@ -129,6 +129,10 @@ CMEvent.prototype.setSummary = function(summary) {
 	this._rawdata.summary = summary;
 };
 
+CMEvent.prototype.getFormattedDescription = function() {
+	'use strict';
+	return this._rawdata.description.replace(/[\n\r]/gm, '<br>');
+};
 CMEvent.prototype.getDescription = function() {
 	'use strict';
 	return this._rawdata.description;
