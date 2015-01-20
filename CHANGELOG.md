@@ -1,3 +1,14 @@
+<a name="5.0.2"</a>
+## 5.0.2 (2015-01-20)
+
+
+#### Bug Fixes
+
+
+* **seamail**  wrap seamail message text ((c0d02579))
+
+
+
 <a name="5.0.1"</a>
 ## 5.0.1 (2015-01-20)
 
