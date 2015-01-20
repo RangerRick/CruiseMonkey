@@ -7,7 +7,6 @@
 	/* global removeFromArray: true */
 	/* global arrayIncludes: true */
 	/* global File: true */
-	/* global FileTransfer: true */
 
 	angular.module('cruisemonkey.Twitarr', [
 		'cruisemonkey.Config',
@@ -16,7 +15,7 @@
 		'angularFileUpload',
 		'angularLocalStorage'
 	])
-	.factory('Twitarr', ['$q', '$rootScope', '$timeout', '$interval', '$http', '$cordovaFileTransfer', '$upload', 'storage', 'config.request.timeout', 'config.twitarr.enable-cachebusting', 'LocalNotifications', 'SettingsService', 'UserService', function($q, $rootScope, $timeout, $interval, $http, $cordovaFileTransfer, $upload, storage, requestTimeout, enableCachebusting, LocalNotifications, SettingsService, UserService) {
+	.factory('Twitarr', ['$q', '$rootScope', '$timeout', '$interval', '$http', '$upload', 'storage', 'config.request.timeout', 'config.twitarr.enable-cachebusting', 'LocalNotifications', 'SettingsService', 'UserService', function($q, $rootScope, $timeout, $interval, $http, $upload, storage, requestTimeout, enableCachebusting, LocalNotifications, SettingsService, UserService) {
 		console.log('Initializing Twit-arr API.');
 
 		var scope = $rootScope.$new();

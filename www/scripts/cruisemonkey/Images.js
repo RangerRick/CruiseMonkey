@@ -27,7 +27,7 @@
 			}
 		};
 	}])
-	.factory('Images', ['$q', '$rootScope', '$http', '$interval', '$window', '$cordovaFile', '$cordovaFileTransfer', 'Cordova', function($q, $rootScope, $http, $interval, $window, $cordovaFile, $cordovaFileTransfer, Cordova) {
+	.factory('Images', ['$q', '$rootScope', '$http', '$interval', '$window', '$cordovaFile', 'Cordova', function($q, $rootScope, $http, $interval, $window, $cordovaFile, Cordova) {
 		console.log('Images: Initializing image cache.');
 
 		var inFlight = {};
