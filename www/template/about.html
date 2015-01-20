@@ -13,11 +13,11 @@
 			<p>CruiseMonkey is built on the following tools:</p>
 
 			<ul style="list-style: disc; padding-left: 10px">
-				<li> <a ng-click="goToSite('http://cordova.apache.org/')">Cordova</a> </li>
-				<li> <a ng-click="goToSite('http://angularjs.org/')">AngularJS</a> </li>
-				<li> <a ng-click="goToSite('http://pouchdb.com/')">PouchDB</a> </li>
-				<li> <a ng-click="goToSite('http://ionicframework.com/')">Ionic Framework</a> </li>
-				<li> <a ng-click="goToSite('http://www.beyondships.com/')">Beyond Ships</a> (Portions of the Amenities descriptions come from this site.)</li>
+				<li> <a ng-click="openUrl('http://cordova.apache.org/')">Cordova</a> </li>
+				<li> <a ng-click="openUrl('http://angularjs.org/')">AngularJS</a> </li>
+				<li> <a ng-click="openUrl('http://pouchdb.com/')">PouchDB</a> </li>
+				<li> <a ng-click="openUrl('http://ionicframework.com/')">Ionic Framework</a> </li>
+				<li> <a ng-click="openUrl('http://www.beyondships.com/')">Beyond Ships</a> (Portions of the Amenities descriptions come from this site.)</li>
 			</ul>
 		</div>
 		<div class="item item-text-wrap">
@@ -32,6 +32,6 @@
 		</div>
 	</ion-content>
 	<ion-footer-bar class="bar-dark">
-	<p class="title" style="font-size: smaller">Copyright &copy; 2012-2015, <a ng-click="goToSite('http://www.raccoonfink.com/')">Benjamin Reed</a>.</p>
+	<p class="title" style="font-size: smaller">Copyright &copy; 2012-2015, <a ng-click="openUrl('http://www.raccoonfink.com/')">Benjamin Reed</a>.</p>
 	</ion-footer-bar>
 </ion-view>
