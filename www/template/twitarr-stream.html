@@ -19,13 +19,13 @@
 			</ion-item>
 			<a ng-repeat="entry in entries" class="item item-avatar item-text-wrap" id="{{entry.id}}">
 				<cm-image url="twitarrRoot + 'api/v2/user/photo/' + entry.author" ng-click="openUser(entry.author, $event)"></cm-image>
-				<span class="item-note commands" ng-if="entry.author !== user.username &amp;&amp; user.loggedIn">
+				<span class="item-note commands">
 					<button ng-class="'button button-clear button-small icon ' + (entry.likes &amp;&amp; entry.likes.indexOf(user.username) >= 0? 'ion-ios-heart':'ion-ios-heart-outline')" ng-click="toggleLike(entry)"></button>
 					<button class="button button-clear button-small icon ion-reply" ng-click="newTweet(entry)"></button>
 				</span>
 				<h2 ng-bind-html="users[entry.author]? users[entry.author].display_name : entry.author" ng-click="openUser(entry.author, $event)"></h2>
 				<p twitter-html="entry.text"></p>
-				<cm-image url="twitarrRoot + 'photo/medium_thumb/' + entry.photo.id" ng-click="openUser(entry.author, $event)" ng-if="entry.photo" style="width: 100%; max-width: 400px"></cm-image>
+				<cm-image url="twitarrRoot + 'photo/small_thumb/' + entry.photo.id" ng-click="openTweet(entry)" ng-if="entry.photo" style="width: 100%; max-width: 400px"></cm-image>
 				<p class="timeframe">{{entry.timestamp.fromNow()}}</p>
 			</a>
 		</ion-list>

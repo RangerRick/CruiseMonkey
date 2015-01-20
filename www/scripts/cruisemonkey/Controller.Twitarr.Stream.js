@@ -88,13 +88,20 @@
 	])
 	.directive('twitterHtml', ['$parse', '$compile', function($parse, $compile) {
 		return function(scope, element, attr) {
-			var text = translateText(scope.entry.text);
+			var text;
+			if (scope.openedTweet) {
+				text = translateText(scope.openedTweet.text);
+			} else if (scope.entry) {
+				text = translateText(scope.entry.text);
+			} else {
+				return;
+			}
 			//console.log('twitterHtml.text=',text);
 			element.html(text);
 			$compile(element.contents())(scope);
 		};
 	}])
-	.controller('CMTwitarrStreamCtrl', ['$q', '$scope', '$timeout', '$ionicLoading', '$ionicScrollDelegate', 'Images', 'SettingsService', 'Twitarr', 'UserService', function($q, $scope, $timeout, $ionicLoading, $ionicScrollDelegate, Images, SettingsService, Twitarr, UserService) {
+	.controller('CMTwitarrStreamCtrl', ['$q', '$scope', '$timeout', '$ionicLoading', '$ionicModal', '$ionicScrollDelegate', 'Images', 'SettingsService', 'Twitarr', 'UserService', function($q, $scope, $timeout, $ionicLoading, $ionicModal, $ionicScrollDelegate, Images, SettingsService, Twitarr, UserService) {
 		console.log('Initializing CMTwitarrStreamCtrl');
 
 		$scope.users = {};
@@ -138,6 +145,29 @@
 			}
 		};
 
+		$ionicModal.fromTemplateUrl('template/tweet-detail.html', {
+			scope: $scope,
+			animation: 'slide-in-up'
+		}).then(function(modal) {
+			$scope.tweetModal = modal;
+		});
+
+		$scope.closeTweet = function() {
+			$scope.tweetModal.hide();
+			$scope.openedTweet = undefined;
+			$scope.openedPhoto = 'images/blank.gif';
+		};
+
+		$scope.openTweet = function(tweet) {
+			console.log('Opening tweet:',tweet);
+			$scope.twitarrRoot = SettingsService.getTwitarrRoot();
+			$scope.openedTweet = tweet;
+			Images.get($scope.twitarrRoot + 'photo/full/' + tweet.photo.id).then(function(url) {
+				$scope.openedPhoto = url;
+			});
+			$scope.tweetModal.show();
+		};
+
 		$scope.getImage = function(url) {
 			return Images.get(url);
 		};
@@ -179,22 +209,6 @@
 				tweets[i].timestamp = moment(tweets[i].timestamp);
 				tweets[i].text = translateText(tweets[i].text);
 				$scope.entries.push(tweets[i]);
-				/*
-				var users = [];
-				if (!$scope.users[tweets[i].author]) {
-					users.push(tweets[i].author);
-				}
-				if (tweets[i].likes) {
-					for (j=0; j < tweets[i].likes.length; j++) {
-						if (!$scope.users[tweets[i].likes[j]]) {
-							users.push(tweets[i].likes[j]);
-						}
-					}
-				}
-				for (k=0; k < users.length; k++) {
-					lookupUser(users[k]);
-				}
-				*/
 			}
 			if ($scope.entries.length > 500) {
 				$scope.entries = $scope.entries.slice(0, 500);
