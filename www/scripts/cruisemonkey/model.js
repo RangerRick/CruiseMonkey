@@ -285,10 +285,10 @@ CMEvent.prototype.getDisplayTime = function() {
 	'use strict';
 	var start = this.getStart(), end, ret;
 	if (start) {
-		ret = start.format('hh:mma');
+		ret = start.format('h:mma');
 		end = this.getEnd();
 		if (end) {
-			ret += '-' + end.format('hh:mma');
+			ret += '-' + end.format('h:mma');
 		}
 		return ret;
 	}
