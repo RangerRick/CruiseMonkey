@@ -47,7 +47,9 @@
 			} else if (info.stateName === 'app.events') {
 				var newState = $scope.eventType? ('app.events.' + $scope.eventType) : 'app.events.official';
 				console.log('Menu: app.events navigated, going to ' + newState + ' instead.');
-				$state.go(newState);
+				$timeout(function() {
+					$state.go(newState);
+				});
 			}
 		});
 

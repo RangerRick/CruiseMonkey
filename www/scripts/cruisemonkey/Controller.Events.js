@@ -519,8 +519,6 @@
 			if (!$scope.searchString || !$scope.searchString.official) {
 				$scope.searchString = defaultSearchString;
 			}
-		});
-		$scope.$on('$ionicView.beforeEnter', function(ev, info) {
 			_refreshEvents();
 		});
 	}]);
