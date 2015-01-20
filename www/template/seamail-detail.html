@@ -25,7 +25,7 @@
 			</span>
 		</ion-scroll>
 		<ion-list>
-			<ion-item ng-repeat="message in seamail.messages track by $index" class="item item-avatar">
+			<ion-item ng-repeat="message in seamail.messages track by $index" class="item item-avatar item-text-wrap">
 				<img ng-src="{{userImages[message.author]}}" title="{{message.display_name}}" />
 				<h2>{{message.display_name}}</h2>
 				<p>{{message.text}}</p>
