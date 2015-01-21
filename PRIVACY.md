@@ -6,7 +6,7 @@ This privacy policy governs your use of the software application CruiseMonkey (_
 User Provided Information
 -------------------------
 
-When you use the Application, you generally provide (a) your name, user name, password and other information, and; (e) information you enter into our system when using the Application, such as contact information and event, tweet, and seamail content.
+When you use the Application, you generally provide (a) your name, user name, password and other information, and; (b) information you enter into our system when using the Application, such as contact information and event, tweet, and seamail content.
 
 Does the Application collect precise real time location information of the device?
 ----------------------------------------------------------------------------------
