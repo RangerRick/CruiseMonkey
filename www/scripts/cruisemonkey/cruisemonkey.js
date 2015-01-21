@@ -503,14 +503,18 @@
 			});
 		};
 
-		storage.bind($rootScope, 'currentView', {
-			'storeName': 'cruisemonkey.navigation.current-view'
-		});
+		var lastView = storage.get('cruisemonkey.navigation.current-view');
+		var updateCurrentView = function(currentView) {
+			if (currentView === undefined) {
+				storage.remove(currentView);
+			} else {
+				storage.set('cruisemonkey.navigation.current-view', currentView);
+			}
+		};
 
 		/* restore previous view */
-		var lastView = $rootScope.currentView;
 		$rootScope.$on('$ionicView.enter', function(ev, info) {
-			$rootScope.currentView = info.stateName;
+			updateCurrentView(info.stateName);
 		});
 
 		if (lastView && lastView !== '') {

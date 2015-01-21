@@ -28,15 +28,14 @@
 	.controller('CMAmenitiesCtrl', ['storage', '$rootScope', '$scope', '$sce', '$timeout', '$location', '$ionicScrollDelegate', 'DeckService', function(storage, $rootScope, $scope, $sce, $timeout, $location, $ionicScrollDelegate, DeckService) {
 		console.log('Initializing CMAmenitiesCtrl');
 
-		storage.bind($scope, 'searchString', {
-			'storeName': 'cruisemonkey.search.amenities'
-		});
+		$scope.searchString = storage.get('cruisemonkey.search.amenities');
 
 		$scope.scrollTop = function() {
 			$ionicScrollDelegate.$getByHandle('amenities').scrollTop(true);
 		};
 
 		$scope.onSearchChanged = function(searchString) {
+			storage.set('cruisemonkey.search.amenities', $scope.searchString);
 			var delegate = $ionicScrollDelegate.$getByHandle('amenities');
 			if (delegate.getScrollPosition().top !== 0) {
 				delegate.scrollTop(false);

@@ -14,10 +14,11 @@
 		$scope.user = UserService.get();
 
 		$scope.unreadSeamail = 0;
-		storage.bind($scope, 'lastTab', {
-			'defaultValue': 'app.events.official',
-			'storeName': 'cruisemonkey.menu.last-tab'
-		});
+
+		$scope.lastTab = storage.get('cruisemonkey.menu.last-tab');
+		if (!$scope.lastTab) {
+			$scope.lastTab = 'app.events.official';
+		}
 
 		$scope.logIn = function($event) {
 			loginModal.show();
@@ -43,6 +44,7 @@
 			//console.log('Menu: beforeEnter:',ev,info);
 			if (info.stateName && info.stateName.startsWith('app.events.')) {
 				$scope.lastTab = info.stateName;
+				storage.put('cruisemonkey.menu.last-tab', info.stateName);
 			} else if (info.stateName === 'app.events') {
 				var newState = $scope.eventType? ('app.events.' + $scope.eventType) : 'app.events.official';
 				console.log('Menu: app.events navigated, going to ' + newState + ' instead.');

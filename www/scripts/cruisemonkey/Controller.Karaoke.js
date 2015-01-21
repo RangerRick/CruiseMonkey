@@ -56,14 +56,14 @@
 	.controller('CMKaraokeSearchCtrl', ['storage', '$q', '$scope', '$http', '$timeout', '$interval', '$window', '$ionicLoading', '$ionicScrollDelegate', '_database', 'Cordova', 'SettingsService', function(storage, $q, $scope, $http, $timeout, $interval, $window, $ionicLoading, $ionicScrollDelegate, _database, Cordova, SettingsService) {
 		console.log('Initializing CMKaraokeSearchCtrl');
 
-		storage.bind($scope, 'searchString', {
-			'storeName': 'cruisemonkey.karaoke-search'
-		});
-
-		storage.bind($scope, 'lastUpdated', {
-			'defaultValue': moment().valueOf(),
-			'storeName': 'cruisemonkey.karaoke-last-updated'
-		});
+		$scope.searchString = storage.get('cruisemonkey.karaoke-search');
+		var updateSearchString = function() {
+			if ($scope.searchString === undefined) {
+				storage.remove($scope.searchString);
+			} else {
+				storage.set('cruisemonkey.karaoke-search', $scope.searchString);
+			}
+		};
 
 		var sortSongs = function(a, b) {
 			var comp = a.artist.localeCompare(b.artist);
@@ -100,6 +100,7 @@
 		};
 
 		$scope.onSearchChanged = function(searchString) {
+			updateSearchString();
 			updateEntries();
 			var delegate = $ionicScrollDelegate.$getByHandle('karaoke-scroll');
 			if (delegate.getScrollPosition().top !== 0) {

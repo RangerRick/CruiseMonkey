@@ -9,10 +9,19 @@
 	.controller('CMDeckListCtrl', ['storage', '$scope', '$ionicScrollDelegate', '$ionicSlideBoxDelegate', '$timeout', '$location', '$document', function(storage, $scope, $ionicScrollDelegate, $ionicSlideBoxDelegate, $timeout, $location, $document) {
 		console.log('Initializing CMDeckListCtrl');
 
-		storage.bind($scope, 'deck', {
-			'defaultValue': 2,
-			'storeName': 'cruisemonkey.deck'
-		});
+		$scope.deck = storage.get('cruisemonkey.deck');
+		if (!$scope.deck) {
+			$scope.deck = 2;
+		}
+
+		var updateDeck = function(deck) {
+			$scope.deck = deck;
+			if (deck === undefined) {
+				storage.remove('cruisemonkey.deck');
+			} else {
+				storage.set('cruisemonkey.deck', deck);
+			}
+		};
 
 		$scope.scrollTop = function() {
 			var delegate = $ionicScrollDelegate.$getByHandle('deck-list');
@@ -22,7 +31,7 @@
 		$scope.showButtons = true;
 
 		if ($scope.deck !== undefined && isNaN($scope.deck)) {
-			$scope.deck = parseInt($scope.deck, 10);
+			updateDeck(parseInt($scope.deck, 10));
 		}
 
 		$scope.currentSlide = $scope.deck - 2;
@@ -80,7 +89,7 @@
 
 		$scope.slideChanged = function(index) {
 			console.log('CMDeckListCtrl: slideBox.slideChanged: ' + index);
-			$scope.deck = index + 2;
+			updateDeck(index + 2);
 		};
 
 		updateUI();

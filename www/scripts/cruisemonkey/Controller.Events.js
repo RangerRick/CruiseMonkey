@@ -379,11 +379,20 @@
 			});
 		};
 
+		var updateSearchString = function(searchString) {
+			if (searchString === undefined) {
+				storage.remove('cruisemonkey.events.search-string');
+			} else {
+				storage.set('cruisemonkey.events.search-string', searchString);
+			}
+		};
+
 		$scope.onSearchChanged = function(searchString) {
 			var delegate = $ionicScrollDelegate.$getByHandle($scope.eventType + '-event-scroll');
 			if (delegate.getScrollPosition().top !== 0) {
 				delegate.scrollTop(false);
 			}
+			updateSearchString(searchString);
 		};
 
 		$scope.scrollTop = function() {
@@ -491,7 +500,9 @@
 			_refreshDelayed(100);
 		});
 		$scope.$on('cruisemonkey.database.change', function(ev, db, doc) {
-			_refreshDelayed(100);
+			if (db.name.endsWith('events')) {
+				_refreshDelayed(100);
+			}
 		});
 
 		/** Ionic Events **/
@@ -512,12 +523,10 @@
 				'all': '',
 				'my': ''
 			};
-			storage.bind($scope, 'searchString', {
-				'defaultValue': defaultSearchString,
-				'storeName': 'cruisemonkey.events.search-string'
-			});
+			$scope.searchString = storage.get('cruisemonkey.events.search-string');
 			if (!$scope.searchString || !$scope.searchString.official) {
 				$scope.searchString = defaultSearchString;
+				updateSearchString(defaultSearchString);
 			}
 			_refreshEvents();
 		});

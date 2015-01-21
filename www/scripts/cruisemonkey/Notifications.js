@@ -17,10 +17,14 @@
 		console.log('Initializing local notifications service.');
 
 		var scope = $rootScope.$new();
-		storage.bind(scope, 'seen', {
-			'storeName': 'cruisemonkey.notifications',
-			'defaultValue': {}
-		});
+		scope.seen = storage.get('cruisemonkey.notifications') || {};
+		var updateSeen = function() {
+			if (scope.seen === undefined) {
+				storage.remove('cruisemonkey.notifications');
+			} else {
+				storage.set('cruisemonkey.notifications', scope.seen);
+			}
+		};
 
 		scope.isForeground = true;
 		scope.$on('cruisemonkey.app.paused', function() {
@@ -112,6 +116,7 @@
 						console.log('Notifications: posted: ' + options.id);
 						printObj(res);
 						scope.seen[data.original_id] = notif.id;
+						updateSeen();
 						deferred.resolve(res);
 					}, function(err) {
 						console.log('Notifications: failed to post ' + options.id);
@@ -121,6 +126,7 @@
 				} else {
 					$rootScope.$broadcast('cruisemonkey.notify.toast', { message: notif.message });
 					scope.seen[data.original_id] = notif.id;
+					updateSeen();
 					deferred.resolve();
 				}
 			});

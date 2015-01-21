@@ -19,14 +19,21 @@
 		console.log('Initializing Twit-arr API.');
 
 		var scope = $rootScope.$new();
-		storage.bind(scope, 'lastStatus', {
-			'storeName': 'cruisemonkey.twitarr.status',
-			'defaultValue': {
+		scope.lastStatus = storage.get('cruisemonkey.twitarr.status');
+		if (!scope.lastStatus) {
+			scope.lastStatus = {
 				'mention_ids': [],
 				'seamail_ids': [],
 				'announcement_timestamps': []
+			};
+		}
+		var updateLastStatus = function() {
+			if (scope.lastStatus === undefined) {
+				storage.remove('cruisemonkey.twitarr.status');
+			} else {
+				storage.set('cruisemonkey.twitarr.status', scope.lastStatus);
 			}
-		});
+		};
 
 		if (!scope.lastStatus.mention_ids) {
 			scope.lastStatus.mention_ids = [];
@@ -40,6 +47,7 @@
 		if (scope.lastStatus.announcement_ids) {
 			delete scope.lastStatus.announcement_ids;
 		}
+		updateLastStatus();
 
 		var call = function(type, url, params, data) {
 			var options = {
@@ -526,6 +534,7 @@
 					}
 
 					scope.lastStatus = seen;
+					updateLastStatus();
 					deferred.resolve(true);
 				});
 			} else {

@@ -368,7 +368,7 @@
 				var persistOptions = {
 					url: from.name,
 					maxTimeout: 30000,
-					startingTimeout: 1000,
+					startingTimeout: 5000,
 					manual: true,
 					from: {
 						opts: angular.extend({}, {live:true}, opts)

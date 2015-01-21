@@ -11,10 +11,14 @@
 	.factory('SeamailService', ['$q', '$rootScope', '$timeout', '$interval', '$http', 'SettingsService', 'UserService', 'storage', function($q, $rootScope, $timeout, $interval, $http, SettingsService, UserService, storage) {
 		var interval = null;
 
-		storage.bind($rootScope, 'seamailCount', {
-			'defaultValue': 0,
-			'storeName': 'cruisemonkey.seamail.count'
-		});
+		$rootScope.seamailCount = storage.get('cruisemonkey.seamail.count') || 0;
+		var updateSeamailCount = function() {
+			if ($rootScope.seamailCount === undefined) {
+				storage.remove('cruisemonkey.seamail.count');
+			} else {
+				storage.set('cruisemonkey.seamail.count', $rootScope.seamailCount);
+			}
+		};
 
 		var getSeamailCount = function() {
 			if (!UserService.loggedIn()) {
@@ -49,6 +53,7 @@
 						}
 					}
 					$rootScope.seamailCount = data.email_count;
+					updateSeamailCount();
 				}
 			})
 			.error(function(data, status, headers, config) {

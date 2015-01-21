@@ -22,10 +22,10 @@
 	.factory('EventService', ['$q', '$rootScope', '$timeout', '$location', 'storage', 'uuid4', '_database', 'UserService', 'SettingsService', function($q, $rootScope, $timeout, $location, storage, uuid4, _database, UserService, SettingsService) {
 		console.log('EventService: Initializing EventService.');
 
-		storage.bind($rootScope, 'lastModified', {
-			'defaultValue': 0,
-			'storeName': 'cruisemonkey.lastModified'
-		});
+		$rootScope.lastModified = storage.get('cruisemonkey.lastModified') || 0;
+		var updateLastModified = function() {
+			storage.set('cruisemonkey.lastModified', $rootScope.lastModified);
+		};
 
 		$rootScope.$on('cruisemonkey.persist.connect', function(ev, db) {
 			console.log('persistence connected: ' + db.name);
@@ -36,6 +36,7 @@
 		$rootScope.$on('cruisemonkey.database.uptodate', function(ev, db) {
 			console.log('persistence up to date: ' + db.name);
 			$rootScope.lastModified = moment().valueOf();
+			updateLastModified();
 		});
 		$rootScope.$on('cruisemonkey.database.complete', function(ev, db) {
 			console.log('persistence complete: ', db.name);
@@ -44,6 +45,7 @@
 			if (db.name.endsWith('events')) {
 				console.log('persistence changed: ' + db.name + ': ' + doc.id);
 				$rootScope.lastModified = moment().valueOf();
+				updateLastModified();
 			}
 		});
 		/*

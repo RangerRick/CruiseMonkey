@@ -12,7 +12,7 @@
   <preference name="AutoHideSplashScreen" value="false"/>
   <preference name="StatusBarOverlaysWebView" value="true"/>
   <preference name="StatusBarStyle" value="lightcontent"/>
-  <preference name="AndroidPersistentFileLocation" value="Internal" />
+  <preference name="AndroidPersistentFileLocation" value="Internal"/>
   <feature name="Clipboard">
     <param name="ios-package" value="CDVClipboard" onload="true"/>
   </feature>

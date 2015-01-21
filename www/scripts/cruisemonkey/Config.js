@@ -34,10 +34,18 @@
 			'background.interval': backgroundInterval,
 		};
 
-		storage.bind($rootScope, '_settings', {
-			'defaultValue': defaultValue,
-			'storeName': 'cruisemonkey.settings'
-		});
+		var settings = storage.get('cruisemonkey.settings');
+		if (!settings) {
+			settings = defaultValue;
+		}
+
+		var updateStorage = function() {
+			if (settings === undefined) {
+				storage.remove('cruisemonkey.settings');
+			} else {
+				storage.set('cruisemonkey.settings', settings);
+			}
+		};
 
 		var clearOldStorage = function() {
 			var i, key, numItems = $window.localStorage.length;
@@ -60,52 +68,57 @@
 		};
 
 		var getDatabaseRoot = function() {
-			var dbRoot = $rootScope._settings['database.root'] || defaultValue['database.root'];
+			var dbRoot = settings['database.root'] || defaultValue['database.root'];
 			if (dbRoot.startsWith('http') && !dbRoot.endsWith('/')) {
 				dbRoot += '/';
 			}
 			return dbRoot;
 		};
 		var setDatabaseRoot = function(root) {
-			$rootScope._settings['database.root'] = angular.copy(root);
+			settings['database.root'] = angular.copy(root);
+			updateStorage();
 		};
 
 		var getDatabaseName = function() {
-			return $rootScope._settings['database.name'] || defaultValue['database.name'];
+			return settings['database.name'] || defaultValue['database.name'];
 		};
 		var setDatabaseName = function(name) {
-			$rootScope._settings['database.name'] = angular.copy(name);
+			settings['database.name'] = angular.copy(name);
+			updateStorage();
 		};
 
 		var shouldDatabaseReplicate = function() {
-			return $rootScope._settings['database.replicate'] || defaultValue['database.replicate'];	
+			return settings['database.replicate'] || defaultValue['database.replicate'];	
 		};
 		var setDatabaseReplicate = function(shouldReplicate) {
-			$rootScope._settings['database.replicate'] = angular.copy(shouldReplicate);
+			settings['database.replicate'] = angular.copy(shouldReplicate);
+			updateStorage();
 		};
 
 		var getTwitarrRoot = function() {
-			var twRoot = $rootScope._settings['twitarr.root'] || defaultValue['twitarr.root'];
+			var twRoot = settings['twitarr.root'] || defaultValue['twitarr.root'];
 			if (!twRoot.endsWith('/')) {
 				twRoot += '/';
 			}
 			return twRoot;
 		};
 		var setTwitarrRoot = function(root) {
-			$rootScope._settings['twitarr.root'] = angular.copy(root);
+			settings['twitarr.root'] = angular.copy(root);
+			updateStorage();
 		};
 
 		var getBackgroundInterval = function() {
-			var backgroundInterval = $rootScope._settings['background.interval'] || defaultValue['background.interval'];
+			var backgroundInterval = settings['background.interval'] || defaultValue['background.interval'];
 			return backgroundInterval;
 		};
 		var setBackgroundInterval = function(ival) {
 			ival = parseInt(ival);
 			if (ival >= 10000) {
-				$rootScope._settings['background.interval'] = ival;
+				settings['background.interval'] = ival;
 			} else {
 				console.log('SettingsService.setBackgroundInterval: interval must be at least 10 seconds!');
 			}
+			updateStorage();
 		};
 
 		var getDefaultSettings = function() {
