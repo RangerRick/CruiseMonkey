@@ -3,9 +3,6 @@ CRUISEMONKEY PRIVACY POLICY
 
 This privacy policy governs your use of the software application CruiseMonkey (_Application_) for mobile devices that was created by Benjamin Reed. The Application is a tool for managing schedules and chatting with other cruisers on the JoCo Cruise Crazy cruise.
 
-What information does the Application obtain and how is it used?
-----------------------------------------------------------------
-
 User Provided Information
 -------------------------
 
