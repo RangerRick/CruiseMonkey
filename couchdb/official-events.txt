@@ -1,3 +1,47 @@
+// Saturday, January 31
+{
+   "_id": "event:2015:official:60875270e9e4d58e5bf544a563af3047",
+   "type": "event",
+   "start": "2015-01-31 11:00",
+   "end": "2015-01-31 15:00",
+   "lastUpdated": "2015-01-06 12:00",
+   "isPublic": true,
+   "username": "official",
+   "summary": "Registration",
+   "location": "Conference Center"
+}
+{
+   "_id": "event:2015:official:60875270e9e4d58e5bf544a563b13abe",
+   "type": "event",
+   "start": "2015-01-31 14:00",
+   "end": "2015-01-31 15:00",
+   "lastUpdated": "2015-01-06 12:00",
+   "isPublic": true,
+   "username": "official",
+   "summary": "New Monkey Orientation",
+   "location": "Alhambra"
+}
+{
+   "_id": "event:2015:official:60875270e9e4d58e5bf544a563b1c129",
+   "type": "event",
+   "start": "2015-01-31 15:00",
+   "end": "2015-01-31 16:00",
+   "lastUpdated": "2015-01-06 12:00",
+   "isPublic": true,
+   "username": "official",
+   "summary": "Welcome Cocktail Party",
+   "location": "Studio B"
+}
+{
+   "_id": "event:2015:official:60875270e9e4d58e5bf544a563c038d6",
+   "type": "event",
+   "start": "2015-01-31 16:30",
+   "end": "2015-01-31 16:45",
+   "lastUpdated": "2015-01-06 12:00",
+   "isPublic": true,
+   "username": "official",
+   "summary": "Safety Drill"
+}
 {
    "_id": "event:2015:official:a187d5a332ef5d0bca20ea99130066e8",
    "type": "event",
@@ -9,7 +53,50 @@
    "description": "Independence of the Seas departs from Fort Lauderdale, Florida.",
    "location": "Fort Lauderdale, Florida"
 }
+{
+   "_id": "event:2015:official:60875270e9e4d58e5bf544a563c13275",
+   "type": "event",
+   "start": "2015-01-31 18:00",
+   "end": "2015-01-31 20:00",
+   "lastUpdated": "2015-01-06 12:00",
+   "isPublic": true,
+   "username": "official",
+   "summary": "Dinner"
+}
+{
+   "_id": "event:2015:official:60875270e9e4d58e5bf544a563df9a6a",
+   "type": "event",
+   "start": "2015-01-31 21:00",
+   "end": "2015-01-31 22:30",
+   "lastUpdated": "2015-01-06 12:00",
+   "isPublic": true,
+   "username": "official",
+   "summary": "Jonathan Coulton",
+   "location": "Studio B"
+}
+{
+   "_id": "event:2015:official:60875270e9e4d58e5bf544a563e0665e",
+   "type": "event",
+   "start": "2015-01-31 22:30",
+   "end": "2015-02-01 01:00",
+   "lastUpdated": "2015-01-06 12:00",
+   "isPublic": true,
+   "username": "official",
+   "summary": "\"Welcome, New Monkeys\" Mixer",
+   "location": "Studio B"
+}
 
+{
+   "_id": "event:2015:official:60875270e9e4d58e5bf544a563e0eec0",
+   "type": "event",
+   "start": "2015-02-01 15:00",
+   "end": "2015-02-01 17:30",
+   "lastUpdated": "2015-01-06 12:00",
+   "isPublic": true,
+   "username": "official",
+   "summary": "Pat Rothfuss/Paul and Storm",
+   "location": "Alhambra"
+}
 {
    "_id": "event:2015:official:a187d5a332ef5d0bca20ea99132d934d",
    "type": "event",
@@ -17,8 +104,88 @@
    "lastUpdated": "2015-01-06 12:00",
    "isPublic": true,
    "username": "official",
-   "summary": "Formal Night",
+   "summary": "Dinner (Formal)",
    "description": "The first of two formal nights."
+}
+{
+   "_id": "event:2015:official:60875270e9e4d58e5bf544a563e1a3b5",
+   "type": "event",
+   "start": "2015-02-01 20:30",
+   "end": "2015-02-01 21:30",
+   "lastUpdated": "2015-01-06 12:00",
+   "isPublic": true,
+   "username": "official",
+   "summary": "Paul F. Tompkins Memorial Moustache Formal Fezstravaganza",
+   "location": "Main Pool"
+}
+{
+   "_id": "event:2015:official:60875270e9e4d58e5bf544a563e1a43d",
+   "type": "event",
+   "start": "2015-02-01 21:30",
+   "end": "2015-02-02 00:00",
+   "lastUpdated": "2015-01-06 12:00",
+   "isPublic": true,
+   "username": "official",
+   "summary": "Fancy Movie Night",
+   "description": "(movie TBA)",
+   "location": "Main Pool"
+}
+
+{
+   "_id": "event:2015:official:60875270e9e4d58e5bf544a563e38747",
+   "type": "event",
+   "start": "2015-02-02 14:00",
+   "end": "2015-02-02 16:30",
+   "lastUpdated": "2015-01-06 12:00",
+   "isPublic": true,
+   "username": "official",
+   "summary": "Matthew Inman/Roderick on the Line",
+   "description": "(Merlin Mann & John Roderick)",
+   "location": "Alhambra"
+}
+{
+   "_id": "event:2015:official:60875270e9e4d58e5bf544a563e43f5e",
+   "type": "event",
+   "start": "2015-02-02 18:00",
+   "end": "2015-02-02 20:00",
+   "lastUpdated": "2015-01-06 12:00",
+   "isPublic": true,
+   "username": "official",
+   "summary": "Dinner"
+}
+{
+   "_id": "event:2015:official:60875270e9e4d58e5bf544a563e4d0d1",
+   "type": "event",
+   "start": "2015-02-02 21:00",
+   "end": "2015-02-02 21:30",
+   "lastUpdated": "2015-01-06 12:00",
+   "isPublic": true,
+   "username": "official",
+   "summary": "Fancy Pants Parade",
+	"location": "Main Pool"
+}
+{
+   "_id": "event:2015:official:60875270e9e4d58e5bf544a563e58de2",
+   "type": "event",
+   "start": "2015-02-02 22:00",
+   "end": "2015-02-02 23:00",
+   "lastUpdated": "2015-01-06 12:00",
+   "isPublic": true,
+   "username": "official",
+   "summary": "Jean Grae",
+	"location": "Studio B"
+}
+{
+   "_id": "event:2015:official:60875270e9e4d58e5bf544a563e5931c",
+   "type": "event",
+   "start": "2015-02-02 23:00",
+   "end": "2015-02-03 02:00",
+   "lastUpdated": "2015-01-06 12:00",
+   "isPublic": true,
+   "username": "official",
+   "summary": "Dance Party",
+   "description": "With DJ David Rees",
+	"location": "Studio B"
 }
 
 {
@@ -95,3 +262,5 @@
    "description": "Independence of the Seas arrives in Fort Lauderdale, Florida.",
    "location": "Fort Lauderdale, Florida"
 }
+
+
