@@ -207,7 +207,9 @@
 					// Event was favorited, unfavorite it
 					ev.setFavorite(undefined);
 
-					EventService.removeFavorite(eventId);
+					EventService.removeFavorite(eventId).then(function() {
+						_refreshDelayed(100);
+					});
 				} else {
 					var existing;
 					for (i=0; i < $scope.allEvents.length; i++) {
@@ -227,6 +229,7 @@
 					existing.setFavorite(new CMFavorite());
 
 					EventService.addFavorite(eventId).then(function(fav) {
+						_refreshDelayed(100);
 					}, function() {
 						$scope.$broadcast('cruisemonkey.notify.alert', { message: 'Failed to favorite ' + ev.getSummary() + '!' });
 					});
@@ -296,12 +299,14 @@
 				// updating an existing event
 				$q.when(EventService.updateEvent(ev)).then(function(res) {
 					console.log('event updated:', res);
+					_refreshDelayed(100);
 					$scope.modal.hide();
 				});
 			} else {
 				// saving a new event
 				$q.when(EventService.addEvent(ev)).then(function(res) {
 					console.log('event added:', res);
+					_refreshDelayed(100);
 					$scope.modal.hide();
 				});
 			}
@@ -327,7 +332,9 @@
 
 		$scope.trash = function(ev) {
 			if (window.confirm('Are you sure you want to delete "' + ev.getSummary() + '"?')) {
-				EventService.removeEvent(ev);
+				EventService.removeEvent(ev).then(function() {
+					_refreshDelayed(100);
+				});
 			}
 		};
 
@@ -335,7 +342,9 @@
 			console.log('togglePublic(' + ev.getId() + ')');
 			$scope.$evalAsync(function() {
 				ev.setPublic(!ev.isPublic());
-				EventService.updateEvent(ev);
+				EventService.updateEvent(ev).then(function() {
+					_refreshDelayed(100);
+				});
 			});
 		};
 

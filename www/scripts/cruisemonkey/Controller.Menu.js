@@ -44,7 +44,7 @@
 			//console.log('Menu: beforeEnter:',ev,info);
 			if (info.stateName && info.stateName.startsWith('app.events.')) {
 				$scope.lastTab = info.stateName;
-				storage.put('cruisemonkey.menu.last-tab', info.stateName);
+				storage.set('cruisemonkey.menu.last-tab', $scope.lastTab);
 			} else if (info.stateName === 'app.events') {
 				var newState = $scope.eventType? ('app.events.' + $scope.eventType) : 'app.events.official';
 				console.log('Menu: app.events navigated, going to ' + newState + ' instead.');
