@@ -1,3 +1,20 @@
+<a name="5.0.3"</a>
+## 5.0.3 (2015-01-24)
+
+
+#### Bug Fixes
+
+
+* **settings**  fix layout of slider bar ((807d7171))
+* **events**
+  *  refresh on change ((961db0d3))
+  *  clean up hour format ((68b8aa2b))
+* **twitarr**  reply should also @ the author of the replied tweet ;) ((283ed85b))
+* **amenities**  fix exception when matching decks ((a2a01313))
+* **navigation**  normalize menu navigation and back button usage ((50e01ee6))
+
+
+
 <a name="5.0.2"</a>
 ## 5.0.2 (2015-01-20)
 
