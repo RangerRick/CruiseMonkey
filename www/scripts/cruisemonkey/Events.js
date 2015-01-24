@@ -48,17 +48,6 @@
 				updateLastModified();
 			}
 		});
-		/*
-		$rootScope.$on('cruisemonkey.database.create', function(ev, db, doc) {
-			console.log('persistence created an object: ' + db.name + ': ' + doc.id);
-		});
-		$rootScope.$on('cruisemonkey.database.update', function(ev, db, doc) {
-			console.log('persistence updated an object: ' + db.name + ': ' + doc.id);
-		});
-		$rootScope.$on('cruisemonkey.database.delete', function(ev, db, doc) {
-			console.log('persistence deleted an object: ' + db.name + ': ' + doc.id);
-		});
-		*/
 
 		var createEventsDb = function() {
 			var databaseName = SettingsService.getDatabaseName();
