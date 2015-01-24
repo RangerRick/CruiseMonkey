@@ -1,3 +1,21 @@
+<a name="5.0.4"</a>
+## 5.0.4 (2015-01-24)
+
+
+#### Bug Fixes
+
+
+* **twitarr**  only show reply/like/new-tweet when logged in ((facaeb7b))
+* **login**  broadcast login failure ((fa0d8893))
+* **seamail**  update indicator when seamails are viewed ((d5c63f0f))
+* **database**  make sure we always use websql, also clean up logging ((e44dc2eb))
+* **events**
+  *  don't show favorites/edit/etc. when not logged in ((a0ade2c5))
+  *  rework event refreshing to clean up nav issues ((b27dc9e9))
+* **notifications**  clean up notification code and initialization ((51b45d5f))
+
+
+
 <a name="5.0.3"</a>
 ## 5.0.3 (2015-01-24)
 
