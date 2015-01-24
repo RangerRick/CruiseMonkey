@@ -276,6 +276,7 @@
 		$scope.done = false;
 
 		$scope.doRefresh = function(keepPosition, showLoading) {
+			$scope.user = UserService.get();
 			console.log('Controller.Twitarr.Stream.doRefresh(' + keepPosition + ')');
 			if (showLoading) {
 				$ionicLoading.show({

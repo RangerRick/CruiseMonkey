@@ -5,7 +5,7 @@
 		</div>
 		<h1 class="title" ng-click="scrollTop()">Twit-Arr</h1>
 		<div class="buttons">
-			<button class="button button-icon icon ion-compose" ng-click="newTweet()"></button>
+			<button class="button button-icon icon ion-compose" ng-click="newTweet()" ng-if="user.loggedIn"></button>
 			<button class="button button-icon icon ion-refresh" ng-click="doRefresh(true, true)"></button>
 		</div>
 	</ion-header-bar>
@@ -19,7 +19,7 @@
 			</ion-item>
 			<a ng-repeat="entry in entries" class="item item-avatar item-text-wrap" id="{{entry.id}}">
 				<cm-image url="twitarrRoot + 'api/v2/user/photo/' + entry.author" ng-click="openUser(entry.author, $event)"></cm-image>
-				<span class="item-note commands">
+				<span class="item-note commands" ng-if="user.loggedIn">
 					<button ng-class="'button button-clear button-small icon ' + (entry.likes &amp;&amp; entry.likes.indexOf(user.username) >= 0? 'ion-ios-heart':'ion-ios-heart-outline')" ng-click="toggleLike(entry)"></button>
 					<button class="button button-clear button-small icon ion-reply" ng-click="newTweet(entry)"></button>
 				</span>
