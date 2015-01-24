@@ -95,7 +95,7 @@ CMAmenity.prototype.getDescription = function() {
 
 CMAmenity.prototype.matches = function(searchString) {
 	'use strict';
-	if (searchString === undefined || searchString === '') {
+	if (!searchString) {
 		return true;
 	}
 

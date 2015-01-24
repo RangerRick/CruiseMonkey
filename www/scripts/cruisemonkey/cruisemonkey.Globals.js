@@ -19,7 +19,10 @@ if (typeof String.prototype.endsWith !== 'function') {
 if (typeof String.prototype.contains !== 'function') {
 	String.prototype.contains = function(comparator) {
 		'use strict';
-		return comparator === undefined? true : (this.toLowerCase().indexOf(comparator.toLowerCase()) > -1);
+		if (comparator === undefined || comparator === null) {
+			return true;
+		}
+		return (this.toLowerCase().indexOf(comparator.toLowerCase()) > -1);
 	};
 }
 
