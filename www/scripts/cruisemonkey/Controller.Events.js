@@ -150,7 +150,7 @@
 		}
 	}])
 	.controller('CMEventsBarCtrl', ['$q', '$scope', '$timeout', '$state', '$ionicActionSheet', '$ionicModal', '$ionicScrollDelegate', 'EventService', 'UserService', 'storage', function($q, $scope, $timeout, $state, $ionicActionSheet, $ionicModal, $ionicScrollDelegate, EventService, UserService, storage) {
-		$scope.loggedIn = UserService.get().loggedIn;
+		$scope.user = UserService.get();
 
 		var updateSearchString = function(searchString) {
 			if (searchString === undefined) {
@@ -165,6 +165,22 @@
 				delegate.scrollTop(false);
 			}
 			updateSearchString(searchString);
+		};
+
+		$scope.showFavorite = function(entry) {
+			if (!$scope.user.loggedIn) {
+				return false;
+			}
+			if ($scope.user.username === entry.getUsername()) {
+				return false;
+			}
+			return true;
+		};
+		$scope.showEditable = function(entry) {
+			if ($scope.user && $scope.user.username === entry.getUsername() && $scope.user.loggedIn) {
+				return true;
+			}
+			return false;
 		};
 
 		$scope.getDateId = function(date) {
@@ -393,7 +409,6 @@
 		/** Event Refreshing **/
 
 		$scope.refreshEvents = function() {
-			$scope.user = UserService.get();
 			//console.log('CMEventsBarCtrl.$scope.refreshEvents()');
 			EventService.getAllEvents().then(function(events) {
 				events.sort(sortEvent);
@@ -494,7 +509,7 @@
 		});
 
 		$scope.$on('cruisemonkey.user.updated', function(ev, newUser) {
-			$scope.loggedIn = newUser.loggedIn;
+			$scope.user = newUser;
 		});
 
 		/** Ionic Events **/

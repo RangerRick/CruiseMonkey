@@ -7071,7 +7071,7 @@ a.button {
     opacity: 1;
     color: #0073bb; }
 
-.favorite.button-clear.active, .favorite.button-clear.activated {
+.public.button-clear.active, .public.button-clear.activated {
   opacity: 1; }
 
 .ion-spin, .ion-loading-a, .ion-loading-b, .ion-loading-c, .ion-loading-d, .ion-looping, .ion-refreshing, .ion-ios7-reloading, .ion-load-a, .ion-load-b, .ion-load-c, .ion-load-d, .ion-loop {
