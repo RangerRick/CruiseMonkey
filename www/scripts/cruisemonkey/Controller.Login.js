@@ -90,6 +90,7 @@
 				console.log(headers);
 				console.log('config:');
 				console.log(config);
+				$rootScope.$broadcast('cruisemonkey.login.failed');
 				$rootScope.$broadcast('cruisemonkey.notify.alert', { message: 'Login failed.' });
 			});
 
