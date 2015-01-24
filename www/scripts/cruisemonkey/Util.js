@@ -16,7 +16,7 @@
 				historyRoot: true,
 			});
 			$state.go(view);
-		}
+		};
 		return {
 			go: goToView
 		};
