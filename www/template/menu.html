@@ -1,4 +1,4 @@
-<script type="text/ng-template" id="template/login.html">
+<script type="text/ng-template" id="menu/login.html">
   <ion-modal-view ng-class="'fit'">
     <ion-content scroll="false" ng-controller="CMLoginCtrl">
       <div class="item bar bar-dark">
@@ -33,22 +33,22 @@
     <ion-content class="has-header" menu-close>
       <ion-list>
         <span ng-switch="lastTab">
-				<a class="item" ui-sref="app.events.official"   ui-sref-active="active" ng-switch-when="app.events.official">Events</a>
-        <a class="item" ui-sref="app.events.unofficial" ui-sref-active="active" ng-switch-when="app.events.unofficial">Events</a>
-        <a class="item" ui-sref="app.events.all"        ui-sref-active="active" ng-switch-when="app.events.all">Events</a>
-        <a class="item" ui-sref="app.events.my"         ui-sref-active="active" ng-switch-when="app.events.my">Events</a>
-        <a class="item" ui-sref="app.events.official"   ui-sref-active="active" ng-switch-default>Events</a>
+				<a class="item" ng-click="go('app.events.official')"   ng-class="active('app.events.official')" ng-switch-when="app.events.official">Events</a>
+        <a class="item" ng-click="go('app.events.unofficial')" ng-class="active('app.events.unofficial')" ng-switch-when="app.events.unofficial">Events</a>
+        <a class="item" ng-click="go('app.events.all')"        ng-class="active('app.events.all')" ng-switch-when="app.events.all">Events</a>
+        <a class="item" ng-click="go('app.events.my')"         ng-class="active('app.events.my')" ng-switch-when="app.events.my">Events</a>
+        <a class="item" ng-click="go('app.events.official')"   ng-class="active('app.events.official')" ng-switch-default>Events</a>
         </span>
-				<a class="item" ui-sref="app.deck-plans"        ui-sref-active="active">Deck Plans</a>
-				<a class="item" ui-sref="app.amenities"         ui-sref-active="active">Amenities</a>
-				<a class="item" ui-sref="app.karaoke"           ui-sref-active="active">Karaoke</a>
-        <a class="item" ui-sref="app.twitarr-stream"    ui-sref-active="active">Twit-Arr</a>
+				<a class="item" ng-click="go('app.deck-plans')"        ng-class="active('app.deck-plans')">Deck Plans</a>
+				<a class="item" ng-click="go('app.amenities')"         ng-class="active('app.amenities')">Amenities</a>
+				<a class="item" ng-click="go('app.karaoke')"           ng-class="active('app.karaoke')">Karaoke</a>
+        <a class="item" ng-click="go('app.twitarr-stream')"    ng-class="active('app.twitarr-stream')">Twit-Arr</a>
 
-        <a class="item" ui-sref="app.about"             ui-sref-active="active">About</a>
-				<a class="item" ui-sref="app.settings"          ui-sref-active="active">Settings</a>
+        <a class="item" ng-click="go('app.about')"             ng-class="active('app.about')">About</a>
+        <a class="item" ng-click="go('app.settings')"          ng-class="active('app.settings')">Settings</a>
 
         <span ng-if="user.loggedIn">
-          <a class="item" ui-sref="app.seamail"         ui-sref-active="active">Seamail<span ng-if="unreadSeamail" class="badge badge-assertive">{{unreadSeamail}}</span></a>
+          <a class="item" ng-click="go('app.seamail')"         ng-class="active('app.seamail')">Seamail<span ng-if="unreadSeamail" class="badge badge-assertive">{{unreadSeamail}}</span></a>
         </span>
 
         <a class="item" ng-if="user.loggedIn" ng-click="logOut()">Log Out</a>

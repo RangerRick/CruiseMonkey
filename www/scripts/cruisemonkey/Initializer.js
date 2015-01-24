@@ -7,11 +7,28 @@
 		'ionic',
 		'ngCordova'
 	])
-	.factory('Initializer', ['$rootScope', '$timeout', '$cordovaKeyboard', '$cordovaStatusbar', '$ionicPlatform', 'Cordova', function($rootScope, $timeout, $cordovaKeyboard, $cordovaStatusbar, $ionicPlatform, Cordova) {
+	.factory('Initializer', ['$rootScope', '$timeout', '$cordovaKeyboard', '$cordovaStatusbar', '$ionicHistory', '$ionicPlatform', '$ionicSideMenuDelegate', 'Cordova', function($rootScope, $timeout, $cordovaKeyboard, $cordovaStatusbar, $ionicHistory, $ionicPlatform, $ionicSideMenuDelegate, Cordova) {
 		console.log('CruiseMonkey Initializing.');
 
 		Cordova.inCordova().then(function() {
 			console.log('We are inside Cordova: initializing ionic platform plugins and events.');
+
+			$ionicPlatform.registerBackButtonAction(function(ev) {
+				var backView = $ionicHistory.backView();
+				if (backView) {
+					// this is OK, go ahead and let Ionic do back
+				} else {
+					console.log('No back view, preventing exit.');
+					if ($ionicSideMenuDelegate.isOpenLeft()) {
+						console.log('Side menu is open.  Leaving it open.');
+					} else {
+						console.log('Side menu is not open.  Opening it.');
+						$ionicSideMenuDelegate.toggleLeft();
+					}
+					ev.preventDefault();
+					ev.stopPropagation();
+				}
+			}, 151);
 
 			// Hide the accessory bar by default (remove this to show the accessory bar above the keyboard or form inputs)
 			$cordovaKeyboard.hideAccessoryBar(true);

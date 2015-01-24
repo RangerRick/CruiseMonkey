@@ -4,8 +4,11 @@
 	/*global ionic: true*/
 
 	angular.module('cruisemonkey.controllers.Menu', [
+		'ionic',
+		'cruisemonkey.User',
+		'cruisemonkey.Util',
 	])
-	.controller('CMMenuCtrl', ['$scope', '$state', '$timeout', '$ionicModal', 'storage', 'UserService', function($scope, $state, $timeout, $ionicModal, storage, UserService) {
+	.controller('CMMenuCtrl', ['$rootScope', '$scope', '$state', '$timeout', '$ionicModal', 'storage', 'util', 'UserService', function($rootScope, $scope, $state, $timeout, $ionicModal, storage, util, UserService) {
 		console.log('CMMenuCtrl initializing.');
 
 		var loginModal;
@@ -29,15 +32,31 @@
 			UserService.reset();
 		};
 
-		$ionicModal.fromTemplateUrl('template/login.html', {
+		$scope.go = util.go;
+
+		$ionicModal.fromTemplateUrl('menu/login.html', {
 			scope: $scope,
 			focusFirstInput: true
 		}).then(function(modal) {
 			loginModal = modal;
 		});
 
+		$scope.active = function(viewName) {
+			if (viewName === $scope.currentView) {
+				return 'active';
+			}
+			return '';
+		};
+
 		$scope.$on('cruisemonkey.notify.unreadSeamail', function(ev, count) {
 			$scope.unreadSeamail = count;
+		});
+
+		$rootScope.$on('$ionicView.beforeEnter', function(ev, info) {
+			if (info.stateName) {
+				console.log('currentView='+info.stateName);
+				$scope.currentView = info.stateName;
+			}
 		});
 
 		$scope.$on('$ionicView.beforeEnter', function(ev, info) {

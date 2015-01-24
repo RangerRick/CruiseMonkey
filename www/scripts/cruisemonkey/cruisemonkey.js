@@ -37,7 +37,8 @@
 		'cruisemonkey.State',
 		'cruisemonkey.Twitarr',
 		'cruisemonkey.Upgrades',
-		'cruisemonkey.User'
+		'cruisemonkey.User',
+		'cruisemonkey.Util',
 	])
 	.directive('cmSearchBar', ['$timeout', '$cordovaKeyboard', function($timeout, $cordovaKeyboard) {
 		var nullSafeLowerCase = function(s) {
@@ -251,7 +252,7 @@
 		;
 	}])
 	/* EventService & Notifications are here just to make sure they initializes early */
-	.run(['$q', '$rootScope', '$sce', '$timeout', '$window', '$state', '$cordovaCamera', '$cordovaKeyboard', '$cordovaSplashscreen', '$ionicModal', '$ionicPopover', '$ionicPopup', '$upload', 'storage', 'Cordova', 'EventService', 'Images', 'Notifications', 'SettingsService', 'Twitarr', 'UpgradeService', 'UserService', function($q, $rootScope, $sce, $timeout, $window, $state, $cordovaCamera, $cordovaKeyboard, $cordovaSplashscreen, $ionicModal, $ionicPopover, $ionicPopup, $upload, storage, Cordova, EventService, Images, Notifications, SettingsService, Twitarr, UpgradeService, UserService) {
+	.run(['$q', '$rootScope', '$sce', '$timeout', '$window', '$state', '$cordovaCamera', '$cordovaKeyboard', '$cordovaSplashscreen', '$ionicModal', '$ionicPlatform', '$ionicPopover', '$ionicPopup', '$upload', 'storage', 'util', 'Cordova', 'EventService', 'Images', 'Notifications', 'SettingsService', 'Twitarr', 'UpgradeService', 'UserService', function($q, $rootScope, $sce, $timeout, $window, $state, $cordovaCamera, $cordovaKeyboard, $cordovaSplashscreen, $ionicModal, $ionicPlatform, $ionicPopover, $ionicPopup, $upload, storage, util, Cordova, EventService, Images, Notifications, SettingsService, Twitarr, UpgradeService, UserService) {
 		console.log('CruiseMonkey run() called.');
 
 		$rootScope.$on("$stateChangeError", function (event, toState, toParams, fromState, fromParams, error) {
@@ -503,24 +504,24 @@
 			});
 		};
 
-		var lastView = storage.get('cruisemonkey.navigation.current-view');
-		var updateCurrentView = function(currentView) {
-			if (currentView === undefined) {
-				storage.remove(currentView);
+		var currentView = storage.get('cruisemonkey.navigation.current-view');
+		var updateCurrentView = function(view) {
+			if (view === undefined) {
+				storage.remove('cruisemonkey.navigation.current-view');
 			} else {
-				storage.set('cruisemonkey.navigation.current-view', currentView);
+				storage.set('cruisemonkey.navigation.current-view', view);
 			}
+			currentView = view;
 		};
 
-		/* restore previous view */
 		$rootScope.$on('$ionicView.enter', function(ev, info) {
 			updateCurrentView(info.stateName);
 		});
 
-		if (lastView && lastView !== '') {
+		if (currentView && currentView !== '') {
 			$timeout(function() {
-				console.log('restoring view: ' + lastView);
-				$state.go(lastView);
+				console.log('restoring view: ' + currentView);
+				util.go(currentView);
 			});
 		}
 
