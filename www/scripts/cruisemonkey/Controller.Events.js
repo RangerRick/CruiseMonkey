@@ -8,11 +8,28 @@
 	/*global CMFavorite: true*/
 	/*global CMDay: true*/
 
-	var attrA, attrB;
+	var withDays = function(events) {
+		var ret = [],
+			ev, i,
+			lastDay = moment('1970-01-01 00:00'),
+			currentDay = null;
+
+		for (i=0; i < events.length; i++) {
+			ev = events[i];
+			currentDay = ev.getDay();
+			if (!lastDay.isSame(currentDay)) {
+				ret.push(new CMDay(currentDay));
+				lastDay = currentDay;
+			}
+			ret.push(ev);
+		}
+
+		return ret;
+	};
 
 	var sortEvent = function(a,b) {
-		attrA = a.getStart();
-		attrB = b.getStart();
+		var attrA = a.getStart(),
+			attrB = b.getStart();
 
 		if (attrA.isBefore(attrB)) {
 			return -1;
@@ -36,8 +53,8 @@
 		return 0;
 	};
 	var sortDay = function(a,b) {
-		attrA = a.day;
-		attrB = b.day;
+		var attrA = a.day,
+			attrB = b.day;
 
 		if (attrA.isBefore(attrB)) {
 			return -1;
@@ -52,6 +69,33 @@
 			return sortDay(a,b);
 		} else {
 			return sortEvent(a,b);
+		}
+	};
+
+	var findElementById = function(id) {
+		var elm, scrollEl, position = 0;
+		elm = document.getElementById(id);
+		if (elm) {
+			scrollEl = angular.element(elm);
+			while (scrollEl) {
+				if (scrollEl.hasClass('scroll-content')) {
+					break;
+				}
+				var offsetTop = scrollEl[0].offsetTop,
+					scrollTop = scrollEl[0].scrollTop,
+					clientTop = scrollEl[0].clientTop;
+				position += (offsetTop - scrollTop + clientTop);
+				scrollEl = scrollEl.parent();
+			}
+			console.log('offset='+position);
+			if (position < 10) {
+				return 0;
+			}
+			return position;
+			/* $scope.$broadcast('scroll.scrollTo', 0, position, true); */
+		} else {
+			console.log("can't find element " + id);
+			return 0;
 		}
 	};
 
@@ -105,62 +149,22 @@
 			console.log('Created fresh event.');
 		}
 	}])
-	.controller('CMEventsBarCtrl', ['$scope', '$timeout', '$state', 'UserService', 'storage', function($scope, $timeout, $state, UserService, storage) {
+	.controller('CMEventsBarCtrl', ['$q', '$scope', '$timeout', '$state', '$ionicActionSheet', '$ionicModal', '$ionicScrollDelegate', 'EventService', 'UserService', 'storage', function($q, $scope, $timeout, $state, $ionicActionSheet, $ionicModal, $ionicScrollDelegate, EventService, UserService, storage) {
 		$scope.loggedIn = UserService.get().loggedIn;
 
-		$scope.$on('cruisemonkey.user.updated', function(ev, newUser) {
-			$scope.loggedIn = newUser.loggedIn;
-		});
-
-		$scope.$on('$ionicView.beforeEnter', function(ev, info) {
-			if (info.stateName && info.stateName.startsWith('app.events')) {
-				$scope.eventType  = info.stateName.replace('app.events.', '');
-				$scope.eventTitle = ($scope.eventType === 'my'? 'Mine' : $scope.eventType.capitalize());
-			}
-		});
-	}])
-	.controller('CMEventCtrl', ['$q', '$scope', '$rootScope', '$sce', '$timeout', '$cordovaKeyboard', '$ionicActionSheet', '$ionicScrollDelegate', '$ionicPopover', '$ionicModal', 'storage', 'EventService', 'UserService', function($q, $scope, $rootScope, $sce, $timeout, $cordovaKeyboard, $ionicActionSheet, $ionicScrollDelegate, $ionicPopover, $ionicModal, storage, EventService, UserService) {
-		var withDays = function(events) {
-			var ret = [],
-				ev, i,
-				lastDay = moment('1970-01-01 00:00'),
-				currentDay = null;
-
-			for (i=0; i < events.length; i++) {
-				ev = events[i];
-				currentDay = ev.getDay();
-				if (!lastDay.isSame(currentDay)) {
-					ret.push(new CMDay(currentDay));
-					lastDay = currentDay;
-				}
-				ret.push(ev);
-			}
-
-			return ret;
-		};
-
-		var findElementById = function(id) {
-			var elm, scrollEl, position = 0;
-			elm = document.getElementById(id);
-			if (elm) {
-				scrollEl = angular.element(elm);
-				while (scrollEl) {
-					if (scrollEl.hasClass('scroll-content')) {
-						break;
-					}
-					var offsetTop = scrollEl[0].offsetTop,
-						scrollTop = scrollEl[0].scrollTop,
-						clientTop = scrollEl[0].clientTop;
-					position += (offsetTop - scrollTop + clientTop);
-					scrollEl = scrollEl.parent();
-				}
-				console.log('offset='+position);
-				return position;
-				/* $scope.$broadcast('scroll.scrollTo', 0, position, true); */
+		var updateSearchString = function(searchString) {
+			if (searchString === undefined) {
+				storage.remove('cruisemonkey.events.search-string');
 			} else {
-				console.log("can't find element " + id);
-				return 0;
+				storage.set('cruisemonkey.events.search-string', searchString);
 			}
+		};
+		$scope.onSearchChanged = function(searchString) {
+			var delegate = $ionicScrollDelegate.$getByHandle($scope.eventType + '-event-scroll');
+			if (delegate.getScrollPosition().top !== 0) {
+				delegate.scrollTop(false);
+			}
+			updateSearchString(searchString);
 		};
 
 		$scope.getDateId = function(date) {
@@ -198,6 +202,11 @@
 			});
 		};
 
+		$scope.scrollTop = function() {
+			var delegate = $ionicScrollDelegate.$getByHandle($scope.eventType + '-event-scroll');
+			delegate.scrollTop(true);
+		};
+
 		$scope.onFavoriteChanged = function(ev) {
 			$scope.$evalAsync(function() {
 				var i, entry, eventId = ev.getId();
@@ -208,7 +217,7 @@
 					ev.setFavorite(undefined);
 
 					EventService.removeFavorite(eventId).then(function() {
-						_refreshDelayed(100);
+						$scope.refreshDelayed(100);
 					});
 				} else {
 					var existing;
@@ -229,7 +238,7 @@
 					existing.setFavorite(new CMFavorite());
 
 					EventService.addFavorite(eventId).then(function(fav) {
-						_refreshDelayed(100);
+						$scope.refreshDelayed(100);
 					}, function() {
 						$scope.$broadcast('cruisemonkey.notify.alert', { message: 'Failed to favorite ' + ev.getSummary() + '!' });
 					});
@@ -237,17 +246,14 @@
 			});
 		};
 
-		$scope.loggedIn = function() {
-			var user = UserService.get();
-			return user && user.username && user.loggedIn;
-		};
+		/** Adding/Editing Events **/
 
 		$ionicModal.fromTemplateUrl('template/event-edit.html', {
 			scope: $scope,
 			animation: 'slide-in-up',
 			focusFirstInput: true
 		}).then(function(modal) {
-			$scope.modal = modal;
+			$scope.editEventModal = modal;
 
 			$scope.$watch('eventData', function(ev) {
 				if (ev) {
@@ -255,7 +261,7 @@
 					var endDate = moment(ev.endDate);
 					if (endDate.isBefore(startDate)) {
 						console.log('end date ' + endDate.format() + ' is before start date ' + startDate.format());
-						$scope.modal.eventData.endDate = angular.copy(ev.startDate);
+						$scope.editEventModal.eventData.endDate = angular.copy(ev.startDate);
 					}
 				}
 			});
@@ -268,7 +274,7 @@
 			console.log('closing modal (cancel)');
 			$scope.event = undefined;
 			$scope.eventData = undefined;
-			$scope.modal.hide();
+			$scope.editEventModal.hide();
 			$scope.closeKeyboard();
 		};
 
@@ -279,7 +285,7 @@
 
 			if (!username) {
 				console.log('No username!');
-				$scope.modal.hide();
+				$scope.editEventModal.hide();
 				$scope.closeKeyboard();
 				return;
 			}
@@ -299,15 +305,15 @@
 				// updating an existing event
 				$q.when(EventService.updateEvent(ev)).then(function(res) {
 					console.log('event updated:', res);
-					_refreshDelayed(100);
-					$scope.modal.hide();
+					$scope.refreshDelayed(100);
+					$scope.editEventModal.hide();
 				});
 			} else {
 				// saving a new event
 				$q.when(EventService.addEvent(ev)).then(function(res) {
 					console.log('event added:', res);
-					_refreshDelayed(100);
-					$scope.modal.hide();
+					$scope.refreshDelayed(100);
+					$scope.editEventModal.hide();
 				});
 			}
 		};
@@ -323,17 +329,22 @@
 			$scope.event = ev;
 			$scope.eventData = ev.toEditableBean();
 
-			$scope.modal.show();
+			$scope.editEventModal.show();
 		};
 
-		$ionicPopover.fromTemplateUrl('template/event-popover.html').then(function(popover) {
-			$scope.popover = popover;
-		});
+		$scope.editEvent = function(ev) {
+			$scope.$evalAsync(function() {
+				$scope.event = ev;
+				$scope.eventData = ev.toEditableBean();
+
+				$scope.editEventModal.show();
+			});
+		};
 
 		$scope.trash = function(ev) {
 			if (window.confirm('Are you sure you want to delete "' + ev.getSummary() + '"?')) {
 				EventService.removeEvent(ev).then(function() {
-					_refreshDelayed(100);
+					$scope.refreshDelayed(100);
 				});
 			}
 		};
@@ -343,17 +354,8 @@
 			$scope.$evalAsync(function() {
 				ev.setPublic(!ev.isPublic());
 				EventService.updateEvent(ev).then(function() {
-					_refreshDelayed(100);
+					$scope.refreshDelayed(100);
 				});
-			});
-		};
-
-		$scope.editEvent = function(ev) {
-			$scope.$evalAsync(function() {
-				$scope.event = ev;
-				$scope.eventData = ev.toEditableBean();
-
-				$scope.modal.show();
 			});
 		};
 
@@ -388,53 +390,35 @@
 			});
 		};
 
-		var updateSearchString = function(searchString) {
-			if (searchString === undefined) {
-				storage.remove('cruisemonkey.events.search-string');
-			} else {
-				storage.set('cruisemonkey.events.search-string', searchString);
-			}
-		};
+		/** Event Refreshing **/
 
-		$scope.onSearchChanged = function(searchString) {
-			var delegate = $ionicScrollDelegate.$getByHandle($scope.eventType + '-event-scroll');
-			if (delegate.getScrollPosition().top !== 0) {
-				delegate.scrollTop(false);
-			}
-			updateSearchString(searchString);
-		};
-
-		$scope.scrollTop = function() {
-			var delegate = $ionicScrollDelegate.$getByHandle($scope.eventType + '-event-scroll');
-			delegate.scrollTop(true);
-		};
-
-		var _refreshEvents = function() {
+		$scope.refreshEvents = function() {
 			$scope.user = UserService.get();
-			//console.log('CMEventCtrl._refreshEvents()');
+			//console.log('CMEventsBarCtrl.$scope.refreshEvents()');
 			EventService.getAllEvents().then(function(events) {
 				events.sort(sortEvent);
 				$scope.allEvents = events;
-				console.log('CMEventCtrl._refreshEvents: found ' + $scope.allEvents.length + ' total events.');
+				$scope.updateFilter();
+				console.log('CMEventsBarCtrl.$scope.refreshEvents: found ' + $scope.allEvents.length + ' total events.');
 			}, function(err) {
-				console.log('CMEventCtrl._refreshEvents(): WARNING: ' + err);
+				console.log('CMEventsBarCtrl.$scope.refreshEvents(): WARNING: ' + err);
 			});
 		};
 
 		var _refreshDelayTimeout = null;
-		var _refreshDelayed = function(delay) {
+		$scope.refreshDelayed = function(delay) {
 			if (_refreshDelayTimeout) {
 				return;
 			}
 			_refreshDelayTimeout = $timeout(function() {
-				console.log('CMEventCtrl._refreshDelayed()');
+				console.log('CMEventsBarCtrl.$scope.refreshDelayed()');
 				_refreshDelayTimeout = null;
-				_refreshEvents();
+				$scope.refreshEvents();
 			}, delay || 300);
 		};
 
 		var _updatingFilter = false;
-		var _updateFilter = function() {
+		$scope.updateFilter = function() {
 			if (_updatingFilter || !$scope.allEvents) {
 				return;
 			}
@@ -477,12 +461,10 @@
 				}
 			}
 
-			/*
-			console.log('CMEventCtrl._updateFilter: official events: ' + filteredEvents.official.length);
-			console.log('CMEventCtrl._updateFilter: unofficial events: ' + filteredEvents.unofficial.length);
-			console.log('CMEventCtrl._updateFilter: all events: ' + filteredEvents.all.length);
-			console.log('CMEventCtrl._updateFilter: my events: ' + filteredEvents.my.length);
-			*/
+			console.log('CMEventsBarCtrl.updateFilter: official events: ' + filteredEvents.official.length);
+			console.log('CMEventsBarCtrl.updateFilter: unofficial events: ' + filteredEvents.unofficial.length);
+			console.log('CMEventsBarCtrl.updateFilter: all events: ' + filteredEvents.all.length);
+			console.log('CMEventsBarCtrl.updateFilter: my events: ' + filteredEvents.my.length);
 
 			filteredEvents.official   = withDays(filteredEvents.official);
 			filteredEvents.unofficial = withDays(filteredEvents.unofficial);
@@ -498,32 +480,24 @@
 			_updatingFilter = false;
 		};
 
-		$scope.$watchCollection('allEvents', function() {
-			_updateFilter();
-		});
-
-		/** CruiseMonkey events **/
+		/** CruiseMonkey Events **/
 
 		$scope.$on('cruisemonkey.database.syncComplete', function(ev, db) {
 			console.log('CMEventCtrl: Sync complete: ' + db.name);
-			_refreshDelayed(100);
+			$scope.refreshDelayed(100);
 		});
+
 		$scope.$on('cruisemonkey.database.change', function(ev, db, doc) {
 			if (db.name.endsWith('events')) {
-				_refreshDelayed(100);
+				$scope.refreshDelayed(100);
 			}
 		});
 
+		$scope.$on('cruisemonkey.user.updated', function(ev, newUser) {
+			$scope.loggedIn = newUser.loggedIn;
+		});
+
 		/** Ionic Events **/
-		$scope.$on('popover.hidden', function() {
-			console.log('popover.hidden');
-		});
-		$scope.$on('popover.removed', function() {
-			console.log('popover.removed');
-		});
-		$scope.$on('$destroy', function() {
-			$scope.popover.remove();
-		});
 
 		$scope.$on('$ionicView.loaded', function(ev, info) {
 			var defaultSearchString = {
@@ -537,7 +511,20 @@
 				$scope.searchString = defaultSearchString;
 				updateSearchString(defaultSearchString);
 			}
-			_refreshEvents();
+			$scope.refreshEvents();
 		});
+
+		$scope.$on('$ionicView.beforeEnter', function(ev, info) {
+			if (info.stateName && info.stateName.startsWith('app.events')) {
+				$scope.eventType  = info.stateName.replace('app.events.', '');
+				$scope.eventTitle = ($scope.eventType === 'my'? 'Mine' : $scope.eventType.capitalize());
+			}
+		});
+
+		$scope.$on('$destroy', function() {
+			$scope.editEventModal.remove();
+		});
+	}])
+	.controller('CMEventCtrl', ['$scope', function($scope) {
 	}]);
 }());

@@ -1,14 +1,15 @@
 (function() {
 	'use strict';
 
-	/*global ionic: true*/
+	/* global ionic: true */
 
 	angular.module('cruisemonkey.controllers.Menu', [
 		'ionic',
+		'cruisemonkey.Events',
 		'cruisemonkey.User',
 		'cruisemonkey.Util',
 	])
-	.controller('CMMenuCtrl', ['$rootScope', '$scope', '$state', '$timeout', '$ionicModal', 'storage', 'util', 'UserService', function($rootScope, $scope, $state, $timeout, $ionicModal, storage, util, UserService) {
+	.controller('CMMenuCtrl', ['$rootScope', '$scope', '$state', '$timeout', '$ionicModal', '$ionicScrollDelegate', 'storage', 'util', 'EventService', 'UserService', function($rootScope, $scope, $state, $timeout, $ionicModal, $ionicScrollDelegate, storage, util, EventService, UserService) {
 		console.log('CMMenuCtrl initializing.');
 
 		var loginModal;
@@ -52,6 +53,22 @@
 			$scope.unreadSeamail = count;
 		});
 
+		$scope.$on('cruisemonkey.user.updated', function(ev, newUser, oldUser) {
+			if (newUser.loggedIn && !oldUser.loggedIn) {
+				console.log('User "' + newUser.username + '" logged in.');
+			}
+			$scope.user = newUser;
+			loginModal.hide();
+			$scope.closeKeyboard();
+		});
+
+		$scope.$on('cruisemonkey.login.failed', function() {
+			loginModal.hide();
+			$scope.closeKeyboard();
+		});
+
+		/** Ionic Events **/
+
 		$rootScope.$on('$ionicView.beforeEnter', function(ev, info) {
 			if (info.stateName) {
 				console.log('currentView='+info.stateName);
@@ -73,17 +90,9 @@
 			}
 		});
 
-		$scope.$on('cruisemonkey.user.updated', function(ev, newUser, oldUser) {
-			if (newUser.loggedIn && !oldUser.loggedIn) {
-				console.log('User "' + newUser.username + '" logged in.');
-			}
-			$scope.user = newUser;
-			loginModal.hide();
-			$scope.closeKeyboard();
-		});
-
 		$scope.$on('$destroy', function() {
 			loginModal.remove();
 		});
+
 	}]);
 }());
