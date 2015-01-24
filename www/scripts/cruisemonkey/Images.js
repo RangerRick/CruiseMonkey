@@ -51,7 +51,7 @@
 					*/
 					$window.resolveLocalFileSystemURL(file.toURL(), function(res) {
 						$rootScope.$evalAsync(function() {
-							console.log('resolveLocalFileSystemURL = ' + angular.toJson(res));
+							//console.log('resolveLocalFileSystemURL = ' + angular.toJson(res));
 							if (res && res.fullPath) {
 								//console.log('Images.getEntryFromFile: ' + file + ' resolves to ' + angular.toJson(res));
 								deferred.resolve(res);
@@ -90,10 +90,10 @@
 			Cordova.inCordova().then(function() {
 				$window.requestFileSystem(LocalFileSystem.TEMPORARY, 0, function(fileSystem) {
 					$rootScope.$evalAsync(function() {
-						console.log('Images.getCacheDirectory: got root filesystem = ' + angular.toJson(fileSystem));
+						//console.log('Images.getCacheDirectory: got root filesystem = ' + angular.toJson(fileSystem));
 						fileSystem.root.getDirectory('image-cache', { create: true }, function(dir) {
 							$rootScope.$evalAsync(function() {
-								console.log('Images.getCacheDirectory: image cache directory = ' + angular.toJson(dir));
+								//console.log('Images.getCacheDirectory: image cache directory = ' + angular.toJson(dir));
 								deferred.resolve(dir);
 							});
 						}, onError);
@@ -167,12 +167,12 @@
 
 					_findMatchingFile(cacheDirectory, hash).then(function(localFile) {
 						$rootScope.$evalAsync(function() {
-							console.log('Images.getImageUrl: found matching cached file: ' + angular.toJson(localFile));
+							//console.log('Images.getImageUrl: found matching cached file: ' + angular.toJson(localFile));
 							inFlight[hash].resolve(localFile.toURL());
 						});
 					}, function(err) {
 						$rootScope.$evalAsync(function() {
-							console.log('Images.getImageUrl: downloading remote file from url: ' + url);
+							//console.log('Images.getImageUrl: downloading remote file from url: ' + url);
 							$http.get(url,
 								{
 									cache: true,
@@ -197,11 +197,11 @@
 									}
 
 									cacheDirectory.getFile(hash + ext, {create:true}, function(file) {
-										console.log('Images.getImageUrl: created local file: ' + angular.toJson(file));
+										//console.log('Images.getImageUrl: created local file: ' + angular.toJson(file));
 										file.createWriter(function(writer) {
 											writer.onwrite = function() {
 												$rootScope.$evalAsync(function() {
-													console.log('Images.getImageUrl: wrote file to ' + file.toURL());
+													//console.log('Images.getImageUrl: wrote file to ' + file.toURL());
 													inFlight[hash].resolve(file.toURL());
 												});
 											};
