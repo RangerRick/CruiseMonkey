@@ -211,11 +211,20 @@
 			console.log('Twitarr.getSeamail(): url=' + url);
 			get(url)
 				.success(function(data) {
+					var unread = [];
 					if (data.seamail_meta) {
 						for (var i=0; i < data.seamail_meta.length; i++) {
 							data.seamail_meta[i].timestamp = moment(data.seamail_meta[i].timestamp);
+							if (data.seamail_meta[i].is_unread) {
+								unread.push(data.seamail_meta[i]);
+							}
 						}
 					}
+
+					if (unread.length > 0 && scope.isForeground) {
+						$rootScope.$broadcast('cruisemonkey.notify.newSeamail', unread);
+					}
+					$rootScope.$broadcast('cruisemonkey.notify.unreadSeamail', unread.length);
 
 					deferred.resolve(data);
 				}).error(function(data, status, headers, config) {
