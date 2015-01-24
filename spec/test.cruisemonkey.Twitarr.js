@@ -13,6 +13,7 @@ describe('Twit-Arr', function() {
 	'use strict';
 
 	var twit,
+		Cordova,
 		LocalNotifications,
 		SettingsService,
 		UserService,
@@ -48,6 +49,7 @@ describe('Twit-Arr', function() {
 		$provide.value('$cordovaFile', {});
 		$provide.value('$cordovaFileTransfer', {});
 		$provide.value('LocalNotifications', {});
+		$provide.value('Cordova', {});
 		$provide.value('UserService', UserService);
 		$provide.value('SettingsService', SettingsService);
 		$provide.value('config.twitarr.enable-cachebusting', false);
