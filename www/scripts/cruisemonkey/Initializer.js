@@ -7,6 +7,29 @@
 		'ionic',
 		'ngCordova'
 	])
+	.factory('Cordova', ['$q', '$rootScope', '$window', function($q, $rootScope, $window) {
+		var deferred;
+
+		return {
+			inCordova: function() {
+				if (deferred) {
+					return deferred.promise;
+				}
+
+				deferred = $q.defer();
+				ionic.Platform.ready(function() {
+					$rootScope.$evalAsync(function() {
+						if ($window.cordova) {
+							deferred.resolve(true);
+						} else {
+							deferred.reject(false);
+						}
+					});
+				});
+				return deferred.promise;
+			}
+		};
+	}])
 	.factory('Initializer', ['$rootScope', '$timeout', '$cordovaKeyboard', '$cordovaStatusbar', '$ionicHistory', '$ionicPlatform', '$ionicSideMenuDelegate', 'Cordova', function($rootScope, $timeout, $cordovaKeyboard, $cordovaStatusbar, $ionicHistory, $ionicPlatform, $ionicSideMenuDelegate, Cordova) {
 		console.log('CruiseMonkey Initializing.');
 

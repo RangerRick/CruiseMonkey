@@ -11,13 +11,23 @@
 
 	angular.module('cruisemonkey.Notifications', [
 		'angularLocalStorage',
-		'ngCordova'
+		'ngCordova',
+		'cruisemonkey.Initializer',
 	])
-	.factory('LocalNotifications', ['$q', '$rootScope', '$cordovaLocalNotification', 'storage', function($q, $rootScope, $cordovaLocalNotification, storage) {
+	.factory('LocalNotifications', ['$q', '$rootScope', '$window', 'storage', 'Cordova', function($q, $rootScope, $window, storage, Cordova) {
 		console.log('Initializing local notifications service.');
 
-		var scope = $rootScope.$new();
-		scope.seen = storage.get('cruisemonkey.notifications') || {};
+		var scope        = $rootScope.$new();
+		scope.allowed    = storage.get('cruisemonkey.notifications.allowed')    || false;
+		scope.registered = storage.get('cruisemonkey.notifications.registered') || false;
+		scope.seen       = storage.get('cruisemonkey.notifications')            || {};
+
+		var updateAllowed = function() {
+			storage.set('cruisemonkey.notifications.allowed', scope.allowed);
+		};
+		var updateRegistered = function() {
+			storage.set('cruisemonkey.notifications.registered', scope.registered);
+		};
 		var updateSeen = function() {
 			if (scope.seen === undefined) {
 				storage.remove('cruisemonkey.notifications');
@@ -39,31 +49,57 @@
 
 		var nextId = 1;
 
-		var printObj = function(obj) {
-			for (var prop in obj) {
-				console.log('  ' + prop + '=' + obj[prop]);
-			}
-		};
-
-		var registered = function() {
+		var hasPermission = function() {
 			var deferred = $q.defer();
 
-			ionic.Platform.ready(function() {
-				scope.$evalAsync(function() {
-					$cordovaLocalNotification.hasPermission().then(function(granted) {
-						if (!granted) {
-							$cordovaLocalNotification.promptForPermission().then(function(granted) {
-								if (!granted) {
-									console.log('LocalNotifications: user rejected notifications permissions.');
-								}
-								deferred.resolve(granted);
-							});
-						} else {
+			if (scope.allowed) {
+				console.log('LocalNotifications.hasPermission: already allowed.');
+				deferred.resolve(true);
+			} else {
+				Cordova.inCordova().then(function() {
+					console.log('LocalNotifications.hasPermission: checking local notification permission.');
+					$window.plugin.notification.local.hasPermission(function(granted) {
+						$rootScope.$evalAsync(function() {
+							console.log('LocalNotifications.hasPermission: current permissions: ' + granted);
+							scope.allowed = granted;
 							deferred.resolve(granted);
-						}
+						});
+					});
+				}, function() {
+					scope.allowed = false;
+					deferred.resolve(false);
+				});
+			}
+
+			return deferred.promise;
+		};
+
+		var registerPermission = function() {
+			var deferred = $q.defer();
+
+			if (scope.registered) {
+				console.log('LocalNotifications.registerPermission: already registered.');
+				deferred.resolve(scope.registered);
+			} else {
+				Cordova.inCordova().then(function() {
+					$window.plugin.notification.local.registerPermission(function(granted) {
+						$rootScope.$evalAsync(function() {
+							if (granted) {
+								console.log('LocalNotifications.registerPermission: permission has been granted.');
+							} else {
+								console.log('LocalNotifications.registerPermission: user rejected notifications permission.');
+							}
+							scope.registered = true;
+							updateRegistered();
+
+							scope.allowed = granted;
+							updateAllowed();
+
+							deferred.resolve(true);
+						});
 					});
 				});
-			});
+			}
 
 			return deferred.promise;
 		};
@@ -73,10 +109,8 @@
 
 			ionic.Platform.ready(function() {
 				$rootScope.$evalAsync(function() {
-					if (scope.isForeground === false && window.plugin && window.plugin.notification && window.plugin.notification.local) {
-						registered().then(function(granted) {
-							deferred.resolve(granted);
-						});
+					if (scope.isForeground === false && $window.plugin && $window.plugin.notification && $window.plugin.notification.local) {
+						deferred.resolve(scope.allowed);
 					} else {
 						deferred.resolve(false);
 					}
@@ -109,20 +143,16 @@
 						sound: null,
 					}, notif);
 
-					console.log('Notifications: Posting local notification:');
-					printObj(options);
+					console.log('Notifications: Posting local notification:' + angular.toJson(options));
 
-					$cordovaLocalNotification.add(options).then(function(res) {
-						console.log('Notifications: posted: ' + options.id);
-						printObj(res);
-						scope.seen[data.original_id] = notif.id;
-						updateSeen();
-						deferred.resolve(res);
-					}, function(err) {
-						console.log('Notifications: failed to post ' + options.id);
-						printObj(err);
-						deferred.reject(err);
-					});
+					$window.plugin.notification.local.add(options, function(res) {
+						$rootScope.$evalAsync(function() {
+							console.log('Notifications: posted: ' + options.id + ': ' + angular.toJson(res));
+							scope.seen[data.original_id] = notif.id;
+							updateSeen();
+							deferred.resolve(res);
+						});
+					}, scope);
 				} else {
 					$rootScope.$broadcast('cruisemonkey.notify.toast', { message: notif.message });
 					scope.seen[data.original_id] = notif.id;
@@ -136,11 +166,14 @@
 
 		var clearNotifications = function() {
 			ionic.Platform.ready(function() {
-				if (window.plugin && window.plugin.notification && window.plugin.notification.local) {
-					$cordovaLocalNotification.cancelAll();
+				if ($window.plugin && $window.plugin.notification && $window.plugin.notification.local) {
+					$window.plugin.notification.local.cancelAll();
 				}
 			});
 		};
+
+		// check initialization
+		registerPermission();
 
 		return {
 			canNotify: canNotify,
@@ -170,19 +203,19 @@
 		});
 
 		$rootScope.$on('cruisemonkey.notify.newSeamail', function(ev, newSeamail) {
-			console.log('Notifications: There are ' + newSeamail + ' new seamail messages.');
+			console.log('Notifications: There are ' + newSeamail.length + ' new seamail messages.');
 		});
 
 		$rootScope.$on('cruisemonkey.notify.newMentions', function(ev, newMentions) {
-			console.log('Notifications: There are ' + newMentions + ' unnoticed mentions.');
+			console.log('Notifications: There are ' + newMentions.length + ' unnoticed mentions.');
 		});
 
 		$rootScope.$on('cruisemonkey.notify.newAlerts', function(ev, newAlerts) {
-			console.log('Notifications: There are ' + newAlerts + ' unnoticed alerts.');
+			console.log('Notifications: There are ' + newAlerts.length + ' unnoticed alerts.');
 		});
 
 		$rootScope.$on('cruisemonkey.notify.newAnnouncements', function(ev, newAnnouncements) {
-			console.log('Notifications: There are ' + newAnnouncements + ' unnoticed announcements.');
+			console.log('Notifications: There are ' + newAnnouncements.length + ' unnoticed announcements.');
 		});
 
 		$rootScope.$on('cruisemonkey.notify.alert', function(ev, alert) {

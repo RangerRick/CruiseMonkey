@@ -10,16 +10,20 @@
 
 	angular.module('cruisemonkey.Twitarr', [
 		'cruisemonkey.Config',
+		'cruisemonkey.Initializer',
 		'cruisemonkey.Notifications',
 		'cruisemonkey.Settings',
 		'angularFileUpload',
 		'angularLocalStorage'
 	])
-	.factory('Twitarr', ['$q', '$rootScope', '$timeout', '$interval', '$http', '$upload', 'storage', 'config.request.timeout', 'config.twitarr.enable-cachebusting', 'LocalNotifications', 'SettingsService', 'UserService', function($q, $rootScope, $timeout, $interval, $http, $upload, storage, requestTimeout, enableCachebusting, LocalNotifications, SettingsService, UserService) {
+	.factory('Twitarr', ['$q', '$rootScope', '$http', '$interval', '$timeout', '$window', '$upload', 'storage', 'config.request.timeout', 'config.twitarr.enable-cachebusting', 'Cordova', 'LocalNotifications', 'SettingsService', 'UserService', function($q, $rootScope, $http, $interval, $timeout, $window, $upload, storage, requestTimeout, enableCachebusting, Cordova, LocalNotifications, SettingsService, UserService) {
 		console.log('Initializing Twit-arr API.');
 
 		var scope = $rootScope.$new();
+
+		scope.isForeground = true;
 		scope.lastStatus = storage.get('cruisemonkey.twitarr.status');
+
 		if (!scope.lastStatus) {
 			scope.lastStatus = {
 				'mention_ids': [],
@@ -27,6 +31,7 @@
 				'announcement_timestamps': []
 			};
 		}
+
 		var updateLastStatus = function() {
 			if (scope.lastStatus === undefined) {
 				storage.remove('cruisemonkey.twitarr.status');
@@ -547,14 +552,17 @@
 
 		var configureBackgroundFetch = function() {
 			ionic.Platform.ready(function() {
-				if (window.plugins && window.plugins.backgroundFetch) {
-					var fetcher = window.plugins.backgroundFetch;
+				if ($window.plugins && $window.plugins.backgroundFetch) {
+					var fetcher = $window.plugins.backgroundFetch;
 					console.log('Twitarr: Configuring background fetch.');
 					fetcher.configure(function() {
 						$rootScope.$evalAsync(function() {
 							console.log('Twitarr: Background fetch initiated.');
 							checkStatus().then(function() {
+								console.log('Twitarr: Background fetch complete.');
 								fetcher.finish();
+							}, function(err) {
+								console.log('Twitarr: Background fetch failed: ' + angular.toJson(err));
 							});
 						});
 					});
@@ -562,47 +570,58 @@
 			});
 		};
 
-		scope.isForeground = true;
-		scope.$on('cruisemonkey.app.paused', function() {
-			scope.isForeground = false;
-		});
-		scope.$on('cruisemonkey.app.locked', function() {
-			scope.isForeground = false;
-		});
-		scope.$on('cruisemonkey.app.resumed', function() {
-			scope.isForeground = true;
-			LocalNotifications.clear();
-		});
-
 		var statusIntervalCallback = function() {
-			if (ionic.Platform.isIOS() && scope.isForeground) {
-				// we check in the foreground 'cause we get toast notifications
+			Cordova.inCordova().then(function() {
+				// if we're in Cordova, only run the interval check when we're in the foreground
+				if (scope.isForeground) {
+					checkStatus();
+				}
+			}, function() {
+				// outside of cordova, just assume we should do it
 				checkStatus();
-			} else {
-				// anywhere else, just run regardless
-				checkStatus();
+			});
+		};
+
+		var _statusCheck;
+		var startStatusCheck = function() {
+			if (_statusCheck) {
+				return;
+			}
+			_statusCheck = $interval(statusIntervalCallback, SettingsService.getBackgroundInterval());
+		};
+		var stopStatusCheck = function() {
+			if (_statusCheck) {
+				$interval.cancel(_statusCheck);
 			}
 		};
 
-		var statusCheck = $interval(statusIntervalCallback, SettingsService.getBackgroundInterval());
+		var onForeground = function() {
+			scope.isForeground = true;
+			LocalNotifications.clear();
+			startStatusCheck();
+		};
+		var onBackground = function() {
+			scope.isForeground = false;
+			stopStatusCheck();
+		};
+
+		/* start status check on launch or resume */
+		scope.$on('cruisemonkey.app.resumed', onForeground);
 		checkStatus();
 
+		/* stop status check when backgrounded or shut down */
+		scope.$on('cruisemonkey.app.paused', onBackground);
+		scope.$on('cruisemonkey.app.locked', onBackground);
+		scope.$on('$destroy', stopStatusCheck);
+
+		/* configure background fetch to run whenever it thinks it should ;) */
 		configureBackgroundFetch();
 
-
-		$rootScope.$on('cruisemonkey.user.settings-changed', function(ev, settings) {
+		scope.$on('cruisemonkey.user.settings-changed', function(ev, settings) {
 			if (settings.old && settings.new.backgroundInterval !== settings.old.backgroundInterval) {
 				console.log('Twitarr: background interval refresh has changed from ' + settings.old.backgroundInterval + ' to ' + settings.new.backgroundInterval + '.');
-				if (statusCheck) {
-					$interval.cancel(statusCheck);
-				}
-				statusCheck = $interval(statusIntervalCallback, settings.new.backgroundInterval);
-			}
-		});
-
-		$rootScope.$on('$destroy', function() {
-			if (statusCheck) {
-				$interval.cancel(statusCheck);
+				stopStatusCheck();
+				startStatusCheck();
 			}
 		});
 

@@ -90,29 +90,6 @@
 			}
 		};
 	}])
-	.factory('Cordova', ['$q', '$rootScope', '$window', function($q, $rootScope, $window) {
-		var deferred;
-
-		return {
-			inCordova: function() {
-				if (deferred) {
-					return deferred.promise;
-				}
-
-				deferred = $q.defer();
-				ionic.Platform.ready(function() {
-					$rootScope.$evalAsync(function() {
-						if ($window.cordova) {
-							deferred.resolve(true);
-						} else {
-							deferred.reject(false);
-						}
-					});
-				});
-				return deferred.promise;
-			}
-		};
-	}])
 	.config(['$stateProvider', '$urlRouterProvider', '$compileProvider', '$ionicConfigProvider', function($stateProvider, $urlRouterProvider, $compileProvider, $ionicConfigProvider) {
 		if (isMobile) {
 			ionic.Platform.fullScreen(false,true);
@@ -141,7 +118,6 @@
 			})
 			.state('app.events', {
 				url: '/events',
-				/* abstract: true, */
 				views: {
 					'menuContent': {
 						templateUrl: 'template/events-tabs.html',
@@ -167,20 +143,20 @@
 					}
 				}
 			})
-			.state('app.events.my', {
-				url: '/my',
-				views: {
-					'events-my': {
-						templateUrl: 'template/event-list-my.html',
-						controller: 'CMEventCtrl'
-					}
-				}
-			})
 			.state('app.events.all', {
 				url: '/all',
 				views: {
 					'events-all': {
 						templateUrl: 'template/event-list-all.html',
+						controller: 'CMEventCtrl'
+					}
+				}
+			})
+			.state('app.events.my', {
+				url: '/my',
+				views: {
+					'events-my': {
+						templateUrl: 'template/event-list-my.html',
 						controller: 'CMEventCtrl'
 					}
 				}
@@ -252,7 +228,7 @@
 		;
 	}])
 	/* EventService & Notifications are here just to make sure they initializes early */
-	.run(['$q', '$rootScope', '$sce', '$timeout', '$window', '$state', '$cordovaCamera', '$cordovaKeyboard', '$cordovaSplashscreen', '$ionicModal', '$ionicPlatform', '$ionicPopover', '$ionicPopup', '$upload', 'storage', 'util', 'Cordova', 'EventService', 'Images', 'Notifications', 'SettingsService', 'Twitarr', 'UpgradeService', 'UserService', function($q, $rootScope, $sce, $timeout, $window, $state, $cordovaCamera, $cordovaKeyboard, $cordovaSplashscreen, $ionicModal, $ionicPlatform, $ionicPopover, $ionicPopup, $upload, storage, util, Cordova, EventService, Images, Notifications, SettingsService, Twitarr, UpgradeService, UserService) {
+	.run(['$q', '$rootScope', '$sce', '$timeout', '$window', '$state', '$cordovaCamera', '$cordovaKeyboard', '$cordovaSplashscreen', '$ionicModal', '$ionicPlatform', '$ionicPopover', '$ionicPopup', '$upload', 'storage', 'util', 'Cordova', 'EventService', 'Images', 'LocalNotifications', 'Notifications', 'SettingsService', 'Twitarr', 'UpgradeService', 'UserService', function($q, $rootScope, $sce, $timeout, $window, $state, $cordovaCamera, $cordovaKeyboard, $cordovaSplashscreen, $ionicModal, $ionicPlatform, $ionicPopover, $ionicPopup, $upload, storage, util, Cordova, EventService, Images, LocalNotifications, Notifications, SettingsService, Twitarr, UpgradeService, UserService) {
 		console.log('CruiseMonkey run() called.');
 
 		$rootScope.$on("$stateChangeError", function (event, toState, toParams, fromState, fromParams, error) {
@@ -526,7 +502,14 @@
 		}
 
 		Cordova.inCordova().then(function() {
+			console.log('In cordova.  Hiding splash screen.');
 			$cordovaSplashscreen.hide();
+			console.log('Making sure the user can do notifications.');
+			LocalNotifications.canNotify().then(function() {
+				console.log('Local notifications: they can!');
+			}, function() {
+				console.log('Local notifications: they can\'t. :(');
+			});
 		});
 
 		UpgradeService.upgrade();
