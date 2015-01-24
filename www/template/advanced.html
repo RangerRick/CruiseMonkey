@@ -33,10 +33,10 @@
 							how often CruiseMonkey checks for @mentions or seamail while you're using it
 						</div>
 						<div class="range row">
-							<div class="col col-10">
+							<div class="col">
 								<span>{{backgroundInterval}} seconds</span>
 							</div>
-							<input class="col col-90" type="range" name="bgi" ng-model="$parent.backgroundInterval" min="10" max="360" value="{{backgroundInterval}}" />
+							<input class="col" type="range" name="bgi" ng-model="$parent.backgroundInterval" min="10" max="360" value="{{backgroundInterval}}" />
 						</div>
 					</label>
 					<button class="button button-full button-dark" ng-click="saveSettings()" ng-disabled="form.$invalid || isUnchanged()">Save</button>
