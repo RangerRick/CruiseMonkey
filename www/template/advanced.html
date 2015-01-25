@@ -48,7 +48,7 @@
 				<div class="item item-divider yellow">Force Database Sync</div>
 				<div class="item item-text-wrap">
 					The shipboard network can be pretty flaky, especially with hundreds of geeks hitting it at once.
-					CruiseMonkey will attempt to force a sync every 15 minutes, but if you'd like to force one now,
+					CruiseMonkey will attempt to sync continuously, but if you'd like to force one now,
 					click this.<br />
 					Last replication update: {{lastModified().isSame(0)? 'N/A' : lastModified().fromNow()}}
 				</div>
@@ -60,7 +60,7 @@
 				<div class="item item-text-wrap">
 					This will clear your local client cache and re-sync from the CruiseMonkey server.  Any events
 					or favorites you have created will come back, as long as CruiseMonkey had previously synced them
-					to the server.  If you are not online when you hit this, it <em>will</em> leave you with an
+					to the server.  If you are not online when you hit this, it will probably leave you with an
 					empty CruiseMonkey!
 				</div>
 				<button class="button button-full button-dark" ng-click="resetDatabase()">Reset Cache</button>

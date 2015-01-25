@@ -189,7 +189,7 @@
 			return this.replication;
 		};
 
-		Database.prototype.destroy = function() {
+		Database.prototype.shutDown = function() {
 			var deferred = $q.defer();
 			var self = this;
 
@@ -198,32 +198,8 @@
 				self.db.removeAllListeners();
 			}
 
-			var resolveDeleted = function() {
+			$rootScope.$evalAsync(function() {
 				deferred.resolve({ok:true});
-			};
-
-			self.isEmpty().then(function(isEmpty) {
-				if (isEmpty) {
-					console.log('Database(' + self.name + ').destroy: database ' + self.name + ' is already empty, skipping destroy');
-					resolveDeleted();
-				} else {
-					self.pouch().destroy(function(err, res) {
-						$rootScope.$evalAsync(function() {
-							if (err) {
-								if (err.message && err.message.indexOf('no such table') >= 0) {
-									console.log('Database(' + self.name + ').destroy: cruisemonkey.Database: destroy called on database that already does not exist.');
-									resolveDeleted();
-								} else {
-									console.log('Database(' + self.name +').destroy: cruisemonkey.Database: failed to destroy ' + self.name,err);
-									deferred.reject(err);
-								}
-							} else {
-								console.log('Database(' + self.name + ').destroy: destroyed ' + self.name);
-								resolveDeleted();
-							}
-						});
-					});
-				}
 			});
 
 			return deferred.promise;

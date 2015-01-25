@@ -129,7 +129,7 @@
 			} else {
 				if (favoritesdb) {
 					favoritesdb.stopReplication();
-					favoritesdb.destroy();
+					favoritesdb.shutDown();
 				}
 				favoritesdb = null;
 			}
@@ -140,17 +140,17 @@
 
 			var destroy = [];
 			if (eventsdb) {
-				destroy.push(eventsdb.destroy());
+				destroy.push(eventsdb.shutDown());
 			}
 			if (favoritesdb) {
-				destroy.push(favoritesdb.destroy());
+				destroy.push(favoritesdb.shutDown());
 			}
 			$q.all(destroy).then(function() {
 				eventsdb = createEventsDb();
 				favoritesdb = createFavoritesDb();
 				deferred.resolve(true);
 			}, function(err) {
-				console.debug('Failed to destroy a database:',err);
+				console.debug('Failed to shut down database:' + angular.toJson(err));
 				eventsdb = createEventsDb();
 				favoritesdb = createFavoritesDb();
 				deferred.resolve(false);
