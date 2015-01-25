@@ -32,10 +32,13 @@
     </header>
     <ion-content class="has-header" menu-close>
       <ion-list>
-				<a class="item" ng-click="go('app.events.official')"   ng-class="active('app.events.official')">Official Events</a>
-        <a class="item" ng-click="go('app.events.unofficial')" ng-class="active('app.events.unofficial')">Unofficial Events</a>
-        <a class="item" ng-click="go('app.events.all')"        ng-class="active('app.events.all')">All Events</a>
-        <a class="item" ng-click="go('app.events.my')"         ng-class="active('app.events.my')">My Events</a>
+        <span ng-switch="lastTab">
+				<a class="item" ng-click="go('app.events.official')"   ng-class="active('app.events.official')" ng-switch-when="app.events.official">Events</a>
+        <a class="item" ng-click="go('app.events.unofficial')" ng-class="active('app.events.unofficial')" ng-switch-when="app.events.unofficial">Events</a>
+        <a class="item" ng-click="go('app.events.all')"        ng-class="active('app.events.all')" ng-switch-when="app.events.all">Events</a>
+        <a class="item" ng-click="go('app.events.my')"         ng-class="active('app.events.my')" ng-switch-when="app.events.my">Events</a>
+        <a class="item" ng-click="go('app.events.official')"   ng-class="active('app.events.official')" ng-switch-default>Events</a>
+        </span>
 				<a class="item" ng-click="go('app.deck-plans')"        ng-class="active('app.deck-plans')">Deck Plans</a>
 				<a class="item" ng-click="go('app.amenities')"         ng-class="active('app.amenities')">Amenities</a>
 				<a class="item" ng-click="go('app.karaoke')"           ng-class="active('app.karaoke')">Karaoke</a>
