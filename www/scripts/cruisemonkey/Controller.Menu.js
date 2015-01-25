@@ -14,9 +14,6 @@
 
 		var loginModal;
 
-		/** set up the user in the scope **/
-		$scope.user = UserService.get();
-
 		$scope.unreadSeamail = 0;
 
 		$scope.lastTab = storage.get('cruisemonkey.menu.last-tab');
@@ -54,10 +51,6 @@
 		});
 
 		$scope.$on('cruisemonkey.user.updated', function(ev, newUser, oldUser) {
-			if (newUser.loggedIn && !oldUser.loggedIn) {
-				console.log('User "' + newUser.username + '" logged in.');
-			}
-			$scope.user = newUser;
 			loginModal.hide();
 			$scope.closeKeyboard();
 		});

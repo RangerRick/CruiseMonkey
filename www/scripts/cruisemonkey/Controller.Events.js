@@ -150,8 +150,6 @@
 		}
 	}])
 	.controller('CMEventsBarCtrl', ['$q', '$scope', '$timeout', '$state', '$ionicActionSheet', '$ionicModal', '$ionicScrollDelegate', 'EventService', 'UserService', 'storage', function($q, $scope, $timeout, $state, $ionicActionSheet, $ionicModal, $ionicScrollDelegate, EventService, UserService, storage) {
-		$scope.user = UserService.get();
-
 		var updateSearchString = function(searchString) {
 			if (searchString === undefined) {
 				storage.remove('cruisemonkey.events.search-string');
@@ -506,10 +504,6 @@
 			if (db.name.endsWith('events')) {
 				$scope.refreshDelayed(100);
 			}
-		});
-
-		$scope.$on('cruisemonkey.user.updated', function(ev, newUser) {
-			$scope.user = newUser;
 		});
 
 		/** Ionic Events **/

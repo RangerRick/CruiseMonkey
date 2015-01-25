@@ -75,11 +75,8 @@
 			return eventsdb;
 		};
 
-		var createFavoritesDb = function(user) {
-			if (!user) {
-				user = UserService.get();
-			}
-			if (!user.username || !user.loggedIn) {
+		var createFavoritesDb = function() {
+			if (!$rootScope.user.username || !$rootScope.user.loggedIn) {
 				return null;
 			}
 
@@ -92,12 +89,12 @@
 			favoritesdb = _database.get(favoritesdbName, {
 				'view': {
 					'view': 'cruisemonkey/favorites-all',
-					'key': user.username
+					'key': $rootScope.user.username
 				},
 				'replication': {
 					'filter': 'cruisemonkey/favorites',
 					'query_parms': {
-						'username': user.username
+						'username': $rootScope.user.username
 					}
 				}
 			});
@@ -121,7 +118,7 @@
 		$rootScope.$on('cruisemonkey.user.updated', function(ev, user) {
 			console.log('user updated:',user.username);
 			if (user.loggedIn) {
-				favoritesdb = createFavoritesDb(user);
+				favoritesdb = createFavoritesDb();
 			} else {
 				if (favoritesdb) {
 					favoritesdb.stopReplication();

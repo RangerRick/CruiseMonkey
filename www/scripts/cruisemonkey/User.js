@@ -10,13 +10,19 @@
 			'password': ''
 		};
 
+		$rootScope.user = storage.get('cruisemonkey.user');
+		if (!$rootScope.user) {
+			$rootScope.user = angular.copy(defaultValue);
+		}
+
 		var getUser = function() {
-			return angular.copy(storage.get('cruisemonkey.user') || defaultValue);
+			return angular.copy($rootScope.user);
 		};
 		var setUser = function(user) {
 			var oldUser = getUser();
 			var savedUser = angular.copy(user);
 			savedUser.username = savedUser.username.toLowerCase();
+			$rootScope.user = savedUser;
 			storage.set('cruisemonkey.user', savedUser);
 			$rootScope.$broadcast('cruisemonkey.user.updated', savedUser, oldUser);
 		};
@@ -34,11 +40,10 @@
 				}
 			},
 			'matches': function(username) {
-				var existing = getUser();
 				if (username) {
 					username = username.toLowerCase();
 				}
-				return existing.username === username;
+				return $rootScope.user.username === username;
 			},
 			'get': function() {
 				return getUser();
@@ -47,7 +52,10 @@
 				setUser(newUser);
 			},
 			'reset': function() {
-				setUser(defaultValue);
+				var user = getUser();
+				user.loggedIn = false;
+				user.password = undefined;
+				setUser(user);
 				return getUser();
 			}
 		};

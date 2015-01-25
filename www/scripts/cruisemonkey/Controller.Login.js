@@ -13,6 +13,11 @@
 		$scope.oldUser = UserService.get();
 		$scope.user = UserService.get();
 
+		$scope.$on('cruisemonkey.user.updated', function(ev, user) {
+			$scope.user = user;
+			$scope.oldUser = user;
+		});
+
 		$scope.goToTwitarr = function() {
 			var twitarrRoot = SettingsService.getTwitarrRoot();
 			$rootScope.openUrl(twitarrRoot + 'user/new', '_system');
