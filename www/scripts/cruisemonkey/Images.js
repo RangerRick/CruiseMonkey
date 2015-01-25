@@ -31,7 +31,7 @@
 		console.log('Images: Initializing image cache.');
 
 		var inFlight = {};
-		var maxCacheSize = 5000;
+		var maxCacheSize = 2000;
 
 		var ready = $q.defer();
 
@@ -42,13 +42,6 @@
 
 			Cordova.inCordova().then(function() {
 				try {
-					/*
-					if (ionic.Platform.isIOS()) {
-						if (!(file instanceof String)) {
-							file = file.toURL();
-						}
-					}
-					*/
 					$window.resolveLocalFileSystemURL(file.toURL(), function(res) {
 						$rootScope.$evalAsync(function() {
 							//console.log('resolveLocalFileSystemURL = ' + angular.toJson(res));
@@ -246,6 +239,7 @@
 			var deferred = $q.defer();
 			entry.getMetadata(function(metadata) {
 				deferred.resolve({
+					'entry': entry,
 					'path': entry.toURL(),
 					'timestamp': moment(metadata.modificationTime)
 				});
@@ -267,58 +261,84 @@
 
 		var _deleteEntry = function(entry) {
 			console.log('Images._deleteEntry: ' + entry.path);
+			entry.entry.remove(function(success) {
+				$rootScope.$evalAsync(function() {
+					console.log('Images._deleteEntry: deleted ' + entry.path);
+				});
+			}, function(error) {
+				$rootScope.$evalAsync(function() {
+					console.log('Images._deleteEntry: failed to delete: ' + error.code);
+				});
+			});
+		};
+
+		var resetCache = function(limitSizeTo) {
+			var deferred = $q.defer();
+
+			if (limitSizeTo === undefined) {
+				limitSizeTo = maxCacheSize;
+			}
+
+			Cordova.inCordova().then(function() {
+				getCacheDirectory().then(function(cacheDirectory) {
+					console.log('Images: checking for old cache files in ' + angular.toJson(cacheDirectory));
+					getEntryFromFile(cacheDirectory).then(function(dir) {
+						var reader = dir.createReader();
+						reader.readEntries(function(entries) {
+							$rootScope.$evalAsync(function() {
+								//console.log('Images: got entries: ' + angular.toJson(entries));
+
+								if (entries.length > limitSizeTo) {
+									var promises = [], entry, i;
+									for (i=0; i < entries.length; i++) {
+										promises.push(_getFileInfo(entries[i]));
+									}
+									$q.all(promises).then(function(res) {
+										res.sort(_sortFileInfo);
+										//console.log('Images: cache files: ' + angular.toJson(res));
+										while (res.length > limitSizeTo) {
+											entry = res.shift();
+											_deleteEntry(entry);
+										}
+										deferred.resolve(true);
+									}, function(err) {
+										console.log('Images: failed to clean up the cache directory: ' + angular.toJson(err));
+										deferred.resolve(true);
+									});
+								} else {
+									deferred.resolve(true);
+								}
+							});
+						}, function(err) {
+							$rootScope.$evalAsync(function() {
+								console.log('Images: failed to read directory: ' + angular.toJson(err));
+								deferred.resolve(true);
+							});
+						});
+					}, function(err) {
+						console.log('Images: failed to resolve DirectoryEntry: ' + angular.toJson(err));
+						deferred.resolve(true);
+					});
+				});
+			}, function() {
+				deferred.resolve(true);
+			});
+
+			return deferred.promise;
 		};
 
 		ready.promise.then(function() {
 			console.log('Images: Ready for queries.');
 		});
 
-		Cordova.inCordova().then(function() {
-			getCacheDirectory().then(function(cacheDirectory) {
-				console.log('Images: checking for old cache files in ' + angular.toJson(cacheDirectory));
-				getEntryFromFile(cacheDirectory).then(function(dir) {
-					var reader = dir.createReader();
-					reader.readEntries(function(entries) {
-						$rootScope.$evalAsync(function() {
-							//console.log('Images: got entries: ' + angular.toJson(entries));
-
-							if (entries.length > maxCacheSize) {
-								var promises = [], entry, i;
-								for (i=0; i < entries.length; i++) {
-									promises.push(_getFileInfo(entries[i]));
-								}
-								$q.all(promises).then(function(res) {
-									res.sort(_sortFileInfo);
-									//console.log('Images: cache files: ' + angular.toJson(res));
-									while (res.length > maxCacheSize) {
-										entry = res.shift();
-										_deleteEntry(entry);
-									}
-									ready.resolve(true);
-								}, function(err) {
-									console.log('Images: failed to clean up the cache directory: ' + angular.toJson(err));
-									ready.resolve(true);
-								});
-							} else {
-								ready.resolve(true);
-							}
-						});
-					}, function(err) {
-						$rootScope.$evalAsync(function() {
-							console.log('Images: failed to read directory: ' + angular.toJson(err));
-							ready.resolve(true);
-						});
-					});
-				}, function(err) {
-					console.log('Images: failed to resolve DirectoryEntry: ' + angular.toJson(err));
-					ready.resolve(true);
-				});
-			});
+		resetCache(maxCacheSize).then(function(res) {
+			ready.resolve(res);
 		});
 
 		return {
 			get: getImageUrl,
 			getAll: getAllImageUrls,
+			resetCache: resetCache,
 		};
 	}]);
 }());

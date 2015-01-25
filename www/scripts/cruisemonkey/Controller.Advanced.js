@@ -10,7 +10,7 @@
 		'cruisemonkey.Events',
 		'cruisemonkey.Settings'
 	])
-	.controller('CMAdvancedCtrl', ['$scope', '$rootScope', '$window', '_database', 'config.app.version', 'SettingsService', 'EventService', function($scope, $rootScope, $window, _database, version, SettingsService, EventService) {
+	.controller('CMAdvancedCtrl', ['$scope', '$rootScope', '$window', '_database', 'config.app.version', 'SettingsService', 'EventService', 'Images', function($scope, $rootScope, $window, _database, version, SettingsService, EventService, Images) {
 		console.log('Initializing CMAdvancedCtrl');
 
 		var toStringInterval = function(intValue) {
@@ -59,6 +59,7 @@
 
 		$scope.resetDatabase = function() {
 			EventService.recreateDatabase();
+			Images.resetCache(0);
 		};
 
 		$scope.forceSync = function() {
