@@ -202,7 +202,6 @@
 		};
 
 		var addTweets = function(tweets) {
-			$scope.user = UserService.get();
 			var i, j, k;
 			//console.log('TwitarrStream: addTweets:',tweets);
 			for (i=0; i < tweets.length; i++) {
@@ -276,7 +275,6 @@
 		$scope.done = false;
 
 		$scope.doRefresh = function(keepPosition, showLoading) {
-			$scope.user = UserService.get();
 			console.log('Controller.Twitarr.Stream.doRefresh(' + keepPosition + ')');
 			if (showLoading) {
 				$ionicLoading.show({
@@ -363,6 +361,10 @@
 
 		$scope.$on('$ionicView.loaded', function(ev, info) {
 			$scope.doRefresh();
+		});
+
+		$scope.$on('cruisemonkey.user.updated', function(ev, newUser) {
+			$scope.user = newUser;
 		});
 	}]);
 }());

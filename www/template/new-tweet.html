@@ -12,7 +12,7 @@
 		<ion-list>
 			<div class="item item-input-inset">
 				<label class="item-input-wrapper">
-					<input type="text" ng-model="tweet.text" ng-trim="true" placeholder="Post Text" required ui-keypress="{13:'postTweet(tweet)'}">
+					<textarea ng-model="tweet.text" ng-trim="true" placeholder="Post Text" required></textarea>
 				</label>
 			</div>
 			<div class="item item-image" ng-if="tweet.photo">
