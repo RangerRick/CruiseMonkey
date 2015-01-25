@@ -21,6 +21,7 @@
 	])
 	.factory('EventService', ['$q', '$rootScope', '$timeout', '$location', 'storage', 'uuid4', '_database', 'UserService', 'SettingsService', function($q, $rootScope, $timeout, $location, storage, uuid4, _database, UserService, SettingsService) {
 		console.log('EventService: Initializing EventService.');
+		var ready = $q.defer();
 
 		$rootScope.lastModified = storage.get('cruisemonkey.lastModified') || 0;
 		var updateLastModified = function() {
@@ -69,7 +70,13 @@
 			if (replicate) {
 				//$rootScope.$broadcast('cruisemonkey.notify.toast', {message: 'Synchronizing Events.'});
 				var remoteDb = _database.get(remoteDatabase);
-				eventsdb.continuouslyReplicateFrom(remoteDb);
+				eventsdb.continuouslyReplicateFrom(remoteDb)['finally'](function() {
+					ready.resolve(true);
+				});
+			} else {
+				$rootScope.$evalAsync(function() {
+					ready.resolve(true);
+				});
 			}
 
 			return eventsdb;
@@ -413,38 +420,40 @@
 
 			var deferred = $q.defer();
 			_allEvents = deferred.promise;
-
-			var promises = [];
-
-			promises.push(queryEventView('cruisemonkey/events-public'));
-			var username = UserService.getUsername();
-			if (username) {
-				promises.push(queryEventView('cruisemonkey/events-user', {
-					key: username
-				}));
-			}
-
-			$q.all(promises).then(function(results) {
-				var ret = {}, i, ev;
-				for (i=0; i < results[0].length; i++) {
-					ev = results[0][i];
-					ret[ev.getId()] = ev;
-				}
-				if (results.length === 2) {
-					for (i=0; i < results[1].length; i++) {
-						ev = results[1][i];
-						ret[ev.getId()] = ev;
-					}
-				}
-				deferred.resolve(reconcileEvents(ret, []));
-			}, function(err) {
-				deferred.reject(err);
-			});
-
 			_allEvents['finally'](function() {
 				console.log('EventService.getAllEvents(): finished.');
 				_allEvents = null;
 			});
+
+			ready.promise.then(function() {
+				var promises = [];
+
+				promises.push(queryEventView('cruisemonkey/events-public'));
+				var username = UserService.getUsername();
+				if (username) {
+					promises.push(queryEventView('cruisemonkey/events-user', {
+						key: username
+					}));
+				}
+
+				$q.all(promises).then(function(results) {
+					var ret = {}, i, ev;
+					for (i=0; i < results[0].length; i++) {
+						ev = results[0][i];
+						ret[ev.getId()] = ev;
+					}
+					if (results.length === 2) {
+						for (i=0; i < results[1].length; i++) {
+							ev = results[1][i];
+							ret[ev.getId()] = ev;
+						}
+					}
+					deferred.resolve(reconcileEvents(ret, []));
+				}, function(err) {
+					deferred.reject(err);
+				});
+			});
+
 			return _allEvents;
 		};
 
@@ -456,6 +465,10 @@
 
 			var deferred = $q.defer();
 			_allFavorites = deferred.promise;
+			_allFavorites['finally'](function() {
+				console.log('EventService.getAllFavorites(): finished.');
+				_allFavorites = null;
+			});
 
 			console.log('EventService.getAllFavorites()');
 			favoritesdb.query('cruisemonkey/favorites-all', {include_docs:true}).then(function(results) {
@@ -469,10 +482,6 @@
 				deferred.reject(err);
 			});
 
-			_allFavorites['finally'](function() {
-				console.log('EventService.getAllFavorites(): finished.');
-				_allFavorites = null;
-			});
 			return _allFavorites;
 		};
 
@@ -486,6 +495,10 @@
 
 			var deferred = $q.defer();
 			_officialEvents = deferred.promise;
+			_officialEvents['finally'](function() {
+				console.log('EventService.getOfficialEvents(): finished.');
+				_officialEvents = null;
+			});
 
 			queryEventView('cruisemonkey/events-official').then(function(events) {
 				deferred.resolve(events);
@@ -493,10 +506,6 @@
 				deferred.reject(err);
 			});
 
-			_officialEvents['finally'](function() {
-				console.log('EventService.getOfficialEvents(): finished.');
-				_officialEvents = null;
-			});
 			return _officialEvents;
 		};
 
@@ -510,6 +519,10 @@
 
 			var deferred = $q.defer();
 			_unofficialEvents = deferred.promise;
+			_unofficialEvents['finally'](function() {
+				console.log('EventService.getUnofficialEvents(): finished.');
+				_unofficialEvents = null;
+			});
 
 			queryEventView('cruisemonkey/events-unofficial').then(function(events) {
 				deferred.resolve(events);
@@ -517,10 +530,6 @@
 				deferred.reject(err);
 			});
 
-			_unofficialEvents['finally'](function() {
-				console.log('EventService.getUnofficialEvents(): finished.');
-				_unofficialEvents = null;
-			});
 			return _unofficialEvents;
 		};
 
@@ -539,6 +548,10 @@
 
 			var deferred = $q.defer();
 			_userEvents = deferred.promise;
+			_userEvents['finally'](function() {
+				console.log('EventService.getUserEvents(): finished.');
+				_userEvents = null;
+			});
 
 			queryEventView('cruisemonkey/events-user', {
 				key: username
@@ -547,10 +560,7 @@
 			}, function(err) {
 				deferred.reject(err);
 			});
-			_userEvents['finally'](function() {
-				console.log('EventService.getUserEvents(): finished.');
-				_userEvents = null;
-			});
+
 			return _userEvents;
 		};
 
@@ -569,6 +579,10 @@
 
 			var deferred = $q.defer();
 			_myEvents = deferred.promise;
+			_myEvents['finally'](function() {
+				console.log('EventService.getMyEvents(): finished.');
+				_myEvents = null;
+			});
 
 			var publicPromise = queryEventView('cruisemonkey/events-public');
 			var userPromise   = queryEventView('cruisemonkey/events-user', {
@@ -592,10 +606,6 @@
 				deferred.reject(err);
 			});
 
-			_myEvents['finally'](function() {
-				console.log('EventService.getMyEvents(): finished.');
-				_myEvents = null;
-			});
 			return _myEvents;
 		};
 
@@ -614,6 +624,10 @@
 
 			var deferred = $q.defer();
 			_myFavorites = deferred.promise;
+			_myFavorites['finally'](function() {
+				console.log('EventService.getMyFavorites(): finished.');
+				_myFavorites = null;
+			});
 
 			queryEventView('cruisemonkey/events-all').then(function(events) {
 				var ret = [], ev;
@@ -628,10 +642,6 @@
 				deferred.reject(err);
 			});
 
-			_myFavorites['finally'](function() {
-				console.log('EventService.getMyFavorites(): finished.');
-				_myFavorites = null;
-			});
 			return _myFavorites;
 		};
 
@@ -650,6 +660,10 @@
 
 			var deferred = $q.defer();
 			_isFavorite = deferred.promise;
+			_isFavorite['finally'](function() {
+				console.log('EventService.isFavorite(): finished.');
+				_isFavorite = null;
+			});
 
 			var docId = 'favorite:' + modelVersion + ':' + username + ':' + eventId;
 			console.log('docId=',docId);
@@ -661,10 +675,6 @@
 				deferred.resolve(false);
 			});
 
-			_isFavorite['finally'](function() {
-				console.log('EventService.isFavorite(): finished.');
-				_isFavorite = null;
-			});
 			return _isFavorite;
 		};
 
