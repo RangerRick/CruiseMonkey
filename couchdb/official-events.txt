@@ -189,17 +189,6 @@
 }
 
 {
-   "_id": "event:2015:official:a187d5a332ef5d0bca20ea99132d984d",
-   "type": "event",
-   "start": "2015-02-05 19:00",
-   "lastUpdated": "2015-01-06 12:00",
-   "isPublic": true,
-   "username": "official",
-   "summary": "Formal Night",
-   "description": "The second of two formal nights."
-}
-
-{
    "_id": "event:2015:official:a187d5a332ef5d0bca20ea991300738b",
    "type": "event",
    "start": "2015-02-03 08:00",
@@ -210,6 +199,28 @@
    "summary": "Philipsburg, St. Maarten (Docked)",
    "description": "When the Spanish closed their colonial fort on St. Maarten in 1648, a few Dutch and French soldiers hid on the island and decided to share it. Soon after, the Netherlands and France signed a formal agreement to split St. Maarten in half, as it is today. Philipsburg displays its Dutch heritage in its architecture and landscaping. The island offers endless stretches of beach, beautiful landscapes and great shopping.",
    "location": "Philipsburg, St. Maarten"
+}
+{
+   "_id": "event:2015:official:4ac0562532c06253be7b5a8fe62d3847",
+   "type": "event",
+   "start": "2015-02-03 18:00",
+   "end": "2015-02-03 20:00",
+   "lastUpdated": "2015-01-06 12:00",
+   "isPublic": true,
+   "username": "official",
+   "summary": "Dinner"
+}
+{
+   "_id": "event:2015:official:4ac0562532c06253be7b5a8fe62d6b6e",
+   "type": "event",
+   "start": "2015-02-03 22:00",
+   "end": "2015-02-03 23:45",
+   "lastUpdated": "2015-01-06 12:00",
+   "isPublic": true,
+   "username": "official",
+   "summary": "Comedy Night",
+   "description": "Rhea Butcher, Hari Kondabolu, and Cameron Esposito",
+	"location": "Alhambra"
 }
 
 {
@@ -224,6 +235,51 @@
    "description": "With dormant volcanoes, golden sand beaches and gorgeous green hills, St. Kitts is a beautiful backdrop to your Caribbean adventure. Discovered in 1623 by the British and settled by the French in 1625, the island's deep colonial history is reflected in the abandoned fortresses, as well as its landscaped gardens, city squares and architectural details.",
    "location": "Basseterre, St. Kitts"
 }
+{
+   "_id": "event:2015:official:4ac0562532c06253be7b5a8fe62e1c9c",
+   "type": "event",
+   "start": "2015-02-04 17:00",
+   "end": "2015-02-04 18:00",
+   "lastUpdated": "2015-01-06 12:00",
+   "isPublic": true,
+   "username": "official",
+   "summary": "Group Photo",
+   "description": "Gather in Alhambra, photo on Helipad.",
+   "location": "Alhambra"
+}
+{
+   "_id": "event:2015:official:4ac0562532c06253be7b5a8fe62dbf02",
+   "type": "event",
+   "start": "2015-02-04 18:00",
+   "end": "2015-02-04 20:00",
+   "lastUpdated": "2015-01-06 12:00",
+   "isPublic": true,
+   "username": "official",
+   "summary": "Dinner"
+}
+{
+   "_id": "event:2015:official:4ac0562532c06253be7b5a8fe62e8d53",
+   "type": "event",
+   "start": "2015-02-04 21:00",
+   "end": "2015-02-04 22:30",
+   "lastUpdated": "2015-01-06 12:00",
+   "isPublic": true,
+   "username": "official",
+   "summary": "JoCo Live Band Karaoke",
+   "location": "Studio B"
+}
+{
+   "_id": "event:2015:official:4ac0562532c06253be7b5a8fe62ef3f0",
+   "type": "event",
+   "start": "2015-02-04 22:30",
+   "end": "2015-02-05 01:00",
+   "lastUpdated": "2015-01-06 12:00",
+   "isPublic": true,
+   "username": "official",
+   "summary": "Karaoke Night",
+   "description": "Hosted by John Roderick and David Rees.",
+   "location": "Studio B"
+}
 
 {
    "_id": "event:2015:official:a187d5a332ef5d0bca20ea9913008066",
@@ -237,6 +293,49 @@
    "description": "One of the largest islands in the Eastern Caribbean, Puerto Rico's landscape encompasses mountains, underground caves, coral reefs, white-sand beaches and an incredibly massive rain forest that supplies fresh water to most of the island. At the same time San Juan, the capital of the commonwealth, is a big city with a bustling business district, glitzy resorts and casinos, as well as one of the most stunning examples of colonial life in the Western world.",
    "location": "San Juan, Puerto Rico"
 }
+{
+   "_id": "event:2015:official:4ac0562532c06253be7b5a8fe62f6b5f",
+   "type": "event",
+   "start": "2015-02-05 14:30",
+   "end": "2015-02-05 17:00",
+   "lastUpdated": "2015-01-06 12:00",
+   "isPublic": true,
+   "username": "official",
+   "summary": "Jim Boggia/The Both",
+   "location": "Alhambra"
+}
+{
+   "_id": "event:2015:official:a187d5a332ef5d0bca20ea99132d984d",
+   "type": "event",
+   "start": "2015-02-05 19:00",
+   "lastUpdated": "2015-01-06 12:00",
+   "isPublic": true,
+   "username": "official",
+   "summary": "Formal Night",
+   "description": "The second of two formal nights."
+}
+{
+   "_id": "event:2015:official:4ac0562532c06253be7b5a8fe62f9431",
+   "type": "event",
+   "start": "2015-02-05 21:00",
+   "end": "2015-02-05 22:00",
+   "lastUpdated": "2015-01-06 12:00",
+   "isPublic": true,
+   "username": "official",
+   "summary": "Fancy Schmancy Skate Party",
+   "location": "Studio B"
+}
+{
+   "_id": "event:2015:official:4ac0562532c06253be7b5a8fe630e1e1",
+   "type": "event",
+   "start": "2015-02-05 23:00",
+   "end": "2015-02-06 00:30",
+   "lastUpdated": "2015-01-06 12:00",
+   "isPublic": true,
+   "username": "official",
+   "summary": "Celebrity Artemis",
+   "location": "Alhambra"
+}
 
 {
    "_id": "event:2015:official:a187d5a332ef5d0bca20ea9913008fa1",
@@ -249,6 +348,60 @@
    "summary": "Labadee, Haiti (Docked)",
    "description": "Only Royal Caribbean can take you to the private beach destination of Labadee. Our private paradise sits on the north coast of Haiti, surrounded by beautiful mountain slopes and exotic foliage. This exclusive destination offers pristine beaches, breathtaking scenery, incredible thrills and spectacular water activities. Regardless of where you go, you'll find yourself embraced by the beautiful landscape. Labadee's native charm, along with its natural beauty, make this a destination not to be missed. It's impossible to choose just one thing that's special about Labadee. The inviting beach, coral reefs and exciting amenities provide a perfect place to relax and have fun.",
    "location": "Labadee, Haiti"
+}
+{
+   "_id": "event:2015:official:4ac0562532c06253be7b5a8fe63163c1",
+   "type": "event",
+   "start": "2015-02-06 18:00",
+   "end": "2015-02-06 20:00",
+   "lastUpdated": "2015-01-06 12:00",
+   "isPublic": true,
+   "username": "official",
+   "summary": "Dinner"
+}
+
+{
+   "_id": "event:2015:official:4ac0562532c06253be7b5a8fe631dc32",
+   "type": "event",
+   "start": "2015-02-07 13:00",
+   "end": "2015-02-07 15:30",
+   "lastUpdated": "2015-01-06 12:00",
+   "isPublic": true,
+   "username": "official",
+   "summary": "Jonathan Coulton and Friends",
+   "location": "Alhambra"
+}
+{
+   "_id": "event:2015:official:4ac0562532c06253be7b5a8fe631a070",
+   "type": "event",
+   "start": "2015-02-07 18:00",
+   "end": "2015-02-07 20:00",
+   "lastUpdated": "2015-01-06 12:00",
+   "isPublic": true,
+   "username": "official",
+   "summary": "Dinner"
+}
+{
+   "_id": "event:2015:official:4ac0562532c06253be7b5a8fe633068f",
+   "type": "event",
+   "start": "2015-02-07 21:00",
+   "end": "2015-02-07 22:00",
+   "lastUpdated": "2015-01-06 12:00",
+   "isPublic": true,
+   "username": "official",
+   "summary": "Farewell Cocktail Party",
+   "location": "Main Pool"
+}
+{
+   "_id": "event:2015:official:4ac0562532c06253be7b5a8fe633a657",
+   "type": "event",
+   "start": "2015-02-07 22:00",
+   "end": "2015-02-08 00:00",
+   "lastUpdated": "2015-01-06 12:00",
+   "isPublic": true,
+   "username": "official",
+   "summary": "(General Hangout)",
+   "location": "Main Pool"
 }
 
 {
