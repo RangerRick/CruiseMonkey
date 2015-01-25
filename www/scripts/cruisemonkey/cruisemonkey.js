@@ -118,17 +118,19 @@
 			})
 			.state('app.events', {
 				url: '/events',
+				abstract: true,
 				views: {
 					'menuContent': {
-						templateUrl: 'template/events-tabs.html',
-						controller: 'CMEventsBarCtrl'
+						/* templateUrl: 'template/events-tabs.html', */
+						template: '<ion-nav-view name="events"></ion-nav-view>',
+						controller: 'CMEventsBarCtrl',
 					}
 				}
 			})
 			.state('app.events.official', {
 				url: '/official',
 				views: {
-					'events-official': {
+					'events': {
 						templateUrl: 'template/event-list-official.html',
 						controller: 'CMEventCtrl'
 					}
@@ -137,7 +139,7 @@
 			.state('app.events.unofficial', {
 				url: '/unofficial',
 				views: {
-					'events-unofficial': {
+					'events': {
 						templateUrl: 'template/event-list-unofficial.html',
 						controller: 'CMEventCtrl'
 					}
@@ -146,7 +148,7 @@
 			.state('app.events.all', {
 				url: '/all',
 				views: {
-					'events-all': {
+					'events': {
 						templateUrl: 'template/event-list-all.html',
 						controller: 'CMEventCtrl'
 					}
@@ -155,7 +157,7 @@
 			.state('app.events.my', {
 				url: '/my',
 				views: {
-					'events-my': {
+					'events': {
 						templateUrl: 'template/event-list-my.html',
 						controller: 'CMEventCtrl'
 					}
