@@ -35,7 +35,7 @@
 				<a class="item" ng-click="go('app.events.official')"   ng-class="active('app.events.official')">Official Events</a>
         <a class="item" ng-click="go('app.events.unofficial')" ng-class="active('app.events.unofficial')">Unofficial Events</a>
         <a class="item" ng-click="go('app.events.all')"        ng-class="active('app.events.all')">All Events</a>
-        <a class="item" ng-click="go('app.events.my')"         ng-class="active('app.events.my')">My Events</a>
+        <a class="item" ng-click="go('app.events.my')"         ng-class="active('app.events.my')" ng-if="user.loggedIn">My Events</a>
 				<a class="item" ng-click="go('app.deck-plans')"        ng-class="active('app.deck-plans')">Deck Plans</a>
 				<a class="item" ng-click="go('app.amenities')"         ng-class="active('app.amenities')">Amenities</a>
 				<a class="item" ng-click="go('app.karaoke')"           ng-class="active('app.karaoke')">Karaoke</a>
