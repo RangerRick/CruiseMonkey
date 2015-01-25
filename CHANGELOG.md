@@ -1,3 +1,15 @@
+<a name="5.0.5"</a>
+## 5.0.5 (2015-01-25)
+
+
+#### Bug Fixes
+
+
+* **events**  fix the "my" tab showing up ((e43dcd75))
+* **twitarr**  track user login immediately ((10a603dc))
+
+
+
 <a name="5.0.4"</a>
 ## 5.0.4 (2015-01-24)
 
