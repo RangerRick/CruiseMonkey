@@ -107,7 +107,6 @@
 		$scope.users = {};
 		$scope.entries = [];
 		$scope.twitarrRoot = SettingsService.getTwitarrRoot();
-		$scope.user = UserService.get();
 
 		$scope.loading = $q.defer();
 		$scope.loading.resolve();
@@ -361,10 +360,6 @@
 
 		$scope.$on('$ionicView.loaded', function(ev, info) {
 			$scope.doRefresh();
-		});
-
-		$scope.$on('cruisemonkey.user.updated', function(ev, newUser) {
-			$scope.user = newUser;
 		});
 	}]);
 }());
