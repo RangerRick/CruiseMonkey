@@ -11,17 +11,17 @@
 		var destroyDb = function(dbname) {
 			var deferred = $q.defer();
 
-			console.log('IndexedDB.destroyDb: deleting ' + dbname);
+			console.log('IndexedDB.destroyDb: destroying ' + dbname);
 			var del = indexedDB.deleteDatabase(dbname);
 			del.onsuccess = function() {
 				$rootScope.$evalAsync(function() {
-					console.log('IndexedDB.destroyDb: deleted ' + dbname);
+					console.log('IndexedDB.destroyDb: destroying ' + dbname);
 					deferred.resolve(true);
 				});
 			};
 			del.onerror = function() {
 				$rootScope.$evalAsync(function() {
-					console.log('IndexedDB.destroyDb: failed to delete ' + dbname);
+					console.log('IndexedDB.destroyDb: failed to destroy ' + dbname);
 					deferred.resolve(false);
 				});
 			};
@@ -70,6 +70,7 @@
 	}])
 	.factory('WebSQL', ['$q', '$rootScope', function($q, $rootScope) {
 		var destroyDb = function(dbname) {
+			console.log('WebSQL.destroyDb: destroying ' + dbname);
 			var deferred = $q.defer();
 			PouchDB.destroy(dbname, function(err, info) {
 				$rootScope.$evalAsync(function() {
@@ -77,7 +78,6 @@
 						console.log('WebSQL.destroyDb: failed to destroy ' + dbname + ': ' + angular.toJson(err));
 						deferred.resolve(false);
 					} else {
-						console.log('info=',info);
 						console.log('WebSQL.destroyDb: destroyed ' + dbname);
 						deferred.resolve(true);
 					}
@@ -94,7 +94,6 @@
 			var promises = [];
 			for (var i=0; i < olddbnames.length; i++) {
 				var old = olddbnames[i];
-				console.log('WebSQL.cleanAllDbs: deleting ' + old);
 				promises.push(destroyDb(old));
 			}
 			$q.all(promises).then(function() {
