@@ -1,9 +1,9 @@
 {
   "name": "CruiseMonkey",
-  "version": "5.0.5",
+  "version": "5.0.6",
   "minSdk": "14",
   "description": "Keep Track of Your Cruise",
-  "build": 40347,
+  "build": 40349,
   "dependencies": {
     "gulp": "^3.5.6",
     "gulp-concat": "^2.2.0",
