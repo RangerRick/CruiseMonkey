@@ -1,13 +1,124 @@
 (function() {
 	'use strict';
 
-	/*global PouchDB: true*/
+	/* global PouchDB: true */
+	/* global indexedDB: true */
+
 	angular.module('cruisemonkey.Database', [
 		'cruisemonkey.Initializer'
 	])
+	.factory('IndexedDB', ['$q', '$rootScope', function($q, $rootScope) {
+		var destroyDb = function(dbname) {
+			var deferred = $q.defer();
+
+			console.log('IndexedDB.destroyDb: deleting ' + dbname);
+			var del = indexedDB.deleteDatabase(dbname);
+			del.onsuccess = function() {
+				$rootScope.$evalAsync(function() {
+					console.log('IndexedDB.destroyDb: deleted ' + dbname);
+					deferred.resolve(true);
+				});
+			};
+			del.onerror = function() {
+				$rootScope.$evalAsync(function() {
+					console.log('IndexedDB.destroyDb: failed to delete ' + dbname);
+					deferred.resolve(false);
+				});
+			};
+			return deferred.promise;
+		};
+
+		var cleanAllDbs = function() {
+			console.log('IndexedDB.cleanAllDbs');
+			var deferred = $q.defer();
+			if (indexedDB && indexedDB.webkitGetDatabaseNames) {
+				var getdbnames = indexedDB.webkitGetDatabaseNames();
+				getdbnames.onsuccess = function(sender, args) {
+					$rootScope.$evalAsync(function() {
+						if (indexedDB.deleteDatabase) {
+							var promises = [];
+							for (var i=0; i < sender.target.result.length; i++) {
+								var db = sender.target.result[i];
+								promises.push(destroyDb(db));
+							}
+							$q.all(promises).then(function() {
+								deferred.resolve(true);
+							}, function() {
+								deferred.resolve(false);
+							});
+						} else {
+							deferred.resolve(false);
+						}
+					});
+				};
+				getdbnames.onerror = function(sender, args) {
+					$rootScope.$evalAsync(function() {
+						deferred.resolve(false);
+					});
+				};
+			} else {
+				$rootScope.$evalAsync(function() {
+					deferred.resolve(false);
+				});
+			}
+			return deferred.promise;
+		};
+
+		return {
+			clean: cleanAllDbs
+		};
+	}])
+	.factory('WebSQL', ['$q', '$rootScope', function($q, $rootScope) {
+		var destroyDb = function(dbname) {
+			var deferred = $q.defer();
+			PouchDB.destroy(dbname, function(err, info) {
+				$rootScope.$evalAsync(function() {
+					if (err) {
+						console.log('WebSQL.destroyDb: failed to destroy ' + dbname + ': ' + angular.toJson(err));
+						deferred.resolve(false);
+					} else {
+						console.log('info=',info);
+						console.log('WebSQL.destroyDb: destroyed ' + dbname);
+						deferred.resolve(true);
+					}
+				});
+			});
+			return deferred.promise;
+		};
+
+		var cleanAllDbs = function() {
+			console.log('WebSQL.cleanAllDbs');
+			var deferred = $q.defer();
+
+			var olddbnames = ['cmtest', 'cruisemonkey', 'cruisemonkey-jccc4', 'cruisemonkey-jccc4-test', 'cruisemonkey-test', 'karaoke'];
+			var promises = [];
+			for (var i=0; i < olddbnames.length; i++) {
+				var old = olddbnames[i];
+				console.log('WebSQL.cleanAllDbs: deleting ' + old);
+				promises.push(destroyDb(old));
+			}
+			$q.all(promises).then(function() {
+				deferred.resolve(true);
+			}, function() {
+				deferred.resolve(false);
+			});
+
+			return deferred.promise;
+		};
+
+		return {
+			clean: cleanAllDbs
+		};
+	}])
 	/* Initializer is in here to make sure permissive SSL is set up before we try a database connection */
-	.factory('_database', ['$q', '$rootScope', '$timeout', '$interval', 'Initializer', function($q, $rootScope, $timeout, $interval, Initializer) {
+	.factory('_database', ['$q', '$rootScope', '$timeout', '$interval', 'IndexedDB', 'Initializer', 'UpgradeService', 'WebSQL', function($q, $rootScope, $timeout, $interval, IndexedDB, Initializer, UpgradeService, WebSQL) {
 		var databases = {};
+
+		UpgradeService.register('5.0.8', 'Clean out all databases.', function() {
+			console.log('Database.upgrade: destroying old IndexedDB and WebSQL databases.');
+			//IndexedDB.clean();
+			WebSQL.clean();
+		});
 
 		var makeEventHandler = function(eventName, db) {
 			return function(obj) {

@@ -26,7 +26,7 @@
 		'angularLocalStorage',
 		'cruisemonkey.Config'
 	])
-	.factory('UpgradeService', ['$q', '$timeout', 'storage', 'config.app.version', 'config.upgrade', function($q, $timeout, storage, version, shouldUpgrade) {
+	.factory('UpgradeService', ['$q', '$rootScope', 'storage', 'config.app.version', 'config.upgrade', function($q, $rootScope, storage, version, shouldUpgrade) {
 		var previousVersion = storage.get('cruisemonkey.version');
 		if (!previousVersion) {
 			previousVersion = '0.0.0';
@@ -50,12 +50,15 @@
 			var performed = [];
 
 			var def = $q.defer();
+			def.promise['finally'](function() {
+				$rootScope.$broadcast('cruisemonkey.upgrade.complete');
+			});
 
 			console.log('UpgradeService.upgrade(): previous version = ' + previousVersion + ', current version = ' + currentVersion);
 
 			if (!shouldUpgrade) {
 				console.log('Upgrades disabled.');
-				$timeout(function() {
+				$rootScope.$evalAsync(function() {
 					def.resolve(false);
 				});
 			} else if (compareVersions(currentVersion, previousVersion) > 0) {
@@ -87,7 +90,7 @@
 				});
 			} else {
 				console.log('No upgrade necessary for version ' + currentVersion + '.');
-				$timeout(function() {
+				$rootScope.$evalAsync(function() {
 					def.resolve(true);
 				});
 			}

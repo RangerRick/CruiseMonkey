@@ -86,6 +86,32 @@
 			console.log('We are not inside Cordova.');
 		});
 
+		var _expected = ['cruisemonkey.notifications.ready', 'cruisemonkey.upgrade.complete'];
+		var _seen = [];
+
+		var expectedHandler = function(ev) {
+			console.log('Initializer: ' + ev.name);
+			_seen.push(ev.name);
+
+			var ready = true;
+			for (var i=0; i < _expected.length; i++) {
+				if (_seen.indexOf(_expected[i]) === -1) {
+					ready = false;
+					break;
+				}
+			}
+
+			if (ready) {
+				console.log('CruiseMonkey is ready!');
+				$rootScope.$broadcast('cruisemonkey.ready');
+			}
+		};
+
+		for (var i=0; i < _expected.length; i++) {
+			var expected = angular.copy(_expected[i]);
+			$rootScope.$on(_expected[i], expectedHandler);
+		}
+
 		return {};
 	}]);
 }());

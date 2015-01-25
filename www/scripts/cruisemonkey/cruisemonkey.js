@@ -241,6 +241,8 @@
 	.run(['$q', '$rootScope', '$sce', '$timeout', '$window', '$state', '$cordovaCamera', '$cordovaKeyboard', '$cordovaSplashscreen', '$ionicModal', '$ionicPlatform', '$ionicPopover', '$ionicPopup', '$upload', 'storage', 'util', 'Cordova', 'EventService', 'Images', 'LocalNotifications', 'Notifications', 'SettingsService', 'Twitarr', 'UpgradeService', 'UserService', function($q, $rootScope, $sce, $timeout, $window, $state, $cordovaCamera, $cordovaKeyboard, $cordovaSplashscreen, $ionicModal, $ionicPlatform, $ionicPopover, $ionicPopup, $upload, storage, util, Cordova, EventService, Images, LocalNotifications, Notifications, SettingsService, Twitarr, UpgradeService, UserService) {
 		console.log('CruiseMonkey run() called.');
 
+		var inCordova = Cordova.inCordova();
+
 		$rootScope.$on("$stateChangeError", function (event, toState, toParams, fromState, fromParams, error) {
 			console.log('ERROR: ' + fromState + ' -> ' + toState, event, fromState, fromParams, toState, toParams, error);
 		});
@@ -485,7 +487,7 @@
 		};
 
 		$rootScope.closeKeyboard = function() {
-			Cordova.inCordova().then(function() {
+			inCordova.then(function() {
 				$cordovaKeyboard.close();
 			});
 		};
@@ -511,15 +513,22 @@
 			});
 		}
 
-		Cordova.inCordova().then(function() {
+		inCordova.then(function() {
 			console.log('In cordova.  Hiding splash screen.');
 			$cordovaSplashscreen.hide();
+
 			console.log('Making sure the user can do notifications.');
-			LocalNotifications.canNotify().then(function() {
+			var canNotify = LocalNotifications.canNotify();
+			canNotify['finally'](function() {
+				$rootScope.$broadcast('cruisemonkey.notifications.ready');
+			});
+			canNotify.then(function() {
 				console.log('Local notifications: they can!');
 			}, function() {
 				console.log('Local notifications: they can\'t. :(');
 			});
+		}, function() {
+			$rootScope.$broadcast('cruisemonkey.notifications.ready');
 		});
 
 		UpgradeService.upgrade();
