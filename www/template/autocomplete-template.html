@@ -8,7 +8,7 @@
 			</ion-scroll>
 		</div>
 		<div class="row">
-			<input type="text" placeholder="User(s)" id="searchInput" ng-keydown="checkKeyDown($event)" class="form-control" ng-model="searchText" ng-change="search()" />
+			<input type="text" placeholder="User(s)" id="searchInput" ng-keydown="checkKeyDown($event)" class="form-control" ng-model="searchText" ng-change="search()" autocomplete="off" autocapitalize="off" autocorrect="off" />
 		</div>
 	</div>
 	<ul id="suggestions" class="suggestions-list">
