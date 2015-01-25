@@ -23,6 +23,11 @@
 			$rootScope.openUrl(twitarrRoot + 'user/new', '_system');
 		};
 
+		$scope.goToLostPassword = function() {
+			var twitarrRoot = SettingsService.getTwitarrRoot();
+			$rootScope.openUrl(twitarrRoot + 'user/forgot_password', '_system');
+		};
+
 		$scope.canSubmit = function(newUser) {
 			if (newUser.username && newUser.password) {
 				return true;
