@@ -118,13 +118,18 @@
 			})
 			.state('app.events', {
 				url: '/events',
+				abstract: true,
 				views: {
 					'menuContent': {
 						templateUrl: 'template/events-tabs.html',
 						controller: 'CMEventsBarCtrl',
 						resolve: {
-							redirect: function($state) {
-								$state.go('app.events.official');
+							redirect: function($state, storage) {
+								var lastTab = storage.get('cruisemonkey.menu.last-tab');
+								if (!lastTab) {
+									lastTab = 'app.events.official';
+								}
+								$state.go(lastTab);
 							},
 						},
 					}
