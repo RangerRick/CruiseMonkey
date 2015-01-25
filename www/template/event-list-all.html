@@ -12,7 +12,7 @@
 	<cm-search-bar placeholder="Search Events" ng-model="searchString['all']" on-search-changed="onSearchChanged(searchString['all'])"></cm-search-bar>
 	<ion-content scroll="true" padding="false" id="all-event-content" delegate-handle="all-event-scroll" ng-class="'has-subheader'" ng-click="closeKeyboard()">
 		<ion-list class="event-list searchable">
-			<span ng-repeat="entry in filteredEvents['all'] | eventFilter:searchString['all'] track by entry.getId()" id="all-{{entry.getId()}}">
+			<span ng-repeat="entry in filteredEvents | eventFilter:searchString['all'] track by entry.getId()" id="all-{{entry.getId()}}">
 				<ion-item ng-if="isDay(entry)" class="item-divider event-header">{{prettyDate(entry.day)}}</ion-item>
 				<ion-item ng-if="!isDay(entry)" ng-class="'list-entry item-text-wrap ' + (entry.isEven()? 'even':'odd')">
 					<span class="item-note">

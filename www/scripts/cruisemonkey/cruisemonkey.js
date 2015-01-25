@@ -121,7 +121,12 @@
 				views: {
 					'menuContent': {
 						templateUrl: 'template/events-tabs.html',
-						controller: 'CMEventsBarCtrl'
+						controller: 'CMEventsBarCtrl',
+						resolve: {
+							redirect: function($state) {
+								$state.go('app.events.official');
+							},
+						},
 					}
 				}
 			})
@@ -130,7 +135,7 @@
 				views: {
 					'events-official': {
 						templateUrl: 'template/event-list-official.html',
-						controller: 'CMEventCtrl'
+						controller: 'CMOfficialEventCtrl'
 					}
 				}
 			})
@@ -139,7 +144,7 @@
 				views: {
 					'events-unofficial': {
 						templateUrl: 'template/event-list-unofficial.html',
-						controller: 'CMEventCtrl'
+						controller: 'CMUnofficialEventCtrl'
 					}
 				}
 			})
@@ -148,7 +153,7 @@
 				views: {
 					'events-all': {
 						templateUrl: 'template/event-list-all.html',
-						controller: 'CMEventCtrl'
+						controller: 'CMAllEventCtrl'
 					}
 				}
 			})
@@ -157,7 +162,7 @@
 				views: {
 					'events-my': {
 						templateUrl: 'template/event-list-my.html',
-						controller: 'CMEventCtrl'
+						controller: 'CMMyEventCtrl'
 					}
 				}
 			})

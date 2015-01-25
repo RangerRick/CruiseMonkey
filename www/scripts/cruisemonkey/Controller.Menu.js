@@ -75,11 +75,14 @@
 				$scope.lastTab = info.stateName;
 				storage.set('cruisemonkey.menu.last-tab', $scope.lastTab);
 			} else if (info.stateName === 'app.events') {
+				console.log('app.events? this should not happen');
+				/*
 				var newState = $scope.eventType? ('app.events.' + $scope.eventType) : 'app.events.official';
 				console.log('Menu: app.events navigated, going to ' + newState + ' instead.');
 				$timeout(function() {
 					$state.go(newState);
 				});
+				*/
 			}
 		});
 

@@ -1,3 +1,28 @@
+<a name="5.0.7"</a>
+## 5.0.7 (2015-01-25)
+
+
+#### Bug Fixes
+
+
+* **images**  properly clean cache on startup ((d5617745))
+* **login**  fix more login corner cases ((f2cd350e))
+* **events**
+  *  more event-loading tweaking ((f1b66ef7))
+  *  do not refresh the events until entering the view ((da780bc8))
+  *  (revert) abandon the tab UI, it was too flaky ((89ef5452))
+  *  make sure refresh does not start until replication does ((b7772eb6))
+  *  missing add-event button on some tabs ((bac6396d))
+* **twitarr**  do not keep separate copy of user status ((da5df311))
+* **input**  turn off autocapitalize/autocomplete where relevant ((00114845))
+
+#### Features
+
+
+* **login**  link to password reset ((da47f82b))
+
+
+
 <a name="5.0.6"</a>
 ## 5.0.6 (2015-01-25)
 

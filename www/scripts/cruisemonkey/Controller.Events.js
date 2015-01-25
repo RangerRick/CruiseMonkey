@@ -411,7 +411,7 @@
 			return EventService.getAllEvents().then(function(events) {
 				events.sort(sortEvent);
 				$scope.allEvents = events;
-				$scope.updateFilter();
+				$scope.$broadcast('cruisemonkey.events.updated');
 				console.log('CMEventsBarCtrl.$scope.refreshEvents: found ' + $scope.allEvents.length + ' total events.');
 			}, function(err) {
 				console.log('CMEventsBarCtrl.$scope.refreshEvents(): WARNING: ' + err);
@@ -428,71 +428,6 @@
 				_refreshDelayTimeout = null;
 				$scope.refreshEvents();
 			}, delay || 300);
-		};
-
-		var _updatingFilter = false;
-		$scope.updateFilter = function() {
-			if (_updatingFilter || !$scope.allEvents) {
-				return;
-			}
-
-			_updatingFilter = true;
-
-			var filteredEvents = {
-				official: [],
-				unofficial: [],
-				all: [],
-				my: []
-			}, ev, i;
-			var user = UserService.get();
-
-			for (i=0; i < $scope.allEvents.length; i++) {
-				ev = $scope.allEvents[i];
-
-				// official
-				if (ev.getUsername() === 'official') {
-					filteredEvents.official.push(ev);
-				}
-
-				// unofficial
-				if (ev.isPublic() && ev.getUsername() !== 'official') {
-					filteredEvents.unofficial.push(ev);
-				}
-
-				// all
-				if (ev.isPublic()) {
-					filteredEvents.all.push(ev);
-				} else if (ev.getUsername() === user.username) {
-					filteredEvents.all.push(ev);
-				}
-
-				// my
-				if (ev.getUsername() === user.username) {
-					filteredEvents.my.push(ev);
-				} else if (ev.isPublic() && ev.isFavorite()) {
-					filteredEvents.my.push(ev);
-				}
-			}
-
-			console.log('CMEventsBarCtrl.updateFilter: official events: ' + filteredEvents.official.length);
-			console.log('CMEventsBarCtrl.updateFilter: unofficial events: ' + filteredEvents.unofficial.length);
-			console.log('CMEventsBarCtrl.updateFilter: all events: ' + filteredEvents.all.length);
-			console.log('CMEventsBarCtrl.updateFilter: my events: ' + filteredEvents.my.length);
-
-			filteredEvents.official   = withDays(filteredEvents.official);
-			filteredEvents.unofficial = withDays(filteredEvents.unofficial);
-			filteredEvents.all        = withDays(filteredEvents.all);
-			filteredEvents.my         = withDays(filteredEvents.my);
-
-			$timeout(function() {
-				$scope.filteredEvents = filteredEvents;
-				_updatingFilter = false;
-
-				var handle = $ionicScrollDelegate.$getByHandle($scope.eventType + '-event-scroll');
-				if (handle) {
-					handle.resize();
-				}
-			});
 		};
 
 		/** CruiseMonkey Events **/
@@ -517,13 +452,12 @@
 				'all': '',
 				'my': ''
 			};
+
 			$scope.searchString = storage.get('cruisemonkey.events.search-string');
 			if (!$scope.searchString || !$scope.searchString.official) {
 				$scope.searchString = defaultSearchString;
 				updateSearchString(defaultSearchString);
 			}
-
-			$scope.refreshDelayed(100);
 		});
 
 		$scope.$on('$ionicView.beforeEnter', function(ev, info) {
@@ -532,11 +466,170 @@
 				$scope.eventTitle = ($scope.eventType === 'my'? 'Mine' : $scope.eventType.capitalize());
 			}
 		});
+		$scope.$on('$ionicView.enter', function(ev, info) {
+			$scope.refreshDelayed(100);
+			$timeout(function() {
+				if (!$scope.ready) {
+					$scope.ready = {};
+				}
+				$scope.ready[$scope.eventType] = true;
+			});
+		});
 
 		$scope.$on('$destroy', function() {
 			$scope.editEventModal.remove();
 		});
 	}])
-	.controller('CMEventCtrl', ['$scope', function($scope) {
+	.controller('CMAllEventCtrl', ['$scope', '$timeout', '$ionicScrollDelegate', 'UserService',  function($scope, $timeout, $ionicScrollDelegate, UserService) {
+		var _updatingFilter = false;
+		$scope.updateFilter = function() {
+			if (_updatingFilter || !$scope.allEvents) {
+				return;
+			}
+
+			_updatingFilter = true;
+
+			var user = UserService.get();
+
+			var allEvents = $scope.allEvents, filteredEvents = [], i, ev;
+			for (i=0; i < allEvents.length; i++) {
+				ev = allEvents[i];
+				if (ev.isPublic()) {
+					filteredEvents.push(ev);
+				} else if (ev.getUsername() === user.username) {
+					filteredEvents.push(ev);
+				}
+			}
+
+			console.log('CMAllEventsCtrl.updateFilter: events: ' + filteredEvents.length);
+			filteredEvents = withDays(filteredEvents);
+
+			$timeout(function() {
+				$scope.filteredEvents = filteredEvents;
+				_updatingFilter = false;
+
+				var handle = $ionicScrollDelegate.$getByHandle($scope.eventType + '-event-scroll');
+				if (handle) {
+					handle.resize();
+				}
+			});
+		};
+
+		$scope.$on('cruisemonkey.events.updated', function() {
+			$scope.updateFilter();
+		});
+	}])
+	.controller('CMMyEventCtrl', ['$scope', '$timeout', '$ionicScrollDelegate', 'UserService', function($scope, $timeout, $ionicScrollDelegate, UserService) {
+		var _updatingFilter = false;
+		$scope.updateFilter = function() {
+			if (_updatingFilter || !$scope.allEvents) {
+				return;
+			}
+
+			_updatingFilter = true;
+
+			var user = UserService.get();
+
+			var allEvents = $scope.allEvents, filteredEvents = [], i, ev;
+			for (i=0; i < allEvents.length; i++) {
+				ev = allEvents[i];
+				if (ev.getUsername() === user.username) {
+					filteredEvents.push(ev);
+				} else if (ev.isPublic() && ev.isFavorite()) {
+					filteredEvents.push(ev);
+				}
+			}
+
+			console.log('CMMyEventsCtrl.updateFilter: events: ' + filteredEvents.length);
+			filteredEvents = withDays(filteredEvents);
+
+			$timeout(function() {
+				$scope.filteredEvents = filteredEvents;
+				_updatingFilter = false;
+
+				var handle = $ionicScrollDelegate.$getByHandle($scope.eventType + '-event-scroll');
+				if (handle) {
+					handle.resize();
+				}
+			});
+		};
+
+		$scope.$on('cruisemonkey.events.updated', function() {
+			$scope.updateFilter();
+		});
+	}])
+	.controller('CMOfficialEventCtrl', ['$scope', '$timeout', '$ionicScrollDelegate', 'UserService', function($scope, $timeout, $ionicScrollDelegate, UserService) {
+		var _updatingFilter = false;
+		$scope.updateFilter = function() {
+			if (_updatingFilter || !$scope.allEvents) {
+				return;
+			}
+
+			_updatingFilter = true;
+
+			var user = UserService.get();
+
+			var allEvents = $scope.allEvents, filteredEvents = [], i, ev;
+			for (i=0; i < allEvents.length; i++) {
+				ev = allEvents[i];
+				if (ev.getUsername() === 'official') {
+					filteredEvents.push(ev);
+				}
+			}
+
+			console.log('CMOfficialEventsCtrl.updateFilter: events: ' + filteredEvents.length);
+			filteredEvents = withDays(filteredEvents);
+
+			$timeout(function() {
+				$scope.filteredEvents = filteredEvents;
+				_updatingFilter = false;
+
+				var handle = $ionicScrollDelegate.$getByHandle($scope.eventType + '-event-scroll');
+				if (handle) {
+					handle.resize();
+				}
+			});
+		};
+
+		$scope.$on('cruisemonkey.events.updated', function() {
+			$scope.updateFilter();
+		});
+	}])
+	.controller('CMUnofficialEventCtrl', ['$scope', '$timeout', '$ionicScrollDelegate', 'UserService', function($scope, $timeout, $ionicScrollDelegate, UserService) {
+		var _updatingFilter = false;
+		$scope.updateFilter = function() {
+			if (_updatingFilter || !$scope.allEvents) {
+				return;
+			}
+
+			_updatingFilter = true;
+
+			var user = UserService.get();
+
+			var allEvents = $scope.allEvents, filteredEvents = [], i, ev;
+			for (i=0; i < allEvents.length; i++) {
+				ev = allEvents[i];
+				if (ev.isPublic() && ev.getUsername() !== 'official') {
+					filteredEvents.push(ev);
+				}
+			}
+
+			console.log('CMUnofficialEventsCtrl.updateFilter: events: ' + filteredEvents.length);
+			filteredEvents = withDays(filteredEvents);
+
+			$timeout(function() {
+				$scope.filteredEvents = filteredEvents;
+				_updatingFilter = false;
+
+				var handle = $ionicScrollDelegate.$getByHandle($scope.eventType + '-event-scroll');
+				if (handle) {
+					handle.resize();
+				}
+			});
+		};
+
+		$scope.$on('cruisemonkey.events.updated', function() {
+			$scope.updateFilter();
+		});
 	}]);
 }());
