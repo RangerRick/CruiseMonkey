@@ -520,7 +520,6 @@
 				$scope.searchString = defaultSearchString;
 				updateSearchString(defaultSearchString);
 			}
-			$scope.refreshEvents();
 		});
 
 		$scope.$on('$ionicView.beforeEnter', function(ev, info) {
@@ -528,6 +527,7 @@
 				$scope.eventType  = info.stateName.replace('app.events.', '');
 				$scope.eventTitle = ($scope.eventType === 'my'? 'Mine' : $scope.eventType.capitalize());
 			}
+			$scope.refreshEvents();
 		});
 
 		$scope.$on('$destroy', function() {
