@@ -1,3 +1,17 @@
+<a name="5.0.8"</a>
+## 5.0.8 (2015-01-25)
+
+
+#### Bug Fixes
+
+
+* **database**  clean out old databases on startup ((e8895399))
+* **events**
+  *  clean up "reset cache" a bit ((7f5a55ac))
+  *  small tweak to the way initialization happens ((5af3fb0e))
+
+
+
 <a name="5.0.7"</a>
 ## 5.0.7 (2015-01-25)
 
