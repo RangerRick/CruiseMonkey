@@ -408,7 +408,7 @@
 
 		$scope.refreshEvents = function() {
 			//console.log('CMEventsBarCtrl.$scope.refreshEvents()');
-			EventService.getAllEvents().then(function(events) {
+			return EventService.getAllEvents().then(function(events) {
 				events.sort(sortEvent);
 				$scope.allEvents = events;
 				$scope.updateFilter();
@@ -484,13 +484,15 @@
 			filteredEvents.all        = withDays(filteredEvents.all);
 			filteredEvents.my         = withDays(filteredEvents.my);
 
-			$scope.filteredEvents = filteredEvents;
-
 			$timeout(function() {
-				$ionicScrollDelegate.$getByHandle($scope.eventType + '-event-scroll').resize();
-			});
+				$scope.filteredEvents = filteredEvents;
+				_updatingFilter = false;
 
-			_updatingFilter = false;
+				var handle = $ionicScrollDelegate.$getByHandle($scope.eventType + '-event-scroll');
+				if (handle) {
+					handle.resize();
+				}
+			});
 		};
 
 		/** CruiseMonkey Events **/
@@ -520,6 +522,8 @@
 				$scope.searchString = defaultSearchString;
 				updateSearchString(defaultSearchString);
 			}
+
+			$scope.refreshDelayed(100);
 		});
 
 		$scope.$on('$ionicView.beforeEnter', function(ev, info) {
@@ -527,7 +531,6 @@
 				$scope.eventType  = info.stateName.replace('app.events.', '');
 				$scope.eventTitle = ($scope.eventType === 'my'? 'Mine' : $scope.eventType.capitalize());
 			}
-			$scope.refreshEvents();
 		});
 
 		$scope.$on('$destroy', function() {
