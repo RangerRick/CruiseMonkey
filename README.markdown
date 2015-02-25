@@ -41,6 +41,35 @@ Opening an Issue (Bug or Enhancement)
 * Twit-Arr: If you're having account issues or other general questions, please speak with Kvort\_the\_Duck on the JoCo forums, or post to his [twit-arr beta thread][].  If you have found a bug or have an enhancement request for twit-arr, report it at the [Twit-Arr github page](https://github.com/walkeriniraq/twitarr/issues).  You will need to create a GitHub account to do so.
 * CruiseMonkey: Bugs and enhancement requests can be reported at the [CruiseMonkey github page](https://github.com/RangerRick/CruiseMonkey/issues).  You will need to create a GitHub account to do so.
 
+Quick-Start Developing
+==========
+
+Pre-reqs
+--------
+
+1. [Node](http://nodejs.org/) / [NPM](https://www.npmjs.com/)  Node should now include NPM, so you probably don't need to download/install NPM seperately.
+1. [Bower](http://bower.io/) -- You can run: `npm install -g bower` to install this -- Package manager
+1. [Ionic](http://ionicframework.com/) -- This is what generates the build artifacts for iOS or Android for example.  iOS output requires a Mac with xcode install.  This should include cordova.
+1. [Gulp](http://gulpjs.com/) -- The streaming build system
+1. [Twit-arr](https://github.com/walkeriniraq/twitarr) -- The backing webservice for the platform for the JoCo Cruise
+
+First time
+----------
+1. `npm install`
+1. `bower install`
+1. `cordova platform add browser` -- see `cordova platform` for all platforms you can add.  You will need to add any platforms to which you wish to target
+1. `gulp`  -- this runs the unit tests
+
+Starting a browser session for this project
+--------------------------------------------
+1. Ensure [Twit-arr](https://github.com/walkeriniraq/twitarr) is running as well as MongoDb for it
+1. `ionic run browser`
+  * you can exchange browser for the platform of your choice
+
+App Configuration
+------------------
+Goto *Settings* and configure the database host, name, twit-arr URL etc.
+
 Contact
 =======
 
