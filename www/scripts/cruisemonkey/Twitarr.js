@@ -326,9 +326,9 @@
 		};
 
 		var getStream = function(nextPage) {
-			var url = SettingsService.getTwitarrRoot() + 'api/v2/stream';
+			var url = SettingsService.getTwitarrRoot() + 'api/v2/stream?app=CM';
 			if (nextPage) {
-				url += '?start=' + parseInt(nextPage) + '&older_posts=true';
+				url += '&start=' + parseInt(nextPage) + '&older_posts=true';
 			}
 
 			var deferred = $q.defer();

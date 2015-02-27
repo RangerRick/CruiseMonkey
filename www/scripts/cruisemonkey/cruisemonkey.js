@@ -488,7 +488,8 @@
 
 		$rootScope.closeKeyboard = function() {
 			inCordova.then(function() {
-				$cordovaKeyboard.close();
+				if ($cordovaKeyboard !== undefined && device.platform !== 'browser')
+				  $cordovaKeyboard.close();
 			});
 		};
 

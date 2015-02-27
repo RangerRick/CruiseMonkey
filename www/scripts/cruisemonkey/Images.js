@@ -64,7 +64,7 @@
 					});
 				}
 			}, function() {
-				deferred.reject('Not in Cordova!');
+				deferred.reject('Images: Not in Cordova!');
 			});
 
 			return deferred.promise;
@@ -93,7 +93,7 @@
 					});
 				}, onError);
 			}, function() {
-				deferred.reject('Not in Cordova!');
+				deferred.reject('Images: Not in Cordova!');
 			});
 
 			return deferred.promise;

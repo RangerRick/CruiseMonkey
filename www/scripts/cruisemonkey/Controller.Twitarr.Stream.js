@@ -57,26 +57,6 @@
 	var urlSubMatch  = /href="([^"]*)"/i;
 
 	var translateText = function(text) {
-		var result = text.match(hrefMatch), found;
-		if (result) {
-			for (var i=0; i < result.length; i++) {
-				found = result[i].match(userSubMatch);
-				if (found) {
-					//console.log('user link:', found);
-					text = text.replace(found.input, 'ng-click="openUser(\'' + found[1] + '\', \$event);"');
-				} else {
-					found = result[i].match(tagSubMatch);
-					if (found) {
-						//console.log('tag link:', found);
-						text = text.replace(found.input, 'ng-click="openTag(\'' + found[1] + '\');"');
-					} else {
-						found = result[i].match(urlSubMatch);
-						//console.log('external link:', found);
-						text = text.replace(found.input, 'ng-click="openUrl(\'' + found[1] + '\', \'_blank\');"');
-					}
-				}
-			}
-		}
 		//console.log('text=',text);
 		return text;
 	};
