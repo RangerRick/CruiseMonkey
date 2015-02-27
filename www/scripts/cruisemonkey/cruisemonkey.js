@@ -7,6 +7,7 @@
 	/* global Camera: true */
 	/* global StatusBar: true */
 	/* global moment: true */
+	/* global device: true */
 
 	angular.module('cruisemonkey',
 	[
@@ -488,8 +489,9 @@
 
 		$rootScope.closeKeyboard = function() {
 			inCordova.then(function() {
-				if ($cordovaKeyboard !== undefined && device.platform !== 'browser')
+				if ($cordovaKeyboard !== undefined && device.platform !== 'browser') {
 				  $cordovaKeyboard.close();
+				}
 			});
 		};
 
