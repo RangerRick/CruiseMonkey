@@ -10,7 +10,7 @@
 	.value('config.database.replicate', true)
 	.value('config.request.timeout', 10000)
 	.value('config.background.interval', 30000)
-	.value('config.twitarr.root', 'https://jccc5.rylath.net/')
+	.value('config.twitarr.root', 'http://localhost:3000/')
 	.value('config.twitarr.enable-cachebusting', true)
 	.value('config.app.version', '***VERSION***')
 	.value('config.app.build', '***BUILD***')

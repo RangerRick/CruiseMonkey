@@ -31,6 +31,7 @@
 		'cruisemonkey.Database',
 		'cruisemonkey.Events',
 		'cruisemonkey.Images',
+		'cruisemonkey.Keyboard',
 		'cruisemonkey.Initializer',
 		'cruisemonkey.Notifications',
 		'cruisemonkey.Seamail',
@@ -239,7 +240,7 @@
 		;
 	}])
 	/* EventService & Notifications are here just to make sure they initializes early */
-	.run(['$q', '$rootScope', '$sce', '$timeout', '$window', '$state', '$cordovaCamera', '$cordovaKeyboard', '$cordovaSplashscreen', '$ionicModal', '$ionicPlatform', '$ionicPopover', '$ionicPopup', '$upload', 'storage', 'util', 'Cordova', 'EventService', 'Images', 'LocalNotifications', 'Notifications', 'SettingsService', 'Twitarr', 'UpgradeService', 'UserService', function($q, $rootScope, $sce, $timeout, $window, $state, $cordovaCamera, $cordovaKeyboard, $cordovaSplashscreen, $ionicModal, $ionicPlatform, $ionicPopover, $ionicPopup, $upload, storage, util, Cordova, EventService, Images, LocalNotifications, Notifications, SettingsService, Twitarr, UpgradeService, UserService) {
+	.run(['$q', '$rootScope', '$sce', '$timeout', '$window', '$state', '$cordovaCamera', 'KeyboardService', '$cordovaSplashscreen', '$ionicModal', '$ionicPlatform', '$ionicPopover', '$ionicPopup', '$upload', 'storage', 'util', 'Cordova', 'EventService', 'Images', 'LocalNotifications', 'Notifications', 'SettingsService', 'Twitarr', 'UpgradeService', 'UserService', function($q, $rootScope, $sce, $timeout, $window, $state, $cordovaCamera, KeyboardService, $cordovaSplashscreen, $ionicModal, $ionicPlatform, $ionicPopover, $ionicPopup, $upload, storage, util, Cordova, EventService, Images, LocalNotifications, Notifications, SettingsService, Twitarr, UpgradeService, UserService) {
 		console.log('CruiseMonkey run() called.');
 
 		var inCordova = Cordova.inCordova();
@@ -489,9 +490,7 @@
 
 		$rootScope.closeKeyboard = function() {
 			inCordova.then(function() {
-				if ($cordovaKeyboard !== undefined && device.platform !== 'browser') {
-				  $cordovaKeyboard.close();
-				}
+				KeyboardService.close();
 			});
 		};
 

@@ -5,27 +5,42 @@
 	/* global cordova: true */
 	/* global ionic: true */
 	/* global moment: true */
+	/* global device: true */
 
 	angular.module('cruisemonkey.Images', [
 		'ngCordova'
 	])
 	.directive('cmImage', ['Images', function(Images) {
-		return {
-			restrict: 'AE',
-			template: '<img ng-src="{{imageUrl}}">',
-			transclude: false,
-			scope: {
-				url: '='
-			},
-			replace: true,
-			link: function(scope, elem, attrs, ctrl) {
-				//console.log('cmImage: getting ' + scope.url);
-				scope.imageUrl = 'images/blank.gif';
-				Images.get(scope.url).then(function(imageUrl) {
-					scope.imageUrl = imageUrl;
-				});
-			}
-		};
+		if (device.platform !== 'browser') {
+			console.log('cmImage: mobile app mode');
+			return {
+				restrict: 'AE',
+				template: '<img ng-src="{{imageUrl}}">',
+				transclude: false,
+				scope: {
+					url: '='
+				},
+				replace: true,
+				link: function(scope, elem, attrs, ctrl) {
+					//console.log('cmImage: getting ' + scope.url);
+					scope.imageUrl = 'images/blank.gif';
+					Images.get(scope.url).then(function(imageUrl) {
+						scope.imageUrl = imageUrl;
+					});
+				}
+			};
+	    } else {
+	    	console.log('cmImage: browser mode');
+	    	return {
+				restrict: 'AE',
+				template: '<img ng-src="{{url}}">',
+				transclude: false,
+				scope: {
+					url: '='
+				},
+				replace: true,
+			};
+	    }
 	}])
 	.factory('Images', ['$q', '$rootScope', '$http', '$interval', '$window', '$cordovaFile', 'Cordova', function($q, $rootScope, $http, $interval, $window, $cordovaFile, Cordova) {
 		console.log('Images: Initializing image cache.');
@@ -72,7 +87,6 @@
 
 		var getCacheDirectory = function() {
 			var deferred   = $q.defer(),
-				imageCache = cordova.file.cacheDirectory + 'image-cache',
 				onError = function(err) {
 					$rootScope.$evalAsync(function() {
 						console.log('Images.getCacheDirectory: error: ' + (err instanceof String? err : angular.toJson(err)));
