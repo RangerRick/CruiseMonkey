@@ -184,7 +184,7 @@ describe('Twit-Arr', function() {
 	};
 
 	it('should return 5 posts', function() {
-		$httpBackend.expectGET('https://jccc5.rylath.net/api/v2/stream').respond(200, mockPageOne);
+		$httpBackend.expectGET('https://jccc5.rylath.net/api/v2/stream?app=CM').respond(200, mockPageOne);
 		twit.getStream().then(function(res) {
 			expect(res).toBeDefined();
 			expect(res.next_page).toBeDefined();
@@ -195,8 +195,8 @@ describe('Twit-Arr', function() {
 	});
 
 	xit('should return 3 posts', function() {
-		$httpBackend.expectGET('https://jccc5.rylath.net/api/v2/stream').respond(200, mockPageOne);
-		$httpBackend.expectGET('https://jccc5.rylath.net/api/v2/stream?start=1420848811355.0').respond(200, mockPageTwo);
+		$httpBackend.expectGET('https://jccc5.rylath.net/api/v2/stream?app=CM').respond(200, mockPageOne);
+		$httpBackend.expectGET('https://jccc5.rylath.net/api/v2/stream?app=CM&start=1420848811355.0').respond(200, mockPageTwo);
 		twit.getStream().then(function(res) {
 			twit.moreStream().then(function(res) {
 				expect(res).toBeDefined();

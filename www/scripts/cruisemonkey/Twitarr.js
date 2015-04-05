@@ -53,6 +53,8 @@
 			delete scope.lastStatus.announcement_ids;
 		}
 		updateLastStatus();
+		var appCode = '?app=CM';
+
 
 		var call = function(type, url, params, data) {
 			var options = {
@@ -326,9 +328,9 @@
 		};
 
 		var getStream = function(nextPage) {
-			var url = SettingsService.getTwitarrRoot() + 'api/v2/stream';
+			var url = SettingsService.getTwitarrRoot() + 'api/v2/stream' + appCode;
 			if (nextPage) {
-				url += '?start=' + parseInt(nextPage) + '&older_posts=true';
+				url += '&start=' + parseInt(nextPage) + '&older_posts=true';
 			}
 
 			var deferred = $q.defer();
@@ -346,7 +348,7 @@
 		};
 
 		var postTweet = function(tweet) {
-			var url = SettingsService.getTwitarrRoot() + 'api/v2/stream';
+			var url = SettingsService.getTwitarrRoot() + 'api/v2/stream' + appCode;
 
 			var deferred = $q.defer();
 

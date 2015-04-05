@@ -17,7 +17,7 @@
 				<div class="time">{{seamail.timestamp.format('dddd, MMMM Do, h:mma')}}</div>
 				<ion-scroll class="users" direction="x">
 					<span class="user" ng-click="openUser(user.username, $event)" ng-repeat="user in seamail.users">
-						<img ng-src="{{userImages[user.username]}}" title="{{user.display_name}}" /> {{user.username}}
+						<cm-image url="twitarrRoot + 'api/v2/user/photo/' + user.username" title="{{user.display_name}}"></cm-image>{{user.username}}
 					</span>
 				</ion-scroll>
 			</ion-item>

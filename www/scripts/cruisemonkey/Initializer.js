@@ -5,7 +5,8 @@
 	/*global cordova: true*/
 	angular.module('cruisemonkey.Initializer', [
 		'ionic',
-		'ngCordova'
+		'ngCordova',
+		'cruisemonkey.Keyboard'
 	])
 	.factory('Cordova', ['$q', '$rootScope', '$window', function($q, $rootScope, $window) {
 		var deferred;
@@ -30,7 +31,7 @@
 			}
 		};
 	}])
-	.factory('Initializer', ['$rootScope', '$timeout', '$cordovaKeyboard', '$cordovaStatusbar', '$ionicHistory', '$ionicPlatform', '$ionicSideMenuDelegate', 'Cordova', function($rootScope, $timeout, $cordovaKeyboard, $cordovaStatusbar, $ionicHistory, $ionicPlatform, $ionicSideMenuDelegate, Cordova) {
+	.factory('Initializer', ['$rootScope', '$timeout', 'KeyboardService', '$cordovaStatusbar', '$ionicHistory', '$ionicPlatform', '$ionicSideMenuDelegate', 'Cordova', function($rootScope, $timeout, KeyboardService, $cordovaStatusbar, $ionicHistory, $ionicPlatform, $ionicSideMenuDelegate, Cordova) {
 		console.log('CruiseMonkey Initializing.');
 
 		Cordova.inCordova().then(function() {
@@ -54,8 +55,8 @@
 			}, 151);
 
 			// Hide the accessory bar by default (remove this to show the accessory bar above the keyboard or form inputs)
-			$cordovaKeyboard.hideAccessoryBar(true);
-			$cordovaKeyboard.disableScroll(true);
+			KeyboardService.hideAccessoryBar(true);
+			KeyboardService.disableScroll(true);
 
 			$timeout(function() {
 				// config.xml says we have light content because of the splash screen, now the title bar is dark so switch

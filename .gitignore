@@ -11,5 +11,5 @@ platforms/
 plugins/
 cm
 www/cm
-temp
+/temp
 engine
