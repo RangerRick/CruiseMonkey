@@ -65,7 +65,7 @@ var testSource = [
   './www/lib/modernizr/modernizr.js',
   './www/lib/es5-shim/es5-shim.js',
   './www/lib/blob-util/dist/blob-util.min.js',
-  './www/lib/ionic/js/ionic.bundle.js',
+  './www/lib/ionic/release/js/ionic.bundle.js',
   './www/lib/pouchdb/dist/pouchdb.js',
   './www/lib/pouchdb-all-dbs/dist/pouchdb.all-dbs.js',
   './www/lib/pouchdb-load/dist/pouchdb.load.js',

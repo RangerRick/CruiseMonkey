@@ -25,7 +25,7 @@ describe('Twit-Arr', function() {
 		console.info('--------------------------------------------------------------------------------');
 		jasmine.clock().install();
 		angular.module('ngCordova', []);
-		angular.module('angularFileUpload', []);
+		angular.module('ngFileUpload', []);
 	});
 
 	beforeEach(module('cruisemonkey.Twitarr', function($provide) {
@@ -45,7 +45,7 @@ describe('Twit-Arr', function() {
 				return 10000;
 			}
 		};
-		$provide.value('$upload', {});
+		$provide.value('Upload', {});
 		$provide.value('$cordovaFile', {});
 		$provide.value('$cordovaFileTransfer', {});
 		$provide.value('LocalNotifications', {});

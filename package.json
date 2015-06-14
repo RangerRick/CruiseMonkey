@@ -1,20 +1,20 @@
 {
   "name": "CruiseMonkey",
-  "version": "5.0.8",
+  "version": "5.9.0",
   "minSdk": "14",
   "description": "Keep Track of Your Cruise",
   "build": 40354,
   "dependencies": {
-    "feedparser": "^0.19.2",
-    "googleapis": "^1.1.1",
-    "gulp": "^3.5.6",
-    "gulp-concat": "^2.2.0",
-    "gulp-minify-css": "^0.3.0",
-    "gulp-rename": "^1.2.0",
-    "gulp-sass": "^0.7.1",
+    "feedparser": "*",
+    "googleapis": "*",
+    "gulp": "*",
+    "gulp-concat": "*",
+    "gulp-minify-css": "*",
+    "gulp-rename": "*",
+    "gulp-sass": "*",
     "gulp-util": "*",
-    "moment": "^2.9.0",
-    "request": "^2.51.0"
+    "moment": "*",
+    "request": "*"
   },
   "devDependencies": {
     "bower": "*",
@@ -37,18 +37,64 @@
     "shelljs": "*"
   },
   "cordovaPlugins": [
-    "org.apache.cordova.camera",
+    "org.transistorsoft.cordova.plugin.background.fetch",
+    {
+      "locator": "https://github.com/Red-Folder/bgs-core.git",
+      "id": "com.red_folder.phonegap.plugin.backgroundservice"
+    },
+    {
+      "locator": "https://github.com/EddyVerbruggen/Toast-PhoneGap-Plugin.git",
+      "id": "nl.x-services.plugins.toast"
+    },
+    {
+      "locator": "https://github.com/driftyco/ionic-plugins-keyboard.git",
+      "id": "com.ionic.keyboard"
+    },
+    {
+      "locator": "https://github.com/Paldom/SpinnerDialog.git",
+      "id": "hu.dpal.phonegap.plugins.SpinnerDialog"
+    },
+    {
+      "locator": "https://github.com/RangerRick/cordova-certificate-plugin.git",
+      "id": "com.raccoonfink.cordova.plugins.certificates"
+    },
+    {
+      "locator": "https://github.com/VersoSolutions/CordovaClipboard.git",
+      "id": "com.verso.cordova.clipboard"
+    },
+    {
+      "locator": "https://github.com/apache/cordova-plugin-device",
+      "id": "cordova-plugin-device"
+    },
     "org.apache.cordova.console",
-    "org.apache.cordova.dialogs",
-    "org.apache.cordova.file",
-    "org.apache.cordova.inappbrowser",
     "org.apache.cordova.network-information",
+    "org.apache.cordova.dialogs",
+    "org.apache.cordova.inappbrowser",
+    "org.apache.cordova.camera",
     "org.apache.cordova.splashscreen",
+    "org.apache.cordova.file",
     "org.apache.cordova.statusbar",
-    "https://github.com/RangerRick/cordova-plugin-local-notifications.git",
-    "https://github.com/EddyVerbruggen/Toast-PhoneGap-Plugin.git",
-    "https://github.com/Paldom/SpinnerDialog.git",
-    "https://github.com/RangerRick/cordova-certificate-plugin.git",
-    "org.transistorsoft.cordova.plugin.background.fetch"
+    {
+      "locator": "https://github.com/RangerRick/cordova-plugin-local-notifications.git",
+      "id": "de.appplant.cordova.plugin.local-notification"
+    },
+    "cordova-plugin-whitelist"
+  ],
+  "cordovaPlatforms": [
+    {
+      "platform": "android",
+      "version": "4.0.2",
+      "locator": "android"
+    },
+    {
+      "platform": "browser",
+      "version": "3.6.0",
+      "locator": "browser"
+    },
+    {
+      "platform": "ios",
+      "version": "3.8.0",
+      "locator": "ios"
+    }
   ]
 }

@@ -13,10 +13,10 @@
 		'cruisemonkey.Initializer',
 		'cruisemonkey.Notifications',
 		'cruisemonkey.Settings',
-		'angularFileUpload',
+		'ngFileUpload',
 		'angularLocalStorage'
 	])
-	.factory('Twitarr', ['$q', '$rootScope', '$http', '$interval', '$timeout', '$window', '$upload', 'storage', 'config.request.timeout', 'config.twitarr.enable-cachebusting', 'Cordova', 'LocalNotifications', 'SettingsService', 'UserService', function($q, $rootScope, $http, $interval, $timeout, $window, $upload, storage, requestTimeout, enableCachebusting, Cordova, LocalNotifications, SettingsService, UserService) {
+	.factory('Twitarr', ['$q', '$rootScope', '$http', '$interval', '$timeout', '$window', 'Upload', 'storage', 'config.request.timeout', 'config.twitarr.enable-cachebusting', 'Cordova', 'LocalNotifications', 'SettingsService', 'UserService', function($q, $rootScope, $http, $interval, $timeout, $window, Upload, storage, requestTimeout, enableCachebusting, Cordova, LocalNotifications, SettingsService, UserService) {
 		console.log('Initializing Twit-arr API.');
 
 		var scope = $rootScope.$new();
@@ -372,7 +372,7 @@
 			var deferred = $q.defer();
 
 			console.log('Twitarr.postPhoto(): url=' + url +', image=' + image);
-			$upload.upload({
+			Upload.upload({
 				'url': url,
 				'file': image,
 				'fileFormDataName': 'files',
