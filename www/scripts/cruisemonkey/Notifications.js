@@ -1,6 +1,7 @@
 (function() {
 	'use strict';
 
+	/*global cordova: true*/
 	/*global isMobile: true*/
 	/*global ionic: true*/
 	/*global toastr: true*/
@@ -14,13 +15,14 @@
 		'ngCordova',
 		'cruisemonkey.Initializer',
 	])
-	.factory('LocalNotifications', ['$q', '$rootScope', '$window', 'storage', 'Cordova', function($q, $rootScope, $window, storage, Cordova) {
+	.factory('LocalNotifications', function($q, $rootScope, $window, $cordovaLocalNotification, storage, Cordova) {
 		console.log('Initializing local notifications service.');
 
 		var scope        = $rootScope.$new();
 		scope.allowed    = storage.get('cruisemonkey.notifications.allowed')    || false;
 		scope.registered = storage.get('cruisemonkey.notifications.registered') || false;
 		scope.seen       = storage.get('cruisemonkey.notifications')            || {};
+		scope.canNotify  = false;
 
 		var updateAllowed = function() {
 			storage.set('cruisemonkey.notifications.allowed', scope.allowed);
@@ -54,16 +56,15 @@
 
 			if (scope.allowed) {
 				console.log('LocalNotifications.hasPermission: already allowed.');
+				scope.canNotify = true;
 				deferred.resolve(true);
 			} else {
 				Cordova.inCordova().then(function() {
 					console.log('LocalNotifications.hasPermission: checking local notification permission.');
-					$window.plugin.notification.local.hasPermission(function(granted) {
-						$rootScope.$evalAsync(function() {
-							console.log('LocalNotifications.hasPermission: current permissions: ' + granted);
-							scope.allowed = granted;
-							deferred.resolve(granted);
-						});
+					$cordovaLocalNotification.hasPermission(function(granted) {
+						console.log('LocalNotifications.hasPermission: current permissions: ' + granted);
+						scope.allowed = granted;
+						deferred.resolve(granted);
 					});
 				}, function() {
 					scope.allowed = false;
@@ -82,21 +83,19 @@
 				deferred.resolve(scope.registered);
 			} else {
 				Cordova.inCordova().then(function() {
-					$window.plugin.notification.local.registerPermission(function(granted) {
-						$rootScope.$evalAsync(function() {
-							if (granted) {
-								console.log('LocalNotifications.registerPermission: permission has been granted.');
-							} else {
-								console.log('LocalNotifications.registerPermission: user rejected notifications permission.');
-							}
-							scope.registered = true;
-							updateRegistered();
+					$cordovaLocalNotification.registerPermission(function(granted) {
+						if (granted) {
+							console.log('LocalNotifications.registerPermission: permission has been granted.');
+						} else {
+							console.log('LocalNotifications.registerPermission: user rejected notifications permission.');
+						}
+						scope.registered = true;
+						updateRegistered();
 
-							scope.allowed = granted;
-							updateAllowed();
+						scope.allowed = granted;
+						updateAllowed();
 
-							deferred.resolve(true);
-						});
+						deferred.resolve(true);
 					});
 				});
 			}
@@ -107,15 +106,11 @@
 		var canNotify = function() {
 			var deferred = $q.defer();
 
-			ionic.Platform.ready(function() {
-				$rootScope.$evalAsync(function() {
-					if (scope.isForeground === false && $window.plugin && $window.plugin.notification && $window.plugin.notification.local) {
-						deferred.resolve(scope.allowed);
-					} else {
-						deferred.resolve(false);
-					}
-				});
-			});
+			if (scope.isForeground === false && scope.canNotify) {
+				deferred.resolve(scope.allowed);
+			} else {
+				deferred.resolve(false);
+			}
 
 			return deferred.promise;
 		};
@@ -145,13 +140,11 @@
 
 					console.log('Notifications: Posting local notification:' + angular.toJson(options));
 
-					$window.plugin.notification.local.add(options, function(res) {
-						$rootScope.$evalAsync(function() {
-							console.log('Notifications: posted: ' + options.id + ': ' + angular.toJson(res));
-							scope.seen[data.original_id] = notif.id;
-							updateSeen();
-							deferred.resolve(res);
-						});
+					$cordovaLocalNotification.schedule(options, function(res) {
+						console.log('Notifications: posted: ' + options.id + ': ' + angular.toJson(res));
+						scope.seen[data.original_id] = notif.id;
+						updateSeen();
+						deferred.resolve(res);
 					}, scope);
 				} else {
 					$rootScope.$broadcast('cruisemonkey.notify.toast', { message: notif.message });
@@ -165,11 +158,7 @@
 		};
 
 		var clearNotifications = function() {
-			ionic.Platform.ready(function() {
-				if ($window.plugin && $window.plugin.notification && $window.plugin.notification.local) {
-					$window.plugin.notification.local.cancelAll();
-				}
-			});
+			return $cordovaLocalNotification.cancelAll();
 		};
 
 		// check initialization
@@ -180,8 +169,8 @@
 			send: sendNotification,
 			clear: clearNotifications,
 		};
-	}])
-	.factory('Notifications', ['$q', '$rootScope', '$timeout', '$window', '$ionicLoading', '$ionicPopup', '$cordovaDialogs', '$cordovaSpinnerDialog', '$cordovaToast', 'LocalNotifications', function($q, $rootScope, $timeout, $window, $ionicLoading, $ionicPopup, $cordovaDialogs, $cordovaSpinnerDialog, $cordovaToast, LocalNotifications) {
+	})
+	.factory('Notifications', function($q, $rootScope, $timeout, $window, $ionicLoading, $ionicPopup, $cordovaDialogs, $cordovaSpinnerDialog, $cordovaToast, LocalNotifications) {
 		console.log('Initializing notification service.');
 
 		toastr.options.preventDuplicates = true;
@@ -220,25 +209,21 @@
 
 		$rootScope.$on('cruisemonkey.notify.alert', function(ev, alert) {
 			console.log('Notifications: Alert: ' + alert.message);
-			ionic.Platform.ready(function() {
-				$rootScope.$evalAsync(function() {
-					if (navigator.notification && navigator.notification.alert) {
-						$cordovaDialogs.alert(alert.message, alert.title, alert.buttonName);
-					} else {
-						var opts = {};
-						if (alert.title) {
-							opts.title = alert.title;
-							opts.message = alert.message;
-						} else {
-							opts.title = alert.message;
-						}
-						if (alert.buttonName) {
-							opts.okText = alert.buttonName;
-						}
-						$ionicPopup.alert(opts);
-					}
-				});
-			});
+			if (navigator.notification && navigator.notification.alert) {
+				$cordovaDialogs.alert(alert.message, alert.title, alert.buttonName);
+			} else {
+				var opts = {};
+				if (alert.title) {
+					opts.title = alert.title;
+					opts.message = alert.message;
+				} else {
+					opts.title = alert.message;
+				}
+				if (alert.buttonName) {
+					opts.okText = alert.buttonName;
+				}
+				$ionicPopup.alert(opts);
+			}
 		});
 
 		$rootScope.$on('cruisemonkey.notify.local', function(ev, notif) {
@@ -247,46 +232,38 @@
 
 		$rootScope.$on('cruisemonkey.notify.spinner', function(ev, spinner) {
 			var timeout = spinner.timeout || 3000;
-			ionic.Platform.ready(function() {
-				$rootScope.$evalAsync(function() {
-					if ($window.plugins && $window.plugins.spinnerDialog) {
-						$cordovaSpinnerDialog.show(spinner.message);
-						$timeout(function() {
-							$cordovaSpinnerDialog.hide();
-						}, timeout);
-					} else {
-						var template = '<i class="icon ion-spin ion-load-a"></i>';
-						if (spinner.message) {
-							template += '<br/>' + spinner.message;
-						}
-						$ionicLoading.show({
-							template: template,
-							noBackdrop: true,
-							duration: timeout
-						});
-					}
+			if ($window.plugins && $window.plugins.spinnerDialog) {
+				$cordovaSpinnerDialog.show(spinner.message);
+				$timeout(function() {
+					$cordovaSpinnerDialog.hide();
+				}, timeout);
+			} else {
+				var template = '<i class="icon ion-spin ion-load-a"></i>';
+				if (spinner.message) {
+					template += '<br/>' + spinner.message;
+				}
+				$ionicLoading.show({
+					template: template,
+					noBackdrop: true,
+					duration: timeout
 				});
-			});
+			}
 		});
 
 		$rootScope.$on('cruisemonkey.notify.toast', function(ev, toast) {
 			var timeout = toast.timeout || 3000;
 			console.log('Notifications: Toast(' + timeout + '): ' + toast.message);
-			ionic.Platform.ready(function() {
-				$rootScope.$evalAsync(function() {
-					if ($window.plugins && $window.plugins.toast) {
-						var duration = 'short';
-						if (timeout >= 5000) {
-							duration = 'long';
-						}
-						$cordovaToast.show(toast.message, duration, 'top');
-					} else {
-						toastr.info(toast.message);
-					}
-				});
-			});
+			if ($window.plugins && $window.plugins.toast) {
+				var duration = 'short';
+				if (timeout >= 5000) {
+					duration = 'long';
+				}
+				$cordovaToast.show(toast.message, duration, 'top');
+			} else {
+				toastr.info(toast.message);
+			}
 		});
 
 		return {};
-	}]);
+	});
 }());

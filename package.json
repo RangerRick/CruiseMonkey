@@ -74,11 +74,15 @@
     "org.apache.cordova.splashscreen",
     "org.apache.cordova.file",
     "org.apache.cordova.statusbar",
-    {
-      "locator": "https://github.com/RangerRick/cordova-plugin-local-notifications.git",
-      "id": "de.appplant.cordova.plugin.local-notification"
-    },
-    "cordova-plugin-whitelist"
+    "de.appplant.cordova.plugin.local-notification",
+    "cordova-plugin-whitelist",
+    "https://github.com/EddyVerbruggen/Toast-PhoneGap-Plugin.git",
+    "https://github.com/driftyco/ionic-plugins-keyboard.git",
+    "https://github.com/Paldom/SpinnerDialog.git",
+    "https://github.com/RangerRick/cordova-certificate-plugin.git",
+    "https://github.com/VersoSolutions/CordovaClipboard.git",
+    "https://github.com/apache/cordova-plugin-device",
+    "https://github.com/Red-Folder/bgs-core.git"
   ],
   "cordovaPlatforms": [
     {

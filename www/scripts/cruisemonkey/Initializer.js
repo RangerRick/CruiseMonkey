@@ -7,7 +7,7 @@
 		'ionic',
 		'ngCordova'
 	])
-	.factory('Cordova', ['$q', '$rootScope', '$window', function($q, $rootScope, $window) {
+	.factory('Cordova', ['$q', '$rootScope', '$window', '$ionicPlatform', function($q, $rootScope, $window, $ionicPlatform) {
 		var deferred;
 
 		return {
@@ -17,14 +17,12 @@
 				}
 
 				deferred = $q.defer();
-				ionic.Platform.ready(function() {
-					$rootScope.$evalAsync(function() {
-						if ($window.cordova) {
-							deferred.resolve(true);
-						} else {
-							deferred.reject(false);
-						}
-					});
+				$ionicPlatform.ready(function() {
+					if ($window.cordova) {
+						deferred.resolve(true);
+					} else {
+						deferred.reject(false);
+					}
 				});
 				return deferred.promise;
 			}
