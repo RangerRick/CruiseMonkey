@@ -23,15 +23,21 @@
 	};
 
 	angular.module('cruisemonkey.Upgrades', [
-		'angularLocalStorage',
-		'cruisemonkey.Config'
+		'cruisemonkey.Config',
+		'cruisemonkey.DB',
 	])
-	.factory('UpgradeService', ['$q', '$rootScope', 'storage', 'config.app.version', 'config.upgrade', function($q, $rootScope, storage, version, shouldUpgrade) {
-		var previousVersion = storage.get('cruisemonkey.version');
-		if (!previousVersion) {
-			previousVersion = '0.0.0';
-		}
-		var currentVersion = version.split('+')[0];
+	.factory('UpgradeService', function($q, $rootScope, $injector, kv) {
+		var version = $injector.get('config.app.version'),
+			shouldUpgrade = $injector.get('config.upgrade'),
+			previousVersion = '0.0.0',
+			currentVersion = version.split('+')[0];
+
+		kv.get('cruisemonkey.version').then(function(v) {
+			previousVersion = v;
+			if (!previousVersion) {
+				previousVersion = '0.0.0';
+			}
+		});
 
 		console.log('UpgradeService initializing.');
 
@@ -84,7 +90,7 @@
 					notifications.status(notif, 5000);
 					*/
 				}
-				storage.set('cruisemonkey.version', currentVersion);
+				kv.set('cruisemonkey.version', currentVersion);
 				$q.all(deferred)['finally'](function() {
 					def.resolve(true);
 				});
@@ -102,5 +108,5 @@
 			'register': registerAction,
 			'upgrade': doUpgrade
 		};
-	}]);
+	});
 }());

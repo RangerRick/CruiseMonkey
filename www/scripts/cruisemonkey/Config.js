@@ -17,33 +17,34 @@
 	.value('config.upgrade', true);
 
 	angular.module('cruisemonkey.Settings', [
-		'angularLocalStorage',
 		'cruisemonkey.Config',
+		'cruisemonkey.DB',
 		'cruisemonkey.Upgrades'
 	])
-	.factory('SettingsService', ['storage', '$rootScope', '$location', '$window', 'UpgradeService',
-			'config.database.root', 'config.database.name', 'config.database.replicate', 'config.twitarr.root', 'config.background.interval',
-			function(storage, $rootScope, $location, $window, upgrades,
-			databaseRoot, databaseName, databaseReplicate, twitarrRoot, backgroundInterval) {
+	.factory('SettingsService', function($rootScope, $injector, $location, $window, kv, UpgradeService) {
 
 		var defaultValue = {
-			'database.root': databaseRoot,
-			'database.name': databaseName,
-			'database.replicate': databaseReplicate,
-			'twitarr.root': twitarrRoot,
-			'background.interval': backgroundInterval,
+			'database.root': $injector.get('config.database.root'),
+			'database.name': $injector.get('config.database.name'),
+			'database.replicate': $injector.get('config.database.replicate'),
+			'twitarr.root': $injector.get('config.twitarr.root'),
+			'background.interval': $injector.get('config.background.interval'),
 		};
 
-		var settings = storage.get('cruisemonkey.settings');
-		if (!settings) {
-			settings = defaultValue;
-		}
+		var settings = {};
+		kv.get('cruisemonkey.settings').then(function(s) {
+			if (!s) {
+				settings = defaultValue;
+			} else {
+				settings = s;
+			}
+		});
 
 		var updateStorage = function() {
 			if (settings === undefined) {
-				storage.remove('cruisemonkey.settings');
+				kv.remove('cruisemonkey.settings');
 			} else {
-				storage.set('cruisemonkey.settings', settings);
+				kv.set('cruisemonkey.settings', settings);
 			}
 		};
 
@@ -165,29 +166,29 @@
 			return root;
 		};
 
-		var onaboat = storage.get('cruisemonkey.settings.onaboat');
+		kv.get('cruisemonkey.settings.onaboat').then(function(onaboat) {
+			var startCruise = moment('2015-01-31 00:00');
+			var endCruise   = moment('2015-02-08 00:00');
+			var now = moment();
 
-		var startCruise = moment('2015-01-31 00:00');
-		var endCruise   = moment('2015-02-08 00:00');
-		var now = moment();
+			if (now.isAfter(startCruise) && now.isBefore(endCruise) && !$rootScope.onaboat) {
+				kv.set('cruisemonkey.settings.onaboat', true);
 
-		if (now.isAfter(startCruise) && now.isBefore(endCruise) && !$rootScope.onaboat) {
-			storage.set('cruisemonkey.settings.onaboat', true);
+				/* switch out the defaults with the shipboard ones */
+				defaultValue['database.root'] = 'http://jcc5.rccl.com/db/';
+				defaultValue['database.name'] = 'cruisemonkey-2015';
+				defaultValue['twitarr.root']  = 'http://jcc5.rccl.com/';
 
-			/* switch out the defaults with the shipboard ones */
-			defaultValue['database.root'] = 'http://jcc5.rccl.com/db/';
-			defaultValue['database.name'] = 'cruisemonkey-2015';
-			defaultValue['twitarr.root']  = 'http://jcc5.rccl.com/';
+				/* now override the user's settings */
+				var s = getSettings();
+				s.databaseRoot = defaultValue['database.root'];
+				s.databaseName = defaultValue['database.name'];
+				s.twitarrRoot  = defaultValue['twitarr.root'];
+				saveSettings(s);
+			}
+		});
 
-			/* now override the user's settings */
-			var s = getSettings();
-			s.databaseRoot = defaultValue['database.root'];
-			s.databaseName = defaultValue['database.name'];
-			s.twitarrRoot  = defaultValue['twitarr.root'];
-			saveSettings(s);
-		}
-
-		upgrades.register('4.8.90', 'Reset all local storage.', function() {
+		UpgradeService.register('4.8.90', 'Reset all local storage.', function() {
 			clearOldStorage();
 		});
 
@@ -237,5 +238,5 @@
 				return getDatabaseName();
 			}
 		};
-	}]);
+	});
 }());

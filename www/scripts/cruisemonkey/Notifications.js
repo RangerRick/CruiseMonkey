@@ -11,30 +11,33 @@
 	}
 
 	angular.module('cruisemonkey.Notifications', [
-		'angularLocalStorage',
 		'ngCordova',
+		'cruisemonkey.DB', 
 		'cruisemonkey.Initializer',
 	])
-	.factory('LocalNotifications', function($q, $rootScope, $window, $cordovaLocalNotification, storage, Cordova) {
+	.factory('LocalNotifications', function($q, $rootScope, $window, $cordovaLocalNotification, kv, Cordova) {
 		console.log('Initializing local notifications service.');
 
 		var scope        = $rootScope.$new();
-		scope.allowed    = storage.get('cruisemonkey.notifications.allowed')    || false;
-		scope.registered = storage.get('cruisemonkey.notifications.registered') || false;
-		scope.seen       = storage.get('cruisemonkey.notifications')            || {};
-		scope.canNotify  = false;
+
+		kv.get(['cruisemonkey.notifications.allowed', 'cruisemonkey.notifications.registered', 'cruisemonkey.notifications']).then(function(n) {
+			scope.allowed = n[0] || false;
+			scope.registered = n[1] || false;
+			scope.seen = n[2] || {};
+			scope.canNotify = false;
+		});
 
 		var updateAllowed = function() {
-			storage.set('cruisemonkey.notifications.allowed', scope.allowed);
+			return kv.set('cruisemonkey.notifications.allowed', scope.allowed);
 		};
 		var updateRegistered = function() {
-			storage.set('cruisemonkey.notifications.registered', scope.registered);
+			return kv.set('cruisemonkey.notifications.registered', scope.registered);
 		};
 		var updateSeen = function() {
 			if (scope.seen === undefined) {
-				storage.remove('cruisemonkey.notifications');
+				return kv.remove('cruisemonkey.notifications');
 			} else {
-				storage.set('cruisemonkey.notifications', scope.seen);
+				return kv.set('cruisemonkey.notifications', scope.seen);
 			}
 		};
 

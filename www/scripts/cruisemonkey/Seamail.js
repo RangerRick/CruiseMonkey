@@ -4,19 +4,22 @@
 	/*global ionic: true*/
 
 	angular.module('cruisemonkey.Seamail', [
-		'angularLocalStorage',
+		'cruisemonkey.DB',
 		'cruisemonkey.Settings',
 		'cruisemonkey.User'
 	])
-	.factory('SeamailService', ['$q', '$rootScope', '$timeout', '$interval', '$http', 'SettingsService', 'UserService', 'storage', function($q, $rootScope, $timeout, $interval, $http, SettingsService, UserService, storage) {
+	.factory('SeamailService', function($q, $rootScope, $timeout, $interval, $http, SettingsService, UserService, kv) {
 		var interval = null;
 
-		$rootScope.seamailCount = storage.get('cruisemonkey.seamail.count') || 0;
+		kv.get('cruisemonkey.seamail.count').then(function(s) {
+			$rootScope.seamailCount = s || 0;
+		});
+
 		var updateSeamailCount = function() {
 			if ($rootScope.seamailCount === undefined) {
-				storage.remove('cruisemonkey.seamail.count');
+				return kv.remove('cruisemonkey.seamail.count');
 			} else {
-				storage.set('cruisemonkey.seamail.count', $rootScope.seamailCount);
+				return kv.set('cruisemonkey.seamail.count', $rootScope.seamailCount);
 			}
 		};
 
@@ -93,5 +96,5 @@
 			'online': startSynchronization,
 			'offline': stopSynchronization
 		};
-	}]);
+	});
 }());

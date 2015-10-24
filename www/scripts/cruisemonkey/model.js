@@ -11,8 +11,10 @@ function stringifyDate(date) {
 }
 
 var dateStringFormat="YYYY-MM-DD HH:mm";
-if (Modernizr.inputtypes["datetime-local"]) {
+if (false && Modernizr && Modernizr.inputtypes["datetime-local"]) {
 	dateStringFormat="YYYY-MM-DDTHH:mm";
+} else {
+	console.log('datetime-local not supported, or Modernizr not available');
 }
 
 var epochZero = stringifyDate(moment(0));

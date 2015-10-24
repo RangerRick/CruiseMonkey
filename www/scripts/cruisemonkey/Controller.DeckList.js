@@ -4,22 +4,24 @@
 	/*global ionic: true*/
 	angular.module('cruisemonkey.controllers.DeckList', [
 		'ui.router',
-		'angularLocalStorage'
+		'cruisemonkey.DB',
 	])
-	.controller('CMDeckListCtrl', ['storage', '$scope', '$ionicScrollDelegate', '$ionicSlideBoxDelegate', '$timeout', '$location', '$document', function(storage, $scope, $ionicScrollDelegate, $ionicSlideBoxDelegate, $timeout, $location, $document) {
+	.controller('CMDeckListCtrl', function($scope, $ionicScrollDelegate, $ionicSlideBoxDelegate, $timeout, $location, $document, kv) {
 		console.log('Initializing CMDeckListCtrl');
 
-		$scope.deck = storage.get('cruisemonkey.deck');
-		if (!$scope.deck) {
-			$scope.deck = 2;
-		}
+		kv.get('cruisemonkey.deck').then(function(d) {
+			$scope.deck = d;
+			if (!$scope.deck) {
+				$scope.deck = 2;
+			}
+		});
 
 		var updateDeck = function(deck) {
 			$scope.deck = deck;
 			if (deck === undefined) {
-				storage.remove('cruisemonkey.deck');
+				return kv.remove('cruisemonkey.deck');
 			} else {
-				storage.set('cruisemonkey.deck', deck);
+				return kv.set('cruisemonkey.deck', deck);
 			}
 		};
 
@@ -98,5 +100,5 @@
 		$scope.$on('$destroy', function() {
 			document.removeEventListener('keydown', keyListener, true);
 		});
-	}]);
+	});
 }());

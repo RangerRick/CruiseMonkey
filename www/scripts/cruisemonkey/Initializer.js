@@ -7,31 +7,26 @@
 		'ionic',
 		'ngCordova'
 	])
-	.factory('Cordova', ['$q', '$rootScope', '$window', '$ionicPlatform', function($q, $rootScope, $window, $ionicPlatform) {
-		var deferred;
+	.factory('Cordova', function($q, $rootScope, $log, $window, $ionicPlatform) {
+		var deferred = $q.defer();
+		$ionicPlatform.ready(function() {
+			if (ionic.Platform.isWebView()) {
+				deferred.resolve(true);
+			} else {
+				deferred.reject(false);
+			}
+		});
 
 		return {
 			inCordova: function() {
-				if (deferred) {
-					return deferred.promise;
-				}
-
-				deferred = $q.defer();
-				$ionicPlatform.ready(function() {
-					if ($window.cordova) {
-						deferred.resolve(true);
-					} else {
-						deferred.reject(false);
-					}
-				});
 				return deferred.promise;
 			}
 		};
-	}])
-	.factory('Initializer', ['$rootScope', '$timeout', '$cordovaKeyboard', '$cordovaStatusbar', '$ionicHistory', '$ionicPlatform', '$ionicSideMenuDelegate', 'Cordova', function($rootScope, $timeout, $cordovaKeyboard, $cordovaStatusbar, $ionicHistory, $ionicPlatform, $ionicSideMenuDelegate, Cordova) {
+	})
+	.factory('Initializer', function($rootScope, $timeout, $cordovaKeyboard, $cordovaStatusbar, $ionicHistory, $ionicPlatform, $ionicSideMenuDelegate, Cordova) {
 		console.log('CruiseMonkey Initializing.');
 
-		Cordova.inCordova().then(function() {
+		Cordova.inCordova().then(function(inCordova) {
 			console.log('We are inside Cordova: initializing ionic platform plugins and events.');
 
 			$ionicPlatform.registerBackButtonAction(function(ev) {
@@ -111,5 +106,5 @@
 		}
 
 		return {};
-	}]);
+	});
 }());

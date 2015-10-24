@@ -3,7 +3,6 @@
 
 	/*global ionic: true*/
 	/*global moment: true*/
-	/*global Modernizr: true*/
 	/*global CMEvent: true*/
 	/*global CMFavorite: true*/
 	/*global CMDay: true*/
@@ -102,7 +101,7 @@
 	angular.module('cruisemonkey.controllers.Events', [
 		'ui.router',
 		'ionic',
-		'angularLocalStorage',
+		'cruisemonkey.DB',
 		'cruisemonkey.User',
 		'cruisemonkey.Events'
 	])
@@ -130,7 +129,7 @@
 			return ret;
 		};
 	})
-	.controller('CMEditEventCtrl', ['$q', '$scope', '$rootScope', 'UserService', function($q, $scope, $rootScope, UserService) {
+	.controller('CMEditEventCtrl', function($q, $scope, $rootScope, UserService) {
 		console.log('Initializing CMEditEventCtrl');
 
 		if ($rootScope.editEvent) {
@@ -148,13 +147,13 @@
 
 			console.log('Created fresh event.');
 		}
-	}])
-	.controller('CMEventsBarCtrl', ['$q', '$scope', '$timeout', '$state', '$ionicActionSheet', '$ionicModal', '$ionicScrollDelegate', 'EventService', 'UserService', 'storage', function($q, $scope, $timeout, $state, $ionicActionSheet, $ionicModal, $ionicScrollDelegate, EventService, UserService, storage) {
+	})
+	.controller('CMEventsBarCtrl', function($q, $scope, $timeout, $state, $ionicActionSheet, $ionicModal, $ionicScrollDelegate, EventService, kv, UserService) {
 		var updateSearchString = function(searchString) {
 			if (searchString === undefined) {
-				storage.remove('cruisemonkey.events.search-string');
+				return kv.remove('cruisemonkey.events.search-string');
 			} else {
-				storage.set('cruisemonkey.events.search-string', searchString);
+				return kv.set('cruisemonkey.events.search-string', searchString);
 			}
 		};
 		$scope.onSearchChanged = function(searchString) {
@@ -453,11 +452,13 @@
 				'my': ''
 			};
 
-			$scope.searchString = storage.get('cruisemonkey.events.search-string');
-			if (!$scope.searchString || !$scope.searchString.official) {
-				$scope.searchString = defaultSearchString;
-				updateSearchString(defaultSearchString);
-			}
+			kv.get('cruisemonkey.events.search-string').then(function(s) {
+				$scope.searchString = s;
+				if (!$scope.searchString || !$scope.searchString.official) {
+					$scope.searchString = defaultSearchString;
+					updateSearchString(defaultSearchString);
+				}
+			});
 		});
 
 		$scope.$on('$ionicView.beforeEnter', function(ev, info) {
@@ -479,8 +480,8 @@
 		$scope.$on('$destroy', function() {
 			$scope.editEventModal.remove();
 		});
-	}])
-	.controller('CMAllEventCtrl', ['$scope', '$timeout', '$ionicScrollDelegate', 'UserService',  function($scope, $timeout, $ionicScrollDelegate, UserService) {
+	})
+	.controller('CMAllEventCtrl', function($scope, $timeout, $ionicScrollDelegate, UserService) {
 		var _updatingFilter = false;
 		$scope.updateFilter = function() {
 			if (_updatingFilter || !$scope.allEvents) {
@@ -518,8 +519,8 @@
 		$scope.$on('cruisemonkey.events.updated', function() {
 			$scope.updateFilter();
 		});
-	}])
-	.controller('CMMyEventCtrl', ['$scope', '$timeout', '$ionicScrollDelegate', 'UserService', function($scope, $timeout, $ionicScrollDelegate, UserService) {
+	})
+	.controller('CMMyEventCtrl', function($scope, $timeout, $ionicScrollDelegate, UserService) {
 		var _updatingFilter = false;
 		$scope.updateFilter = function() {
 			if (_updatingFilter || !$scope.allEvents) {
@@ -557,8 +558,8 @@
 		$scope.$on('cruisemonkey.events.updated', function() {
 			$scope.updateFilter();
 		});
-	}])
-	.controller('CMOfficialEventCtrl', ['$scope', '$timeout', '$ionicScrollDelegate', 'UserService', function($scope, $timeout, $ionicScrollDelegate, UserService) {
+	})
+	.controller('CMOfficialEventCtrl', function($scope, $timeout, $ionicScrollDelegate, UserService) {
 		var _updatingFilter = false;
 		$scope.updateFilter = function() {
 			if (_updatingFilter || !$scope.allEvents) {
@@ -594,8 +595,8 @@
 		$scope.$on('cruisemonkey.events.updated', function() {
 			$scope.updateFilter();
 		});
-	}])
-	.controller('CMUnofficialEventCtrl', ['$scope', '$timeout', '$ionicScrollDelegate', 'UserService', function($scope, $timeout, $ionicScrollDelegate, UserService) {
+	})
+	.controller('CMUnofficialEventCtrl', function($scope, $timeout, $ionicScrollDelegate, UserService) {
 		var _updatingFilter = false;
 		$scope.updateFilter = function() {
 			if (_updatingFilter || !$scope.allEvents) {
@@ -631,5 +632,5 @@
 		$scope.$on('cruisemonkey.events.updated', function() {
 			$scope.updateFilter();
 		});
-	}]);
+	});
 }());

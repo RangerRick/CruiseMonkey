@@ -2,18 +2,21 @@
 	'use strict';
 
 	var moduleName = 'cruisemonkey.User';
-	angular.module(moduleName, ['angularLocalStorage'])
-	.factory('UserService', ['$rootScope', 'storage', function($rootScope, storage) {
+	angular.module(moduleName, ['cruisemonkey.DB'])
+	.factory('UserService', function($rootScope, kv) {
 		var defaultValue = {
 			'loggedIn': false,
 			'username': '',
 			'password': ''
 		};
 
-		$rootScope.user = storage.get('cruisemonkey.user');
-		if (!$rootScope.user) {
-			$rootScope.user = angular.copy(defaultValue);
-		}
+		$rootScope.user = angular.copy(defaultValue);
+		kv.get('cruisemonkey.user').then(function(u) {
+			$rootScope.user = u;
+			if (!$rootScope.user) {
+				$rootScope.user = angular.copy(defaultValue);
+			}
+		});
 
 		var getUser = function() {
 			return angular.copy($rootScope.user);
@@ -23,8 +26,9 @@
 			var savedUser = angular.copy(user);
 			savedUser.username = savedUser.username.toLowerCase();
 			$rootScope.user = savedUser;
-			storage.set('cruisemonkey.user', savedUser);
-			$rootScope.$broadcast('cruisemonkey.user.updated', savedUser, oldUser);
+			kv.set('cruisemonkey.user', savedUser).then(function(u) {
+				$rootScope.$broadcast('cruisemonkey.user.updated', u, oldUser);
+			});
 		};
 
 		return {
@@ -59,6 +63,6 @@
 				return getUser();
 			}
 		};
-	}]);
+	});
 
 }());

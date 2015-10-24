@@ -10,49 +10,53 @@
 
 	angular.module('cruisemonkey.Twitarr', [
 		'cruisemonkey.Config',
+		'cruisemonkey.DB',
 		'cruisemonkey.Initializer',
 		'cruisemonkey.Notifications',
 		'cruisemonkey.Settings',
 		'ngFileUpload',
-		'angularLocalStorage'
 	])
-	.factory('Twitarr', ['$q', '$rootScope', '$http', '$interval', '$timeout', '$window', 'Upload', 'storage', 'config.request.timeout', 'config.twitarr.enable-cachebusting', 'Cordova', 'LocalNotifications', 'SettingsService', 'UserService', function($q, $rootScope, $http, $interval, $timeout, $window, Upload, storage, requestTimeout, enableCachebusting, Cordova, LocalNotifications, SettingsService, UserService) {
+	.factory('Twitarr', function($q, $rootScope, $http, $injector, $interval, $timeout, $window, Upload, kv, Cordova, LocalNotifications, SettingsService, UserService) {
 		console.log('Initializing Twit-arr API.');
+
+		var requestTimeout = $injector.get('config.request.timeout');
+		var enableCachebusting = $injector.get('config.twitarr.enable-cachebusting');
 
 		var scope = $rootScope.$new();
 
 		scope.isForeground = true;
-		scope.lastStatus = storage.get('cruisemonkey.twitarr.status');
-
-		if (!scope.lastStatus) {
-			scope.lastStatus = {
-				'mention_ids': [],
-				'seamail_ids': [],
-				'announcement_timestamps': []
-			};
-		}
 
 		var updateLastStatus = function() {
 			if (scope.lastStatus === undefined) {
-				storage.remove('cruisemonkey.twitarr.status');
+				return kv.remove('cruisemonkey.twitarr.status');
 			} else {
-				storage.set('cruisemonkey.twitarr.status', scope.lastStatus);
+				return kv.set('cruisemonkey.twitarr.status', scope.lastStatus);
 			}
 		};
 
-		if (!scope.lastStatus.mention_ids) {
-			scope.lastStatus.mention_ids = [];
-		}
-		if (!scope.lastStatus.seamail_ids) {
-			scope.lastStatus.seamail_ids = [];
-		}
-		if (!scope.lastStatus.announcement_timestamps) {
-			scope.lastStatus.announcement_timestamps = [];
-		}
-		if (scope.lastStatus.announcement_ids) {
-			delete scope.lastStatus.announcement_ids;
-		}
-		updateLastStatus();
+		kv.get('cruisemonkey.twitarr.status').then(function(s) {
+			scope.lastStatus = s;
+			if (!scope.lastStatus) {
+				scope.lastStatus = {
+					'mention_ids': [],
+					'seamail_ids': [],
+					'announcement_timestamps': []
+				};
+			}
+			if (!scope.lastStatus.mention_ids) {
+				scope.lastStatus.mention_ids = [];
+			}
+			if (!scope.lastStatus.seamail_ids) {
+				scope.lastStatus.seamail_ids = [];
+			}
+			if (!scope.lastStatus.announcement_timestamps) {
+				scope.lastStatus.announcement_timestamps = [];
+			}
+			if (scope.lastStatus.announcement_ids) {
+				delete scope.lastStatus.announcement_ids;
+			}
+			updateLastStatus();
+		});
 
 		var call = function(type, url, params, data) {
 			var options = {
@@ -649,5 +653,5 @@
 			like: like,
 			unlike: unlike,
 		};
-	}]);
+	});
 }());

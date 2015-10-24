@@ -4,7 +4,6 @@
 	/*global emit: true*/
 	/*global ionic: true*/
 	/*global moment: true*/
-	/*global Modernizr: true*/
 	/*global CMDay: true*/
 	/*global CMEvent: true*/
 	/*global CMFavorite: true*/
@@ -13,19 +12,23 @@
 	var modelVersion = '2015';
 
 	angular.module('cruisemonkey.Events', [
-		'angularLocalStorage',
 		'uuid4',
 		'cruisemonkey.Config',
+		'cruisemonkey.DB',
 		'cruisemonkey.Database',
 		'cruisemonkey.User'
 	])
-	.factory('EventService', ['$q', '$rootScope', '$timeout', '$location', 'storage', 'uuid4', '_database', 'UserService', 'SettingsService', function($q, $rootScope, $timeout, $location, storage, uuid4, _database, UserService, SettingsService) {
+	.factory('EventService', function($q, $rootScope, $timeout, $location, kv, uuid4, _database, UserService, SettingsService) {
 		console.log('EventService: Initializing EventService.');
 		var ready = $q.defer();
 
-		$rootScope.lastModified = storage.get('cruisemonkey.lastModified') || 0;
+		kv.get('cruisemonkey.lastModified').then(function(lm) {
+			$rootScope.lastModified = lm || 0;
+		}, function() {
+			$rootScope.lastModified = 0;
+		});
 		var updateLastModified = function() {
-			storage.set('cruisemonkey.lastModified', $rootScope.lastModified);
+			kv.set('cruisemonkey.lastModified', $rootScope.lastModified);
 		};
 
 		$rootScope.$on('cruisemonkey.persist.connect', function(ev, db) {
@@ -83,7 +86,7 @@
 		};
 
 		var createFavoritesDb = function() {
-			if (!$rootScope.user.username || !$rootScope.user.loggedIn) {
+			if (!$rootScope.user || !$rootScope.user.username || !$rootScope.user.loggedIn) {
 				return null;
 			}
 
@@ -870,6 +873,6 @@
 				return $rootScope.lastModified;
 			}
 		};
-	}]);
+	});
 
 }());

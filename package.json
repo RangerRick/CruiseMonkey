@@ -74,7 +74,7 @@
     "org.apache.cordova.splashscreen",
     "org.apache.cordova.file",
     "org.apache.cordova.statusbar",
-    "de.appplant.cordova.plugin.local-notification",
+    "https://github.com/katzer/cordova-plugin-local-notifications.git",
     "cordova-plugin-whitelist",
     "https://github.com/EddyVerbruggen/Toast-PhoneGap-Plugin.git",
     "https://github.com/driftyco/ionic-plugins-keyboard.git",
@@ -82,22 +82,27 @@
     "https://github.com/RangerRick/cordova-certificate-plugin.git",
     "https://github.com/VersoSolutions/CordovaClipboard.git",
     "https://github.com/apache/cordova-plugin-device",
-    "https://github.com/Red-Folder/bgs-core.git"
+    "https://github.com/Red-Folder/bgs-core.git",
+    "https://github.com/OpenNMS/cordova-plugin-storage.git",
+    {
+      "locator": "https://github.com/OpenNMS/cordova-plugin-storage.git",
+      "id": "cordova-plugin-storage"
+    }
   ],
   "cordovaPlatforms": [
     {
       "platform": "android",
-      "version": "4.0.2",
+      "version": "4.1.1",
       "locator": "android"
     },
     {
       "platform": "browser",
-      "version": "3.6.0",
+      "version": "4.0.0",
       "locator": "browser"
     },
     {
       "platform": "ios",
-      "version": "3.8.0",
+      "version": "3.9.1",
       "locator": "ios"
     }
   ]

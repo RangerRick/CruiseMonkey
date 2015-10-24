@@ -3,8 +3,10 @@
 
 	/* global CMDeck: true */
 
-	angular.module('cruisemonkey.controllers.Amenities', ['angularLocalStorage', 'cruisemonkey.Decks'])
-	.filter('amenityFilter', function() {
+	angular.module('cruisemonkey.controllers.Amenities', [
+		'cruisemonkey.DB',
+		'cruisemonkey.Decks',
+	]).filter('amenityFilter', function() {
 		return function(input, searchString) {
 			var allArray = [], ret = [];
 			angular.forEach(input, function(obj, index) {
@@ -25,17 +27,19 @@
 			return ret;
 		};
 	})
-	.controller('CMAmenitiesCtrl', ['storage', '$rootScope', '$scope', '$sce', '$timeout', '$location', '$ionicScrollDelegate', 'DeckService', function(storage, $rootScope, $scope, $sce, $timeout, $location, $ionicScrollDelegate, DeckService) {
+	.controller('CMAmenitiesCtrl', function($rootScope, $scope, $sce, $timeout, $location, $ionicScrollDelegate, kv, DeckService) {
 		console.log('Initializing CMAmenitiesCtrl');
 
-		$scope.searchString = storage.get('cruisemonkey.search.amenities');
+		kv.get('cruisemonkey.search.amenities').then(function(search) {
+			$scope.searchString = search;
+		});
 
 		$scope.scrollTop = function() {
 			$ionicScrollDelegate.$getByHandle('amenities').scrollTop(true);
 		};
 
 		$scope.onSearchChanged = function(searchString) {
-			storage.set('cruisemonkey.search.amenities', $scope.searchString);
+			kv.set('cruisemonkey.search.amenities', $scope.searchString);
 			var delegate = $ionicScrollDelegate.$getByHandle('amenities');
 			if (delegate.getScrollPosition().top !== 0) {
 				delegate.scrollTop(false);
@@ -57,5 +61,5 @@
 
 			$ionicScrollDelegate.$getByHandle('amenities').resize();
 		});
-	}]);
+	});
 }());

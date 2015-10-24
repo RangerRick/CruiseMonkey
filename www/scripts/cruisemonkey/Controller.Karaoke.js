@@ -48,20 +48,23 @@
 	};
 
 	angular.module('cruisemonkey.controllers.Karaoke', [
-		'angularLocalStorage',
+		'cruisemonkey.DB',
 	])
 	.filter('karaokeFilter', function() {
 		return searchFilter;
 	})
-	.controller('CMKaraokeSearchCtrl', ['storage', '$q', '$scope', '$http', '$timeout', '$interval', '$window', '$ionicLoading', '$ionicScrollDelegate', '_database', 'Cordova', 'SettingsService', function(storage, $q, $scope, $http, $timeout, $interval, $window, $ionicLoading, $ionicScrollDelegate, _database, Cordova, SettingsService) {
+	.controller('CMKaraokeSearchCtrl', function($q, $scope, $http, $timeout, $interval, $window, $ionicLoading, $ionicScrollDelegate, _database, Cordova, kv, SettingsService) {
 		console.log('Initializing CMKaraokeSearchCtrl');
 
-		$scope.searchString = storage.get('cruisemonkey.karaoke-search');
+		kv.get('cruisemonkey.karaoke-search').then(function(s) {
+			$scope.searchString = s;
+		});
+
 		var updateSearchString = function() {
 			if ($scope.searchString === undefined) {
-				storage.remove($scope.searchString);
+				return kv.remove('cruisemonkey.karaoke-search');
 			} else {
-				storage.set('cruisemonkey.karaoke-search', $scope.searchString);
+				return kv.set('cruisemonkey.karaoke-search', $scope.searchString);
 			}
 		};
 
@@ -125,6 +128,6 @@
 			console.log('Karaoke: destroying karaoke list');
 			$scope.entries = [];
 		});
-	}])
+	})
 	;
 }());

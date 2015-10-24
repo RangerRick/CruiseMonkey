@@ -11,6 +11,7 @@
 <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no, width=device-width">
 <meta name="format-detection" content="telephone=no" />
 <meta name="apple-mobile-web-app-capable" content="yes" />
+<meta http-equiv="Content-Security-Policy" content="default-src *; style-src 'self' 'unsafe-inline'; script-src * 'self' 'unsafe-inline' 'unsafe-eval'">
 <link rel="apple-touch-icon" href="Icon.png" />
 <link rel="apple-touch-icon" sizes="29x29" href="Icon-Small.png" />
 <link rel="apple-touch-icon" sizes="57x57" href="Icon-57.png" />
@@ -113,16 +114,17 @@ if (typeof String.prototype.contains !== 'function') {
 	<ion-nav-view></ion-nav-view>
 
 	<!-- build:js scripts/shim.js -->
-	<script src="lib/modernizr/modernizr.js"></script>
+	<script src="scripts/3rdparty/modernizr.min.js"></script>
 	<script src="lib/base64/base64.min.js"></script>
 	<script src="lib/classlist/classList.min.js"></script>
 	<script src="lib/es5-shim/es5-shim.min.js"></script>
 	<!-- endbuild -->
 
-	<!-- build:js scripts/pouchdb.js -->
+	<!-- build:js scripts/db.js -->
 	<script src="lib/pouchdb/dist/pouchdb.min.js"></script>
 	<script src="lib/pouchdb-persist/dist/pouchdb-persist.min.js"></script>
 	<script src="lib/pouchdb-quick-search/dist/pouchdb.quick-search.min.js"></script>
+	<script src="lib/lokijs/src/lokijs.js"></script>
 	<!-- endbuild -->
 
 	<!-- build:js scripts/3rdparty.js -->
@@ -138,6 +140,8 @@ if (typeof String.prototype.contains !== 'function') {
 	<script src="lib/ng-file-upload/ng-file-upload-all.min.js"></script>
 	<script src="lib/angular-uuid4/angular-uuid4.min.js"></script>
 	<script src="lib/angularLocalStorage/src/angularLocalStorage.js"></script>
+	<script src="lib/lokijs/src/loki-angular.js"></script>
+	<script src="lib/angular-uuid4/angular-uuid4.js"></script>
 	<!-- endbuild -->
 
 	<!-- build:js scripts/cm.js -->
@@ -157,6 +161,7 @@ if (typeof String.prototype.contains !== 'function') {
 	<script src="scripts/cruisemonkey/Controller.Seamail.js"></script>
 	<script src="scripts/cruisemonkey/Controller.Twitarr.Stream.js"></script>
 	<script src="scripts/cruisemonkey/Database.js"></script>
+	<script src="scripts/cruisemonkey/DB.js"></script>
 	<script src="scripts/cruisemonkey/Decks.js"></script>
 	<script src="scripts/cruisemonkey/Events.js"></script>
 	<script src="scripts/cruisemonkey/Images.js"></script>

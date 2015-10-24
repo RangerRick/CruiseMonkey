@@ -5,21 +5,24 @@
 
 	angular.module('cruisemonkey.controllers.Menu', [
 		'ionic',
+		'cruisemonkey.DB',
 		'cruisemonkey.Events',
 		'cruisemonkey.User',
 		'cruisemonkey.Util',
 	])
-	.controller('CMMenuCtrl', ['$rootScope', '$scope', '$state', '$timeout', '$ionicModal', '$ionicScrollDelegate', 'storage', 'util', 'EventService', 'UserService', function($rootScope, $scope, $state, $timeout, $ionicModal, $ionicScrollDelegate, storage, util, EventService, UserService) {
+	.controller('CMMenuCtrl', function($rootScope, $scope, $state, $timeout, $ionicModal, $ionicScrollDelegate, kv, util, EventService, UserService) {
 		console.log('CMMenuCtrl initializing.');
 
 		var loginModal;
 
 		$scope.unreadSeamail = 0;
 
-		$scope.lastTab = storage.get('cruisemonkey.menu.last-tab');
-		if (!$scope.lastTab) {
-			$scope.lastTab = 'app.events.official';
-		}
+		kv.get('cruisemonkey.menu.last-tab').then(function(t) {
+			$scope.lastTab = t;
+			if (!$scope.lastTab) {
+				$scope.lastTab = 'app.events.official';
+			}
+		});
 
 		$scope.logIn = function($event) {
 			loginModal.show();
@@ -73,7 +76,7 @@
 			//console.log('Menu: beforeEnter:',ev,info);
 			if (info.stateName && info.stateName.startsWith('app.events.')) {
 				$scope.lastTab = info.stateName;
-				storage.set('cruisemonkey.menu.last-tab', $scope.lastTab);
+				kv.set('cruisemonkey.menu.last-tab', $scope.lastTab);
 			} else if (info.stateName === 'app.events') {
 				console.log('app.events? this should not happen');
 				/*
@@ -90,5 +93,5 @@
 			loginModal.remove();
 		});
 
-	}]);
+	});
 }());

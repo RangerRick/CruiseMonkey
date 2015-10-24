@@ -13,7 +13,6 @@
 		'ionic',
 		'ngCordova',
 		'ui.router',
-		'angularLocalStorage',
 		'cruisemonkey.Config',
 		'cruisemonkey.controllers.About',
 		'cruisemonkey.controllers.Advanced',
@@ -27,6 +26,7 @@
 		'cruisemonkey.controllers.Seamail',
 		'cruisemonkey.controllers.Twitarr.Stream',
 		'cruisemonkey.Database',
+		'cruisemonkey.DB',
 		'cruisemonkey.Events',
 		'cruisemonkey.Images',
 		'cruisemonkey.Initializer',
@@ -39,7 +39,7 @@
 		'cruisemonkey.User',
 		'cruisemonkey.Util',
 	])
-	.directive('cmSearchBar', ['$timeout', '$cordovaKeyboard', function($timeout, $cordovaKeyboard) {
+	.directive('cmSearchBar', function($timeout, $cordovaKeyboard) {
 		var nullSafeLowerCase = function(s) {
 			if (s) {
 				return s.trim().toLowerCase();
@@ -88,8 +88,8 @@
 				};
 			}
 		};
-	}])
-	.config(['$stateProvider', '$urlRouterProvider', '$compileProvider', '$ionicConfigProvider', function($stateProvider, $urlRouterProvider, $compileProvider, $ionicConfigProvider) {
+	})
+	.config(function($stateProvider, $urlRouterProvider, $compileProvider, $ionicConfigProvider) {
 		if (isMobile) {
 			ionic.Platform.fullScreen(false,true);
 		}
@@ -123,8 +123,8 @@
 						templateUrl: 'template/events-tabs.html',
 						controller: 'CMEventsBarCtrl',
 						resolve: {
-							redirect: function($state, storage) {
-								var lastTab = storage.get('cruisemonkey.menu.last-tab');
+							redirect: function($state /*, storage */) {
+								var lastTab; // = storage.get('cruisemonkey.menu.last-tab');
 								if (!lastTab) {
 									lastTab = 'app.events.official';
 								}
@@ -235,9 +235,9 @@
 				}
 			})
 		;
-	}])
+	})
 	/* EventService & Notifications are here just to make sure they initializes early */
-	.run(['$q', '$rootScope', '$sce', '$timeout', '$window', '$state', '$cordovaCamera', '$cordovaKeyboard', '$cordovaSplashscreen', '$ionicModal', '$ionicPlatform', '$ionicPopover', '$ionicPopup', 'storage', 'util', 'Cordova', 'EventService', 'Images', 'LocalNotifications', 'Notifications', 'SettingsService', 'Twitarr', 'UpgradeService', 'UserService', function($q, $rootScope, $sce, $timeout, $window, $state, $cordovaCamera, $cordovaKeyboard, $cordovaSplashscreen, $ionicModal, $ionicPlatform, $ionicPopover, $ionicPopup, storage, util, Cordova, EventService, Images, LocalNotifications, Notifications, SettingsService, Twitarr, UpgradeService, UserService) {
+	.run(function($q, $rootScope, $sce, $timeout, $window, $state, $cordovaCamera, $cordovaKeyboard, $cordovaSplashscreen, $ionicModal, $ionicPlatform, $ionicPopover, $ionicPopup, util, Cordova, kv, EventService, Images, LocalNotifications, Notifications, SettingsService, Twitarr, UpgradeService, UserService) {
 		console.log('CruiseMonkey run() called.');
 
 		var inCordova = Cordova.inCordova();
@@ -491,26 +491,25 @@
 			});
 		};
 
-		var currentView = storage.get('cruisemonkey.navigation.current-view');
-		var updateCurrentView = function(view) {
-			if (view === undefined) {
-				storage.remove('cruisemonkey.navigation.current-view');
-			} else {
-				storage.set('cruisemonkey.navigation.current-view', view);
+		var currentView;
+		kv.get('cruisemonkey.navigation.current-view').then(function(cv) {
+			currentView = cv;
+			if (cv && cv !== '') {
+				$timeout(function() {
+					console.log('restoring view: ' + currentView);
+					util.go(currentView);
+				});
 			}
-			currentView = view;
+		});
+
+		var updateCurrentView = function(view) {
+			return kv.set('cruisemonkey.navigation.current-view', view);
 		};
 
 		$rootScope.$on('$ionicView.enter', function(ev, info) {
 			updateCurrentView(info.stateName);
 		});
 
-		if (currentView && currentView !== '') {
-			$timeout(function() {
-				console.log('restoring view: ' + currentView);
-				util.go(currentView);
-			});
-		}
 
 		inCordova.then(function() {
 			console.log('In cordova.  Hiding splash screen.');
@@ -531,6 +530,6 @@
 		});
 
 		UpgradeService.upgrade();
-	}])
+	})
 	;
 }());
