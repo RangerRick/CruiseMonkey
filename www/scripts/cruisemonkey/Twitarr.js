@@ -16,8 +16,8 @@
 		'cruisemonkey.Settings',
 		'ngFileUpload',
 	])
-	.factory('Twitarr', function($q, $rootScope, $http, $injector, $interval, $timeout, $window, Upload, kv, Cordova, LocalNotifications, SettingsService, UserService) {
-		console.log('Initializing Twit-arr API.');
+	.factory('Twitarr', function($q, $rootScope, $http, $injector, $interval, $log, $timeout, $window, Upload, kv, Cordova, LocalNotifications, SettingsService, UserService) {
+		$log.info('Initializing Twit-arr API.');
 
 		var requestTimeout = $injector.get('config.request.timeout');
 		var enableCachebusting = $injector.get('config.twitarr.enable-cachebusting');
@@ -116,7 +116,7 @@
 				options.data = data;
 			}
 
-			//console.log('Making HTTP call with options:',options);
+			//$log.debug('Making HTTP call with options:',options);
 			return $http(options);
 		};
 
@@ -135,7 +135,7 @@
 		var getAlerts = function(shouldReset) {
 			shouldReset = shouldReset? true:false;
 			var url = SettingsService.getTwitarrRoot() + 'api/v2/alerts';
-			//console.log('Twitarr.getAlerts(' + shouldReset + '): url=' + url);
+			//$log.debug('Twitarr.getAlerts(' + shouldReset + '): url=' + url);
 
 			var deferred = $q.defer();
 
@@ -148,7 +148,7 @@
 					}
 					deferred.resolve(data);
 				}).error(function(data, status) {
-					console.log('Twitarr.getAlerts(): Failed: ' + status, angular.toJson(data));
+					$log.error('Twitarr.getAlerts(): Failed: ' + status, angular.toJson(data));
 					deferred.reject([data, status]);
 				});
 
@@ -171,7 +171,7 @@
 						}
 						deferred.resolve(data.names);
 					}).error(function(data, status) {
-						console.log('Twitarr.getAutocompleteUsers(): Failed: ' + status, angular.toJson(data));
+						$log.error('Twitarr.getAutocompleteUsers(): Failed: ' + status, angular.toJson(data));
 						deferred.reject([data, status]);
 					});
 			} else {
@@ -181,9 +181,67 @@
 			return deferred.promise;
 		};
 
+		var getEvents = function() {
+			var url = SettingsService.getTwitarrRoot() + 'api/v2/event';
+			$log.debug('Twitarr.getEvents(): url=' + url);
+
+			var user = UserService.get();
+			var deferred = $q.defer();
+
+			if (user && user.loggedIn) {
+				get(url)
+					.success(function(data) {
+						if (data.event && data.event[0] && data.event[0].status === 'ok') {
+							deferred.resolve(data.event[0].events);
+						} else {
+							$log.debug('Twitarr.getEvents(): failure: ' + angular.toJson(data));
+							deferred.reject(['Testing']);
+						}
+					}).error(function(data, status) {
+						$log.error('Twitarr.getEvents(): Failed: ' + status, angular.toJson(data));
+						deferred.reject([data, status]);
+					});
+			} else {
+				deferred.reject(['Not logged in.']);
+			}
+
+			return deferred.promise;
+		};
+
+		var addEvent = function(eventData) {
+			var url = SettingsService.getTwitarrRoot() + 'api/v2/event';
+			$log.debug('Twitarr.addEvent(): url=' + url);
+
+			var user = UserService.get();
+			var deferred = $q.defer();
+
+			if (user && user.loggedIn) {
+				post(url, eventData)
+					.success(function(data) {
+						$log.debug('addEvent: success: ' + angular.toJson(data));
+						deferred.reject(['Failed.']);
+						/*
+						if (data.event && data.event[0] && data.event[0].status === 'ok') {
+							deferred.resolve(data.event[0].events);
+						} else {
+							$log.debug('Twitarr.getEvents(): failure: ' + angular.toJson(data));
+							deferred.reject(['Testing']);
+						}
+						*/
+					}).error(function(data, status) {
+						$log.error('Twitarr.getEvents(): Failed: ' + status, angular.toJson(data));
+						deferred.reject([data, status]);
+					});
+			} else {
+				deferred.reject(['Not logged in.']);
+			}
+
+			return deferred.promise;
+		};
+
 		var getStatus = function() {
 			var url = SettingsService.getTwitarrRoot() + 'api/v2/alerts/check';
-			console.log('Twitarr.getStatus(): url=' + url);
+			$log.debug('Twitarr.getStatus(): url=' + url);
 
 			var deferred = $q.defer();
 
@@ -194,11 +252,11 @@
 						if (data.status === 'ok') {
 							deferred.resolve(data.user);
 						} else {
-							console.log('Twitarr.getStatus(): got a 200 response, but not OK.', data);
+							$log.warn('Twitarr.getStatus(): got a 200 response, but not OK.', data);
 							deferred.reject([data]);
 						}
 					}).error(function(data, status) {
-						console.log('Twitarr.getStatus(): Failed: ' + status, angular.toJson(data));
+						$log.error('Twitarr.getStatus(): Failed: ' + status, angular.toJson(data));
 						deferred.reject([data, status]);
 					});
 			} else {
@@ -212,7 +270,7 @@
 			var url = SettingsService.getTwitarrRoot() + 'api/v2/seamail';
 			var deferred = $q.defer();
 
-			console.log('Twitarr.getSeamail(): url=' + url);
+			$log.debug('Twitarr.getSeamail(): url=' + url);
 			get(url)
 				.success(function(data) {
 					var unread = [];
@@ -232,7 +290,7 @@
 
 					deferred.resolve(data);
 				}).error(function(data, status, headers, config) {
-					console.log('Failed getSeamail(): ' + status, angular.toJson(data));
+					$log.error('Failed getSeamail(): ' + status, angular.toJson(data));
 					deferred.reject([data, status]);
 				});
 
@@ -243,17 +301,17 @@
 			var url = SettingsService.getTwitarrRoot() + 'api/v2/seamail';
 			var deferred = $q.defer();
 
-			console.log('Twitarr.postSeamail(): url=' + url + ', seamail=',seamail);
+			$log.debug('Twitarr.postSeamail(): url=' + url + ', seamail=',seamail);
 			post(url, seamail)
 				.success(function(data) {
 					if (data.errors && data.errors.length > 0) {
-						console.log('Failed postSeamail(): ' + data.errors[0]);
+						$log.error('Failed postSeamail(): ' + data.errors[0]);
 						deferred.reject(data.errors);
 					} else {
 						deferred.resolve(data);
 					}
 				}).error(function(data, status) {
-					console.log('Failed postSeamail(): ' + status, angular.toJson(data));
+					$log.error('Failed postSeamail(): ' + status, angular.toJson(data));
 					deferred.reject([data, status]);
 				});
 
@@ -264,7 +322,7 @@
 			var url = SettingsService.getTwitarrRoot() + 'api/v2/seamail/' + id;
 			var deferred = $q.defer();
 
-			console.log('Twitarr.getSeamailMessages(): url=' + url);
+			$log.debug('Twitarr.getSeamailMessages(): url=' + url);
 			get(url)
 				.success(function(data) {
 					if (data.seamail && data.seamail.messages) {
@@ -274,7 +332,7 @@
 					}
 					deferred.resolve(data);
 				}).error(function(data, status, headers, config) {
-					console.log('Failed getSeamailMessages(): ' + status, angular.toJson(data));
+					$log.error('Failed getSeamailMessages(): ' + status, angular.toJson(data));
 					deferred.reject([data, status]);
 				});
 
@@ -285,12 +343,12 @@
 			var url = SettingsService.getTwitarrRoot() + 'api/v2/seamail/' + id + '/new_message';
 			var deferred = $q.defer();
 
-			console.log('Twitarr.postSeamailMessage(): url=' + url + ', text=',text);
+			$log.debug('Twitarr.postSeamailMessage(): url=' + url + ', text=',text);
 			post(url, { text: text })
 				.success(function(data) {
 					deferred.resolve(data);
 				}).error(function(data, status) {
-					console.log('Failed postSeamailMessage(): ' + status, angular.toJson(data));
+					$log.error('Failed postSeamailMessage(): ' + status, angular.toJson(data));
 					deferred.reject([data, status]);
 				});
 
@@ -301,12 +359,12 @@
 			var url = SettingsService.getTwitarrRoot() + 'api/v2/stream/' + tweetId + '/like';
 			var deferred = $q.defer();
 
-			console.log('Twitarr.like(): url=' + url);
+			$log.debug('Twitarr.like(): url=' + url);
 			post(url)
 				.success(function(data) {
 					deferred.resolve(data);
 				}).error(function(data, status, headers, config) {
-					console.log('Failed like(): ' + status, angular.toJson(data));
+					$log.error('Failed like(): ' + status, angular.toJson(data));
 					deferred.reject([data, status]);
 				});
 
@@ -317,12 +375,12 @@
 			var url = SettingsService.getTwitarrRoot() + 'api/v2/stream/' + tweetId + '/like';
 			var deferred = $q.defer();
 
-			console.log('Twitarr.unlike(): url=' + url);
+			$log.debug('Twitarr.unlike(): url=' + url);
 			del(url)
 				.success(function(data) {
 					deferred.resolve(data);
 				}).error(function(data, status, headers, config) {
-					console.log('Failed unlike(): ' + status, angular.toJson(data));
+					$log.error('Failed unlike(): ' + status, angular.toJson(data));
 					deferred.reject([data, status]);
 				});
 
@@ -337,12 +395,12 @@
 
 			var deferred = $q.defer();
 
-			console.log('Twitarr.getStream(): url=' + url);
+			$log.debug('Twitarr.getStream(): url=' + url);
 			get(url)
 				.success(function(data) {
 					deferred.resolve(data);
 				}).error(function(data, status, headers, config) {
-					console.log('Failed getStream(): ' + status, angular.toJson(data));
+					$log.error('Failed getStream(): ' + status, angular.toJson(data));
 					deferred.reject([data, status]);
 				});
 
@@ -354,12 +412,12 @@
 
 			var deferred = $q.defer();
 
-			console.log('Twitarr.postTweet(): url=' + url);
+			$log.debug('Twitarr.postTweet(): url=' + url);
 			post(url, tweet)
 				.success(function(data) {
 					deferred.resolve(data);
 				}).error(function(data, status, headers, config) {
-					console.log('Failed postTweet(): ' + status, angular.toJson(data));
+					$log.error('Failed postTweet(): ' + status, angular.toJson(data));
 					deferred.reject([data, status]);
 				});
 
@@ -375,7 +433,7 @@
 
 			var deferred = $q.defer();
 
-			console.log('Twitarr.postPhoto(): url=' + url +', image=' + image);
+			$log.debug('Twitarr.postPhoto(): url=' + url +', image=' + image);
 			Upload.upload({
 				'url': url,
 				'file': image,
@@ -384,7 +442,7 @@
 			}).then(function(res) {
 				deferred.resolve(res);
 			}, function(err) {
-				console.log('Failed postPhoto(): ' + angular.toJson(err));
+				$log.error('Failed postPhoto(): ' + angular.toJson(err));
 				deferred.reject(err);
 			}, function(progress) {
 				deferred.notify(progress);
@@ -405,14 +463,14 @@
 						deferred.resolve(undefined);
 					}
 				}).error(function(data, status) {
-					console.log('Failed getUserInfo(): ' + status, angular.toJson(data));
+					$log.error('Failed getUserInfo(): ' + status, angular.toJson(data));
 					deferred.reject(data);
 				});
 			return deferred.promise;
 		};
 
 		var sendMentionNotification = function(mention, count) {
-			console.log('Twitarr: Sending mention local notification for:',mention);
+			$log.debug('Twitarr: Sending mention local notification for:',mention);
 
 			var options = {
 				id: 'mention-' + mention.id,
@@ -427,7 +485,7 @@
 		};
 
 		var sendAnnouncementNotification = function(announcement, count) {
-			console.log('Twitarr: Sending announcement local notification for:',announcement);
+			$log.debug('Twitarr: Sending announcement local notification for:',announcement);
 
 			var options = {
 				id: 'announcement-' + announcement.timestamp.valueOf(),
@@ -442,7 +500,7 @@
 		};
 
 		var sendSeamailNotification = function(seamail, count) {
-			console.log('Twitarr: Sending seamail local notification for:',seamail);
+			$log.debug('Twitarr: Sending seamail local notification for:',seamail);
 
 			var options = {
 				id: 'seamail-' + seamail.id,
@@ -478,7 +536,7 @@
 
 			var user = UserService.get();
 			if (user.loggedIn && user.key) {
-				console.log('Twitarr: doing status check');
+				$log.debug('Twitarr: doing status check');
 				getAlerts(false).then(function(alerts) {
 					var i,
 						new_mentions = [], mention,
@@ -495,9 +553,9 @@
 							mention = alerts.tweet_mentions[i];
 							seen.mention_ids.push(mention.id);
 							if (arrayIncludes(scope.lastStatus.mention_ids, mention.id)) {
-								//console.log('Twitarr.checkStatus: already seen mention: ' + mention.id);
+								//$log.debug('Twitarr.checkStatus: already seen mention: ' + mention.id);
 							} else {
-								console.log('Twitarr.checkStatus: new mention: ' + mention.id);
+								$log.debug('Twitarr.checkStatus: new mention: ' + mention.id);
 								new_mentions.push(mention);
 							}
 						}
@@ -512,9 +570,9 @@
 							announcement.timestamp = moment(announcement.timestamp);
 							seen.announcement_timestamps.push(announcement.timestamp.valueOf());
 							if (arrayIncludes(scope.lastStatus.announcement_timestamps, announcement.timestamp.valueOf())) {
-								//console.log('Twitarr.checkStatus: already seen announcement: ' + announcement.id);
+								//$log.debug('Twitarr.checkStatus: already seen announcement: ' + announcement.id);
 							} else {
-								console.log('Twitarr.checkStatus: new announcement: ' + announcement.text);
+								$log.debug('Twitarr.checkStatus: new announcement: ' + announcement.text);
 								new_announcements.push(announcement);
 							}
 						}
@@ -527,9 +585,9 @@
 							seamail = alerts.unread_seamail[i];
 							seen.seamail_ids.push(seamail.id);
 							if (arrayIncludes(scope.lastStatus.seamail_ids, seamail.id)) {
-								//console.log('Twitarr.checkStatus: already seen seamail: ' + seamail.id);
+								//$log.debug('Twitarr.checkStatus: already seen seamail: ' + seamail.id);
 							} else {
-								console.log('Twitarr.checkStatus: new seamail: ' + seamail.id);
+								$log.debug('Twitarr.checkStatus: new seamail: ' + seamail.id);
 								new_seamails.push(seamail);
 							}
 						}
@@ -556,7 +614,7 @@
 					deferred.resolve(true);
 				});
 			} else {
-				console.log('Twitarr: skipping status check, user is not logged in');
+				$log.debug('Twitarr: skipping status check, user is not logged in');
 				deferred.resolve(false);
 			}
 
@@ -567,15 +625,15 @@
 			ionic.Platform.ready(function() {
 				if ($window.plugins && $window.plugins.backgroundFetch) {
 					var fetcher = $window.plugins.backgroundFetch;
-					console.log('Twitarr: Configuring background fetch.');
+					$log.debug('Twitarr: Configuring background fetch.');
 					fetcher.configure(function() {
 						$rootScope.$evalAsync(function() {
-							console.log('Twitarr: Background fetch initiated.');
+							$log.debug('Twitarr: Background fetch initiated.');
 							checkStatus().then(function() {
-								console.log('Twitarr: Background fetch complete.');
+								$log.debug('Twitarr: Background fetch complete.');
 								fetcher.finish();
 							}, function(err) {
-								console.log('Twitarr: Background fetch failed: ' + angular.toJson(err));
+								$log.debug('Twitarr: Background fetch failed: ' + angular.toJson(err));
 							});
 						});
 					});
@@ -632,7 +690,7 @@
 
 		scope.$on('cruisemonkey.user.settings-changed', function(ev, settings) {
 			if (settings.old && settings.new.backgroundInterval !== settings.old.backgroundInterval) {
-				console.log('Twitarr: background interval refresh has changed from ' + settings.old.backgroundInterval + ' to ' + settings.new.backgroundInterval + '.');
+				$log.debug('Twitarr: background interval refresh has changed from ' + settings.old.backgroundInterval + ' to ' + settings.new.backgroundInterval + '.');
 				stopStatusCheck();
 				startStatusCheck();
 			}
@@ -646,6 +704,8 @@
 			getStatus: getStatus,
 			getAlerts: getAlerts,
 			getAutocompleteUsers: getAutocompleteUsers,
+			getEvents: getEvents,
+			addEvent: addEvent,
 			getSeamail: getSeamail,
 			postSeamail: postSeamail,
 			getSeamailMessages: getSeamailMessages,

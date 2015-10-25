@@ -1,23 +1,12 @@
 /*global moment: true*/
 /*global Modernizr: true*/
 
-function stringifyDate(date) {
-	'use strict';
-
-	if (date === null || date === undefined) {
-		return undefined;
-	}
-	return moment(date).format("YYYY-MM-DD HH:mm");
-}
-
 var dateStringFormat="YYYY-MM-DD HH:mm";
 if (false && Modernizr && Modernizr.inputtypes["datetime-local"]) {
 	dateStringFormat="YYYY-MM-DDTHH:mm";
 } else {
 	console.log('datetime-local not supported, or Modernizr not available');
 }
-
-var epochZero = stringifyDate(moment(0));
 
 function CMDay(d) {
 	'use strict';
@@ -47,7 +36,7 @@ function CMEvent(data) {
 		self._rawdata.lastUpdated = undefined;
 	}
 	if (self._rawdata.lastUpdated === undefined) {
-		self._rawdata.lastUpdated = moment(epochZero);
+		self._rawdata.lastUpdated = self._stringifyDate(moment(0));
 	}
 
 	delete self._rawdata.isFavorite;
@@ -67,7 +56,7 @@ function CMFavorite(data) {
 		self._rawdata.lastUpdated = undefined;
 	}
 	if (self._rawdata.lastUpdated === undefined) {
-		self._rawdata.lastUpdated = moment(epochZero);
+		self._rawdata.lastUpdated = self._stringifyDate(moment(0));
 	}
 }
 
@@ -78,6 +67,15 @@ CMDay.prototype.getId = function() {
 CMDay.prototype.clone = function() {
 	'use strict';
 	return new CMDay(this.day);
+};
+
+CMEvent._stringifyDate = function(date) {
+	'use strict';
+
+	if (date === null || date === undefined) {
+		return undefined;
+	}
+	return moment(date).format("YYYY-MM-DD HH:mm");
 };
 
 CMEvent.prototype.clone = function() {
@@ -106,11 +104,11 @@ CMEvent.prototype.setEven = function(bool) {
 
 CMEvent.prototype.getId = function() {
 	'use strict';
-	return this._rawdata._id;
+	return this._rawdata.id;
 };
 CMEvent.prototype.setId = function(id) {
 	'use strict';
-	this._rawdata._id = id;
+	this._rawdata.id = id;
 };
 
 CMEvent.prototype.getRevision = function() {
@@ -124,11 +122,11 @@ CMEvent.prototype.setRevision = function(rev) {
 
 CMEvent.prototype.getSummary = function() {
 	'use strict';
-	return this._rawdata.summary;
+	return this._rawdata.title;
 };
 CMEvent.prototype.setSummary = function(summary) {
 	'use strict';
-	this._rawdata.summary = summary;
+	this._rawdata.title = summary;
 };
 
 CMEvent.prototype.getFormattedDescription = function() {
@@ -146,8 +144,8 @@ CMEvent.prototype.setDescription = function(description) {
 
 CMEvent.prototype.getDay = function() {
 	'use strict';
-	if (this._day === undefined && this._rawdata.start !== undefined) {
-		this._day = moment(this._rawdata.start).startOf('day');
+	if (this._day === undefined && this._rawdata['start_time'] !== undefined) {
+		this._day = moment(this._rawdata['start_time']).startOf('day');
 	}
 	return this._day;
 };
@@ -159,8 +157,8 @@ CMEvent.prototype.getDay = function() {
   */
 CMEvent.prototype.getStart = function() {
 	'use strict';
-	if (this._start === undefined && this._rawdata.start !== undefined) {
-		this._start = moment(this._rawdata.start);
+	if (this._start === undefined && this._rawdata['start_time'] !== undefined) {
+		this._start = moment(this._rawdata['start_time']);
 	}
 	return this._start;
 };
@@ -173,9 +171,9 @@ CMEvent.prototype.getStart = function() {
 CMEvent.prototype.setStart = function(start) {
 	'use strict';
 	if (typeof start === 'string' || start instanceof String) {
-		this._rawdata.start = start;
+		this._rawdata['start_time'] = start;
 	} else {
-		this._rawdata.start = stringifyDate(start);
+		this._rawdata['start_time'] = CMEvent._stringifyDate(start);
 	}
 	this._start = undefined;
 	this._day = undefined;
@@ -183,12 +181,12 @@ CMEvent.prototype.setStart = function(start) {
 
 CMEvent.prototype.getStartString = function() {
 	'use strict';
-	return this._rawdata.start;
+	return this._rawdata['start_time'];
 };
 
 CMEvent.prototype.setStartString = function(start) {
 	'use strict';
-	this._rawdata.start = start;
+	this._rawdata['start_time'] = start;
 	this._start = undefined;
 	this._day = undefined;
 };
@@ -200,8 +198,8 @@ CMEvent.prototype.setStartString = function(start) {
   */
 CMEvent.prototype.getEnd = function() {
 	'use strict';
-	if (this._end === undefined && this._rawdata.end !== undefined) {
-		this._end = moment(this._rawdata.end);
+	if (this._end === undefined && this._rawdata['end_time'] !== undefined) {
+		this._end = moment(this._rawdata['end_time']);
 	}
 	return this._end;
 };
@@ -214,20 +212,20 @@ CMEvent.prototype.getEnd = function() {
 CMEvent.prototype.setEnd = function(end) {
 	'use strict';
 	if (typeof end === 'string' || end instanceof String) {
-		this._rawdata.end = end;
+		this._rawdata['end_time'] = end;
 	} else {
-		this._rawdata.end = stringifyDate(end);
+		this._rawdata['end_time'] = CMEvent._stringifyDate(end);
 	}
 	this._end = undefined;
 };
 
 CMEvent.prototype.getEndString = function() {
 	'use strict';
-	return this._rawdata.end;
+	return this._rawdata['end_time'];
 };
 CMEvent.prototype.setEndString = function(end) {
 	'use strict';
-	this._rawdata.end = end;
+	this._rawdata['end_time'] = end;
 	this._end = undefined;
 };
 
@@ -237,19 +235,19 @@ CMEvent.prototype.getLastUpdated = function() {
 };
 CMEvent.prototype.refreshLastUpdated = function() {
 	'use strict';
-	this._rawdata.lastUpdated = stringifyDate(moment());
+	this._rawdata.lastUpdated = CMEvent._stringifyDate(moment());
 };
 
 CMEvent.prototype.getUsername = function() {
 	'use strict';
-	if (this._rawdata.username !== undefined && this._rawdata.username !== '') {
-		return this._rawdata.username;
+	if (this._rawdata.author !== undefined && this._rawdata.author !== '') {
+		return this._rawdata.author;
 	}
 	return undefined;
 };
 CMEvent.prototype.setUsername = function(username) {
 	'use strict';
-	this._rawdata.username = username;
+	this._rawdata.author = username;
 };
 
 CMEvent.prototype.getLocation = function() {
@@ -263,16 +261,20 @@ CMEvent.prototype.setLocation = function(loc) {
 
 CMEvent.prototype.isPublic = function() {
 	'use strict';
-	return this._rawdata.isPublic;
+	return !!this._rawdata.isPublic;
 };
 CMEvent.prototype.setPublic = function(pub) {
 	'use strict';
-	this._rawdata.isPublic = pub;
+	this._rawdata.isPublic = !!pub;
 };
 
 CMEvent.prototype.isFavorite = function() {
 	'use strict';
-	return this._favorite !== undefined;
+	if (this._rawdata.author && this._rawdata.favorites) {
+		return this._rawdata.favorites.indexOf(this._rawdata.author) >= 0;
+	} else {
+		return false;
+	}
 };
 CMEvent.prototype.getFavorite = function() {
 	'use strict';
@@ -340,7 +342,7 @@ CMEvent.prototype.fromEditableBean = function(bean) {
 
 CMEvent.prototype.toString = function() {
 	'use strict';
-	return 'CMEvent[id=' + this._rawdata._id + ',summary=' + this._rawdata.summary + ',favorite=' + this.isFavorite() + ',public=' + this.isPublic() + ']';
+	return 'CMEvent[id=' + this._rawdata.id + ',summary=' + this._rawdata.title + ',favorite=' + this.isFavorite() + ',public=' + this.isPublic() + ']';
 };
 
 CMEvent.prototype.getRawData = function() {
@@ -407,7 +409,7 @@ CMFavorite.prototype.getLastUpdated = function() {
 };
 CMFavorite.prototype.refreshLastUpdated = function() {
 	'use strict';
-	this._rawdata.lastUpdated = stringifyDate(moment());
+	this._rawdata.lastUpdated = CMEvent._stringifyDate(moment());
 };
 
 CMFavorite.prototype.toString = function() {

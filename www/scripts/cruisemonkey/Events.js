@@ -18,7 +18,131 @@
 		'cruisemonkey.Database',
 		'cruisemonkey.User'
 	])
-	.factory('EventService', function($q, $rootScope, $timeout, $location, kv, uuid4, _database, UserService, SettingsService) {
+	.factory('EventService', function($log, $q, $rootScope, db, kv, Twitarr, UserService) {
+		var scope = $rootScope.$new();
+
+		var eventdb = db.collection('events', 'events', {transactional:true});
+		var initialized = $q.defer();
+
+		kv.get('cruisemonkey.lastModified').then(function(lm) {
+			scope.lastModified = lm || 0;
+		}, function() {
+			scope.lastModified = 0;
+		});
+		var updateLastModified = function() {
+			kv.set('cruisemonkey.lastModified', scope.lastModified);
+		};
+
+		var init = function() {
+			eventdb.then(function(evdb) {
+				return Twitarr.getEvents().then(function(events) {
+					$log.debug('Got events: ' + angular.toJson(events));
+					for (var i=0, len=events.length, event, existing; i < len; i++) {
+						event = events[i];
+						event.lastUpdated = CMEvent._stringifyDate(moment());
+						existing = evdb.findObject({id:event.id});
+						if (existing) {
+							angular.extend(existing, event);
+							evdb.update(existing);
+						} else {
+							evdb.insert(event);
+						}
+					}
+					initialized.resolve(evdb);
+				});
+			}, function(err) {
+				$log.warn('EventService.init: ' + angular.toJson(err));
+				initialized.reject(err);
+			});
+			return initialized.promise;
+		};
+		init();
+
+		var getAllEvents = function() {
+			return initialized.promise.then(function(evdb) {
+				return evdb.where(function() { return true; }).map(function(event) {
+					return new CMEvent(event);
+				});
+			});
+		};
+
+		var getOfficialEvents = function() {
+			return initialized.promise.then(function(evdb) {
+				return evdb.where(function(event) {
+					return event.author === 'official';
+				}).map(function(event) {
+					return new CMEvent(event);
+				});
+			});
+		};
+
+		var getUnofficialEvents = function() {
+			return initialized.promise.then(function(evdb) {
+				return evdb.where(function(event) {
+					return event.author !== 'official';
+					// && event.isPublic;
+				}).map(function(event) {
+					return new CMEvent(event);
+				});
+			});
+		};
+
+		var getUserEvents = function() {
+			return initialized.promise.then(function(evdb) {
+				var user = UserService.get();
+				return evdb.where(function(event) {
+					return event.author === user.username;
+				}).map(function(event) {
+					return new CMEvent(event);
+				});
+			});
+		};
+
+		var getMyEvents = function() {
+			return initialized.promise.then(function(evdb) {
+				var user = UserService.get();
+				return evdb.where(function(event) {
+					return true;
+					// return event.author === user.username || event.isPublic;
+				}).map(function(event) {
+					return new CMEvent(event);
+				});
+			});
+		};
+
+		var addEvent = function(event) {
+			return Twitarr.addEvent(event.getRawData()).then(function(ret) {
+				$log.debug('EventService.addEvent: success: ' + angular.toJson(ret));
+			}, function(err) {
+				$log.debug('EventService.addEvent: failed: ' + angular.toJson(err));
+				return $q.reject(err);
+			});
+		};
+
+		return {
+			'syncFrom': function() {},
+			'addEvent': addEvent,
+			'updateEvent': function() { return false; },
+			'removeEvent': function() { return false; },
+			'getAllEvents': getAllEvents,
+			'getOfficialEvents': getOfficialEvents,
+			'getUnofficialEvents': getUnofficialEvents,
+			'getUserEvents': getUserEvents,
+			'getMyEvents': getMyEvents,
+			'getMyFavorites': function() { return $q.when([]); },
+			'isFavorite': function() { return false; },
+			'addFavorite': function() { return false; },
+			'removeFavorite': function() { return false; },
+			'getEventForTime': function() { return undefined; },
+			'getNextEvent': function(events) { return undefined; },
+			'recreateDatabase': function() { return false; },
+			'forceSync': function() { return false; },
+			'getLastModified': function() {
+				return scope.lastModified;
+			}
+		};
+	})
+	.factory('OldEventService', function($q, $rootScope, $timeout, $location, kv, uuid4, _database, UserService, SettingsService) {
 		console.log('EventService: Initializing EventService.');
 		var ready = $q.defer();
 
