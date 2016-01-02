@@ -7,7 +7,7 @@
 		'cruisemonkey.Config',
 		'cruisemonkey.Twitarr',
 	])
-	.directive('autoComplete',['Twitarr',function(Twitarr) {
+	.directive('autoComplete',function($log, Twitarr) {
 		return {
 			restrict:'AE',
 			scope:{
@@ -19,7 +19,7 @@
 				scope.suggestions=[];
 				scope.selectedUsers=[];
 				scope.selectedIndex=-1;
-				//console.log('additional user:',scope.additionalUser);
+				//$log.debug('additional user: ' + angular.toJson(scope.additionalUser));
 
 				scope.removeTag=function(index){
 					scope.selectedUsers.splice(index,1);
@@ -39,7 +39,7 @@
 				};
 
 				scope.addToSelectedUsers=function(index){
-					//console.log('addToSelectedUsers(' + index + ')');
+					//$log.debug('addToSelectedUsers(' + index + ')');
 					if(scope.selectedUsers.indexOf(scope.suggestions[index])===-1){
 						scope.selectedUsers.push(scope.suggestions[index]);
 						scope.searchText='';
@@ -72,9 +72,11 @@
 				});
 			}
 		};
-	}])
-	.controller('CMSeamailCtrl', ['$scope', '$timeout', '$interval', '$ionicLoading', '$ionicModal', '$ionicPopup', '$ionicScrollDelegate', 'Images', 'SettingsService', 'Twitarr', 'UserService', function($scope, $timeout, $interval, $ionicLoading, $ionicModal, $ionicPopup, $ionicScrollDelegate, Images, SettingsService, Twitarr, UserService) {
-		console.log('CMSeamailCtrl Initializing.');
+	})
+	.controller('CMSeamailCtrl', function($q, $scope, $interval, $log, $timeout, $ionicLoading, $ionicModal, $ionicPopup, $ionicScrollDelegate, SettingsService, Twitarr, UserService) {
+		$log.info('CMSeamailCtrl Initializing.');
+
+		$scope.unread = 3;
 
 		$ionicModal.fromTemplateUrl('template/seamail-detail.html', {
 			animation: 'slide-in-up',
@@ -84,33 +86,17 @@
 				modal.hide();
 			};
 
-			modal.scope.updateUserImages = function() {
-				var twitarrRoot = SettingsService.getTwitarrRoot();
-				var users = modal.scope.seamail.users.map(function(entry) {
-					return entry.username;
-				});
-				Images.getAll(users.map(function(username) {
-					return twitarrRoot + 'api/v2/user/photo/' + username;
-				})).then(function(res) {
-					for (var i=0; i < users.length; i++) {
-						modal.scope.userImages[users[i]] = res[i];
+			modal.scope.refreshMessages = function() {
+				return Twitarr.getSeamailMessages(modal.scope.seamail.id).then(function(res) {
+					if (res.seamail && res.seamail.messages) {
+						modal.scope.seamail = res.seamail;
 					}
+					return res;
 				});
 			};
 
-			modal.scope.refreshMessages = function() {
-				var promise = Twitarr.getSeamailMessages(modal.scope.seamail.id);
-				promise.then(function(res) {
-					if (res.seamail && res.seamail.messages) {
-						//console.log('Refreshed messages:' + angular.toJson(res));
-						modal.scope.seamail = res.seamail;
-						modal.scope.updateUserImages();
-					}
-				});
-				return promise;
-			};
 			modal.scope.postMessage = function() {
-				console.log('posting seamail message:',modal.scope.newMessage.text);
+				$log.debug('posting seamail message: ' + angular.toJson(modal.scope.newMessage.text));
 				if (modal.scope.newMessage && modal.scope.newMessage.text && modal.scope.newMessage.text !== '') {
 					Twitarr.postSeamailMessage(modal.scope.seamail.id, modal.scope.newMessage.text).then(function() {
 						modal.scope.newMessage.text = '';
@@ -124,11 +110,6 @@
 				}
 			};
 			modal.scope.newMessage = { text: '' };
-			/*
-			modal.scope.$watch('newMessage', function(newValue) {
-				console.log('message text: ' + newValue.text);
-			});
-*/
 			$scope.viewSeamailModal = modal;
 		});
 
@@ -136,41 +117,40 @@
 			$scope.viewSeamailModal.remove();
 		});
 
-		$scope.userImages = [];
+		var updateUnread = function() {
+			if (!$scope.seamails) {
+				return;
+			}
+			var count = 0;
+			for (var s=0, len=$scope.seamails.length, seamail; s < len; s++) {
+				seamail = $scope.seamails[s];
+				if (seamail.is_unread) {
+					count++;
+				}
+			}
+			$scope.unread = count;
+		};
 
 		$scope.scrollTop = function() {
 			$ionicScrollDelegate.$getByHandle('seamail').scrollTop(true);
 		};
 
-		$scope.updateUserImage = function(username) {
-			if (!$scope.userImages[username]) {
-				Images.get($scope.twitarrRoot + 'api/v2/user/photo/' + username).then(function(url) {
-					$scope.userImages[username] = url;
-				});
-			}
-		};
-
 		$scope.doRefresh = function() {
-			console.log('Refreshing seamail.');
-			$scope.twitarrRoot = SettingsService.getTwitarrRoot();
-			Twitarr.getSeamail().then(function(res) {
+			$log.info('Refreshing seamail.');
+			return Twitarr.getSeamail().then(function(res) {
+				$log.debug('doRefresh: res=' + angular.toJson(res));
 				if (res && res.seamail_meta) {
-					var seen = {}, i, j, users = [];
-					for (i=0; i < res.seamail_meta.length; i++) {
-						for (j=0; j < res.seamail_meta[i].users.length; j++) {
-							var user = res.seamail_meta[i].users[j];
-							$scope.updateUserImage(user.username);
-						}
-					}
 					$scope.seamails = res.seamail_meta;
 				} else {
 					$scope.seamails = [];
 				}
+				updateUnread();
 				$ionicLoading.hide();
-				$scope.$broadcast('scroll.refreshComplete');
 			}, function(err) {
-				console.log('Failed to get seamail:',err);
+				$log.error('Failed to get seamail: ' + angular.toJson(err));
 				$ionicLoading.hide();
+				return $q.reject(err);
+			}).finally(function() {
 				$scope.$broadcast('scroll.refreshComplete');
 			});
 		};
@@ -180,10 +160,8 @@
 			if (!seamail.messages) {
 				seamail.messages = [];
 			}
-			$scope.viewSeamailModal.scope.userImages = [];
 			$scope.viewSeamailModal.scope.user = UserService.get();
 			$scope.viewSeamailModal.scope.seamail = seamail;
-			$scope.viewSeamailModal.scope.twitarrRoot = SettingsService.getTwitarrRoot();
 
 			seamailInterval = $interval(function() {
 				$scope.viewSeamailModal.scope.refreshMessages();
@@ -200,9 +178,11 @@
 				$interval.cancel(seamailInterval);
 				seamailInterval = undefined;
 			}
+			updateUnread();
 		});
 
 		$scope.$on('cruisemonkey.notify.newSeamail', function(ev, count) {
+			$scope.unread = count;
 			$scope.doRefresh();
 		});
 
@@ -212,5 +192,5 @@
 			}
 			$scope.doRefresh();
 		});
-	}]);
+	});
 }());

@@ -37,62 +37,30 @@
     "shelljs": "*"
   },
   "cordovaPlugins": [
-    "org.transistorsoft.cordova.plugin.background.fetch",
-    {
-      "locator": "https://github.com/Red-Folder/bgs-core.git",
-      "id": "com.red_folder.phonegap.plugin.backgroundservice"
-    },
-    {
-      "locator": "https://github.com/EddyVerbruggen/Toast-PhoneGap-Plugin.git",
-      "id": "nl.x-services.plugins.toast"
-    },
-    {
-      "locator": "https://github.com/driftyco/ionic-plugins-keyboard.git",
-      "id": "com.ionic.keyboard"
-    },
-    {
-      "locator": "https://github.com/Paldom/SpinnerDialog.git",
-      "id": "hu.dpal.phonegap.plugins.SpinnerDialog"
-    },
-    {
-      "locator": "https://github.com/RangerRick/cordova-certificate-plugin.git",
-      "id": "com.raccoonfink.cordova.plugins.certificates"
-    },
-    {
-      "locator": "https://github.com/VersoSolutions/CordovaClipboard.git",
-      "id": "com.verso.cordova.clipboard"
-    },
-    {
-      "locator": "https://github.com/apache/cordova-plugin-device",
-      "id": "cordova-plugin-device"
-    },
-    "org.apache.cordova.console",
-    "org.apache.cordova.network-information",
-    "org.apache.cordova.dialogs",
-    "org.apache.cordova.inappbrowser",
-    "org.apache.cordova.camera",
-    "org.apache.cordova.splashscreen",
-    "org.apache.cordova.file",
-    "org.apache.cordova.statusbar",
-    "https://github.com/katzer/cordova-plugin-local-notifications.git",
+    "cordova-plugin-console",
+    "cordova-plugin-device",
+    "cordova-plugin-file",
+    "cordova-plugin-file-transfer",
+    "cordova-plugin-network-information",
+    "cordova-plugin-dialogs",
+    "cordova-plugin-splashscreen",
+    "cordova-plugin-statusbar",
     "cordova-plugin-whitelist",
+    "ionic-plugin-keyboard",
+    "cordova-plugin-camera",
+    "cordova-plugin-inappbrowser",
+    "cordova-plugin-spinner-dialog",
     "https://github.com/EddyVerbruggen/Toast-PhoneGap-Plugin.git",
-    "https://github.com/driftyco/ionic-plugins-keyboard.git",
-    "https://github.com/Paldom/SpinnerDialog.git",
-    "https://github.com/RangerRick/cordova-certificate-plugin.git",
-    "https://github.com/VersoSolutions/CordovaClipboard.git",
-    "https://github.com/apache/cordova-plugin-device",
-    "https://github.com/Red-Folder/bgs-core.git",
+    "https://github.com/katzer/cordova-plugin-local-notifications.git",
     "https://github.com/OpenNMS/cordova-plugin-storage.git",
-    {
-      "locator": "https://github.com/OpenNMS/cordova-plugin-storage.git",
-      "id": "cordova-plugin-storage"
-    }
+    "https://github.com/RangerRick/cordova-certificate-plugin.git",
+    "https://github.com/Red-Folder/bgs-core.git",
+    "https://github.com/VersoSolutions/CordovaClipboard.git"
   ],
   "cordovaPlatforms": [
     {
       "platform": "android",
-      "version": "4.1.1",
+      "version": "5.0.0",
       "locator": "android"
     },
     {
@@ -102,7 +70,7 @@
     },
     {
       "platform": "ios",
-      "version": "3.9.1",
+      "version": "3.9.2",
       "locator": "ios"
     }
   ]

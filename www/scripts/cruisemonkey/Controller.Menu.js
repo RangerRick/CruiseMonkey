@@ -7,7 +7,7 @@
 		'ionic',
 		'cruisemonkey.DB',
 		'cruisemonkey.Events',
-		'cruisemonkey.User',
+		'cruisemonkey.user.User',
 		'cruisemonkey.Util',
 	])
 	.controller('CMMenuCtrl', function($rootScope, $scope, $state, $timeout, $ionicModal, $ionicScrollDelegate, kv, util, EventService, UserService) {
@@ -35,7 +35,7 @@
 
 		$scope.go = util.go;
 
-		$ionicModal.fromTemplateUrl('menu/login.html', {
+		$ionicModal.fromTemplateUrl('template/login.html', {
 			scope: $scope,
 			focusFirstInput: true
 		}).then(function(modal) {
@@ -54,6 +54,11 @@
 		});
 
 		$scope.$on('cruisemonkey.user.updated', function(ev, newUser, oldUser) {
+			loginModal.hide();
+			$scope.closeKeyboard();
+		});
+
+		$scope.$on('cruisemonkey.login.succeeded', function() {
 			loginModal.hide();
 			$scope.closeKeyboard();
 		});

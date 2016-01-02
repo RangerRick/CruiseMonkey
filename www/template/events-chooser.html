@@ -1,0 +1,7 @@
+<ion-popover-view class="fit events-chooser">
+	<ion-content>
+		<ion-list>
+			<ion-item ng-repeat="event in eventTypes" ng-click="setEventType(event)">{{event.capitalize()}} Events</ion-item>
+		</ion-list>
+	</ion-content>
+</ion-popover-view>

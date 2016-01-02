@@ -1,12 +1,8 @@
 <ion-view class="twitarr">
 	<ion-header-bar class="bar-stable bar-dark" animation="no-animation">
-		<div class="buttons">
-			<button menu-toggle="left" class="button button-icon icon ion-navicon"></button>
-		</div>
 		<h1 class="title" ng-click="scrollTop()">Twit-Arr</h1>
 		<div class="buttons">
-			<button class="button button-icon icon ion-compose" ng-click="newTweet()" ng-if="user.loggedIn"></button>
-			<button class="button button-icon icon ion-refresh" ng-click="doRefresh(true, true)"></button>
+			<button class="button button-icon icon ion-compose" ng-click="newTweet()" ng-if="u.loggedIn()"></button>
 		</div>
 	</ion-header-bar>
 	<span class="unread-count" ng-if="unreadCount &amp;&amp; unreadCount > 0">{{unreadCount}}</span>
@@ -18,14 +14,17 @@
 				<span ng-bind-html="error" style="padding-left: 20px"></span>
 			</ion-item>
 			<a ng-repeat="entry in entries" class="item item-avatar item-text-wrap" id="{{entry.id}}">
-				<cm-image url="twitarrRoot + 'api/v2/user/photo/' + entry.author" ng-click="openUser(entry.author, $event)"></cm-image>
+				<img img-cache ic-src="{{twitarrRoot + 'api/v2/user/photo/' + entry.author}}" ng-click="openUser(entry.author, $event)" />
 				<span class="item-note commands" ng-if="user.loggedIn">
 					<button ng-class="'button button-clear button-small icon ' + (entry.likes &amp;&amp; entry.likes.indexOf(user.username) >= 0? 'ion-ios-heart':'ion-ios-heart-outline')" ng-click="toggleLike(entry)"></button>
 					<button class="button button-clear button-small icon ion-reply" ng-click="newTweet(entry)"></button>
 				</span>
-				<h2 ng-bind-html="users[entry.author]? users[entry.author].display_name : entry.author" ng-click="openUser(entry.author, $event)"></h2>
+				<span class="user" ng-click="openUser(entry.author, $event)">
+					<span class="display-name" ng-bind-html="getDisplayName(entry.author)"></span>
+					<span class="display-handle" ng-bind-html="getDisplayHandle(entry.author)"></span>
+				</span>
 				<p twitter-html="entry.text"></p>
-				<cm-image url="twitarrRoot + 'photo/small_thumb/' + entry.photo.id" ng-click="openTweet(entry)" ng-if="entry.photo" style="width: 100%; max-width: 400px"></cm-image>
+				<img img-cache ic-src="{{twitarrRoot + 'photo/small_thumb/' + entry.photo.id}}" ng-click="openTweet(entry)" ng-if="entry.photo" style="width: 100%; max-width: 400px"/>
 				<p class="timeframe">{{entry.timestamp.fromNow()}}</p>
 			</a>
 		</ion-list>

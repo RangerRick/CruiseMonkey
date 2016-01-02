@@ -5,11 +5,8 @@
 
 	angular.module('cruisemonkey.Config', [])
 	.value('config.logging.useStringAppender', false)
-	.value('config.database.root', 'https://jccc5.rylath.net/db/')
-	.value('config.database.name', 'cruisemonkey-test')
-	.value('config.database.replicate', true)
-	.value('config.request.timeout', 10000)
-	.value('config.background.interval', 30000)
+	.value('config.request.timeout', 10)
+	.value('config.background.interval', 30)
 	.value('config.twitarr.root', 'https://jccc5.rylath.net/')
 	.value('config.twitarr.enable-cachebusting', true)
 	.value('config.app.version', '***VERSION***')
@@ -21,12 +18,9 @@
 		'cruisemonkey.DB',
 		'cruisemonkey.Upgrades'
 	])
-	.factory('SettingsService', function($rootScope, $injector, $location, $window, kv, UpgradeService) {
+	.factory('SettingsService', function($q, $rootScope, $injector, $location, $log, $window, kv, UpgradeService) {
 
 		var defaultValue = {
-			'database.root': $injector.get('config.database.root'),
-			'database.name': $injector.get('config.database.name'),
-			'database.replicate': $injector.get('config.database.replicate'),
 			'twitarr.root': $injector.get('config.twitarr.root'),
 			'background.interval': $injector.get('config.background.interval'),
 		};
@@ -40,14 +34,6 @@
 			}
 		});
 
-		var updateStorage = function() {
-			if (settings === undefined) {
-				kv.remove('cruisemonkey.settings');
-			} else {
-				kv.set('cruisemonkey.settings', settings);
-			}
-		};
-
 		var clearOldStorage = function() {
 			var i, key, numItems = $window.localStorage.length;
 			for (i=numItems; i <= 0; i--) {
@@ -59,111 +45,66 @@
 			}
 		};
 
-		var broadcastChanges = function(callback) {
-			var oldSettings = getSettings();
-			callback();
-			$rootScope.$broadcast('cruisemonkey.user.settings-changed', {
-				'old': oldSettings,
-				'new': getSettings()
+		var setProperty = function(key, newValue) {
+			return kv.get(key).then(function(oldValue) {
+				return kv.set(key, newValue).then(function() {
+					if (oldValue !== newValue) {
+						var update = {
+							'old': {},
+							'new': {},
+						};
+						update.old[key] = oldValue;
+						update['new'][key] = newValue;
+						$rootScope.$broadcast('cruisemonkey.user.settings-changed', update);
+						return newValue;
+					}
+				});
 			});
 		};
 
-		var getDatabaseRoot = function() {
-			var dbRoot = settings['database.root'] || defaultValue['database.root'];
-			if (dbRoot.startsWith('http') && !dbRoot.endsWith('/')) {
-				dbRoot += '/';
-			}
-			return dbRoot;
-		};
-		var setDatabaseRoot = function(root) {
-			settings['database.root'] = angular.copy(root);
-			updateStorage();
-		};
-
-		var getDatabaseName = function() {
-			return settings['database.name'] || defaultValue['database.name'];
-		};
-		var setDatabaseName = function(name) {
-			settings['database.name'] = angular.copy(name);
-			updateStorage();
-		};
-
-		var shouldDatabaseReplicate = function() {
-			return settings['database.replicate'] || defaultValue['database.replicate'];	
-		};
-		var setDatabaseReplicate = function(shouldReplicate) {
-			settings['database.replicate'] = angular.copy(shouldReplicate);
-			updateStorage();
-		};
-
 		var getTwitarrRoot = function() {
-			var twRoot = settings['twitarr.root'] || defaultValue['twitarr.root'];
-			if (!twRoot.endsWith('/')) {
-				twRoot += '/';
-			}
-			return twRoot;
+			return kv.get('twitarr.root').then(function(twRoot) {
+				if (!twRoot) {
+					twRoot = defaultValue['twitarr.root'];
+				}
+				if (!twRoot.endsWith('/')) {
+					twRoot += '/';
+				}
+				return twRoot;
+			});
 		};
+
 		var setTwitarrRoot = function(root) {
-			settings['twitarr.root'] = angular.copy(root);
-			updateStorage();
+			return setProperty('twitarr.root', root).then(function(ret) {
+				$rootScope.twitarrRoot = root;
+				return ret;
+			});
 		};
 
 		var getBackgroundInterval = function() {
-			var backgroundInterval = settings['background.interval'] || defaultValue['background.interval'];
-			return backgroundInterval;
+			return kv.get('background.interval').then(function(backgroundInterval) {
+				if (!backgroundInterval) {
+					backgroundInterval = defaultValue['background.interval'];
+				}
+				return backgroundInterval;
+			});
 		};
 		var setBackgroundInterval = function(ival) {
 			ival = parseInt(ival);
-			if (ival >= 10000) {
-				settings['background.interval'] = ival;
-			} else {
-				console.log('SettingsService.setBackgroundInterval: interval must be at least 10 seconds!');
+			if (ival < 10) { // 10 second minimum
+				ival = 10;
 			}
-			updateStorage();
+			if (ival > 300) { // 5 minute maxiumum
+				ival = 300;
+			}
+			return setProperty('background.interval', ival);
 		};
 
 		var getDefaultSettings = function() {
 			return angular.copy({
-				databaseRoot: defaultValue['database.root'],
-				databaseName: defaultValue['database.name'],
-				databaseReplicate: defaultValue['database.replicate'],
 				twitarrRoot: defaultValue['twitarr.root'],
 				backgroundInterval: defaultValue['background.interval'],
 			});
-		};
-
-		var getSettings = function() {
-			return angular.copy({
-				databaseRoot: getDatabaseRoot(),
-				databaseName: getDatabaseName(),
-				databaseReplicate: shouldDatabaseReplicate(),
-				twitarrRoot: getTwitarrRoot(),
-				backgroundInterval: getBackgroundInterval(),
-			});
-		};
-
-		var saveSettings = function(newSettings) {
-			setDatabaseRoot(newSettings.databaseRoot);
-			setDatabaseName(newSettings.databaseName);
-			setDatabaseReplicate(newSettings.databaseReplicate);
-			setTwitarrRoot(newSettings.twitarrRoot);
-			setBackgroundInterval(newSettings.backgroundInterval);
-		};
-
-		var getRemoteDatabaseRoot = function() {
-			var root = getDatabaseRoot();
-			if (!root) {
-				root = 'http://' + $location.root();
-			}
-
-			if (!root.endsWith('/')) {
-				root += '/';
-			}
-			if (!root.startsWith('http')) {
-				root = 'http://' + root;
-			}
-
-			return root;
 		};
 
 		kv.get('cruisemonkey.settings.onaboat').then(function(onaboat) {
@@ -171,72 +112,33 @@
 			var endCruise   = moment('2015-02-08 00:00');
 			var now = moment();
 
-			if (now.isAfter(startCruise) && now.isBefore(endCruise) && !$rootScope.onaboat) {
-				kv.set('cruisemonkey.settings.onaboat', true);
+			kv.get('cruisemonkey.settings.onaboat').then(function(oab) {
+				if (now.isAfter(startCruise) && now.isBefore(endCruise) && !oab) {
+					$log.debug("We're on a boat!  Setting to production twit-arr URL.");
 
-				/* switch out the defaults with the shipboard ones */
-				defaultValue['database.root'] = 'http://jcc5.rccl.com/db/';
-				defaultValue['database.name'] = 'cruisemonkey-2015';
-				defaultValue['twitarr.root']  = 'http://jcc5.rccl.com/';
+					/* switch out the defaults with the shipboard ones */
+					defaultValue['twitarr.root']  = 'http://jcc5.rccl.com/';
 
-				/* now override the user's settings */
-				var s = getSettings();
-				s.databaseRoot = defaultValue['database.root'];
-				s.databaseName = defaultValue['database.name'];
-				s.twitarrRoot  = defaultValue['twitarr.root'];
-				saveSettings(s);
-			}
+					kv.set('cruisemonkey.settings.onaboat', true);
+					kv.set('twitarr.root', defaultValue['twitarr.root']);
+				}
+			});
 		});
 
 		UpgradeService.register('4.8.90', 'Reset all local storage.', function() {
 			clearOldStorage();
 		});
 
+		getTwitarrRoot().then(function(twitarrRoot) {
+			$rootScope.twitarrRoot = twitarrRoot;
+		});
+
 		return {
 			'getDefaultSettings': getDefaultSettings,
-			'getSettings': getSettings,
-			'saveSettings': function(settings) {
-				broadcastChanges(function() {
-					saveSettings(settings);
-				});
-			},
-			'getDatabaseRoot': getDatabaseRoot,
-			'setDatabaseRoot': function(root) {
-				broadcastChanges(function() {
-					setDatabaseRoot(root);
-				});
-			},
-			'getDatabaseName': getDatabaseName,
-			'setDatabaseName': function(name) {
-				broadcastChanges(function() {
-					setDatabaseName(name);
-				});
-			},
-			'shouldDatabaseReplicate': shouldDatabaseReplicate,
-			'setDatabaseReplicate': function(shouldReplicate) {
-				broadcastChanges(function() {
-					setDatabaseReplicate(shouldReplicate);
-				});
-			},
 			'getTwitarrRoot': getTwitarrRoot,
-			'setTwitarrRoot': function(root) {
-				broadcastChanges(function() {
-					setTwitarrRoot(root);
-				});
-			},
+			'setTwitarrRoot': setTwitarrRoot,
 			'getBackgroundInterval': getBackgroundInterval,
-			'setBackgroundInterval': function(ival) {
-				broadcastChanges(function() {
-					setBackgroundInterval(ival);
-				});
-			},
-			'getRemoteDatabaseRoot': getRemoteDatabaseRoot,
-			'getRemoteDatabaseUrl': function() {
-				return getRemoteDatabaseRoot() + getDatabaseName();
-			},
-			'getLocalDatabaseUrl': function() {
-				return getDatabaseName();
-			}
+			'setBackgroundInterval': setBackgroundInterval,
 		};
 	});
 }());

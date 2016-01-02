@@ -10,18 +10,32 @@
 		'cruisemonkey.Events',
 		'cruisemonkey.Settings'
 	])
-	.controller('CMAdvancedCtrl', ['$scope', '$rootScope', '$window', '_database', 'config.app.version', 'SettingsService', 'EventService', 'Images', function($scope, $rootScope, $window, _database, version, SettingsService, EventService, Images) {
+	.controller('CMAdvancedCtrl', function($q, $scope, SettingsService, EventService, UserService) {
 		console.log('Initializing CMAdvancedCtrl');
 
+		$scope.user = UserService.get();
+		UserService.onUserChanged(function(newUser) {
+			$scope.user = newUser;
+		});
+
 		var toStringInterval = function(intValue) {
-			return ("" + Math.round(intValue / 1000));
+			return ("" + intValue);
 		};
 		var toNumberInterval = function(intValue) {
-			return (parseInt(intValue, 10) * 1000);
+			return parseInt(intValue, 10);
 		};
 
-		$scope.settings = SettingsService.getSettings();
-		$scope.backgroundInterval = toStringInterval($scope.settings.backgroundInterval);
+		var defaultSettings = SettingsService.getDefaultSettings();
+		defaultSettings.backgroundInterval = "" + defaultSettings.backgroundInterval;
+		var existingSettings = angular.copy(defaultSettings);
+		$scope.settings = angular.copy(existingSettings);
+
+		SettingsService.getTwitarrRoot().then(function(twitarrRoot) {
+			$scope.settings.twitarrRoot = existingSettings.twitarrRoot = twitarrRoot;
+		});
+		SettingsService.getBackgroundInterval().then(function(backgroundInterval) {
+			$scope.settings.backgroundInterval = existingSettings.backgroundInterval = toStringInterval(backgroundInterval);
+		});
 
 		$scope.lastModified = function() {
 			var lm = EventService.getLastModified();
@@ -29,41 +43,43 @@
 		};
 
 		$scope.isUnchanged = function() {
-			var existing = SettingsService.getSettings();
+			var existing = existingSettings;
 			var updated  = $scope.settings;
 
-			var updatedInterval = $scope.backgroundInterval;
+			var updatedInterval = toStringInterval($scope.settings.backgroundInterval);
 			var existingInterval = toStringInterval(existing.backgroundInterval);
 
 			return (
-				existing.databaseRoot === updated.databaseRoot &&
-				existing.databaseName === updated.databaseName &&
 				existing.twitarrRoot  === updated.twitarrRoot  &&
 				existingInterval      === updatedInterval
 			);
 		};
 
 		$scope.resetSettings = function() {
-			var updated = SettingsService.getDefaultSettings();
-			console.log('resetting to', updated);
-			$scope.settings = updated;
-			$scope.backgroundInterval = toStringInterval(updated.backgroundInterval);
+			console.log('resetting to', defaultSettings);
+			$scope.settings = angular.copy(defaultSettings);
+			existingSettings = angular.copy(defaultSettings);
+			$scope.settings.backgroundInterval = toStringInterval(existingSettings.backgroundInterval);
 			$scope.saveSettings();
 		};
 
 		$scope.saveSettings = function() {
-			$scope.settings.backgroundInterval = toNumberInterval($scope.backgroundInterval);
+			var bgi = toNumberInterval($scope.settings.backgroundInterval);
 			console.log('saving=', $scope.settings);
-			SettingsService.saveSettings($scope.settings);
+			return $q.all([
+				SettingsService.setTwitarrRoot($scope.settings.twitarrRoot),
+				SettingsService.setBackgroundInterval(bgi)
+			]).then(function() {
+				existingSettings = angular.copy($scope.settings);
+			});
 		};
 
 		$scope.resetDatabase = function() {
 			EventService.recreateDatabase();
-			Images.resetCache(0);
 		};
 
 		$scope.forceSync = function() {
 			EventService.forceSync();
 		};
-	}]);
+	});
 }());

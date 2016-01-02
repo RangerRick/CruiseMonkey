@@ -1,14 +1,14 @@
 <ion-modal-view>
-	<ion-header-bar class="bar-dark">
+	<ion-header-bar class="bar-stable bar-dark">
 		<div class="buttons">
 			<button class="button button-yellow button-clear" ng-click="closeTweet()">Close</button>
-			<h1 class="title">@{{openedTweet.author}}</h1>
 		</div>
+		<h1 class="title">{{getDisplayName(openedTweet.author)}} <span style="padding-left: 5px; font-size: smaller; font-weight: 300">{{getDisplayHandle(openedTweet.author)}}</span></h1>
 	</ion-header-bar>
 	<ion-content>
 		<ion-list>
 			<ion-item class="item-image">
-				<img ng-src="{{openedPhoto}}">
+				<img img-cache ic-src="{{openedPhoto}}">
 			</ion-item>
 			<ion-item class="item item-text-wrap">
 				<p class="timeframe">{{openedTweet.timestamp.fromNow()}}</p>

@@ -1,9 +1,11 @@
 <ion-view cache-view="false" class="karaoke">
 	<ion-header-bar class="bar-stable bar-dark" animation="no-animation">
 		<div class="buttons">
-			<button menu-toggle="left" class="button button-icon icon ion-navicon"></button>
 		</div>
 		<h1 class="title" ng-click="scrollTop()">Karaoke</h1>
+		<div class="buttons">
+			<button class="button button-icon icon cm-icon-search" ng-click="showFilterBar()"></button>
+		</div>
 	</ion-header-bar>
 	<style>
 	.artist-entry {
@@ -13,8 +15,8 @@
 		line-height: 22px;
 	}
 	</style>
-	<cm-search-bar placeholder="Search Artists &amp; Songs" on-search-changed="onSearchChanged(searchString)" ng-model="searchString"></cm-search-bar>
-	<ion-content delegate-handle="karaoke-scroll" ng-class="'has-subheader'" ng-click="closeKeyboard()">
+	<!-- <cm-search-bar placeholder="Search Artists &amp; Songs" on-search-changed="onSearchUpdated(searchString)" ng-model="searchString"></cm-search-bar> -->
+	<ion-content delegate-handle="karaoke-scroll" ng-click="closeKeyboard()">
 		<div class="list searchable">
 			<div class="item artist-entry"
 				collection-repeat="entry in entries track by entry[0]"

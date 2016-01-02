@@ -10,13 +10,16 @@
 	</ion-header-bar>
 	<ion-content>
 		<ion-list>
-			<div class="item item-input-inset">
-				<label class="item-input-wrapper">
-					<textarea ng-model="tweet.text" ng-trim="true" placeholder="Post Text" required></textarea>
-				</label>
+			<div class="item row">
+				<button class="col col-10 button button-clear button-dark button-emoji"  ng-click="showEmoji($event)"><i class="icon ion-happy-outline"></i></button>
+				<div class="item-input-inset tweet-input col">
+					<label class="item-input-wrapper">
+						<textarea id="tweet-text" ng-model="tweet.text" placeholder="Post Text" required></textarea>
+					</label>
+				</div>
 			</div>
 			<div class="item item-image" ng-if="tweet.photo">
-				<img ng-src="{{twitarrRoot}}photo/small_thumb/{{tweet.photo}}" style="width: 100%" />
+				<img img-cache ic-src="{{twitarrRoot}}photo/small_thumb/{{tweet.photo}}" style="width: 100%" />
 			</div>
 			<div class="item" ng-if="photoUploading">
 				<progress value="{{photoUploading.loaded}}" max="{{photoUploading.total}}"></progress>

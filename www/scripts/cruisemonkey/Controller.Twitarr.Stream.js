@@ -56,10 +56,10 @@
 	var tagSubMatch  = /\#\/tag\/([^"]*)/;
 	var urlSubMatch  = /href="([^"]*)"/i;
 
-	var translateText = function(text) {
-		var result = text.match(hrefMatch), found;
+	var translateText = function(text, EmojiService) {
+		var result = text.match(hrefMatch);
 		if (result) {
-			for (var i=0; i < result.length; i++) {
+			for (var i=0, len=result.length, found; i < len; i++) {
 				found = result[i].match(userSubMatch);
 				if (found) {
 					//console.log('user link:', found);
@@ -77,22 +77,32 @@
 				}
 			}
 		}
+
+		if (EmojiService) {
+			var emoji = EmojiService.types();
+			for (var i=0, len=emoji.length, t; i < len; i++) {
+				t = emoji[i];
+				text = text.replace(new RegExp('\:' + t + '\:', 'gmi'), '<img src="' + EmojiService.small(t) + '" class="emoji" />');
+			}
+		}
+
 		//console.log('text=',text);
 		return text;
 	};
 
 	angular.module('cruisemonkey.controllers.Twitarr.Stream', [
-		'cruisemonkey.Images',
 		'cruisemonkey.Settings',
 		'cruisemonkey.Twitarr',
+		'cruisemonkey.emoji.Emoji',
+		'cruisemonkey.user.Detail',
 	])
-	.directive('twitterHtml', ['$parse', '$compile', function($parse, $compile) {
+	.directive('twitterHtml', function($parse, $compile, EmojiService) {
 		return function(scope, element, attr) {
 			var text;
 			if (scope.openedTweet) {
-				text = translateText(scope.openedTweet.text);
+				text = translateText(scope.openedTweet.text, EmojiService);
 			} else if (scope.entry) {
-				text = translateText(scope.entry.text);
+				text = translateText(scope.entry.text, EmojiService);
 			} else {
 				return;
 			}
@@ -100,20 +110,30 @@
 			element.html(text);
 			$compile(element.contents())(scope);
 		};
-	}])
-	.controller('CMTwitarrStreamCtrl', ['$q', '$scope', '$timeout', '$ionicLoading', '$ionicModal', '$ionicScrollDelegate', 'Images', 'SettingsService', 'Twitarr', 'UserService', function($q, $scope, $timeout, $ionicLoading, $ionicModal, $ionicScrollDelegate, Images, SettingsService, Twitarr, UserService) {
+	})
+	.controller('CMTwitarrStreamCtrl', function($q, $scope, $log, $timeout, $ionicLoading, $ionicModal, $ionicScrollDelegate, EmojiService, SettingsService, Twitarr, UserDetail, UserService) {
 		console.log('Initializing CMTwitarrStreamCtrl');
 
 		$scope.users = {};
 		$scope.entries = [];
-		$scope.twitarrRoot = SettingsService.getTwitarrRoot();
+		$scope.e = EmojiService;
+		$scope.u = UserService;
 
 		$scope.loading = $q.defer();
 		$scope.loading.resolve();
 
 		var newestSeen;
 		var currentTop;
-		$scope.unreadCount = 0;
+		$scope.unreadCount = 4;
+
+		$scope.openUser = UserDetail.open;
+
+		$ionicModal.fromTemplateUrl('template/tweet-detail.html', {
+			scope: $scope,
+			animation: 'slide-in-up',
+		}).then(function(modal) {
+			$scope.tweetModal = modal;
+		});
 
 		$scope.updateTopVisible = function() {
 			//console.log('updateTopVisible()');
@@ -144,13 +164,6 @@
 			}
 		};
 
-		$ionicModal.fromTemplateUrl('template/tweet-detail.html', {
-			scope: $scope,
-			animation: 'slide-in-up'
-		}).then(function(modal) {
-			$scope.tweetModal = modal;
-		});
-
 		$scope.closeTweet = function() {
 			$scope.tweetModal.hide();
 			$scope.openedTweet = undefined;
@@ -158,17 +171,26 @@
 		};
 
 		$scope.openTweet = function(tweet) {
-			console.log('Opening tweet:',tweet);
-			$scope.twitarrRoot = SettingsService.getTwitarrRoot();
+			console.log('Opening tweet: ' + angular.toJson(tweet));
 			$scope.openedTweet = tweet;
-			Images.get($scope.twitarrRoot + 'photo/full/' + tweet.photo.id).then(function(url) {
-				$scope.openedPhoto = url;
-			});
+			$scope.openedPhoto = $scope.twitarrRoot + 'photo/full/' + tweet.photo.id;
 			$scope.tweetModal.show();
 		};
 
-		$scope.getImage = function(url) {
-			return Images.get(url);
+		$scope.getDisplayName = function(user) {
+			if ($scope.users[user] && $scope.users[user].display_name) {
+				return $scope.users[user].display_name;
+			} else {
+				return user;
+			}
+		};
+
+		$scope.getDisplayHandle = function(user) {
+			if ($scope.users[user] && $scope.users[user].display_name && $scope.users[user].display_name !== user) {
+				return '@' + user;
+			} else {
+				return '';
+			}
 		};
 
 		var updateUnreadCount = function(index) {
@@ -201,12 +223,17 @@
 		};
 
 		var addTweets = function(tweets) {
-			var i, j, k;
+			var seenUsers = {};
 			//console.log('TwitarrStream: addTweets:',tweets);
-			for (i=0; i < tweets.length; i++) {
-				tweets[i].timestamp = moment(tweets[i].timestamp);
-				tweets[i].text = translateText(tweets[i].text);
-				$scope.entries.push(tweets[i]);
+			for (var i=0, len=tweets.length, entry; i < len; i++) {
+				entry = tweets[i];
+				entry.timestamp = moment(entry.timestamp);
+				entry.text = translateText(entry.text);
+				if (!seenUsers.hasOwnProperty(entry.author)) {
+					lookupUser(entry.author);
+				}
+				seenUsers[entry.author]++;
+				$scope.entries.push(entry);
 			}
 			if ($scope.entries.length > 500) {
 				$scope.entries = $scope.entries.slice(0, 500);
@@ -303,7 +330,10 @@
 								goToEntry(topEntry.id, false);
 							}
 						}
+					} else {
+						$scope.$broadcast('scroll.refreshComplete');
 					}
+					$scope.error = undefined;
 					updateUnreadCount();
 					$ionicLoading.hide();
 					$scope.loading.resolve();
@@ -358,8 +388,12 @@
 			});
 		};
 
+		$scope.$on('modal.hidden', function() {
+			$scope.doRefresh();
+		});
+
 		$scope.$on('$ionicView.loaded', function(ev, info) {
 			$scope.doRefresh();
 		});
-	}]);
+	});
 }());

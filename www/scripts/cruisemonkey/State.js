@@ -5,7 +5,7 @@
 	/*global ionic: true*/
 
 	angular.module('cruisemonkey.State', [
-		'cruisemonkey.User',
+		'cruisemonkey.user.User',
 		'ngCordova'
 	])
 	.factory('StateService', ['$rootScope', '$timeout', 'UserService', '$cordovaNetwork', 'Cordova', function($rootScope, $timeout, UserService, $cordovaNetwork, Cordova) {

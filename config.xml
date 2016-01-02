@@ -3,7 +3,7 @@
   <name>CruiseMonkey</name>
   <description>Keep Track of Your Cruise</description>
   <author email="rangerrick@befunk.com" href="https://github.com/RangerRick/CruiseMonkey">Benjamin Reed</author>
-  <content src="index.html"/>
+  <content src="http://localhost:8100" original-src="index.html"/>
   <allow-navigation href="*"/>
   <allow-intent href="*"/>
   <access origin="*"/>
@@ -45,6 +45,9 @@
   <feature name="Toast">
     <param name="ios-package" value="Toast" onload="true"/>
   </feature>
+  <platform name="ios">
+    <preference name="KeyboardDisplayRequiresUserAction" value="false"/>
+  </platform>
   <platform name="android">
     <icon src="resources/android/icon/drawable-ldpi-icon.png" density="ldpi"/>
     <icon src="resources/android/icon/drawable-mdpi-icon.png" density="mdpi"/>

@@ -105,12 +105,19 @@ $button-small-height:             30px;
 $button-small-padding:            2px;
 $button-small-icon-size:          28px;
 
-$bar-dark-text: $rciYellow;
-$button-dark-text: $rciYellow;
+$bar-dark-text:                   $rciYellow;
+$button-dark-text:                $rciYellow;
 
-$tabs-dark-bg:                 $dark;
-$tabs-dark-border:             $rciLightBlue;
-$tabs-dark-text:               $rciYellow;
+$tabs-dark-bg:                    $dark;
+$tabs-dark-border:                $rciLightBlue;
+$tabs-dark-text:                  $rciYellow;
+
+.tabs-cm .tab-item.has-badge span.badge {
+	opacity: 1;
+}
+
+$popover-width:                   160px;
+/* $popover-bg-color:                $dark; */
 
 #toast-container > div {
 	opacity: 0.95;
@@ -122,6 +129,65 @@ $tabs-dark-text:               $rciYellow;
 }
 
 @import "www/lib/ionic/scss/ionic";
+@import "www/lib/ionic-filter-bar/scss/ionic.filter.bar";
+
+.filter-bar {
+	.bar-dark .button.button-clear {
+		color: $rciYellow;
+	}
+}
+
+@include tabs-striped('tabs-cm', $rciYellow, $dark);
+@include tabs-striped-background('tabs-background-cm', $dark);
+@include tabs-striped-color('tabs-color-cm', $dark);
+@include tabs-background('tabs-background-cm', $dark, $rciLightBlue);
+
+ion-tabs {
+	@include tabs-standard-color('tabs-color-active-cm', $dark, $rciYellow);
+}
+
+/** icons **/
+.cm-icon-add {
+	@extend .ion-plus;
+}
+.cm-icon-clock {
+	@extend .ion-clock;
+}
+.cm-icon-search {
+	@extend .ion-search;
+}
+.cm-icon-more {
+	@extend .ion-more;
+}
+
+.platform-android {
+	.cm-icon-add {
+		@extend .ion-android-add;
+	}
+	.cm-icon-clock {
+		@extend .ion-android-time;
+	}
+	.cm-icon-search {
+		@extend .ion-android-search;
+	}
+	.cm-icon-more {
+		@extend .ion-android-more-vertical;
+	}
+}
+.platform-ios {
+	.cm-icon-add {
+		@extend .ion-ios-plus-empty;
+	}
+	.cm-icon-clock {
+		@extend .ion-ios-clock-outline;
+	}
+	.cm-icon-search {
+		@extend .ion-ios-search;
+	}
+	.cm-icon-more {
+		@extend .ion-ios-more;
+	}
+}
 
 $button-yellow-bg: $rciYellow;
 $button-yellow-text: $rciNavyBlue;
@@ -328,18 +394,72 @@ a.tab-item:hover {
 	}
 }
 
-.bar .title + .buttons {
-	/* min-width: 65px; */
-	overflow: visible;
-	max-height: 33px;
-	top: 4px;
-	bottom: 4px;
-	right: 4px;
+ion-popover-view.fit {
+	height: auto !important;
+	/*background-color: $dark;*/
+}
+
+ion-popover-view.fit ion-content {
+	position: relative !important;
+	background-color: transparent;
+	.item {
+		background-color: transparent;
+	}
+}
+
+.platform-android ion-popover-view.fit {
+	margin-top: 10px !important;
+}
+
+.events-chooser {
+	.item {
+		color: $dark;
+		background-color: $dark;
+		border: 0;
+	}
 }
 
 .add-event-form span.invalid {
 	float: right;
 	color: red;
+}
+
+.advanced {
+	.item {
+		border:0;
+		border-top: 1px solid white;
+	}
+	.heading {
+		font-weight: bold;
+		font-size: $font-size-large;
+		border-top: 1px solid $dark;
+		border-bottom: 2px solid $dark;
+		background-color: #ddd;
+	}
+
+	textarea,
+	input[type="text"],
+	input[type="password"],
+	input[type="datetime"],
+	input[type="datetime-local"],
+	input[type="date"],
+	input[type="month"],
+	input[type="time"],
+	input[type="week"],
+	input[type="number"],
+	input[type="email"],
+	input[type="url"],
+	input[type="search"],
+	input[type="tel"],
+	input[type="color"] {
+		border: 1px solid $dark;
+	 	padding: 2px;
+	 	padding-left: 5px;
+	 	padding-right: 5px;
+	 	margin-left: 5px;
+	 	margin-right: 5px;
+	}
+
 }
 
 .user-detail {
@@ -376,7 +496,52 @@ a.tab-item:hover {
 	}
 }
 
+.emoji-popover {
+	img.emoji {
+		width: 40px;
+		height: 40px;
+		display: inline;
+		margin: 5px;
+	}
+}
+
 .twitarr {
+	.tweet-input {
+		textarea {
+			background-color: transparent;
+			width: 100%;
+		}
+		/*
+		.button-emoji {
+			min-width: 24px;
+			min-height: 24px;
+			width: 32px;
+			height: 32px;
+			border: 0;
+			padding: 0;
+		}
+		.button-emoji > i {
+			line-height: 24px;
+		}
+		*/
+	}
+	.item {
+		.user {
+			white-space: nowrap;
+			.display-name {
+				white-space: nowrap;
+				font-size: $font-size-large;
+				font-weight: bold;
+			}
+			.display-handle {
+				white-space: nowrap;
+				padding-left: 5px;
+				font-size: $font-size-base;
+				font-weight: 300;
+				opacity: .5;
+			}
+		}
+	}
 	.item-note {
 		text-align: right;
 	}
@@ -386,6 +551,10 @@ a.tab-item:hover {
 			height: 20px;
 			border-radius: 2px;
 		}
+	}
+	img.emoji {
+		width: 20px;
+		height: 20px;
 	}
 	.commands {
 		text-align: right;

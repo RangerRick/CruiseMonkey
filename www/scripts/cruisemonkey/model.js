@@ -36,7 +36,7 @@ function CMEvent(data) {
 		self._rawdata.lastUpdated = undefined;
 	}
 	if (self._rawdata.lastUpdated === undefined) {
-		self._rawdata.lastUpdated = self._stringifyDate(moment(0));
+		self._rawdata.lastUpdated = '1970-01-01 00:00';
 	}
 
 	delete self._rawdata.isFavorite;
@@ -56,7 +56,7 @@ function CMFavorite(data) {
 		self._rawdata.lastUpdated = undefined;
 	}
 	if (self._rawdata.lastUpdated === undefined) {
-		self._rawdata.lastUpdated = self._stringifyDate(moment(0));
+		self._rawdata.lastUpdated = '1970-01-01 00:00';
 	}
 }
 
@@ -259,13 +259,13 @@ CMEvent.prototype.setLocation = function(loc) {
 	this._rawdata.location = loc;
 };
 
-CMEvent.prototype.isPublic = function() {
+CMEvent.prototype.getVisibility = function() {
 	'use strict';
-	return !!this._rawdata.isPublic;
+	return this._rawdata.visibility? this._rawdata.visibility : 'self';
 };
-CMEvent.prototype.setPublic = function(pub) {
+CMEvent.prototype.setVisibility = function(vis) {
 	'use strict';
-	this._rawdata.isPublic = !!pub;
+	this._rawdata.visibility = vis;
 };
 
 CMEvent.prototype.isFavorite = function() {
@@ -311,7 +311,7 @@ CMEvent.prototype.toEditableBean = function() {
 		summary: this.getSummary(),
 		description: this.getDescription(),
 		location: this.getLocation(),
-		isPublic: this.isPublic()
+		visibility: this.getVisibility(),
 	};
 
 	bean.isValid = function() {
@@ -337,12 +337,12 @@ CMEvent.prototype.fromEditableBean = function(bean) {
 	this.setSummary(bean.summary);
 	this.setDescription(bean.description);
 	this.setLocation(bean.location);
-	this.setPublic(bean.isPublic);
+	this.setVisibility(bean.visibility);
 };
 
 CMEvent.prototype.toString = function() {
 	'use strict';
-	return 'CMEvent[id=' + this._rawdata.id + ',summary=' + this._rawdata.title + ',favorite=' + this.isFavorite() + ',public=' + this.isPublic() + ']';
+	return 'CMEvent[id=' + this._rawdata.id + ',summary=' + this._rawdata.title + ',favorite=' + this.isFavorite() + ',visibility=' + this.visibility() + ']';
 };
 
 CMEvent.prototype.getRawData = function() {

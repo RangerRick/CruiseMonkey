@@ -48,12 +48,13 @@
 	};
 
 	angular.module('cruisemonkey.controllers.Karaoke', [
+		'jett.ionic.filter.bar',
 		'cruisemonkey.DB',
 	])
 	.filter('karaokeFilter', function() {
 		return searchFilter;
 	})
-	.controller('CMKaraokeSearchCtrl', function($q, $scope, $http, $timeout, $interval, $window, $ionicLoading, $ionicScrollDelegate, _database, Cordova, kv, SettingsService) {
+	.controller('CMKaraokeSearchCtrl', function($q, $scope, $http, $timeout, $interval, $window, $ionicFilterBar, $ionicLoading, $ionicScrollDelegate, _database, Cordova, kv, SettingsService) {
 		console.log('Initializing CMKaraokeSearchCtrl');
 
 		kv.get('cruisemonkey.karaoke-search').then(function(s) {
@@ -102,11 +103,11 @@
 			});
 		};
 
-		$scope.onSearchChanged = function(searchString) {
+		$scope.onSearchUpdated = function(searchString) {
 			updateSearchString();
 			updateEntries();
 			var delegate = $ionicScrollDelegate.$getByHandle('karaoke-scroll');
-			if (delegate.getScrollPosition().top !== 0) {
+			if (delegate && delegate.getScrollPosition().top !== 0) {
 				delegate.scrollTop(false);
 			}
 		};
@@ -114,6 +115,19 @@
 		$scope.scrollTop = function() {
 			var delegate = $ionicScrollDelegate.$getByHandle('karaoke-scroll');
 			delegate.scrollTop(true);
+		};
+
+		var filterBarInstance;
+		$scope.showFilterBar = function() {
+			filterBarInstance = $ionicFilterBar.show({
+				items: $scope.entries,
+				update: function (filteredItems, filterText) {
+					$scope.entries = filteredItems;
+					if (filterText) {
+						console.log(filterText);
+					}
+				}
+			});
 		};
 
 		$scope.$on('$ionicView.beforeEnter', function(ev, info) {

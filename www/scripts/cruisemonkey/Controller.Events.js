@@ -101,8 +101,9 @@
 	angular.module('cruisemonkey.controllers.Events', [
 		'ui.router',
 		'ionic',
+		'jett.ionic.filter.bar',
 		'cruisemonkey.DB',
-		'cruisemonkey.User',
+		'cruisemonkey.user.User',
 		'cruisemonkey.Events'
 	])
 	.filter('eventFilter', function() {
@@ -142,13 +143,123 @@
 			ev.setStart(moment());
 			ev.setEnd(ev.getStart().add(1, 'hours'));
 			ev.setUsername(UserService.getUsername());
-			ev.setPublic(true);
+			ev.setVisibility('all');
 			$scope.event = ev.toEditableBean();
 
 			console.log('Created fresh event.');
 		}
 	})
+	.controller('CMEventsCtrl', function($q, $scope, $log, $state, $timeout, $ionicFilterBar, $ionicPopover, $ionicScrollDelegate, kv, EventService, UserService) {
+		var defaultEventType = 'official';
+		$scope.eventType = defaultEventType;
+		$scope.eventTypes = ['official', 'unofficial', 'all'];
+		$scope.events = [];
+		$scope.searchString = '';
+		$scope.user = {};
+
+		var filterBarInstance;
+
+		$scope.$on('cruisemonkey.user.updated', function(ev, newUser) {
+			$scope.refresh();
+		});
+
+		var popover = $ionicPopover.fromTemplateUrl('template/events-chooser.html', {
+			scope: $scope
+		});
+
+		kv.get('cruisemonkey.events.event-type').then(function(et) {
+			$scope.setEventType(et || defaultEventType);
+		}, function() {
+			$scope.setEventType(defaultEventType);
+		});
+
+		var updateSearchString = function(searchString) {
+			$scope.searchString = searchString;
+			if ($scope.searchString === undefined) {
+				return kv.remove('cruisemonkey.events.search-string');
+			} else {
+				return kv.set('cruisemonkey.events.search-string', $scope.searchString);
+			}
+		};
+
+		$scope.showFilterBar = function() {
+			filterBarInstance = $ionicFilterBar.show({
+				items: $scope.events,
+				update: function (filteredItems, filterText) {
+					updateSearchString(filterText);
+					$scope.events = filteredItems;
+					if (filterText) {
+						console.log(filterText);
+					}
+				}
+			});
+		};
+
+		$scope.openEventTypePopover = function(ev) {
+			popover.then(function(p) {
+				p.show(ev);
+			});
+		};
+
+		$scope.setEventType = function(type) {
+			popover.then(function(p) {
+				p.hide();
+			});
+			if ($scope.eventType !== type) {
+				kv.set('cruisemonkey.events.event-type', type).then(function() {
+					$scope.eventType = type;
+					$scope.refresh();
+				});
+			}
+		};
+
+		$scope.refresh = function() {
+			var user = UserService.get();
+			if (user && user.loggedIn) {
+				$scope.eventTypes = ['official', 'unofficial', 'all', 'my'];
+			} else {
+				$scope.eventTypes = ['official', 'unofficial', 'all'];
+			}
+			if ($scope.eventTypes.indexOf($scope.eventType) < 0) {
+				// logged out, maybe it's a hidden type
+				$scope.eventType = defaultEventType;
+			}
+			$scope.user = user;
+
+			var evFunction = EventService.getOfficialEvents;
+			switch($scope.eventType) {
+				case 'all':
+					evFunction = EventService.getAllEvents;
+					break;
+				case 'unofficial':
+					evFunction = EventService.getUnofficialEvents;
+					break;
+				case 'my':
+					evFunction = EventService.getMyEvents;
+					break;
+			}
+			evFunction().then(function(events) {
+				$log.debug('refresh(): events = ' + angular.toJson(events));
+				$scope.events = events;
+				if (filterBarInstance) {
+					filterBarInstance();
+				}
+			}).finally(function() {
+				$scope.$broadcast('scroll.refreshComplete');
+			});
+		};
+
+
+	})
 	.controller('CMEventsBarCtrl', function($q, $scope, $timeout, $state, $ionicActionSheet, $ionicModal, $ionicScrollDelegate, EventService, kv, UserService) {
+		$scope.eventType = 'official';
+		$scope.filteredEvents = [];
+		$scope.user = {};
+
+		UserService.onUserChanged(function(newUser) {
+			$scope.user = newUser;
+		});
+
 		var updateSearchString = function(searchString) {
 			if (searchString === undefined) {
 				return kv.remove('cruisemonkey.events.search-string');
@@ -312,7 +423,7 @@
 			ev.fromEditableBean(data);
 			ev.setUsername(username);
 
-			console.log('saving=', ev.getRawData());
+			console.log('saving=', angular.toJson(ev.getRawData()));
 
 			if (ev.getRevision()) {
 				// updating an existing event
@@ -337,7 +448,7 @@
 			ev.setEnd(ev.getStart().clone());
 			ev.setEnd(ev.getEnd().add(1, 'hours'));
 			ev.setUsername(UserService.getUsername());
-			ev.setPublic(true);
+			ev.setVisibility('all');
 
 			$scope.event = ev;
 			$scope.eventData = ev.toEditableBean();
@@ -365,7 +476,11 @@
 		$scope.togglePublic = function(ev) {
 			console.log('togglePublic(' + ev.getId() + ')');
 			$scope.$evalAsync(function() {
-				ev.setPublic(!ev.isPublic());
+				if (ev.getVisibility() === 'all') {
+					ev.setVisibility('self');
+				} else {
+					ev.setVisibility('all');
+				}
 				EventService.updateEvent(ev).then(function() {
 					$scope.refreshDelayed(100);
 				});
@@ -380,7 +495,7 @@
 
 			var hideSheet = $ionicActionSheet.show({
 				buttons: [
-					{ text: entry.isPublic()? 'Make Private':'Make Public' },
+					{ text: entry.getVisibility() === 'all'? 'Make Private':'Make Public' },
 					{ text: 'Edit' }
 				],
 				destructiveText: 'Delete',
@@ -406,7 +521,7 @@
 		/** Event Refreshing **/
 
 		$scope.refreshEvents = function() {
-			//console.log('CMEventsBarCtrl.$scope.refreshEvents()');
+			console.log('CMEventsBarCtrl.$scope.refreshEvents()');
 			return EventService.getAllEvents().then(function(events) {
 				events.sort(sortEvent);
 				$scope.allEvents = events;
@@ -495,7 +610,7 @@
 			var allEvents = $scope.allEvents, filteredEvents = [], i, ev;
 			for (i=0; i < allEvents.length; i++) {
 				ev = allEvents[i];
-				if (ev.isPublic()) {
+				if (ev.getVisibility() === 'all') {
 					filteredEvents.push(ev);
 				} else if (ev.getUsername() === user.username) {
 					filteredEvents.push(ev);
@@ -536,7 +651,7 @@
 				ev = allEvents[i];
 				if (ev.getUsername() === user.username) {
 					filteredEvents.push(ev);
-				} else if (ev.isPublic() && ev.isFavorite()) {
+				} else if (ev.getVisibility() === 'all' && ev.isFavorite()) {
 					filteredEvents.push(ev);
 				}
 			}
@@ -610,7 +725,7 @@
 			var allEvents = $scope.allEvents, filteredEvents = [], i, ev;
 			for (i=0; i < allEvents.length; i++) {
 				ev = allEvents[i];
-				if (ev.isPublic() && ev.getUsername() !== 'official') {
+				if (ev.getVisibility() === 'all' && ev.getUsername() !== 'official') {
 					filteredEvents.push(ev);
 				}
 			}

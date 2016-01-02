@@ -5,7 +5,7 @@
 		'cruisemonkey.Config',
 		'cruisemonkey.Notifications',
 		'cruisemonkey.Settings',
-		'cruisemonkey.User'
+		'cruisemonkey.user.User'
 	])
 	.controller('CMLoginCtrl', ['$scope', '$rootScope', '$location', '$http', 'UserService', 'SettingsService', 'Notifications', function($scope, $rootScope, $location, $http, UserService, SettingsService, notifications) {
 		console.log('Initializing CMLoginCtrl');
@@ -13,19 +13,20 @@
 		$scope.oldUser = UserService.get();
 		$scope.user = UserService.get();
 
-		$scope.$on('cruisemonkey.user.updated', function(ev, user) {
+		$scope.$on('cruisemonkey.user.updated', function(ev, user, oldUser) {
 			$scope.user = user;
 			$scope.oldUser = user;
+			if (user.loggedIn && !oldUser.loggedIn) {
+				$rootScope.$broadcast('cruisemonkey.notify.toast', { message: 'Logged in as ' + user.username });
+			}
 		});
 
 		$scope.goToTwitarr = function() {
-			var twitarrRoot = SettingsService.getTwitarrRoot();
-			$rootScope.openUrl(twitarrRoot + 'user/new', '_system');
+			$rootScope.openUrl($scope.twitarrRoot + 'user/new', '_system');
 		};
 
 		$scope.goToLostPassword = function() {
-			var twitarrRoot = SettingsService.getTwitarrRoot();
-			$rootScope.openUrl(twitarrRoot + 'user/forgot_password', '_system');
+			$rootScope.openUrl($scope.twitarrRoot + 'user/forgot_password', '_system');
 		};
 
 		$scope.canSubmit = function(newUser) {
@@ -48,9 +49,17 @@
 			UserService.save(user);
 		};
 
+		$scope.logOut = function() {
+			console.log('Logging out.');
+			var user = angular.copy($scope.user);
+			user.loggedIn = false;
+			user.key = undefined;
+			user.password = undefined;
+			UserService.save(user);
+		};
+
 		$scope.logIn = function(user) {
 			console.log('Logging in.');
-			var twitarrRoot = SettingsService.getTwitarrRoot();
 
 			var loginPasswordElement = document.getElementById('loginPassword');
 			var loginUsernameElement = document.getElementById('loginUsername');
@@ -67,7 +76,7 @@
 			}
 			user.username = user.username.toLowerCase();
 
-			var url = twitarrRoot + 'api/v2/user/auth';
+			var url = $rootScope.twitarrRoot + 'api/v2/user/auth';
 			console.log('Logging in to ' + url);
 
 			$http({
@@ -88,18 +97,14 @@
 				console.log('success: ' + key);
 				user.key = key;
 				$scope.saveUser(user);
-				$rootScope.$broadcast('cruisemonkey.notify.toast', { message: 'Logged in as ' + user.username });
 			})
 			.error(function(data, status, headers, config) {
 				console.log('failure!');
 				console.log('url:' + url);
 				console.log('status:' + status);
-				console.log('data:');
-				console.log(data);
-				console.log('headers:');
-				console.log(headers);
-				console.log('config:');
-				console.log(config);
+				console.log('data: ' + angular.toJson(data));
+				console.log('headers: ' + angular.toJson(config));
+				console.log('config: ' + angular.toJson(config));
 				$rootScope.$broadcast('cruisemonkey.login.failed');
 				$rootScope.$broadcast('cruisemonkey.notify.alert', { message: 'Login failed.' });
 			});

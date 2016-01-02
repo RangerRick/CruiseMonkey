@@ -8,7 +8,7 @@
 	<ion-header-bar ng-class="'bar-subheader'">
 		<div class="row">
 			<div class="col col-20">
-				<img ng-src="{{userImages[user.username]}}">
+				<img img-cache ic-src="{{twitarrRoot}}api/v2/user/photo/{{user.username}}">
 			</div>
 			<div class="col col-60">
 				<textarea required wrap="soft" ng-model="newMessage.text" ng-trim="true" placeholder="Add a message to this discussion..." style="resize: none"></textarea>
@@ -21,13 +21,13 @@
 	<ion-content class="seamail">
 		<ion-scroll class="users" direction="x">
 			<span class="user" ng-click="openUser(user.username, $event)" ng-repeat="user in seamail.users">
-				<img ng-src="{{userImages[user.username]}}" title="{{user.display_name}}" /> {{user.username}}
+				<img img-cache ic-src="{{twitarrRoot}}api/v2/user/photo/{{user.username}}" title="{{user.display_name}}" /> {{user.username}}
 			</span>
 		</ion-scroll>
 		<ion-list>
 			<ion-item ng-repeat="message in seamail.messages track by $index" class="item item-avatar item-text-wrap">
-				<img ng-src="{{userImages[message.author]}}" title="{{message.display_name}}" />
-				<h2>{{message.display_name}}</h2>
+				<img img-cache ic-src="{{twitarrRoot}}api/v2/user/photo/{{message.author}}" title="{{message.display_name}}" />
+				<h2>{{message.display_name}} {{twitarrRoot}}</h2>
 				<p>{{message.text}}</p>
 				<span class="item-note">{{message.timestamp.fromNow()}}</span>
 			</ion-item>

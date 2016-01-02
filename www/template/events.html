@@ -1,0 +1,36 @@
+<ion-view>
+	<ion-header-bar class="bar-dark" animation="no-animation" ng-click="scrollTop()">
+		<div class="buttons">
+			<button class="button button-icon icon-yellow cm-icon-plus" ng-click="addEvent()" ng-if="user.loggedIn"></button>
+			<button class="button button-icon icon-yellow cm-icon-clock" ng-click="goToNow()"></button>
+		</div>
+		<h1 class="title"><span ng-click="openEventTypePopover($event)">{{eventType.capitalize()}} Events <span style="font-size: x-small">&#9660;</span></span></h1>
+		<div class="buttons">
+			<button class="button button-icon icon cm-icon-search" ng-click="showFilterBar()"></button>
+			<!--<button class="button button-icon icon cm-icon-more" ng-click="showOptions($event)"></button>-->
+		</div>
+	</ion-header-bar>
+	<ion-content scroll="true" padding="false" id="event-content" delegate-handle="event-scroll" ng-click="closeKeyboard()">
+		<ion-refresher pulling-text="Pull to refresh..." on-refresh="refresh()"></ion-refresher>
+		<ion-list class="event-list searchable">
+			<span ng-repeat="entry in events track by entry.getId()" id="{{entry.getId()}}">
+				<ion-item ng-if="isDay(entry)" class="item-divider event-header">{{prettyDate(entry.day)}}</ion-item>
+				<ion-item ng-if="!isDay(entry)" ng-class="'list-entry item-text-wrap ' + (entry.isEven()? 'even':'odd')">
+					<span class="item-note">
+						<button id="{{entry.getId()}}-favorite" ng-click="onFavoriteChanged(entry)" class="button button-small button-clear button-navy" ng-show="showFavorite(entry)"><i class="icon" ng-class="entry.isFavorite()? 'active ion-ios-heart':'ion-ios-heart-outline'"></i></button>
+						<button class="public button button-small button-clear button-navy" ng-show="showEditable(entry)"><i ng-class="'icon ' + (entry.isPublic()? 'ion-eye':'ion-eye-disabled')"></i></button>
+						<button class="button button-small button-clear button-navy" ng-click="openPopover($event, entry)" ng-show="showEditable(entry)"><i class="icon ion-android-more-vertical"></i></button>
+					</span>
+					<span>
+					<div class="summary" ng-bind-html="highlight(entry.getSummary(), searchString)"></div>
+					<div class="time">Time: {{entry.getDisplayTime()}}</div>
+					<div class="createdBy" ng-if="entry.getUsername() != 'official'" ng-bind-html="'Created By: ' + highlight(entry.getUsername(), searchString)" ng-click="openUser(entry.getUsername(), $event)"></div>
+					<div class="location" ng-if="entry.getLocation()">Location: <span ng-bind-html="highlight(entry.getLocation(), searchString)"></span></div>
+					<div class="description" ng-if="entry.getDescription()" ng-bind-html="highlight(entry.getFormattedDescription(), searchString)"></div>
+					</span>
+				</ion-item>
+			</span>
+			<div id="the-end"></div>
+		</ion-list>
+	</ion-content>
+</ion-view>

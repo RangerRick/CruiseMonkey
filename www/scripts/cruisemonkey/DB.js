@@ -37,7 +37,7 @@
 
 		var getDb = function(dbname) {
 			if (!dbs[dbname]) {
-				var deferred = $q.defer();
+				var deferred = $q.defer(), db;
 				dbs[dbname] = deferred.promise;
 
 				var opts = angular.extend({}, options);
@@ -49,13 +49,15 @@
 					});
 				};
 
-				var db = new Loki(dbname, opts);
+				db = new Loki(dbname, opts);
 			}
 			return dbs[dbname];
 		};
 
 		var getCollection = function(dbname, collectionName, options) {
+            $log.debug('DB.getCollection(' + dbname + ', ' + collectionName + ', ' + angular.toJson(options) + ')');
 			return getDb(dbname).then(function(db) {
+                //$log.debug('DB.getCollection: got database: ' + angular.toJson(db));
 				var collection = db.getCollection(collectionName);
 				if (!collection) {
 					collection = db.addCollection(collectionName, options);
@@ -68,7 +70,7 @@
 			get: getDb,
 			collection: getCollection,
 		};
-	}).factory('kv', function($q, db) {
+	}).factory('kv', function($q, $log, db) {
 		var kvdb = db.collection('kv', 'kv', {transactional:true});
 
         var _keys = function() {
@@ -101,7 +103,7 @@
 
         var _set = function(key, value) {
         	return kvdb.then(function(d) {
-                //$log.debug('kv._set: ' + key + '=' + value);
+                $log.debug('kv._set: ' + key + '=' + angular.toJson(value));
                 var existing = d.findObject({key: key});
                 if (!existing) {
                     d.insert({key: key, value: value});
@@ -117,7 +119,7 @@
 
         var _remove = function(key) {
         	return kvdb.then(function(d) {
-                //$log.debug('kv._delete: ' + key);
+                $log.debug('kv._delete: ' + key);
                 var existing = d.findObject({key:key});
                 d.removeWhere({key:key});
                 if (existing) {

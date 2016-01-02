@@ -13,6 +13,7 @@
 		'ionic',
 		'ngCordova',
 		'ui.router',
+		'ImgCache',
 		'cruisemonkey.Config',
 		'cruisemonkey.controllers.About',
 		'cruisemonkey.controllers.Advanced',
@@ -25,6 +26,7 @@
 		'cruisemonkey.controllers.Navigation',
 		'cruisemonkey.controllers.Seamail',
 		'cruisemonkey.controllers.Twitarr.Stream',
+		'cruisemonkey.emoji.Emoji',
 		'cruisemonkey.Database',
 		'cruisemonkey.DB',
 		'cruisemonkey.Events',
@@ -36,7 +38,7 @@
 		'cruisemonkey.State',
 		'cruisemonkey.Twitarr',
 		'cruisemonkey.Upgrades',
-		'cruisemonkey.User',
+		'cruisemonkey.user.User',
 		'cruisemonkey.Util',
 	])
 	.directive('cmSearchBar', function($timeout, $cordovaKeyboard) {
@@ -60,12 +62,17 @@
 			link: function(scope, elem, attrs, ctrl) {
 				scope.placeholder = attrs.placeholder || 'Search';
 				scope.searchStringInternal = nullSafeLowerCase(scope.searchString);
+				scope.onSearchChanged("blah");
 
 				var callChangeFunction = function() {
-					if (scope.onSearchChanged) {
-						$timeout(function() {
-							scope.onSearchChanged(scope.searchString);
+					var s = scope;
+					console.log('scope=' + angular.toJson(s));
+					if (angular.isDefined(s) && angular.isFunction(s.onSearchChanged)) {
+						scope.$evalAsync(function() {
+							s.onSearchChanged(s.searchString);
 						});
+					} else {
+						console.log('warning: no scope (' + angular.toJson(s) + ')');
 					}
 				};
 
@@ -89,10 +96,14 @@
 			}
 		};
 	})
-	.config(function($stateProvider, $urlRouterProvider, $compileProvider, $ionicConfigProvider) {
+	.config(function($stateProvider, $urlRouterProvider, $compileProvider, $ionicConfigProvider, ImgCacheProvider) {
 		if (isMobile) {
 			ionic.Platform.fullScreen(false,true);
 		}
+
+		ImgCacheProvider.setOption('debug', true);
+		ImgCacheProvider.setOption('usePersistentCache', true);
+		ImgCacheProvider.manualInit = true;
 
 		$compileProvider.aHrefSanitizationWhitelist(/^\s*(https?|ftp|mailto|file|tel):/);
 		$compileProvider.imgSrcSanitizationWhitelist(/^\s*(https?|file):/);
@@ -101,14 +112,63 @@
 		$ionicConfigProvider.views.transition('none');
 		$ionicConfigProvider.views.forwardCache(true);
 
-		$ionicConfigProvider.navBar.positionPrimaryButtons('left');
-		$ionicConfigProvider.navBar.positionSecondaryButtons('right');
+		//$ionicConfigProvider.navBar.positionPrimaryButtons('left');
+		//$ionicConfigProvider.navBar.positionSecondaryButtons('right');
 
-		$ionicConfigProvider.tabs.position('bottom');
+		//$ionicConfigProvider.tabs.position('bottom');
 
-		$urlRouterProvider.otherwise('/app/events/official');
+		$urlRouterProvider.otherwise('/tab/settings');
 
 		$stateProvider
+			.state('tab', {
+				url: '/tab',
+				abstract: true,
+				templateUrl: 'template/tabs.html'
+			})
+			.state('tab.twitarr', {
+				url: '/twitarr',
+				views: {
+					'tab-twitarr': {
+						templateUrl: 'template/twitarr-stream.html',
+						controller: 'CMTwitarrStreamCtrl',
+					},
+				},
+			})
+			.state('tab.seamail', {
+				url: '/seamail',
+				views: {
+					'tab-seamail': {
+						templateUrl: 'template/seamail.html',
+						controller: 'CMSeamailCtrl',
+					},
+				},
+			})
+			.state('tab.events', {
+				url: '/events',
+				views: {
+					'tab-events': {
+						templateUrl: 'template/events.html',
+						controller: 'CMEventsCtrl',
+					},
+				},
+			})
+			.state('tab.info', {
+				url: '/info',
+				views: {
+					'tab-info': {
+					}
+				}
+			})
+			.state('tab.settings', {
+				url: '/settings',
+				views: {
+					'tab-settings': {
+						templateUrl: 'template/advanced.html',
+						controller: 'CMAdvancedCtrl',
+					},
+				},
+			})
+			/*
 			.state('app', {
 				url: '/app',
 				abstract: true,
@@ -123,7 +183,7 @@
 						templateUrl: 'template/events-tabs.html',
 						controller: 'CMEventsBarCtrl',
 						resolve: {
-							redirect: function($state /*, storage */) {
+							redirect: function($state) {
 								var lastTab; // = storage.get('cruisemonkey.menu.last-tab');
 								if (!lastTab) {
 									lastTab = 'app.events.official';
@@ -234,17 +294,19 @@
 					}
 				}
 			})
+			*/
 		;
 	})
 	/* EventService & Notifications are here just to make sure they initializes early */
-	.run(function($q, $rootScope, $sce, $timeout, $window, $state, $cordovaCamera, $cordovaKeyboard, $cordovaSplashscreen, $ionicModal, $ionicPlatform, $ionicPopover, $ionicPopup, util, Cordova, kv, EventService, Images, LocalNotifications, Notifications, SettingsService, Twitarr, UpgradeService, UserService) {
+	.run(function($q, $rootScope, $log, $injector, $sce, $state, $timeout, $window, $cordovaCamera, $cordovaKeyboard, $cordovaSplashscreen, $ionicModal, $ionicPlatform, $ionicPopover, $ionicPopup, ImgCache, util, Cordova, kv, EmojiService, EventService, Images, LocalNotifications, Notifications, SettingsService, Twitarr, UpgradeService, UserService) {
 		console.log('CruiseMonkey run() called.');
 
-		var inCordova = Cordova.inCordova();
-
-		$rootScope.$on("$stateChangeError", function (event, toState, toParams, fromState, fromParams, error) {
-			console.log('ERROR: ' + fromState + ' -> ' + toState, event, fromState, fromParams, toState, toParams, error);
+		ImgCache.$init();
+		SettingsService.getTwitarrRoot().then(function(twitarrRoot) {
+			$rootScope.twitarrRoot = twitarrRoot;
 		});
+
+		var inCordova = Cordova.inCordova();
 
 		moment.locale('en', {
 			relativeTime: {
@@ -264,42 +326,6 @@
 			}
 		});
 
-		var newSeamailScope = $rootScope.$new();
-		var newSeamailModal;
-		$ionicModal.fromTemplateUrl('template/new-seamail.html', {
-			animation: 'slide-in-up',
-			focusFirstInput: true,
-			scope: newSeamailScope
-		}).then(function(modal) {
-			newSeamailScope.closeModal = function() {
-				modal.hide();
-			};
-			newSeamailScope.postSeamail = function(seamail, sendTo) {
-				var message = angular.copy(seamail);
-				if (sendTo) {
-					message.users.push(sendTo);
-				}
-				console.log('postSeamail: seamail=' + angular.toJson(message));
-				Twitarr.postSeamail(message).then(function() {
-					modal.hide();
-					$rootScope.$broadcast('cruisemonkey.notify.newSeamail', 1);
-				}, function(err) {
-					$ionicPopup.alert({
-						title: 'Failed',
-						template: 'Failed to post Seamail: ' + err[0]
-					});
-				});
-			};
-			newSeamailModal = modal;
-		});
-
-		$rootScope.newSeamail = function(sendTo) {
-			userPopover.hide();
-			newSeamailScope.newSeamail = { users: [] };
-			newSeamailScope.sendTo = sendTo;
-			newSeamailModal.show();
-		};
-
 		var newTweetModal;
 		$ionicModal.fromTemplateUrl('template/new-tweet.html', {
 			animation: 'slide-in-up',
@@ -315,6 +341,33 @@
 					saveToPhotoAlbum: true,
 				};
 			}
+
+			var emojiPopover;
+			$ionicPopover.fromTemplateUrl('template/emoji.html', {
+			}).then(function(p) {
+				p.scope.emojiTypes = EmojiService.types();
+				p.scope.chooseEmoji = function(emoji) {
+					if (modal.scope.tweet.text.length === 0) {
+						modal.scope.tweet.text += ':' + emoji + ':';
+					} else {
+						modal.scope.tweet.text += ' :' + emoji + ':';
+					}
+					modal.scope.$evalAsync(function() {
+						p.hide().then(function() {
+							var el = document.getElementById('tweet-text');
+							el.focus();
+							el.setSelectionRange(modal.scope.tweet.text.length+1, modal.scope.tweet.text.length+1);
+						});
+					});
+				}
+
+				$log.debug('got emoji popover: ' + angular.toJson(p));
+				emojiPopover = p;
+			});
+
+			modal.scope.showEmoji = function(ev) {
+				emojiPopover.show(ev);
+			};
 
 			var onError = function(err) {
 				$rootScope.$evalAsync(function() {
@@ -373,8 +426,6 @@
 				});
 			};
 
-			modal.scope.twitarrRoot = SettingsService.getTwitarrRoot();
-
 			modal.scope.uploadPic = function(pic) {
 				if (pic instanceof Array) {
 					pic = pic[0];
@@ -427,38 +478,6 @@
 			newTweetModal.show();
 		};
 
-		var userPopover;
-		$ionicPopover.fromTemplateUrl('template/user-detail.html', {
-			/* animation: 'slide-in-up' */
-		}).then(function(popup) {
-			popup.scope.closePopover = function() {
-				popup.hide();
-			};
-			popup.scope.sendSeamail = function(sendTo) {
-				console.log('Opening a seamail dialog to ' + sendTo);
-				$rootScope.newSeamail(sendTo);
-			};
-			userPopover = popup;
-		});
-
-		$rootScope.openUser = function(username, evt) {
-			console.log('Opening User: ' + username);
-			if (evt) {
-				evt.preventDefault();
-				evt.stopPropagation();
-			} else {
-				console.log('WARNING: click $event was not passed.');
-			}
-
-			userPopover.scope.twitarrRoot = SettingsService.getTwitarrRoot();
-			Twitarr.getUserInfo(username).then(function(user) {
-				userPopover.scope.user = user;
-				userPopover.scope.me = UserService.get();
-				console.log('openUser: user=',user);
-				userPopover.show(evt);
-			});
-		};
-
 		var regexpEscape = function(s) {
 			return s.replace(/[-\/\\^$*+?.()|[\]{}]/gm, '\\$&');
 		};
@@ -476,11 +495,6 @@
 			}
 		};
 
-		$rootScope.$on('$destroy', function() {
-			newSeamailModal.remove();
-			userPopover.remove();
-		});
-
 		$rootScope.openUrl = function(url, target) {
 			$window.open(url, target);
 		};
@@ -491,6 +505,7 @@
 			});
 		};
 
+		/*
 		var currentView;
 		kv.get('cruisemonkey.navigation.current-view').then(function(cv) {
 			currentView = cv;
@@ -501,6 +516,7 @@
 				});
 			}
 		});
+		*/
 
 		var updateCurrentView = function(view) {
 			return kv.set('cruisemonkey.navigation.current-view', view);

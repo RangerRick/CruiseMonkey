@@ -1,0 +1,22 @@
+<ion-modal-view class="fit">
+<ion-content scroll="false" ng-controller="CMLoginCtrl">
+  <div class="item bar bar-dark">
+    <h1 class="title">Log In</h1>
+  </div>
+  <form name="loginForm" class="list login-form" novalidate>
+    <label class="item item-input">
+      <span class="input-label">Username</span>
+      <input id="loginUsername" type="text" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="off" ng-model="user.username" name="username" autofocus="autofocus" required />
+    </label>
+    <label class="item item-input">
+      <span class="input-label">Password</span>
+      <input id="loginPassword" type="password" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="off" ng-model="user.password" name="password" required />
+    </label>
+    <div class="item item-text-wrap">
+      Need a Twit-arr account? <a ng-click="goToTwitarr()" style="text-decoration:underline;cursor:pointer">Create one here.</a><br>
+      Lost your password? <a ng-click="goToLostPassword()" style="text-decoration:underline;cursor:pointer">Reset it here.</a>
+    </div>
+    <button class="button button-full button-positive" ng-click="logIn(user)" ng-disabled="form.$invalid || !canSubmit(user)" style="margin-top: 0; margin-bottom: 0">Log In</button>
+  </form>
+</ion-content>
+</ion-modal-view>

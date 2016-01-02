@@ -4,9 +4,10 @@
 	/*global ionic: true*/
 
 	angular.module('cruisemonkey.Seamail', [
+		'ImgCache',
 		'cruisemonkey.DB',
 		'cruisemonkey.Settings',
-		'cruisemonkey.User'
+		'cruisemonkey.user.User'
 	])
 	.factory('SeamailService', function($q, $rootScope, $timeout, $interval, $http, SettingsService, UserService, kv) {
 		var interval = null;
@@ -30,12 +31,11 @@
 			}
 
 			console.log('SeamailService: Checking for seamail updates.');
-			var twitarrRoot = SettingsService.getTwitarrRoot();
 			var user = UserService.get();
 
 			$http({
 				method: 'GET',
-				url: twitarrRoot + 'api/v2/user/new_seamail',
+				url: $rootScope.twitarrRoot + 'api/v2/user/new_seamail',
 				params: {
 					key: user.key
 				},

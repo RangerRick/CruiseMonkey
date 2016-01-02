@@ -1,0 +1,7 @@
+<ion-popover-view class="fit emoji-popover">
+	<ion-content>
+		<span ng-repeat="emoji in emojiTypes" ng-click="chooseEmoji(emoji)">
+			<img ng-src="images/emoji/{{emoji}}-80.png" class="emoji" />
+		</span>
+	</ion-content>
+</ion-popover-view>
