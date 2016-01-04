@@ -87,13 +87,13 @@
 .ion-android-bookmark:before,
 .ion-android-bulb:before,
 .ion-android-bus:before,
-.ion-android-calendar:before,
+.ion-android-calendar:before, .platform-android .cm-icon-calendar:before,
 .ion-android-call:before,
 .ion-android-camera:before,
 .ion-android-cancel:before,
 .ion-android-car:before,
 .ion-android-cart:before,
-.ion-android-chat:before,
+.ion-android-chat:before, .platform-android .cm-icon-chatbox:before,
 .ion-android-checkbox:before,
 .ion-android-checkbox-blank:before,
 .ion-android-checkbox-outline:before,
@@ -136,7 +136,7 @@
 .ion-android-list:before,
 .ion-android-locate:before,
 .ion-android-lock:before,
-.ion-android-mail:before,
+.ion-android-mail:before, .platform-android .cm-icon-email:before,
 .ion-android-map:before,
 .ion-android-menu:before,
 .ion-android-microphone:before,
@@ -166,8 +166,8 @@
 .ion-android-restaurant:before,
 .ion-android-sad:before,
 .ion-android-search:before, .platform-android .cm-icon-search:before,
-.ion-android-send:before,
-.ion-android-settings:before,
+.ion-android-send:before, .platform-android .cm-icon-send:before,
+.ion-android-settings:before, .platform-android .cm-icon-settings:before,
 .ion-android-share:before,
 .ion-android-share-alt:before,
 .ion-android-star:before,
@@ -238,7 +238,7 @@
 .ion-camera:before,
 .ion-card:before,
 .ion-cash:before,
-.ion-chatbox:before,
+.ion-chatbox:before, .cm-icon-chatbox:before,
 .ion-chatbox-working:before,
 .ion-chatboxes:before,
 .ion-chatbubble:before,
@@ -263,7 +263,7 @@
 .ion-code-working:before,
 .ion-coffee:before,
 .ion-compass:before,
-.ion-compose:before,
+.ion-compose:before, .cm-icon-compose:before,
 .ion-connection-bars:before,
 .ion-contrast:before,
 .ion-crop:before,
@@ -277,7 +277,7 @@
 .ion-edit:before,
 .ion-egg:before,
 .ion-eject:before,
-.ion-email:before,
+.ion-email:before, .cm-icon-email:before,
 .ion-email-unread:before,
 .ion-erlenmeyer-flask:before,
 .ion-erlenmeyer-flask-bubbles:before,
@@ -313,7 +313,7 @@
 .ion-image:before,
 .ion-images:before,
 .ion-information:before,
-.ion-information-circled:before,
+.ion-information-circled:before, .cm-icon-info:before,
 .ion-ionic:before,
 .ion-ios-alarm:before,
 .ion-ios-alarm-outline:before,
@@ -360,12 +360,12 @@
 .ion-ios-calculator:before,
 .ion-ios-calculator-outline:before,
 .ion-ios-calendar:before,
-.ion-ios-calendar-outline:before,
+.ion-ios-calendar-outline:before, .platform-ios .cm-icon-calendar:before,
 .ion-ios-camera:before,
 .ion-ios-camera-outline:before,
 .ion-ios-cart:before,
 .ion-ios-cart-outline:before,
-.ion-ios-chatboxes:before,
+.ion-ios-chatboxes:before, .platform-ios .cm-icon-chatbox:before,
 .ion-ios-chatboxes-outline:before,
 .ion-ios-chatbubble:before,
 .ion-ios-chatbubble-outline:before,
@@ -389,14 +389,14 @@
 .ion-ios-cloudy-night:before,
 .ion-ios-cloudy-night-outline:before,
 .ion-ios-cloudy-outline:before,
-.ion-ios-cog:before,
+.ion-ios-cog:before, .platform-ios .cm-icon-settings:before,
 .ion-ios-cog-outline:before,
 .ion-ios-color-filter:before,
 .ion-ios-color-filter-outline:before,
 .ion-ios-color-wand:before,
 .ion-ios-color-wand-outline:before,
 .ion-ios-compose:before,
-.ion-ios-compose-outline:before,
+.ion-ios-compose-outline:before, .platform-ios .cm-icon-compose:before,
 .ion-ios-contact:before,
 .ion-ios-contact-outline:before,
 .ion-ios-copy:before,
@@ -406,7 +406,7 @@
 .ion-ios-download:before,
 .ion-ios-download-outline:before,
 .ion-ios-drag:before,
-.ion-ios-email:before,
+.ion-ios-email:before, .platform-ios .cm-icon-email:before,
 .ion-ios-email-outline:before,
 .ion-ios-eye:before,
 .ion-ios-eye-outline:before,
@@ -447,7 +447,7 @@
 .ion-ios-home-outline:before,
 .ion-ios-infinite:before,
 .ion-ios-infinite-outline:before,
-.ion-ios-information:before,
+.ion-ios-information:before, .platform-ios .cm-icon-info:before,
 .ion-ios-information-empty:before,
 .ion-ios-information-outline:before,
 .ion-ios-ionic-outline:before,
@@ -487,7 +487,7 @@
 .ion-ios-nutrition-outline:before,
 .ion-ios-paper:before,
 .ion-ios-paper-outline:before,
-.ion-ios-paperplane:before,
+.ion-ios-paperplane:before, .platform-ios .cm-icon-send:before,
 .ion-ios-paperplane-outline:before,
 .ion-ios-partlysunny:before,
 .ion-ios-partlysunny-outline:before,
@@ -527,7 +527,7 @@
 .ion-ios-redo:before,
 .ion-ios-redo-outline:before,
 .ion-ios-refresh:before,
-.ion-ios-refresh-empty:before,
+.ion-ios-refresh-empty:before, .platform-ios .cm-icon-refresh:before,
 .ion-ios-refresh-outline:before,
 .ion-ios-reload:before,
 .ion-ios-reverse-camera:before,
@@ -631,7 +631,7 @@
 .ion-outlet:before,
 .ion-paintbrush:before,
 .ion-paintbucket:before,
-.ion-paper-airplane:before,
+.ion-paper-airplane:before, .cm-icon-send:before,
 .ion-paperclip:before,
 .ion-pause:before,
 .ion-person:before,
@@ -659,7 +659,7 @@
 .ion-quote:before,
 .ion-radio-waves:before,
 .ion-record:before,
-.ion-refresh:before,
+.ion-refresh:before, .cm-icon-refresh:before,
 .ion-reply:before,
 .ion-reply-all:before,
 .ion-ribbon-a:before,
@@ -668,7 +668,7 @@
 .ion-sad-outline:before,
 .ion-scissors:before,
 .ion-search:before, .cm-icon-search:before,
-.ion-settings:before,
+.ion-settings:before, .cm-icon-settings:before,
 .ion-share:before,
 .ion-shuffle:before,
 .ion-skip-backward:before,
@@ -886,7 +886,7 @@
 .ion-android-bus:before {
   content: ""; }
 
-.ion-android-calendar:before {
+.ion-android-calendar:before, .platform-android .cm-icon-calendar:before {
   content: ""; }
 
 .ion-android-call:before {
@@ -904,7 +904,7 @@
 .ion-android-cart:before {
   content: ""; }
 
-.ion-android-chat:before {
+.ion-android-chat:before, .platform-android .cm-icon-chatbox:before {
   content: ""; }
 
 .ion-android-checkbox:before {
@@ -1033,7 +1033,7 @@
 .ion-android-lock:before {
   content: ""; }
 
-.ion-android-mail:before {
+.ion-android-mail:before, .platform-android .cm-icon-email:before {
   content: ""; }
 
 .ion-android-map:before {
@@ -1123,10 +1123,10 @@
 .ion-android-search:before, .platform-android .cm-icon-search:before {
   content: ""; }
 
-.ion-android-send:before {
+.ion-android-send:before, .platform-android .cm-icon-send:before {
   content: ""; }
 
-.ion-android-settings:before {
+.ion-android-settings:before, .platform-android .cm-icon-settings:before {
   content: ""; }
 
 .ion-android-share:before {
@@ -1339,7 +1339,7 @@
 .ion-cash:before {
   content: ""; }
 
-.ion-chatbox:before {
+.ion-chatbox:before, .cm-icon-chatbox:before {
   content: ""; }
 
 .ion-chatbox-working:before {
@@ -1414,7 +1414,7 @@
 .ion-compass:before {
   content: ""; }
 
-.ion-compose:before {
+.ion-compose:before, .cm-icon-compose:before {
   content: ""; }
 
 .ion-connection-bars:before {
@@ -1456,7 +1456,7 @@
 .ion-eject:before {
   content: ""; }
 
-.ion-email:before {
+.ion-email:before, .cm-icon-email:before {
   content: ""; }
 
 .ion-email-unread:before {
@@ -1564,7 +1564,7 @@
 .ion-information:before {
   content: ""; }
 
-.ion-information-circled:before {
+.ion-information-circled:before, .cm-icon-info:before {
   content: ""; }
 
 .ion-ionic:before {
@@ -1705,7 +1705,7 @@
 .ion-ios-calendar:before {
   content: ""; }
 
-.ion-ios-calendar-outline:before {
+.ion-ios-calendar-outline:before, .platform-ios .cm-icon-calendar:before {
   content: ""; }
 
 .ion-ios-camera:before {
@@ -1720,7 +1720,7 @@
 .ion-ios-cart-outline:before {
   content: ""; }
 
-.ion-ios-chatboxes:before {
+.ion-ios-chatboxes:before, .platform-ios .cm-icon-chatbox:before {
   content: ""; }
 
 .ion-ios-chatboxes-outline:before {
@@ -1792,7 +1792,7 @@
 .ion-ios-cloudy-outline:before {
   content: ""; }
 
-.ion-ios-cog:before {
+.ion-ios-cog:before, .platform-ios .cm-icon-settings:before {
   content: ""; }
 
 .ion-ios-cog-outline:before {
@@ -1813,7 +1813,7 @@
 .ion-ios-compose:before {
   content: ""; }
 
-.ion-ios-compose-outline:before {
+.ion-ios-compose-outline:before, .platform-ios .cm-icon-compose:before {
   content: ""; }
 
 .ion-ios-contact:before {
@@ -1843,7 +1843,7 @@
 .ion-ios-drag:before {
   content: ""; }
 
-.ion-ios-email:before {
+.ion-ios-email:before, .platform-ios .cm-icon-email:before {
   content: ""; }
 
 .ion-ios-email-outline:before {
@@ -1966,7 +1966,7 @@
 .ion-ios-infinite-outline:before {
   content: ""; }
 
-.ion-ios-information:before {
+.ion-ios-information:before, .platform-ios .cm-icon-info:before {
   content: ""; }
 
 .ion-ios-information-empty:before {
@@ -2086,7 +2086,7 @@
 .ion-ios-paper-outline:before {
   content: ""; }
 
-.ion-ios-paperplane:before {
+.ion-ios-paperplane:before, .platform-ios .cm-icon-send:before {
   content: ""; }
 
 .ion-ios-paperplane-outline:before {
@@ -2206,7 +2206,7 @@
 .ion-ios-refresh:before {
   content: ""; }
 
-.ion-ios-refresh-empty:before {
+.ion-ios-refresh-empty:before, .platform-ios .cm-icon-refresh:before {
   content: ""; }
 
 .ion-ios-refresh-outline:before {
@@ -2518,7 +2518,7 @@
 .ion-paintbucket:before {
   content: ""; }
 
-.ion-paper-airplane:before {
+.ion-paper-airplane:before, .cm-icon-send:before {
   content: ""; }
 
 .ion-paperclip:before {
@@ -2602,7 +2602,7 @@
 .ion-record:before {
   content: ""; }
 
-.ion-refresh:before {
+.ion-refresh:before, .cm-icon-refresh:before {
   content: ""; }
 
 .ion-reply:before {
@@ -2629,7 +2629,7 @@
 .ion-search:before, .cm-icon-search:before {
   content: ""; }
 
-.ion-settings:before {
+.ion-settings:before, .cm-icon-settings:before {
   content: ""; }
 
 .ion-share:before {
@@ -9716,6 +9716,9 @@ ion-popover-view.fit ion-content {
   border-bottom-right-radius: 5px;
   color: #febd11;
   background-color: #061557; }
+
+.platform-ios.platform-cordova:not(.fullscreen) .twitarr .unread-count {
+  top: 64px; }
 
 .seamail .users {
   padding: 0;

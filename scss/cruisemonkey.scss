@@ -150,42 +150,108 @@ ion-tabs {
 .cm-icon-add {
 	@extend .ion-plus;
 }
+.cm-icon-calendar {
+	@extend .icon-calendar;
+}
+.cm-icon-chatbox {
+	@extend .ion-chatbox;
+}
 .cm-icon-clock {
 	@extend .ion-clock;
+}
+.cm-icon-compose {
+	@extend .ion-compose;
+}
+.cm-icon-info {
+	@extend .ion-information-circled;
+}
+.cm-icon-email {
+	@extend .ion-email;
+}
+.cm-icon-more {
+	@extend .ion-more;
+}
+.cm-icon-refresh {
+	@extend .ion-refresh;
 }
 .cm-icon-search {
 	@extend .ion-search;
 }
-.cm-icon-more {
-	@extend .ion-more;
+.cm-icon-send {
+	@extend .ion-paper-airplane;
+}
+.cm-icon-settings {
+	@extend .ion-settings;
 }
 
 .platform-android {
 	.cm-icon-add {
 		@extend .ion-android-add;
 	}
+	.cm-icon-calendar {
+		@extend .ion-android-calendar;
+	}
+	.cm-icon-chatbox {
+		@extend .ion-android-chat;
+	}
 	.cm-icon-clock {
 		@extend .ion-android-time;
+	}
+	.cm-icon-email {
+		@extend .ion-android-mail;
+	}
+	.cm-icon-more {
+		@extend .ion-android-more-vertical;
+	}
+	.cm-icon-refresh {
+		@extend .ion-ion-android-refresh;
 	}
 	.cm-icon-search {
 		@extend .ion-android-search;
 	}
-	.cm-icon-more {
-		@extend .ion-android-more-vertical;
+	.cm-icon-send {
+		@extend .ion-android-send;
+	}
+	.cm-icon-settings {
+		@extend .ion-android-settings;
 	}
 }
 .platform-ios {
 	.cm-icon-add {
 		@extend .ion-ios-plus-empty;
 	}
+	.cm-icon-calendar {
+		@extend .ion-ios-calendar-outline;
+	}
+	.cm-icon-chatbox {
+		@extend .ion-ios-chatboxes;
+	}
 	.cm-icon-clock {
 		@extend .ion-ios-clock-outline;
+	}
+	.cm-icon-compose {
+		@extend .ion-ios-compose-outline;
+	}
+	.cm-icon-info {
+		@extend .ion-ios-information;
+	}
+	.cm-icon-email {
+		@extend .ion-ios-email;
+	}
+	.cm-icon-more {
+		@extend .ion-ios-more;
+	}
+	.cm-icon-refresh {
+		@extend .ion-ios-refresh-empty;
 	}
 	.cm-icon-search {
 		@extend .ion-ios-search;
 	}
-	.cm-icon-more {
-		@extend .ion-ios-more;
+	.cm-icon-send {
+		@extend .ion-ios-paperplane;
+	}
+	.cm-icon-settings {
+		@extend .ion-ios-cog;
 	}
 }
 
@@ -581,6 +647,16 @@ ion-popover-view.fit ion-content {
 		border-bottom-right-radius: 5px;
 		color: $rciYellow;
 		background-color: $rciNavyBlue;
+	}
+}
+
+.platform-ios.platform-cordova {
+	&:not(.fullscreen) {
+		.twitarr {
+			.unread-count {
+				top: $bar-height + $ios-statusbar-height;
+			}
+		}
 	}
 }
 

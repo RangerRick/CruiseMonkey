@@ -111,7 +111,7 @@
 			$compile(element.contents())(scope);
 		};
 	})
-	.controller('CMTwitarrStreamCtrl', function($q, $scope, $log, $timeout, $ionicLoading, $ionicModal, $ionicScrollDelegate, EmojiService, SettingsService, Twitarr, UserDetail, UserService) {
+	.controller('CMTwitarrStreamCtrl', function($q, $scope, $log, $interval, $timeout, $ionicLoading, $ionicModal, $ionicScrollDelegate, EmojiService, SettingsService, Twitarr, UserDetail, UserService) {
 		console.log('Initializing CMTwitarrStreamCtrl');
 
 		$scope.users = {};
@@ -138,11 +138,10 @@
 		$scope.updateTopVisible = function() {
 			//console.log('updateTopVisible()');
 			$timeout(function() {
-				var i, entry;
-				for (i=0; i < $scope.entries.length; i++) {
+				for (var i=0, len=$scope.entries.length, entry, elm, offset; i < len; i++) {
 					entry = $scope.entries[i];
-					var elm = angular.element(document.getElementById(entry.id));
-					var offset = elm.offset().top;
+					elm = angular.element(document.getElementById(entry.id));
+					offset = elm.offset().top;
 					if (offset >= 0) {
 						// console.log('updateTopVisible(): top = ' + entry.text);
 						currentTop = entry;
@@ -301,6 +300,7 @@
 		$scope.done = false;
 
 		$scope.doRefresh = function(keepPosition, showLoading) {
+			$scope.updateTopVisible();
 			console.log('Controller.Twitarr.Stream.doRefresh(' + keepPosition + ')');
 			if (showLoading) {
 				$ionicLoading.show({
@@ -387,6 +387,18 @@
 				}
 			});
 		};
+
+		/*
+		var intervalId = 1;
+		$interval(function() {
+			if ($scope.entries.length > 0) {
+				var e = angular.copy($scope.entries[0]);
+				e.id += '1';
+				e.timestamp = new moment();
+				$scope.entries.splice(0, 0, e);
+			}
+		}, 2000);
+		*/
 
 		$scope.$on('modal.hidden', function() {
 			$scope.doRefresh();

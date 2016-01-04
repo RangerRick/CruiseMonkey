@@ -1,8 +1,11 @@
 <ion-view class="twitarr">
 	<ion-header-bar class="bar-stable bar-dark" animation="no-animation">
+		<div class="buttons">
+			<button class="button button-icon icon cm-icon-refresh" ng-click="doRefresh(true)"></button>
+		</div>
 		<h1 class="title" ng-click="scrollTop()">Twit-Arr</h1>
 		<div class="buttons">
-			<button class="button button-icon icon ion-compose" ng-click="newTweet()" ng-if="u.loggedIn()"></button>
+			<button class="button button-icon icon cm-icon-compose" ng-click="newTweet()" ng-if="u.loggedIn()"></button>
 		</div>
 	</ion-header-bar>
 	<span class="unread-count" ng-if="unreadCount &amp;&amp; unreadCount > 0">{{unreadCount}}</span>
