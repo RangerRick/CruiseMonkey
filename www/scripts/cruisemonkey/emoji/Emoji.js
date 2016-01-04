@@ -11,11 +11,13 @@
 			'joco',
 			'towel-monkey',
 			'ship',
+			'ship-front',
 			'tropical-drink',
 			'buffet',
 			'hottub',
 			'fez',
 			'die',
+			'die-ship',
 		];
 
 		var tokens = emoji.map(function(e) {

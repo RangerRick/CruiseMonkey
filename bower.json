@@ -2,10 +2,10 @@
   "name": "CruiseMonkey",
   "private": "true",
   "dependencies": {
-    "angular": "1.4.7",
-    "angular-animate": "~1.4.7",
-    "angular-cookies": "~1.4.7",
-    "angular-sanitize": "~1.4.7",
+    "angular": "1.4.8",
+    "angular-animate": "~1.4.8",
+    "angular-cookies": "~1.4.8",
+    "angular-sanitize": "~1.4.8",
     "angular-ui-router": "~0.2.15",
     "angular-uuid4": "~0.3.1",
     "angularLocalStorage": "~0.3.2",
@@ -13,30 +13,30 @@
     "classlist": "~2014.12.13",
     "es5-shim": "~4.4.1",
     "html5shiv": "~3.7.3",
-    "ionic": "~1.2.1",
+    "ionic": "~1.2.4",
     "ionicons": "*",
     "javascript-state-machine": "~2.3.5",
     "jquery": "~2.1.4",
-    "momentjs": "~2.10.6",
     "ng-file-upload": "~11.0.0",
-    "ngCordova": "~0.1.20-alpha",
+    "ngCordova": "~0.1.23-alpha",
     "pouchdb": "~3.6.0",
     "pouchdb-persist": "~0.0.6",
     "pouchdb-quick-search": "~1.0.2",
     "toastr": "~2.1.2",
     "lokijs": "master",
     "angular-imgcache": "angular-imgcache.js#~0.1.0",
-    "imgcache.js": "v1.0rc2"
+    "imgcache.js": "v1.0rc2",
+    "moment": "momentjs#~2.11.0"
   },
   "devDependencies": {
-    "angular-mocks": "1.4.7",
+    "angular-mocks": "1.4.8",
     "ionic": "1.0.0"
   },
   "resolutions": {
     "angular-ui-router": "~0.2.15",
-    "angular": "1.4.7",
-    "angular-animate": "~1.4.7",
-    "angular-sanitize": "~1.4.7",
-    "angular-cookies": "~1.4.7"
+    "angular": "1.4.8",
+    "angular-animate": "~1.4.8",
+    "angular-sanitize": "~1.4.8",
+    "angular-cookies": "~1.4.8"
   }
 }
