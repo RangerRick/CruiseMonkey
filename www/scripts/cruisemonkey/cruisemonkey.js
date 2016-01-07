@@ -12,6 +12,7 @@
 	[
 		'ionic',
 		'ngCordova',
+		'ngFileUpload',
 		'ui.router',
 		'ImgCache',
 		'cruisemonkey.Config',
@@ -27,7 +28,6 @@
 		'cruisemonkey.controllers.Seamail',
 		'cruisemonkey.controllers.Twitarr.Stream',
 		'cruisemonkey.emoji.Emoji',
-		'cruisemonkey.Database',
 		'cruisemonkey.DB',
 		'cruisemonkey.Events',
 		'cruisemonkey.Images',
@@ -117,7 +117,7 @@
 
 		//$ionicConfigProvider.tabs.position('bottom');
 
-		$urlRouterProvider.otherwise('/tab/settings');
+		$urlRouterProvider.otherwise('/tab/twitarr');
 
 		$stateProvider
 			.state('tab', {
@@ -372,21 +372,39 @@
 			var onError = function(err) {
 				$rootScope.$evalAsync(function() {
 					console.log('NewTweet.doPhoto: ERROR: ' + angular.toJson(err));
-					$ionicPopup.alert({
-						title: 'Failed',
-						template: 'An error occurred while uploading your photo.'
-					});
+					if (err !== 'no image selected') {
+						$ionicPopup.alert({
+							title: 'Failed',
+							template: 'An error occurred while uploading your photo.'
+						});
+					}
 					delete modal.scope.photoUploading;
 				});
 			};
 
 			var doPhoto = function(type) {
+				SettingsService.getTwitarrRoot().then(function(tr) {
+					modal.scope.twitarrRoot = tr;
+				});
 				var options = angular.copy(cameraOptions);
 				options.sourceType = type;
+				//options.destinationType = Camera.DestinationType.DATA_URL;
 				if (type === Camera.PictureSourceType.PHOTOLIBRARY) {
 					options.saveToPhotoAlbum = false;
 				}
 				$cordovaCamera.getPicture(options).then(function(results) {
+					/*
+					Twitarr.postPhoto(results).then(function(res) {
+						var response = angular.fromJson(res.response);
+						modal.scope.tweet.photo = response.files[0].photo;
+						delete modal.scope.photoUploading;
+					},
+					onError,
+					function(progress) {
+						console.log('progress=' + angular.toJson(progress));
+						modal.scope.photoUploading = progress;
+					});
+					*/
 					$window.resolveLocalFileSystemURL(results, function(path) {
 						$rootScope.$evalAsync(function() {
 							console.log('matched path: ' + path.toURL());
@@ -447,17 +465,29 @@
 				});
 			};
 
-			modal.scope.fileSelected = function(files, evt) {
-				$timeout(function() {
-					console.log('File(s) selected: ' + angular.toJson(files));
-					modal.scope.uploadPic(files);
-				}, 10);
+			modal.scope.selectFile = function() {
+				angular.element('#file-upload').click();
+			};
+
+			modal.scope.fileSelected = function(file, files, errFiles, evt) {
+				$log.debug('file=' + angular.toJson(file));
+				/*
+				$log.debug('files=' + angular.toJson(files));
+				$log.debug('errFiles=' + angular.toJson(errFiles));
+				$log.debug('evt=' + angular.toJson(evt));
+				*/
+				modal.scope.$evalAsync(function() {
+					modal.scope.uploadPic(file[0]);
+				});
 			};
 
 			newTweetModal = modal;
 		});
 
 		$rootScope.newTweet = function(replyTo) {
+			SettingsService.getTwitarrRoot().then(function(tr) {
+				newTweetModal.scope.twitarrRoot = tr;
+			});
 			newTweetModal.scope.canCamera = (navigator.camera? true:false);
 			if (replyTo) {
 				var text = '';

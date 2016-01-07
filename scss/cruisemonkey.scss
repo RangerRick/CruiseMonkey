@@ -147,11 +147,11 @@ ion-tabs {
 }
 
 /** icons **/
-.cm-icon-add {
-	@extend .ion-plus;
-}
 .cm-icon-calendar {
-	@extend .icon-calendar;
+	@extend .ion-calendar;
+}
+.cm-icon-camera {
+	@extend .ion-camera;
 }
 .cm-icon-chatbox {
 	@extend .ion-chatbox;
@@ -162,14 +162,20 @@ ion-tabs {
 .cm-icon-compose {
 	@extend .ion-compose;
 }
-.cm-icon-info {
-	@extend .ion-information-circled;
-}
 .cm-icon-email {
 	@extend .ion-email;
 }
+.cm-icon-image {
+	@extend .ion-image;
+}
+.cm-icon-info {
+	@extend .ion-information-circled;
+}
 .cm-icon-more {
 	@extend .ion-more;
+}
+.cm-icon-plus {
+	@extend .ion-plus;
 }
 .cm-icon-refresh {
 	@extend .ion-refresh;
@@ -185,11 +191,11 @@ ion-tabs {
 }
 
 .platform-android {
-	.cm-icon-add {
-		@extend .ion-android-add;
-	}
 	.cm-icon-calendar {
 		@extend .ion-android-calendar;
+	}
+	.cm-icon-camera {
+		@extend .ion-android-camera;
 	}
 	.cm-icon-chatbox {
 		@extend .ion-android-chat;
@@ -200,8 +206,14 @@ ion-tabs {
 	.cm-icon-email {
 		@extend .ion-android-mail;
 	}
+	.cm-icon-image {
+		@extend .ion-android-image;
+	}
 	.cm-icon-more {
 		@extend .ion-android-more-vertical;
+	}
+	.cm-icon-plus {
+		@extend .ion-android-add;
 	}
 	.cm-icon-refresh {
 		@extend .ion-ion-android-refresh;
@@ -217,11 +229,11 @@ ion-tabs {
 	}
 }
 .platform-ios {
-	.cm-icon-add {
-		@extend .ion-ios-plus-empty;
-	}
 	.cm-icon-calendar {
 		@extend .ion-ios-calendar-outline;
+	}
+	.cm-icon-camera {
+		@extend .ion-ios-camera;
 	}
 	.cm-icon-chatbox {
 		@extend .ion-ios-chatboxes;
@@ -232,14 +244,17 @@ ion-tabs {
 	.cm-icon-compose {
 		@extend .ion-ios-compose-outline;
 	}
-	.cm-icon-info {
-		@extend .ion-ios-information;
-	}
 	.cm-icon-email {
 		@extend .ion-ios-email;
 	}
+	.cm-icon-info {
+		@extend .ion-ios-information;
+	}
 	.cm-icon-more {
 		@extend .ion-ios-more;
+	}
+	.cm-icon-plus {
+		@extend .ion-ios-plus-empty;
 	}
 	.cm-icon-refresh {
 		@extend .ion-ios-refresh-empty;
@@ -702,6 +717,11 @@ ion-popover-view.fit ion-content {
 			display: inline;
 			height: 36px;
 		}
+	}
+	.timestamp {
+		display: block;
+		color: #aaa;
+		font-size: $font-size-small;
 	}
 }
 

@@ -15,7 +15,6 @@
 		'uuid4',
 		'cruisemonkey.Config',
 		'cruisemonkey.DB',
-		'cruisemonkey.Database',
 		'cruisemonkey.user.User'
 	])
 	.factory('EventService', function($log, $q, $rootScope, db, kv, Twitarr, UserService) {
@@ -122,11 +121,28 @@
 			});
 		};
 
+		var updateEvent = function(event) {
+			return Twitarr.updateEvent(event.getRawData()).then(function(ret) {
+				$log.debug('EventService.updateEvent: success: ' + angular.toJson(ret));
+			}, function(err) {
+				$log.debug('EventService.updateEvent: failed: ' + angular.toJson(err));
+				return $q.reject(err);
+			});
+		};
+
+		var removeEvent = function(event) {
+			return Twitarr.removeEvent(event.getId()).then(function(ret) {
+				$log.debug('EventService.removeEvent: success: ' + angular.toJson(ret));
+			}, function(err) {
+				$log.debug('EventService.removeEvent: failed: ' + angular.toJson(err));
+				return $q.reject(err);
+			});
+		};
+
 		return {
-			'syncFrom': function() {},
 			'addEvent': addEvent,
-			'updateEvent': function() { return false; },
-			'removeEvent': function() { return false; },
+			'updateEvent': updateEvent,
+			'removeEvent': removeEvent,
 			'getAllEvents': getAllEvents,
 			'getOfficialEvents': getOfficialEvents,
 			'getUnofficialEvents': getUnofficialEvents,

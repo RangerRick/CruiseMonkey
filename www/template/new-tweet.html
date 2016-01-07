@@ -11,7 +11,7 @@
 	<ion-content>
 		<ion-list>
 			<div class="item row">
-				<button class="col col-10 button button-clear button-dark button-emoji"  ng-click="showEmoji($event)"><i class="icon ion-happy-outline"></i></button>
+				<button class="col col-10 button button-clear button-dark button-emoji" ng-click="showEmoji($event)"><i class="icon ion-happy-outline"></i></button>
 				<div class="item-input-inset tweet-input col">
 					<label class="item-input-wrapper">
 						<textarea id="tweet-text" ng-model="tweet.text" placeholder="Post Text" required></textarea>
@@ -26,14 +26,16 @@
 			</div>
 			<span>
 				<div class="row">
-					<div class="col col-80">
-						<input type="file" ng-file-select="" ng-model="picFile" name="file" accept="image/*;capture=camera" ng-multiple="false" required="" capture="camera" ng-file-change="fileSelected($files,$event)"></input>
+					<div class="col" ng-if="!canCamera">
+						<input type="file" id="file-upload" accept="image/*;capture=camera" onchange="angular.element(this).scope().fileSelected(this.files)" style="visibility:hidden;position:absolute;top:-50;left:-50"></input>
+						<button class="button button-dark" ng-click="selectFile()">
+							<i class="icon cm-icon-image"></i> Add or <i class="icon cm-icon-camera"></i> Take Photo
+						</button>
 					</div>
-					<!--
-					<div class="col col-20">
-						<button class="button button-clear button-dark" ng-click="uploadPic(picFile)" style="float: right"><i class="icon ion-ios-upload"></i></button>
+					<div class="col" ng-if="canCamera">
+						<button class="button button-dark" ng-click="addPhoto()"><i class="icon cm-icon-image"></i> Add Photo</button>
+						<button class="button button-dark" ng-click="takePhoto()"><i class="icon cm-icon-camera"></i> Take Photo</button>
 					</div>
-					-->
 				</div>
 			</span>
 		</ion-list>

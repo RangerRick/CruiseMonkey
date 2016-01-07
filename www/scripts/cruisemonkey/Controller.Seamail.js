@@ -136,6 +136,9 @@
 		};
 
 		$scope.doRefresh = function() {
+			SettingsService.getTwitarrRoot().then(function(tr) {
+				$scope.twitarrRoot = tr;
+			});
 			$log.info('Refreshing seamail.');
 			return Twitarr.getSeamail().then(function(res) {
 				$log.debug('doRefresh: res=' + angular.toJson(res));
@@ -160,6 +163,9 @@
 			if (!seamail.messages) {
 				seamail.messages = [];
 			}
+			SettingsService.getTwitarrRoot().then(function(tr) {
+				$scope.viewSeamailModal.scope.twitarrRoot = tr;
+			});
 			$scope.viewSeamailModal.scope.user = UserService.get();
 			$scope.viewSeamailModal.scope.seamail = seamail;
 

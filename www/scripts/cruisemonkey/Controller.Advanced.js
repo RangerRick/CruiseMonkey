@@ -6,7 +6,6 @@
 
 	angular.module('cruisemonkey.controllers.Advanced', [
 		'cruisemonkey.Config',
-		'cruisemonkey.Database',
 		'cruisemonkey.Events',
 		'cruisemonkey.Settings'
 	])

@@ -15,9 +15,10 @@
 		'cruisemonkey.Initializer',
 		'cruisemonkey.Notifications',
 		'cruisemonkey.Settings',
+		'ngCordova',
 		'ngFileUpload',
 	])
-	.factory('Twitarr', function($q, $rootScope, $http, $injector, $interval, $log, $timeout, $window, Upload, kv, Cordova, LocalNotifications, SettingsService, UserService) {
+	.factory('Twitarr', function($q, $rootScope, $http, $injector, $interval, $log, $timeout, $window, $cordovaFileTransfer, Upload, kv, Cordova, LocalNotifications, SettingsService, UserService) {
 		$log.info('Initializing Twit-arr API.');
 
 		var $scope = $rootScope.$new();
@@ -170,6 +171,10 @@
 			return call('POST', url, {}, data);
 		};
 
+		var put = function(url, data) {
+			return call('PUT', url, {}, data);
+		};
+
 		var getAlerts = function(shouldReset) {
 			var url = 'api/v2/alerts';
 			return get(url, {'no_reset':!shouldReset}).then(function(response) {
@@ -244,13 +249,56 @@
 			}
 
 			var url = 'api/v2/event';
-			$log.debug('Twitarr.addEvent(): url=' + url);
+			$log.debug('Twitarr.addEvent()');
 
 			return post(url, eventData).then(function(response) {
 				$log.debug('addEvent: success: ' + angular.toJson(response));
 				return true;
 			}, function(errorResponse) {
 				$log.error('Twitarr.addEvent(): Failed: ' + angular.toJson(errorResponse));
+				if (errorResponse.status) {
+					return $q.reject([errorResponse.data, errorResponse.status]);
+				} else {
+					return $q.reject([angular.toJson(errorResponse)]);
+				}
+			});
+		};
+
+		var updateEvent = function(eventData) {
+			var user = UserService.get();
+			if (!user || !user.loggedIn) {
+				return $q.reject(['Not logged in.']);
+			}
+
+			var url = 'api/v2/event/' + eventData.id;
+			$log.debug('Twitarr.updateEvent()');
+
+			return put(url, eventData).then(function(response) {
+				$log.debug('updateEvent: success: ' + angular.toJson(response));
+				return true;
+			}, function(errorResponse) {
+				$log.error('Twitarr.updateEvent(): Failed: ' + angular.toJson(errorResponse));
+				if (errorResponse.status) {
+					return $q.reject([errorResponse.data, errorResponse.status]);
+				} else {
+					return $q.reject([angular.toJson(errorResponse)]);
+				}
+			});
+		};
+
+		var removeEvent = function(eventId) {
+			var user = UserService.get();
+			if (!user || !user.loggedIn) {
+				return $q.reject(['Not logged in.']);
+			}
+			var url = 'api/v2/event/' + eventId;
+			$log.debug('Twitarr.removeEvent(): url=' + url);
+
+			return del(url).then(function(response) {
+				$log.debug('removeEvent: success: ' + angular.toJson(response));
+				return true;
+			}, function(errorResponse) {
+				$log.error('Twitarr.removeEvent(): Failed: ' + angular.toJson(errorResponse));
 				if (errorResponse.status) {
 					return $q.reject([errorResponse.data, errorResponse.status]);
 				} else {
@@ -410,22 +458,75 @@
 		var postPhoto = function(image) {
 			var url = 'api/v2/photo';
 			var user = UserService.get();
-			if (user.key) {
-				url += '?key=' + user.key;
-			}
-			$log.debug('Twitarr.postPhoto(): url=' + url +', image=' + image);
 
-			return Upload.upload({
-				'url': url,
-				'file': image,
-				'fileFormDataName': 'files',
-				'fileName': 'image.jpg',
-			}).then(function(res) {
-				return res;
-			}, function(err) {
-				$log.error('Failed postPhoto(): ' + angular.toJson(err));
-				return $q.reject(err);
-			});
+			var fileName, mimeType;
+			if (image instanceof File) {
+				fileName = image.name;
+				mimeType = image.type;
+			} else {
+				fileName = image.substr(image.lastIndexOf('/') + 1) || image;
+				mimeType = image.match(/\.png$/)? 'image/png':'image/jpeg';
+			}
+
+			if (typeof FileTransfer !== 'undefined') {
+				var deferred = $q.defer();
+				SettingsService.getTwitarrRoot().then(function(twitarrRoot) {
+					url = twitarrRoot + url;
+					$log.debug('Twitarr.postPhoto(): url=' + url + ', image=' + image);
+
+					var ft = new FileTransfer();
+					var opts = new FileUploadOptions();
+					opts.mimeType = mimeType;
+					opts.httpMethod = 'POST';
+					opts.chunkedMode = false;
+					opts.fileName = fileName;
+					opts.headers = {
+						Connection: 'close',
+					};
+					if (user.key) {
+						opts.params = {
+							key: user.key,
+							files: [opts.fileName],
+						};
+					}
+					ft.onprogress = function(progress) {
+						$scope.$evalAsync(function() {
+							deferred.notify(progress);
+						});
+					};
+
+					ft.upload(image, encodeURI(url), function success(result) {
+						$scope.$evalAsync(function() {
+							$log.debug('Twitarr.postPhoto(): success! ' + angular.toJson(result));
+							deferred.resolve(result);
+						});
+					}, function err(res) {
+						$scope.$evalAsync(function() {
+							$log.error('Twitarr.postPhoto(): failure. ' + angular.toJson(res));
+							deferred.reject(res);
+						});
+					}, opts);
+				});
+				return deferred.promise;
+			} else {
+				if (user.key) {
+					url += '?key=' + user.key;
+				}
+				return SettingsService.getTwitarrRoot().then(function(twitarrRoot) {
+					return Upload.upload({
+						'url': twitarrRoot + url,
+						'file': image,
+						'fileFormDataName': 'files',
+						'fileName': fileName,
+					}).then(function(res) {
+						$log.debug('Twitarr.postPhoto(): success! ' + angular.toJson(res));
+						return res;
+					}, function(err) {
+						$log.error('Twitarr.postPhoto(): failure. ' + angular.toJson(err));
+						return $q.reject(err);
+					});
+				});
+			}
 		};
 
 		var getUserInfo = function(username) {
@@ -681,6 +782,8 @@
 			getAutocompleteUsers: getAutocompleteUsers,
 			getEvents: getEvents,
 			addEvent: addEvent,
+			updateEvent: updateEvent,
+			removeEvent: removeEvent,
 			getSeamail: getSeamail,
 			postSeamail: postSeamail,
 			getSeamailMessages: getSeamailMessages,

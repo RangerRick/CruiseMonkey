@@ -62,7 +62,7 @@
 .ion, .ionicons,
 .ion-alert:before,
 .ion-alert-circled:before,
-.ion-android-add:before, .platform-android .cm-icon-add:before,
+.ion-android-add:before, .platform-android .cm-icon-plus:before,
 .ion-android-add-circle:before,
 .ion-android-alarm-clock:before,
 .ion-android-alert:before,
@@ -89,7 +89,7 @@
 .ion-android-bus:before,
 .ion-android-calendar:before, .platform-android .cm-icon-calendar:before,
 .ion-android-call:before,
-.ion-android-camera:before,
+.ion-android-camera:before, .platform-android .cm-icon-camera:before,
 .ion-android-cancel:before,
 .ion-android-car:before,
 .ion-android-cart:before,
@@ -131,7 +131,7 @@
 .ion-android-hangout:before,
 .ion-android-happy:before,
 .ion-android-home:before,
-.ion-android-image:before,
+.ion-android-image:before, .platform-android .cm-icon-image:before,
 .ion-android-laptop:before,
 .ion-android-list:before,
 .ion-android-locate:before,
@@ -234,8 +234,8 @@
 .ion-briefcase:before,
 .ion-bug:before,
 .ion-calculator:before,
-.ion-calendar:before,
-.ion-camera:before,
+.ion-calendar:before, .cm-icon-calendar:before,
+.ion-camera:before, .cm-icon-camera:before,
 .ion-card:before,
 .ion-cash:before,
 .ion-chatbox:before, .cm-icon-chatbox:before,
@@ -310,7 +310,7 @@
 .ion-help-circled:before,
 .ion-home:before,
 .ion-icecream:before,
-.ion-image:before,
+.ion-image:before, .cm-icon-image:before,
 .ion-images:before,
 .ion-information:before,
 .ion-information-circled:before, .cm-icon-info:before,
@@ -361,7 +361,7 @@
 .ion-ios-calculator-outline:before,
 .ion-ios-calendar:before,
 .ion-ios-calendar-outline:before, .platform-ios .cm-icon-calendar:before,
-.ion-ios-camera:before,
+.ion-ios-camera:before, .platform-ios .cm-icon-camera:before,
 .ion-ios-camera-outline:before,
 .ion-ios-cart:before,
 .ion-ios-cart-outline:before,
@@ -510,7 +510,7 @@
 .ion-ios-play:before,
 .ion-ios-play-outline:before,
 .ion-ios-plus:before,
-.ion-ios-plus-empty:before, .platform-ios .cm-icon-add:before,
+.ion-ios-plus-empty:before, .platform-ios .cm-icon-plus:before,
 .ion-ios-plus-outline:before,
 .ion-ios-pricetag:before,
 .ion-ios-pricetag-outline:before,
@@ -645,7 +645,7 @@
 .ion-planet:before,
 .ion-play:before,
 .ion-playstation:before,
-.ion-plus:before, .cm-icon-add:before,
+.ion-plus:before, .cm-icon-plus:before,
 .ion-plus-circled:before,
 .ion-plus-round:before,
 .ion-podium:before,
@@ -811,7 +811,7 @@
 .ion-alert-circled:before {
   content: ""; }
 
-.ion-android-add:before, .platform-android .cm-icon-add:before {
+.ion-android-add:before, .platform-android .cm-icon-plus:before {
   content: ""; }
 
 .ion-android-add-circle:before {
@@ -892,7 +892,7 @@
 .ion-android-call:before {
   content: ""; }
 
-.ion-android-camera:before {
+.ion-android-camera:before, .platform-android .cm-icon-camera:before {
   content: ""; }
 
 .ion-android-cancel:before {
@@ -1018,7 +1018,7 @@
 .ion-android-home:before {
   content: ""; }
 
-.ion-android-image:before {
+.ion-android-image:before, .platform-android .cm-icon-image:before {
   content: ""; }
 
 .ion-android-laptop:before {
@@ -1327,10 +1327,10 @@
 .ion-calculator:before {
   content: ""; }
 
-.ion-calendar:before {
+.ion-calendar:before, .cm-icon-calendar:before {
   content: ""; }
 
-.ion-camera:before {
+.ion-camera:before, .cm-icon-camera:before {
   content: ""; }
 
 .ion-card:before {
@@ -1555,7 +1555,7 @@
 .ion-icecream:before {
   content: ""; }
 
-.ion-image:before {
+.ion-image:before, .cm-icon-image:before {
   content: ""; }
 
 .ion-images:before {
@@ -1708,7 +1708,7 @@
 .ion-ios-calendar-outline:before, .platform-ios .cm-icon-calendar:before {
   content: ""; }
 
-.ion-ios-camera:before {
+.ion-ios-camera:before, .platform-ios .cm-icon-camera:before {
   content: ""; }
 
 .ion-ios-camera-outline:before {
@@ -2155,7 +2155,7 @@
 .ion-ios-plus:before {
   content: ""; }
 
-.ion-ios-plus-empty:before, .platform-ios .cm-icon-add:before {
+.ion-ios-plus-empty:before, .platform-ios .cm-icon-plus:before {
   content: ""; }
 
 .ion-ios-plus-outline:before {
@@ -2560,7 +2560,7 @@
 .ion-playstation:before {
   content: ""; }
 
-.ion-plus:before, .cm-icon-add:before {
+.ion-plus:before, .cm-icon-plus:before {
   content: ""; }
 
 .ion-plus-circled:before {
@@ -9756,6 +9756,11 @@ ion-popover-view.fit ion-content {
   .seamail .bar-subheader textarea {
     display: inline;
     height: 36px; }
+
+.seamail .timestamp {
+  display: block;
+  color: #aaa;
+  font-size: 11px; }
 
 .searchable .highlight {
   background-color: #febd11; }

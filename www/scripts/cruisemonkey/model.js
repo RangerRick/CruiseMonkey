@@ -311,7 +311,7 @@ CMEvent.prototype.toEditableBean = function() {
 		summary: this.getSummary(),
 		description: this.getDescription(),
 		location: this.getLocation(),
-		visibility: this.getVisibility(),
+		isPublic: this.getVisibility() === 'all',
 	};
 
 	bean.isValid = function() {
@@ -337,7 +337,7 @@ CMEvent.prototype.fromEditableBean = function(bean) {
 	this.setSummary(bean.summary);
 	this.setDescription(bean.description);
 	this.setLocation(bean.location);
-	this.setVisibility(bean.visibility);
+	this.setVisibility(bean.isPublic? 'all':'self');
 };
 
 CMEvent.prototype.toString = function() {
