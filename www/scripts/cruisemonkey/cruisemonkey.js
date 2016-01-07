@@ -156,6 +156,7 @@
 				url: '/info',
 				views: {
 					'tab-info': {
+						templateUrl: 'template/info.html',
 					}
 				}
 			})
@@ -169,67 +170,6 @@
 				},
 			})
 			/*
-			.state('app', {
-				url: '/app',
-				abstract: true,
-				templateUrl: 'template/menu.html',
-				controller: 'CMMenuCtrl'
-			})
-			.state('app.events', {
-				url: '/events',
-				abstract: true,
-				views: {
-					'menuContent': {
-						templateUrl: 'template/events-tabs.html',
-						controller: 'CMEventsBarCtrl',
-						resolve: {
-							redirect: function($state) {
-								var lastTab; // = storage.get('cruisemonkey.menu.last-tab');
-								if (!lastTab) {
-									lastTab = 'app.events.official';
-								}
-								$state.go(lastTab);
-							},
-						},
-					}
-				}
-			})
-			.state('app.events.official', {
-				url: '/official',
-				views: {
-					'events-official': {
-						templateUrl: 'template/event-list-official.html',
-						controller: 'CMOfficialEventCtrl'
-					}
-				}
-			})
-			.state('app.events.unofficial', {
-				url: '/unofficial',
-				views: {
-					'events-unofficial': {
-						templateUrl: 'template/event-list-unofficial.html',
-						controller: 'CMUnofficialEventCtrl'
-					}
-				}
-			})
-			.state('app.events.all', {
-				url: '/all',
-				views: {
-					'events-all': {
-						templateUrl: 'template/event-list-all.html',
-						controller: 'CMAllEventCtrl'
-					}
-				}
-			})
-			.state('app.events.my', {
-				url: '/my',
-				views: {
-					'events-my': {
-						templateUrl: 'template/event-list-my.html',
-						controller: 'CMMyEventCtrl'
-					}
-				}
-			})
 			.state('app.amenities', {
 				url: '/amenities',
 				views: {
@@ -249,24 +189,6 @@
 					}
 				}
 			})
-			.state('app.seamail', {
-				url: '/seamail',
-				views: {
-					'menuContent': {
-						templateUrl: 'template/seamail.html',
-						controller: 'CMSeamailCtrl'
-					}
-				}
-			})
-			.state('app.karaoke', {
-				url: '/karaoke',
-				views: {
-					'menuContent': {
-						templateUrl: 'template/karaoke.search.html',
-						controller: 'CMKaraokeSearchCtrl'
-					}
-				}
-			})
 			.state('app.about', {
 				url: '/about',
 				views: {
@@ -276,29 +198,11 @@
 					}
 				}
 			})
-			.state('app.settings', {
-				url: '/settings',
-				views: {
-					'menuContent': {
-						templateUrl: 'template/advanced.html',
-						controller: 'CMAdvancedCtrl'
-					}
-				}
-			})
-			.state('app.twitarr-stream', {
-				url: '/twitarr-stream',
-				views: {
-					'menuContent': {
-						templateUrl: 'template/twitarr-stream.html',
-						controller: 'CMTwitarrStreamCtrl'
-					}
-				}
-			})
 			*/
 		;
 	})
 	/* EventService & Notifications are here just to make sure they initializes early */
-	.run(function($q, $rootScope, $log, $injector, $sce, $state, $timeout, $window, $cordovaCamera, $cordovaKeyboard, $cordovaSplashscreen, $ionicModal, $ionicPlatform, $ionicPopover, $ionicPopup, ImgCache, util, Cordova, kv, EmojiService, EventService, Images, LocalNotifications, Notifications, SettingsService, Twitarr, UpgradeService, UserService) {
+	.run(function($q, $rootScope, $http, $log, $templateCache, $injector, $sce, $state, $timeout, $window, $cordovaCamera, $cordovaKeyboard, $cordovaSplashscreen, $ionicModal, $ionicPlatform, $ionicPopover, $ionicPopup, ImgCache, util, Cordova, kv, EmojiService, EventService, Images, LocalNotifications, Notifications, SettingsService, Twitarr, UpgradeService, UserService) {
 		console.log('CruiseMonkey run() called.');
 
 		ImgCache.$init();
@@ -307,6 +211,34 @@
 		});
 
 		var inCordova = Cordova.inCordova();
+
+		var templates = [
+			'events-chooser',
+			'event-edit',
+			'login',
+			'autocomplete-template',
+			'seamail-detail',
+			'tweet-detail',
+			'search',
+			'tabs',
+			'twitarr-stream',
+			'seamail',
+			'events',
+			'info',
+			'advanced',
+			'amenities',
+			'deck-plans',
+			'about',
+			'new-tweet',
+			'emoji',
+			'new-seamail',
+			'user-detail',
+		];
+
+		for (var t=0, len=templates.length; t < len; t++) {
+			$log.debug('loading template: ' + templates[t]);
+			$http.get('template/' + templates[t] + '.html', {cache:$templateCache});
+		}
 
 		moment.locale('en', {
 			relativeTime: {
