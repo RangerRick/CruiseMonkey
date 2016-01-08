@@ -165,6 +165,9 @@ ion-tabs {
 .cm-icon-email {
 	@extend .ion-email;
 }
+.cm-icon-home {
+	@extend .ion-home;
+}
 .cm-icon-image {
 	@extend .ion-image;
 }
@@ -173,6 +176,9 @@ ion-tabs {
 }
 .cm-icon-more {
 	@extend .ion-more;
+}
+.cm-icon-music-note {
+	@extend .ion-music-note;
 }
 .cm-icon-plus {
 	@extend .ion-plus;
@@ -247,11 +253,17 @@ ion-tabs {
 	.cm-icon-email {
 		@extend .ion-ios-email;
 	}
+	.cm-icon-home {
+		@extend .ion-ios-home;
+	}
 	.cm-icon-info {
 		@extend .ion-ios-information;
 	}
 	.cm-icon-more {
 		@extend .ion-ios-more;
+	}
+	.cm-icon-music-note {
+		@extend .ion-ios-musical-notes;
 	}
 	.cm-icon-plus {
 		@extend .ion-ios-plus-empty;
@@ -291,6 +303,22 @@ $button-blue-active-border: $rciNavyBlue;
 .item-complex .item-content,
 .item-radio .item-content {
   background-color: transparent;
+}
+
+$item-padding-orig: 16px;
+
+.item-icon-left {
+  padding-left: ceil( ($item-padding-orig * 3) + ($item-padding-orig / 3) );
+  .icon {
+    left: ceil( ($item-padding-orig / 3) * 2);
+  }
+}
+
+.item-icon-right {
+  padding-right: ceil( ($item-padding-orig * 3) + ($item-padding-orig / 3) );
+  .icon {
+    right: ceil( ($item-padding-orig / 3) * 2);
+  }
 }
 
 .cm-dice {
@@ -568,6 +596,18 @@ ion-popover-view.fit ion-content {
 	}
 }
 
+.info {
+	.item {
+		color: $rciNavyBlue;
+	}
+}
+
+.forums {
+	.last-reply {
+		opacity:.4;
+		font-size: smaller;
+	}
+}
 .karaoke {
 	.artist-entry {
 		font-size: 14px;

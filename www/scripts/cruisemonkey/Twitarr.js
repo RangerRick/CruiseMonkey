@@ -308,16 +308,33 @@
 		};
 
 		var getForums = function() {
-			var url = 'forums';
+			var url = 'api/v2/forum';
 			$log.debug('Twitarr.getForums()');
 			return get(url).then(function(response) {
-				if (response['forum_meta']) {
-					return response['forum_meta'];
+				$log.debug('response: ' + angular.toJson(response));
+				if (response.data && response.data['forum_meta']) {
+					return response.data['forum_meta'];
 				} else {
 					return [];
 				}
 			}, function(errorResponse) {
 				$log.error('Twitarr.getForums(): Failed: ' + angular.toJson(errorResponse));
+				if (errorResponse.status) {
+					return $q.reject([errorResponse.data, errorResponse.status]);
+				} else {
+					return $q.reject([angular.toJson(errorResponse)]);
+				}
+			});
+		};
+
+		var getForum = function(id) {
+			var url = 'api/v2/forum/' + id;
+			$log.debug('Twitarr.getForum('+id+')');
+			return get(url).then(function(response) {
+				$log.debug('response: ' + angular.toJson(response));
+				return {};
+			}, function(errorResponse) {
+				$log.error('Twitarr.getForum('+id+'): Failed: ' + angular.toJson(errorResponse));
 				if (errorResponse.status) {
 					return $q.reject([errorResponse.data, errorResponse.status]);
 				} else {
@@ -795,18 +812,26 @@
 			getStream: getStream,
 			postTweet: postTweet,
 			postPhoto: postPhoto,
+
 			getUserInfo: getUserInfo,
+
 			getStatus: getStatus,
 			getAlerts: getAlerts,
+
 			getAutocompleteUsers: getAutocompleteUsers,
+
 			getEvents: getEvents,
 			addEvent: addEvent,
 			updateEvent: updateEvent,
 			removeEvent: removeEvent,
+
+			getForums: getForums,
+
 			getSeamail: getSeamail,
 			postSeamail: postSeamail,
 			getSeamailMessages: getSeamailMessages,
 			postSeamailMessage: postSeamailMessage,
+
 			like: like,
 			unlike: unlike,
 		};

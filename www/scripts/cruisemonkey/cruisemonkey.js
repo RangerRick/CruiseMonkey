@@ -28,6 +28,8 @@
 		'cruisemonkey.controllers.Seamail',
 		'cruisemonkey.controllers.Twitarr.Stream',
 		'cruisemonkey.emoji.Emoji',
+		'cruisemonkey.forums.Controller',
+		'cruisemonkey.forums.Service',
 		'cruisemonkey.DB',
 		'cruisemonkey.Events',
 		'cruisemonkey.Images',
@@ -166,6 +168,43 @@
 					'tab-info': {
 						templateUrl: 'template/amenities.html',
 						controller: 'CMAmenitiesCtrl',
+					}
+				}
+			})
+			.state('tab.info-forums', {
+				url: '/info/forums',
+				views: {
+					'tab-info': {
+						templateUrl: 'scripts/cruisemonkey/forums/list.html',
+						controller: 'CMForumsCtrl',
+						resolve: {
+							forums: function(ForumService) {
+								return ForumService.list();
+							}
+						}
+					}
+				}
+			})
+			.state('tab.info-forum', {
+				url: '/info/forums/:id',
+				views: {
+					'tab-info': {
+						templateUrl: 'scripts/cruisemonkey/forums/view.html',
+						controller: 'CMForumCtrl',
+						resolve: {
+							forum: function($stateParams, ForumService) {
+								return ForumService.get($stateParams.id);
+							}
+						}
+					}
+				}
+			})
+			.state('tab.info-karaoke', {
+				url: '/info/karaoke',
+				views: {
+					'tab-info': {
+						templateUrl: 'template/karaoke.search.html',
+						controller: 'CMKaraokeSearchCtrl',
 					}
 				}
 			})

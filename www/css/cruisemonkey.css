@@ -308,7 +308,7 @@
 .ion-help:before,
 .ion-help-buoy:before,
 .ion-help-circled:before,
-.ion-home:before,
+.ion-home:before, .cm-icon-home:before,
 .ion-icecream:before,
 .ion-image:before, .cm-icon-image:before,
 .ion-images:before,
@@ -443,7 +443,7 @@
 .ion-ios-help:before,
 .ion-ios-help-empty:before,
 .ion-ios-help-outline:before,
-.ion-ios-home:before,
+.ion-ios-home:before, .platform-ios .cm-icon-home:before,
 .ion-ios-home-outline:before,
 .ion-ios-infinite:before,
 .ion-ios-infinite-outline:before,
@@ -480,7 +480,7 @@
 .ion-ios-more:before, .platform-ios .cm-icon-more:before,
 .ion-ios-more-outline:before,
 .ion-ios-musical-note:before,
-.ion-ios-musical-notes:before,
+.ion-ios-musical-notes:before, .platform-ios .cm-icon-music-note:before,
 .ion-ios-navigate:before,
 .ion-ios-navigate-outline:before,
 .ion-ios-nutrition:before,
@@ -621,7 +621,7 @@
 .ion-monitor:before,
 .ion-more:before, .cm-icon-more:before,
 .ion-mouse:before,
-.ion-music-note:before,
+.ion-music-note:before, .cm-icon-music-note:before,
 .ion-navicon:before,
 .ion-navicon-round:before,
 .ion-navigate:before,
@@ -1549,7 +1549,7 @@
 .ion-help-circled:before {
   content: ""; }
 
-.ion-home:before {
+.ion-home:before, .cm-icon-home:before {
   content: ""; }
 
 .ion-icecream:before {
@@ -1954,7 +1954,7 @@
 .ion-ios-help-outline:before {
   content: ""; }
 
-.ion-ios-home:before {
+.ion-ios-home:before, .platform-ios .cm-icon-home:before {
   content: ""; }
 
 .ion-ios-home-outline:before {
@@ -2065,7 +2065,7 @@
 .ion-ios-musical-note:before {
   content: ""; }
 
-.ion-ios-musical-notes:before {
+.ion-ios-musical-notes:before, .platform-ios .cm-icon-music-note:before {
   content: ""; }
 
 .ion-ios-navigate:before {
@@ -2488,7 +2488,7 @@
 .ion-mouse:before {
   content: ""; }
 
-.ion-music-note:before {
+.ion-music-note:before, .cm-icon-music-note:before {
   content: ""; }
 
 .ion-navicon:before {
@@ -9364,6 +9364,16 @@ ion-tabs.tabs-color-active-cm .tab-item {
 .item-radio .item-content {
   background-color: transparent; }
 
+.item-icon-left {
+  padding-left: 54px; }
+  .item-icon-left .icon {
+    left: 11px; }
+
+.item-icon-right {
+  padding-right: 54px; }
+  .item-icon-right .icon {
+    right: 11px; }
+
 .cm-dice {
   font-family: sans-serif; }
 
@@ -9638,6 +9648,13 @@ ion-popover-view.fit ion-content {
       text-align: center;
       margin: 0;
       padding: 3px; }
+
+.info .item {
+  color: #061557; }
+
+.forums .last-reply {
+  opacity: .4;
+  font-size: smaller; }
 
 .karaoke .artist-entry {
   font-size: 14px; }

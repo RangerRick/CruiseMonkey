@@ -54,7 +54,7 @@
 	.filter('karaokeFilter', function() {
 		return searchFilter;
 	})
-	.controller('CMKaraokeSearchCtrl', function($q, $scope, $http, $timeout, $interval, $window, $ionicFilterBar, $ionicLoading, $ionicScrollDelegate, _database, Cordova, kv, SettingsService) {
+	.controller('CMKaraokeSearchCtrl', function($q, $scope, $http, $timeout, $interval, $window, $ionicFilterBar, $ionicLoading, $ionicScrollDelegate, Cordova, kv, SettingsService) {
 		console.log('Initializing CMKaraokeSearchCtrl');
 
 		kv.get('cruisemonkey.karaoke-search').then(function(s) {
@@ -78,8 +78,6 @@
 			}
 		};
 
-		var db = _database.get('karaoke');
-
 		var updateEntries = function() {
 			$http.get('scripts/cruisemonkey/karaoke-list.js').success(function(data, status, headers, config) {
 				if ($scope.searchString && $scope.searchString.trim() !== '') {
@@ -102,15 +100,7 @@
 				$ionicLoading.hide();
 			});
 		};
-
-		$scope.onSearchUpdated = function(searchString) {
-			updateSearchString();
-			updateEntries();
-			var delegate = $ionicScrollDelegate.$getByHandle('karaoke-scroll');
-			if (delegate && delegate.getScrollPosition().top !== 0) {
-				delegate.scrollTop(false);
-			}
-		};
+		updateEntries();
 
 		$scope.scrollTop = function() {
 			var delegate = $ionicScrollDelegate.$getByHandle('karaoke-scroll');
@@ -129,19 +119,6 @@
 				}
 			});
 		};
-
-		$scope.$on('$ionicView.beforeEnter', function(ev, info) {
-			$ionicLoading.show({
-				template: 'Creating Karaoke index. This may take a minute...',
-				hideOnStateChange: true,
-			});
-			updateEntries();
-		});
-
-		$scope.$on('$ionicView.afterLeave', function(ev, info) {
-			console.log('Karaoke: destroying karaoke list');
-			$scope.entries = [];
-		});
 	})
 	;
 }());

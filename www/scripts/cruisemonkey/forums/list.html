@@ -1,0 +1,13 @@
+<ion-view view-title="Forums" class="forums">
+	<ion-content>
+		<ion-list>
+			<ion-item ng-repeat="forum in forums track by forum.id" href="#/tab/info/forums/{{forum.id}}">
+				<span class="item-note">
+					{{forum.posts}}
+				</span>
+				<h2>{{forum.subject}}</h2>
+				<div class="last-reply">Last reply: {{forum.timestamp.fromNow()}} by <span ng-click="openUser(forum.last_post_username, $event)">{{forum.last_post_display_name}}</span></div>
+			</ion-item>
+		</ion-list>
+	</ion-content>
+</ion-view>
