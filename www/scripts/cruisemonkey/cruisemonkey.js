@@ -25,17 +25,17 @@
 		'cruisemonkey.controllers.Login',
 		'cruisemonkey.controllers.Menu',
 		'cruisemonkey.controllers.Navigation',
-		'cruisemonkey.controllers.Seamail',
 		'cruisemonkey.controllers.Twitarr.Stream',
 		'cruisemonkey.emoji.Emoji',
 		'cruisemonkey.forums.Controller',
 		'cruisemonkey.forums.Service',
+		'cruisemonkey.seamail.Controller',
+		'cruisemonkey.seamail.Service',
 		'cruisemonkey.DB',
 		'cruisemonkey.Events',
 		'cruisemonkey.Images',
 		'cruisemonkey.Initializer',
 		'cruisemonkey.Notifications',
-		'cruisemonkey.Seamail',
 		'cruisemonkey.Settings',
 		'cruisemonkey.State',
 		'cruisemonkey.Twitarr',
@@ -99,6 +99,8 @@
 		};
 	})
 	.config(function($stateProvider, $urlRouterProvider, $compileProvider, $ionicConfigProvider, ImgCacheProvider) {
+		console.log('cruisemonkey.config');
+
 		if (isMobile) {
 			ionic.Platform.fullScreen(false,true);
 		}
@@ -140,8 +142,17 @@
 				url: '/seamail',
 				views: {
 					'tab-seamail': {
-						templateUrl: 'template/seamail.html',
+						templateUrl: 'scripts/cruisemonkey/seamail/seamails.html',
 						controller: 'CMSeamailCtrl',
+						resolve: {
+							seamails: function(SeamailService) {
+								return SeamailService.list().then(function(seamails) {
+									return seamails;
+								}, function(err) {
+									return [];
+								});
+							}
+						}
 					},
 				},
 			})

@@ -3,18 +3,32 @@
 
 	/*global ionic: true*/
 
-	angular.module('cruisemonkey.Seamail', [
+	angular.module('cruisemonkey.seamail.Service', [
 		'ImgCache',
 		'cruisemonkey.DB',
 		'cruisemonkey.Settings',
+		'cruisemonkey.Twitarr',
 		'cruisemonkey.user.User'
 	])
-	.factory('SeamailService', function($q, $rootScope, $timeout, $interval, $http, SettingsService, UserService, kv) {
+	.factory('SeamailService', function($log, $q, $rootScope, $timeout, $interval, $http, SettingsService, Twitarr, UserService, kv) {
 		var interval = null;
 
 		kv.get('cruisemonkey.seamail.count').then(function(s) {
 			$rootScope.seamailCount = s || 0;
 		});
+
+		var listSeamails = function() {
+			return Twitarr.getSeamail().then(function(res) {
+				$log.debug('SeamailService.list(): res=' + angular.toJson(res));
+				if (res && res.seamail_meta) {
+					return res.seamail_meta;
+				}
+				return [];
+			}, function(err) {
+				$log.error('Failed to get seamail: ' + angular.toJson(err));
+				return $q.reject(err);
+			});
+		};
 
 		var updateSeamailCount = function() {
 			if ($rootScope.seamailCount === undefined) {
@@ -93,8 +107,9 @@
 		};
 
 		return {
+			'list': listSeamails,
 			'online': startSynchronization,
-			'offline': stopSynchronization
+			'offline': stopSynchronization,
 		};
 	});
 }());

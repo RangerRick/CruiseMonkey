@@ -3,9 +3,11 @@
 
 	/* global removeFromArray: true */
 
-	angular.module('cruisemonkey.controllers.Seamail', [
+	angular.module('cruisemonkey.seamail.Controller', [
 		'cruisemonkey.Config',
 		'cruisemonkey.Twitarr',
+		'cruisemonkey.seamail.New',
+		'cruisemonkey.seamail.Service',
 	])
 	.directive('autoComplete',function($log, Twitarr) {
 		return {
@@ -73,12 +75,13 @@
 			}
 		};
 	})
-	.controller('CMSeamailCtrl', function($q, $scope, $interval, $log, $timeout, $ionicLoading, $ionicModal, $ionicPopup, $ionicScrollDelegate, SettingsService, Twitarr, UserService) {
+	.controller('CMSeamailCtrl', function($q, $scope, $interval, $log, $timeout, $ionicLoading, $ionicModal, $ionicPopup, $ionicScrollDelegate, NewSeamail, SeamailService, SettingsService, Twitarr, UserService, seamails) {
 		$log.info('CMSeamailCtrl Initializing.');
 
+		$scope.seamails = seamails;
 		$scope.unread = 3;
 
-		$ionicModal.fromTemplateUrl('template/seamail-detail.html', {
+		$ionicModal.fromTemplateUrl('scripts/cruisemonkey/seamail/seamail.html', {
 			animation: 'slide-in-up',
 			focusFirstInput: true
 		}).then(function(modal) {
@@ -130,30 +133,25 @@
 			}
 			$scope.unread = count;
 		};
+		updateUnread();
 
 		$scope.scrollTop = function() {
 			$ionicScrollDelegate.$getByHandle('seamail').scrollTop(true);
 		};
 
 		$scope.doRefresh = function() {
+			$log.info('Refreshing seamail.');
 			SettingsService.getTwitarrRoot().then(function(tr) {
 				$scope.twitarrRoot = tr;
 			});
-			$log.info('Refreshing seamail.');
-			return Twitarr.getSeamail().then(function(res) {
-				$log.debug('doRefresh: res=' + angular.toJson(res));
-				if (res && res.seamail_meta) {
-					$scope.seamails = res.seamail_meta;
-				} else {
-					$scope.seamails = [];
-				}
-				updateUnread();
-				$ionicLoading.hide();
+			return SeamailService.list().then(function(seamails) {
+				$scope.seamails = seamails;
 			}, function(err) {
-				$log.error('Failed to get seamail: ' + angular.toJson(err));
-				$ionicLoading.hide();
+				$log.error('Failed to get seamails: ' + angular.toJson(err));
 				return $q.reject(err);
 			}).finally(function() {
+				updateUnread();
+				$ionicLoading.hide();
 				$scope.$broadcast('scroll.refreshComplete');
 			});
 		};
@@ -177,6 +175,10 @@
 				$scope.viewSeamailModal.show();
 				$scope.doRefresh();
 			});
+		};
+
+		$scope.newSeamail = function() {
+			NewSeamail.open();
 		};
 
 		$scope.$on('modal.hidden', function() {

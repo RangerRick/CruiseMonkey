@@ -4,16 +4,16 @@
 	angular.module('cruisemonkey.seamail.New', [
 		'ionic',
 	])
-	.factory('NewSeamail', function($q, $rootScope, $log, $injector, $ionicPopover) {
+	.factory('NewSeamail', function($q, $rootScope, $log, $injector, $ionicModal, $ionicPopup) {
 		var $scope = $rootScope.$new();
 		$scope.modal = $q.defer();
 
-		$ionicModal.fromTemplateUrl('template/new-seamail.html', {
+		$ionicModal.fromTemplateUrl('scripts/cruisemonkey/seamail/new.html', {
 			animation: 'slide-in-up',
 			focusFirstInput: true,
 			scope: $scope,
 		}).then(function(modal) {
-			$scope.modal.resolve(modal);
+			$log.debug('New Seamail modal initialized.');
 
 			$scope.closeModal = function() {
 				modal.hide();
@@ -45,19 +45,19 @@
 			}
 			$scope.newSeamail = { users: [] };
 			$scope.sendTo = sendTo;
-			$scope.modal.then(function(modal) {
+			$scope.modal.promise.then(function(modal) {
 				modal.show();
 			})
 		};
 
 		var closeNewSeamail = function() {
-			$scope.modal.then(function(modal) {
+			$scope.modal.promise.then(function(modal) {
 				modal.hide();
 			});
 		};
 
 		$scope.$on('$destroy', function() {
-			$scope.modal.then(function(modal) {
+			$scope.modal.promise.then(function(modal) {
 				modal.remove();
 			});
 		});
