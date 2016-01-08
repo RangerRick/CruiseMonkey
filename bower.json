@@ -24,7 +24,8 @@
     "angular-imgcache": "angular-imgcache.js#~0.1.0",
     "imgcache.js": "v1.0rc2",
     "moment": "momentjs#~2.11.0",
-    "ion-sticky": "~1.0.4"
+    "ion-sticky": "~1.0.4",
+    "ionic-filter-bar": "~1.1.1"
   },
   "devDependencies": {
     "angular-mocks": "1.4.8",
