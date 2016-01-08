@@ -9809,11 +9809,11 @@ ion-side-menu .item.active {
     min-width: 36px; }
   .event-list .event-header {
     font-family: Nexa, "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
-    font-size: 20px;
+    font-size: 18px;
     padding: 5px;
     color: #febd11;
     background-color: #061557;
-    margin-top: 0;
+    margin-top: -1;
     margin-bottom: 0;
     border-color: #000; }
 

@@ -307,6 +307,25 @@
 			});
 		};
 
+		var getForums = function() {
+			var url = 'forums';
+			$log.debug('Twitarr.getForums()');
+			return get(url).then(function(response) {
+				if (response['forum_meta']) {
+					return response['forum_meta'];
+				} else {
+					return [];
+				}
+			}, function(errorResponse) {
+				$log.error('Twitarr.getForums(): Failed: ' + angular.toJson(errorResponse));
+				if (errorResponse.status) {
+					return $q.reject([errorResponse.data, errorResponse.status]);
+				} else {
+					return $q.reject([angular.toJson(errorResponse)]);
+				}
+			});
+		};
+
 		var getStatus = function() {
 			var user = UserService.get();
 			if (!user || !user.loggedIn) {

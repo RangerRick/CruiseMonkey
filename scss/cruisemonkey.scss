@@ -796,11 +796,11 @@ ion-side-menu {
 
 	.event-header {
 		font-family: $headerFont;
-		font-size: 20px;
+		font-size: $font-size-large;
 		padding: 5px;
 		color: $headerColor;
 		background-color: $headerBG;
-		margin-top: 0;
+		margin-top: -1;
 		margin-bottom: 0;
 		border-color: #000;
 	}

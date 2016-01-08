@@ -1,4 +1,4 @@
-<ion-view>
+<ion-view class="event-list searchable">
 	<ion-header-bar class="bar-dark" animation="no-animation" ng-click="scrollTop()">
 		<div class="buttons">
 			<button class="button button-icon icon-yellow cm-icon-clock" ng-click="goToNow()"></button>
@@ -12,7 +12,7 @@
 	</ion-header-bar>
 	<ion-content scroll="true" padding="false" id="event-content" delegate-handle="event-scroll" ng-click="closeKeyboard()">
 		<ion-refresher pulling-text="Pull to refresh..." on-refresh="refresh()"></ion-refresher>
-		<ion-list class="event-list searchable">
+		<ion-list>
 			<span ng-repeat="entry in events track by entry.getId()" id="{{entry.getId()}}">
 				<ion-item ng-if="isDay(entry)" class="item-divider event-header">{{prettyDate(entry.day)}}</ion-item>
 				<ion-item ng-if="!isDay(entry)" ng-class="'list-entry item-text-wrap ' + (entry.isEven()? 'even':'odd')">

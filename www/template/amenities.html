@@ -1,15 +1,11 @@
-<ion-view hide-back-button="true">
-	<ion-header-bar class="bar-stable bar-dark" animation="no-animation">
-		<div class="buttons">
-			<button menu-toggle="left" class="button button-icon icon ion-navicon"></button>
-		</div>
-		<h1 class="title" ng-click="scrollTop()">Amenities</h1>
-	</ion-header-bar>
-	<cm-search-bar placeholder="Search Amenities" ng-model="searchString" on-search-changed="onSearchChanged(searchString)"></cm-search-bar>
-	<ion-content delegate-handle="amenities" ng-class="'has-subheader'" ng-click="closeKeyboard()">
-		<ion-list class="event-list searchable">
-			<span ng-repeat="amenity in amenities | amenityFilter:searchString">
-				<ion-item class="item-divider header yellow" ng-if="amenity.type === 'deck'" ng-bind-html="'Deck ' + amenity.getFloor()"></ion-item>
+<ion-view view-title="Amenities" class="event-list searchable">
+	<ion-nav-buttons side="secondary">
+		<button class="button button-icon icon cm-icon-search" ng-click="showFilterBar()"></button>
+	</ion-nav-buttons>
+	<ion-content ion-sticky delegate-handle="amenities" ng-click="closeKeyboard()">
+		<ion-list>
+			<span ng-repeat="amenity in amenities">
+				<ion-item class="item-divider event-header yellow" ng-if="amenity.type === 'deck'" ng-bind-html="'Deck ' + amenity.getFloor()"></ion-item>
 				<a class="item item-icon-right item-text-wrap" ng-if="amenity.type === 'amenity'">
 					<div class="summary" ng-bind-html="highlight(amenity.getSummary(), searchString)"></div>
 					<div class="description" ng-show="amenity.getDescription()" ng-bind-html="highlight(amenity.getDescription(), searchString)"></div>

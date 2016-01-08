@@ -160,6 +160,15 @@
 					}
 				}
 			})
+			.state('tab.info-amenities', {
+				url: '/info/amenities',
+				views: {
+					'tab-info': {
+						templateUrl: 'template/amenities.html',
+						controller: 'CMAmenitiesCtrl',
+					}
+				}
+			})
 			.state('tab.settings', {
 				url: '/settings',
 				views: {
