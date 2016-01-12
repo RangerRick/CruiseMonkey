@@ -67,22 +67,20 @@ module.exports = {
 			new webpack.ResolverPlugin.DirectoryDescriptionFilePlugin("package.json", ["main"]),
 			new webpack.ResolverPlugin.DirectoryDescriptionFilePlugin("bower.json", ["main"]),
 		]),
-		/*
-		new ngAnnotatePlugin({}),
-		*/
+		new ngAnnotatePlugin({
+			add: true,
+		}),
 		new webpack.ProvidePlugin({
 			'$': 'jquery',
 			'jQuery': 'jquery',
 			'window.jQuery': 'jquery',
 		}),
-		/*
 		new webpack.optimize.OccurenceOrderPlugin(true),
 		new webpack.optimize.UglifyJsPlugin({
 			mangle: {
 				except: [ '$super', '$', 'jQuery', 'exports', 'require', 'angular', 'ionic' ],
 			}
 		}),
-		*/
 	],
 	externals: {
 		fs: '{}',

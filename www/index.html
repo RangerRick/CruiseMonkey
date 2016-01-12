@@ -22,9 +22,6 @@
 <link rel="apple-touch-icon" sizes="114x114" href="Icon@2x.png" />
 <link rel="apple-touch-icon" sizes="144x144" href="Icon-72@2x.png" />
 
-<!-- can't figure out how to load this with webpack -->
-<script src="lib/lokijs/src/lokijs.js"></script>
-
 <style>
 	 [ng\:cloak], [ng-cloak], .ng-cloak {
 		display: none !important;
@@ -75,7 +72,7 @@
 
 <!-- IE Fix for HTML5 Tags -->
 <!--[if lt IE 9]>
-<script src="lib/html5shiv/dist/html5shiv.js"></script>
+<script src="3rdparty/html5shiv.min.js"></script>
 <![endif]-->
 
 <title ng-bind="'CruiseMonkey - ' + $root.headerTitle">CruiseMonkey</title>
@@ -83,9 +80,12 @@
 <body class="antialiased off-canvas hide-extras" ng-cloak animation="no-animation">
 	<ion-nav-view></ion-nav-view>
 
+	<!-- can't figure out how to load this with webpack -->
+	<script src="3rdparty/lokijs.min.js"></script>
+
+	<!-- main app -->
 	<script src="app.js"></script>
 
-	<!--<script async="true" defer="true" src="lib/ngCordova/dist/ng-cordova.min.js"></script>-->
 	<script async="true" defer="true" src="cordova.js"></script>
 	<script async="true" defer="true">
 		var isMobile = false;
