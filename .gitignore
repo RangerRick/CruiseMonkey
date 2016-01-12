@@ -6,6 +6,7 @@ index.html
 *.swp
 www.zip
 npm-debug.log
+bower_components/
 node_modules/
 platforms/
 plugins/

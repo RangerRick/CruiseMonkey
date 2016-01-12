@@ -1,7 +1,7 @@
-$ionicons-font-path: "../lib/ionic/release/fonts" !default;
+$ionicons-font-path: "../bower_components/ionic/release/fonts";
 
-$fontPath: "../fonts" !default;
-$imagePath: "../images" !default;
+$fontPath: "../www/fonts";
+$imagePath: "../www/images";
 
 $yellowSVG: "#{$imagePath}/entypo/yellow/SVG";
 $greySVG: "#{$imagePath}/entypo/grey/SVG";
@@ -128,8 +128,8 @@ $popover-width:                   160px;
 	background-color: $rciLightBlue;
 }
 
-@import "www/lib/ionic/scss/ionic";
-@import "www/lib/ionic-filter-bar/scss/ionic.filter.bar";
+@import "../bower_components/ionic/scss/ionic";
+@import "../www/lib/ionic-filter-bar/scss/ionic.filter.bar";
 
 .filter-bar {
 	.bar-dark .button.button-clear {

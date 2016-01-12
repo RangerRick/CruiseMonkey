@@ -1,29 +1,29 @@
 @charset "UTF-8";
 @font-face {
   font-family: Hero;
-  src: url("../fonts/hero.otf"); }
+  src: url("../www/fonts/hero.otf"); }
 
 @font-face {
   font-family: Dekar;
-  src: url("../fonts/dekar.otf"); }
+  src: url("../www/fonts/dekar.otf"); }
 
 @font-face {
   font-family: Casper;
-  src: url("../fonts/casper.ttf"); }
+  src: url("../www/fonts/casper.ttf"); }
 
 @font-face {
   font-family: Intro;
-  src: url("../fonts/intro.otf");
+  src: url("../www/fonts/intro.otf");
   font-weight: 700; }
 
 @font-face {
   font-family: Nexa;
-  src: url("../fonts/nexa-bold.otf");
+  src: url("../www/fonts/nexa-bold.otf");
   font-weight: 700; }
 
 @font-face {
   font-family: Zag;
-  src: url("../fonts/zag-bold.otf");
+  src: url("../www/fonts/zag-bold.otf");
   font-weight: 600; }
 
 /* Ionic Overrides */
@@ -54,8 +54,8 @@
 */
 @font-face {
   font-family: "Ionicons";
-  src: url("../lib/ionic/release/fonts/ionicons.eot?v=2.0.1");
-  src: url("../lib/ionic/release/fonts/ionicons.eot?v=2.0.1#iefix") format("embedded-opentype"), url("../lib/ionic/release/fonts/ionicons.ttf?v=2.0.1") format("truetype"), url("../lib/ionic/release/fonts/ionicons.woff?v=2.0.1") format("woff"), url("../lib/ionic/release/fonts/ionicons.woff") format("woff"), url("../lib/ionic/release/fonts/ionicons.svg?v=2.0.1#Ionicons") format("svg");
+  src: url("../bower_components/ionic/release/fonts/ionicons.eot?v=2.0.1");
+  src: url("../bower_components/ionic/release/fonts/ionicons.eot?v=2.0.1#iefix") format("embedded-opentype"), url("../bower_components/ionic/release/fonts/ionicons.ttf?v=2.0.1") format("truetype"), url("../bower_components/ionic/release/fonts/ionicons.woff?v=2.0.1") format("woff"), url("../bower_components/ionic/release/fonts/ionicons.woff") format("woff"), url("../bower_components/ionic/release/fonts/ionicons.svg?v=2.0.1#Ionicons") format("svg");
   font-weight: normal;
   font-style: normal; }
 
