@@ -24,7 +24,8 @@
     "moment": "momentjs#~2.11.0",
     "ion-sticky": "~1.0.4",
     "ionic-filter-bar": "~1.1.1",
-    "modernizr": "~3.2.0"
+    "modernizr": "~3.2.0",
+    "winstore-jscompat": "https://github.com/MSOpenTech/winstore-jscompat.git"
   },
   "devDependencies": {
     "angular-mocks": "1.4.8",
@@ -34,7 +35,6 @@
     "angular-ui-router": "~0.2.15",
     "angular": "1.4.8",
     "angular-animate": "~1.4.8",
-    "angular-sanitize": "~1.4.8",
-    "angular-cookies": "~1.4.8"
+    "angular-sanitize": "~1.4.8"
   }
 }

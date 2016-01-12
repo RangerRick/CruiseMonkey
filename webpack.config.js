@@ -53,6 +53,10 @@ module.exports = {
 				loader: 'expose?angular!exports?angular'
 			},
 			{
+				test: /[\/]angular-imgcache\.js$/,
+				loader: 'imports?ImgCache=imgcache.js'
+			},
+			{
 				test: /[\/]imgcache\.js$/,
 				loader: 'expose?ImgCache!exports?ImgCache'
 			},
