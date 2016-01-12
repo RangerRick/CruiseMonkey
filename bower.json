@@ -20,12 +20,12 @@
     "toastr": "~2.1.2",
     "lokijs": "master",
     "angular-imgcache": "angular-imgcache.js#~0.1.0",
-    "imgcache.js": "v1.0rc2",
     "moment": "momentjs#~2.11.0",
     "ion-sticky": "~1.0.4",
     "ionic-filter-bar": "~1.1.1",
     "modernizr": "~3.2.0",
-    "winstore-jscompat": "https://github.com/MSOpenTech/winstore-jscompat.git"
+    "winstore-jscompat": "https://github.com/MSOpenTech/winstore-jscompat.git",
+    "imgcache.js": "https://github.com/RangerRick/imgcache.js.git#master"
   },
   "devDependencies": {
     "angular-mocks": "1.4.8",
