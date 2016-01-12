@@ -79,16 +79,18 @@ module.exports = {
 			'jQuery': 'jquery',
 			'window.jQuery': 'jquery',
 		}),
+		/*
 		new webpack.optimize.OccurenceOrderPlugin(true),
 		new webpack.optimize.UglifyJsPlugin({
 			mangle: {
 				except: [ '$super', '$', 'jQuery', 'exports', 'require', 'angular', 'ionic' ],
 			}
 		}),
+		*/
 	],
 	externals: {
 		fs: '{}',
 		cordova: '{}',
-		Loki: '{}',
+		/*Loki: '{}',*/
 	},
 };
