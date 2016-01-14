@@ -11,7 +11,7 @@ deleteFolderRecursive = function(path) {
 	if( fs.existsSync(path) ) {
 		files = fs.readdirSync(path);
 		files.forEach(function(file,index){
-			var curPath = path + "/" + file;
+			var curPath = path + '/' + file;
 			if(fs.lstatSync(curPath).isDirectory()) { // recurse
 				deleteFolderRecursive(curPath);
 			} else { // delete file
@@ -25,13 +25,13 @@ deleteFolderRecursive = function(path) {
 if (rootdir) {
 
 	// go through each of the platform directories that have been prepared
-	var platforms = (process.env.CORDOVA_PLATFORMS ? process.env.CORDOVA_PLATFORMS.split(',') : []);
+	var platforms = process.env.CORDOVA_PLATFORMS ? process.env.CORDOVA_PLATFORMS.split(',') : [];
 
 	for (var x=0; x < platforms.length; x++) {
 		var platform = platforms[x].trim().toLowerCase();
 		var wwwpath;
 
-		if(platform == 'android') {
+		if(platform === 'android') {
 			wwwpath = path.join('platforms', platform, 'assets', 'www');
 		} else {
 			wwwpath = path.join('platforms', platform, 'www');

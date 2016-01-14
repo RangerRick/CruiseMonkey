@@ -1,0 +1,15 @@
+bin/
+bower_components/
+couchdb/
+engine/
+node_modules/
+platforms/
+plugins/
+temp/
+
+lib/js/3rdparty/
+www/
+
+# for now
+test/
+spec/

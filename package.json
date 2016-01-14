@@ -4,6 +4,10 @@
   "minSdk": "14",
   "description": "Keep Track of Your Cruise",
   "build": 40354,
+  "scripts": {
+    "build": "webpack --debug --colors --display-modules --display-chunks --display-error-details --display-origins --display-reasons",
+    "lint": "eslint . --ext .js"
+  },
   "dependencies": {
     "feedparser": "*",
     "googleapis": "*",
@@ -21,6 +25,8 @@
     "commonmark": "*",
     "cordova-android": "*",
     "css-loader": "^0.23.1",
+    "eslint-friendly-formatter": "^1.2.2",
+    "eslint-loader": "^1.2.0",
     "exports-loader": "^0.6.2",
     "expose-loader": "^0.7.1",
     "file-loader": "^0.8.5",

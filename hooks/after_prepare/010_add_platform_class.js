@@ -68,7 +68,7 @@ function findClassAttr(bodyTag) {
 if (rootdir) {
 
   // go through each of the platform directories that have been prepared
-  var platforms = (process.env.CORDOVA_PLATFORMS ? process.env.CORDOVA_PLATFORMS.split(',') : []);
+  var platforms = process.env.CORDOVA_PLATFORMS ? process.env.CORDOVA_PLATFORMS.split(',') : [];
 
   for(var x=0; x<platforms.length; x++) {
     // open up the index.html file at the www root

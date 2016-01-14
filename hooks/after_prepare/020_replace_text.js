@@ -10,11 +10,11 @@ var rootdir = process.argv[2];
 function replace_string_in_file(filename, to_replace, replace_with) {
   var data = fs.readFileSync(filename, 'utf8');
 
-  var result = data.replace(new RegExp(to_replace, "g"), replace_with);
+  var result = data.replace(new RegExp(to_replace, 'g'), replace_with);
   fs.writeFileSync(filename, result, 'utf8');
 }
 
-var target = "stage";
+var target = 'stage';
 if (process.env.TARGET) {
   target = process.env.TARGET;
 }
@@ -46,7 +46,7 @@ function puts(error, stdout, stderr) {
 }
 
 if (rootdir) {
-  var ourconfigfile = path.join(rootdir, "package.json");
+  var ourconfigfile = path.join(rootdir, 'package.json');
   var configobj = JSON.parse(fs.readFileSync(ourconfigfile, 'utf8'));
   var exec = require('child_process').exec;
 
