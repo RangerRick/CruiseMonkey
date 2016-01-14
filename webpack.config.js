@@ -1,25 +1,60 @@
 var path = require('path'),
 	webpack = require('webpack'),
+	argv = require('yargs').argv,
 	ngAnnotatePlugin = require('ng-annotate-webpack-plugin');
+
+argv.env = argv.env || 'development';
 
 var outputDirectory = './www';
 
+var plugins = [
+	new webpack.ResolverPlugin([
+		new webpack.ResolverPlugin.DirectoryDescriptionFilePlugin('package.json', ['main']),
+		new webpack.ResolverPlugin.DirectoryDescriptionFilePlugin('bower.json', ['main'])
+	]),
+	new ngAnnotatePlugin({
+		add: true
+	}),
+	new webpack.ProvidePlugin({
+		'$': 'jquery',
+		'jQuery': 'jquery',
+		'window.jQuery': 'jquery'
+	})
+];
+
+if (argv.env !== 'development') {
+	plugins.push(new webpack.optimize.OccurenceOrderPlugin(true));
+	plugins.push(new webpack.optimize.UglifyJsPlugin({
+		mangle: {
+			except: [ '$super', '$', 'jQuery', 'exports', 'require', 'angular', 'ionic' ]
+		}
+	}));
+}
+
 module.exports = {
 	entry: {
-		'app': './lib/js/cruisemonkey'
+		'vendor': [
+			'es5-shim',
+			'classlist',
+			'winstore-jscompat/winstore-jscompat',
+			'ionic',
+			'angular',
+			'angular-animate',
+			'angular-sanitize',
+			'angular-ui-router',
+			'ionic-angular',
+			'ngCordova'
+		],
+		'app': [
+			'./lib/js/cruisemonkey'
+		]
 	},
 	output: {
 		path: outputDirectory,
-		filename: '[name].js',
-		chunkFilename: '[chunkhash].js'
+		filename: '[name].bundle.js',
+		chunkFilename: '[chunkhash].bundle.js'
 	},
 	resolve: {
-		/*
-		modulesDirectories: [
-			'bower_components',
-			'node_modules',
-		]
-		*/
 		alias: {
 			'ionic-filter-bar': 'ionic-filter-bar/dist/ionic.filter.bar'
 		},
@@ -31,6 +66,12 @@ module.exports = {
 		]
 	},
 	module: {
+		preLoaders: [
+		  {
+          test: /\.js$/,
+          loaders: ['eslint']
+        }
+      ],
 		loaders: [
 			{
 				test: /\.css$/,
@@ -66,28 +107,7 @@ module.exports = {
 			}
 		]
 	},
-	plugins: [
-		new webpack.ResolverPlugin([
-			new webpack.ResolverPlugin.DirectoryDescriptionFilePlugin('package.json', ['main']),
-			new webpack.ResolverPlugin.DirectoryDescriptionFilePlugin('bower.json', ['main'])
-		]),
-		new ngAnnotatePlugin({
-			add: true
-		}),
-		new webpack.ProvidePlugin({
-			'$': 'jquery',
-			'jQuery': 'jquery',
-			'window.jQuery': 'jquery'
-		})
-		/*
-		new webpack.optimize.OccurenceOrderPlugin(true),
-		new webpack.optimize.UglifyJsPlugin({
-			mangle: {
-				except: [ '$super', '$', 'jQuery', 'exports', 'require', 'angular', 'ionic' ]
-			}
-		})
-		*/
-	],
+	plugins: plugins,
 	externals: {
 		fs: '{}',
 		cordova: '{}'

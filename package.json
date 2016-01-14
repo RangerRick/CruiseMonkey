@@ -5,7 +5,11 @@
   "description": "Keep Track of Your Cruise",
   "build": 40354,
   "scripts": {
-    "build": "webpack --debug --colors --display-modules --display-chunks --display-error-details --display-origins --display-reasons",
+    "build": "webpack --colors --display-error-details",
+    "release": "webpack --colors --display-error-details --env=production",
+    "verbose-build": "webpack --debug --colors --display-modules --display-chunks --display-error-details --display-origins --display-reasons",
+    "ionic": "ionic emulate -slc --address=localhost ios",
+    "watch": "webpack --colors --display-error-details --watch",
     "lint": "eslint . --ext .js"
   },
   "dependencies": {
@@ -54,7 +58,8 @@
     "script-loader": "^0.6.1",
     "shelljs": "*",
     "style-loader": "^0.13.0",
-    "webpack": "^1.12.10"
+    "webpack": "^1.12.10",
+    "yargs": "^3.31.0"
   },
   "cordovaPlugins": [
     "cordova-plugin-console",
