@@ -1,18 +1,22 @@
-<ion-modal-view>
-	<ion-header-bar class="bar-stable bar-dark">
-		<div class="buttons">
-			<button class="button button-yellow button-clear" ng-click="closeTweet()">Close</button>
-		</div>
-		<h1 class="title">{{getDisplayName(openedTweet.author)}} <span style="padding-left: 5px; font-size: smaller; font-weight: 300">{{getDisplayHandle(openedTweet.author)}}</span></h1>
-	</ion-header-bar>
+<ion-view title="Tweet Detail" class="twitarr">
 	<ion-content>
 		<ion-list>
-			<ion-item class="item-image">
-				<img img-cache ic-src="{{openedPhoto}}">
-			</ion-item>
-			<ion-item class="item item-text-wrap">
-				<p class="timeframe">{{openedTweet.timestamp.fromNow()}}</p>
+			<ion-item class="item-avatar item-text-wrap">
+				<img img-cache ic-src="{{twitarrRoot + 'api/v2/user/photo/' + tweet.author}}" ng-click="openUser(tweet.author, $event)" />
+				<!--
+				<span class="item-note commands" ng-if="user.loggedIn">
+					<button ng-class="'button button-clear button-small icon ' + (tweet.likes &amp;&amp; tweet.likes.indexOf(user.username) >= 0? 'ion-ios-heart':'ion-ios-heart-outline')" ng-click="toggleLike(tweet)"></button>
+					<button class="button button-clear button-small icon ion-reply" ng-click="newTweet(tweet)"></button>
+				</span>
+				-->
+				<span class="user" ng-click="openUser(tweet.author, $event)">
+					<span class="display-name" ng-bind-html="displayName"></span>
+					<span class="display-handle" ng-bind-html="displayHandle"></span>
+				</span>
+				<p class="tweet-text" twitter-html="tweet.text"></p>
+				<img img-cache ic-src="{{twitarrRoot + 'photo/full/' + tweet.photo.id}}" ng-if="tweet.photo" style="width: 100%; max-width: 600px"/>
+				<p class="timeframe">{{tweet.timestamp.fromNow()}}</p>
 			</ion-item>
 		</ion-list>
 	</ion-content>
-</ion-modal-view>
+</ion-view>

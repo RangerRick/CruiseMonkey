@@ -651,17 +651,24 @@ ion-popover-view.fit ion-content {
 			white-space: nowrap;
 			.display-name {
 				white-space: nowrap;
-				font-size: $font-size-large;
+				font-size: $font-size-base;
 				font-weight: bold;
 			}
 			.display-handle {
 				white-space: nowrap;
 				padding-left: 5px;
-				font-size: $font-size-base;
+				font-size: $font-size-small;
 				font-weight: 300;
 				opacity: .5;
 			}
 		}
+	}
+	.tweet-text {
+		font-size: $font-size-large;
+	}
+	.timeframe {
+		opacity: .7;
+		font-size: $font-size-base;
 	}
 	.item-note {
 		text-align: right;
