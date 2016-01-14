@@ -46,7 +46,7 @@ module.exports = {
 			'ngCordova'
 		],
 		'app': [
-			'./lib/js/cruisemonkey'
+			'./lib/index'
 		]
 	},
 	output: {
