@@ -74,7 +74,7 @@ my $json = JSON::PP->new();
 my $json_text = $json->encode($json_list);
 
 print "Found " . scalar(@{$json_list}) . " entries.  Writing them to disk... ";
-open (FILEOUT, '>www/scripts/cruisemonkey/karaoke-list.js') or die "Can't write to karaoke-list.js: $!\n";
+open (FILEOUT, '>www/data/karaoke-list.js') or die "Can't write to karaoke-list.js: $!\n";
 print FILEOUT $json_text;
 close (FILEOUT);
 print "done\n";
