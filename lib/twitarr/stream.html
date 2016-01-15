@@ -16,7 +16,8 @@
 					<button ng-class="'button button-clear button-small icon ' + (entry.likes &amp;&amp; entry.likes.indexOf(user.username) >= 0? 'ion-ios-heart':'ion-ios-heart-outline')" ng-click="toggleLike(entry)"></button>
 					<button class="button button-clear button-small icon ion-reply" ng-click="newTweet(entry)"></button>
 				</span>
-				<span class="user" ng-click="openUser(entry.author, $event)">
+				<!--<span class="user" ng-click="openUser(entry.author, $event)">-->
+				<span class="user">
 					<span class="display-name" ng-bind-html="getDisplayName(entry.author)"></span>
 					<span class="display-handle" ng-bind-html="getDisplayHandle(entry.author)"></span>
 				</span>

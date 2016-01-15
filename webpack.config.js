@@ -20,7 +20,16 @@ var plugins = [
 		'jQuery': 'jquery',
 		'window.jQuery': 'jquery'
 	}),
-	new webpack.optimize.CommonsChunkPlugin('vendor', 'vendor.bundle.js') /*,
+	new webpack.optimize.CommonsChunkPlugin({
+		name: 'vendor',
+		filename: 'vendor.bundle.js',
+		minChunks: Infinity,
+	}),
+	new webpack.optimize.CommonsChunkPlugin({
+		children: true,
+		async: true
+	})
+	 /*,
 	new webpack.optimize.CommonsChunkPlugin('about', 'about.bundle.js'),
 	new webpack.optimize.CommonsChunkPlugin('amenities', 'amenities.bundle.js'),
 	new webpack.optimize.CommonsChunkPlugin('cordova', 'cordova.bundle.js'),
@@ -174,7 +183,10 @@ module.exports = {
 		loaders: [
 			{
 				test: /\.css$/,
-				loader: 'style!css'
+				loader: 'style!css',
+				include: [
+					path.resolve(__dirname, 'lib/css')
+				]
 			},
 			{
 				test: /\.scss$/,

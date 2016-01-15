@@ -1,0 +1,13 @@
+<ion-modal-view class="twitarr">
+	<ion-header-bar class="bar-dark">
+		<div class="buttons">
+			<button class="button button-yellow button-clear" ng-click="closeModal()">Close</button>
+		</div>
+		<h1></h1>
+	</ion-header-bar>
+	<ion-content scroll="false" class="image-modal transparent">
+		<ion-scroll direction="xy" scrollbar-x="false" scrollbar-y="false" zooming="true" min-zoom="1" style="width: 100%; height: 100%">
+			<div class="image" style="background-image: url( {{twitarrRoot + 'photo/full/' + tweet.photo.id}} )"></div>
+		</ion-scroll>
+	</ion-content>
+</ion-modal-view>
