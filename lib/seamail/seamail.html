@@ -1,10 +1,4 @@
-<ion-modal-view class="seamail">
-	<ion-header-bar class="bar-dark">
-		<div class="buttons">
-			<button class="button button-yellow button-clear" ng-click="closeModal()">Close</button>
-		</div>
-		<h1 class="title">{{seamail.subject}}</h1>
-	</ion-header-bar>
+<ion-view class="seamail" title="{{seamail.subject}}">
 	<ion-header-bar ng-class="'bar-subheader'">
 		<div class="row">
 			<div class="col">
@@ -14,11 +8,12 @@
 				<textarea required wrap="soft" ng-model="newMessage.text" ng-trim="true" placeholder="Add a message to this discussion..." style="resize: none; width: 100%"></textarea>
 			</div>
 			<div class="col">
-				<button class="button button-small button-icon icon cm-icon-send icon-navy" style="float: right" ng-click="postMessage()"></button>
+				<button class="button button-small button-icon icon cm-icon-send icon-navy" style="float: right" ng-click="postMessage()" ng-disabled="form.$invalid"></button>
 			</div>
 		</div>
 	</ion-header-bar>
 	<ion-content class="seamail">
+		<ion-refresher pulling-text="Pull to refresh..." on-refresh="refreshMessages()"></ion-refresher>
 		<ion-scroll class="users" direction="x">
 			<span class="user" ng-click="openUser(user.username, $event)" ng-repeat="user in seamail.users">
 				<img img-cache ic-src="{{twitarrRoot}}api/v2/user/photo/{{user.username}}" title="{{user.display_name}}" /> {{user.username}}
@@ -26,11 +21,11 @@
 		</ion-scroll>
 		<ion-list>
 			<ion-item ng-repeat="message in seamail.messages track by $index" class="item item-avatar item-text-wrap">
-				<img img-cache ic-src="{{twitarrRoot}}api/v2/user/photo/{{message.author}}" title="{{message.display_name}}" />
-				<h2>{{message.display_name}} {{twitarrRoot}}</h2>
+				<img img-cache ic-src="{{twitarrRoot}}api/v2/user/photo/{{message.author}}" title="{{message.author_display_name}}" />
+				<div class="display-name">{{message.author_display_name}} <span class="display-handle">@{{message.author}}</span></div>
 				<p ng-bind-html="message.text"></p>
 				<div class="timestamp">{{message.timestamp.fromNow()}}</div>
 			</ion-item>
 		</ion-list>
 	</ion-content>
-</ion-modal-view>
+</ion-view>

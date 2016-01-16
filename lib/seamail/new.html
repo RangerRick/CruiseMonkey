@@ -1,22 +1,24 @@
-<ion-modal-view ng-class="'fit seamail'">
+<ion-modal-view ng-class="'fit seamail'" ng-controller="NewSeamailCtrl">
+	<form name="seamailForm">
 	<ion-header-bar class="bar-dark">
 		<div class="buttons">
 			<button class="button button-clear button-yellow" ng-click="closeModal()">Close</button>
 		</div>
 		<h1 class="title">New Seamail</h1>
 		<div class="buttons">
-			<button class="button button-clear button-yellow" ng-click="postSeamail(newSeamail, sendTo)" ng-disabled="form.$invalid">Send</button>
+			<button class="button button-clear button-yellow" ng-click="postSeamail(message)" ng-disabled="form.$invalid">Send</button>
 		</div>
 	</ion-header-bar>
 	<ion-content>
 		<ion-list>
-			<auto-complete model="newSeamail.users" additional-user="sendTo" class="item"></auto-complete>
+			<auto-complete model="message.users" class="item"></auto-complete>
 			<label class="item item-input">
-				<input type="text" ng-model="newSeamail.subject" ng-trim="true" placeholder="Subject" required>
+				<input type="text" name="subject" ng-model="message.subject" ng-trim="true" placeholder="Subject" required>
 			</label>
 			<label class="item item-input">
-				<textarea ng-model="newSeamail.text" ng-trim="true" placeholder="First message" required></textarea>
+				<textarea name="text" ng-model="message.text" ng-trim="true" placeholder="First message" required></textarea>
 			</label>
 		</ion-list>
 	</ion-content>
+	</form>
 </ion-modal-view>

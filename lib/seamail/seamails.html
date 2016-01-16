@@ -1,17 +1,12 @@
-<ion-view class="seamail">
-	<ion-header-bar class="bar-stable bar-dark" animation="no-animation">
-		<div class="buttons">
-		</div>
-		<h1 class="title" ng-click="scrollTop()">Seamail</h1>
-		<div class="buttons">
-			<button class="button button-icon icon cm-icon-compose" ng-click="newSeamail()"></button>
-		</div>
-	</ion-header-bar>
+<ion-view class="seamail" title="Seamail">
+	<ion-nav-buttons side="secondary">
+		<button class="button button-icon icon cm-icon-compose" ng-click="newSeamail()"></button>
+	</ion-nav-buttons>
 	<ion-content scroll="true" padding="false" delegate-handle="seamail" ng-click="closeKeyboard()">
 		<ion-refresher pulling-text="Pull to refresh..." on-refresh="doRefresh()"></ion-refresher>
 		<ion-list>
-			<ion-item ng-if="seamails.length === 0">You have no Seamail messages.</ion-item>
-			<ion-item ng-repeat="seamail in seamails track by seamail.id" ng-click="openSeamail(seamail)" class="item-text-wrap">
+			<ion-item ng-if="seamails.length === 0">You have no Seamail discussions.</ion-item>
+			<ion-item ng-repeat="seamail in seamails track by seamail.id" class="item-text-wrap" href="#/tab/seamail/{{seamail.id}}">
 				<div class="title"><i ng-if="seamail.is_unread" class="icon ion-record blue"></i> {{seamail.subject}}</div>
 				<div class="messages">{{seamail.messages}}</div>
 				<div class="time">{{seamail.timestamp.format('dddd, MMMM Do, h:mma')}}</div>

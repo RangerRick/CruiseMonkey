@@ -626,6 +626,19 @@ ion-popover-view.fit ion-content {
 	}
 }
 
+.display-name {
+	white-space: nowrap;
+	font-size: $font-size-base;
+	font-weight: bold;
+}
+.display-handle {
+	white-space: nowrap;
+	padding-left: 5px;
+	font-size: $font-size-small;
+	font-weight: 300;
+	opacity: .5;
+}
+
 .twitarr {
 	.tweet-input {
 		textarea {
@@ -649,18 +662,6 @@ ion-popover-view.fit ion-content {
 	.item {
 		.user {
 			white-space: nowrap;
-			.display-name {
-				white-space: nowrap;
-				font-size: $font-size-base;
-				font-weight: bold;
-			}
-			.display-handle {
-				white-space: nowrap;
-				padding-left: 5px;
-				font-size: $font-size-small;
-				font-weight: 300;
-				opacity: .5;
-			}
 		}
 	}
 	.tweet-text {

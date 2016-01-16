@@ -1,6 +1,6 @@
 <ion-tabs class="tabs-cm">
 
-  <!-- icon="ion-chatbox" title="Twit-Arr" ng-controller="CMTwitarrStreamCtrl" -->
+  <!-- title="Twit-Arr" ng-controller="CMTwitarrStreamCtrl" -->
   <ion-tab icon="cm-icon-chatbox" href="#/tab/twitarr" badge="unreadCount" badge-style="badge-assertive">
     <ion-nav-bar class="bar-dark">
       <ion-nav-back-button class="button-yellow" />
@@ -8,17 +8,20 @@
     <ion-nav-view name="tab-twitarr"></ion-nav-view>
   </ion-tab>
 
-  <!-- icon="ion-calendar" title="Seamail" ng-controller="CMSeamailCtrl"  -->
+  <!-- title="Seamail" ng-controller="CMSeamailCtrl"  -->
   <ion-tab icon="cm-icon-email" href="#/tab/seamail" badge="unread" badge-style="badge-assertive">
+    <ion-nav-bar class="bar-dark">
+      <ion-nav-back-button class="button-yellow" />
+    </ion-nav-bar>
     <ion-nav-view name="tab-seamail"></ion-nav-view>
   </ion-tab>
 
-  <!-- icon="ion-calendar" title="Events" -->
+  <!-- title="Events" -->
   <ion-tab icon="cm-icon-calendar" href="#/tab/events">
     <ion-nav-view name="tab-events"></ion-nav-view>
   </ion-tab>
 
-  <!-- icon="ion-information-circled" title="Info" -->
+  <!-- title="Info" -->
   <ion-tab icon="cm-icon-info" href="#/tab/info">
     <ion-nav-bar class="bar-dark">
       <ion-nav-back-button class="button-yellow" />
@@ -26,7 +29,7 @@
     <ion-nav-view name="tab-info"></ion-nav-view>
   </ion-tab>
 
-  <!-- icon="ion-settings" title="Settings" -->
+  <!-- title="Settings" -->
   <ion-tab icon="cm-icon-settings" href="#/tab/settings">
     <ion-nav-view name="tab-settings"></ion-nav-view>
   </ion-tab>
