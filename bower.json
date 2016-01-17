@@ -27,7 +27,8 @@
     "modernizr": "~3.2.0",
     "winstore-jscompat": "https://github.com/MSOpenTech/winstore-jscompat.git",
     "d3": "~3.5.12",
-    "ngFitText": "~3.3.3"
+    "ngFitText": "~3.3.3",
+    "moment-timezone": "~0.5.0"
   },
   "resolutions": {
     "angular-ui-router": "~0.2.15",
