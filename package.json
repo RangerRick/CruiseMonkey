@@ -81,12 +81,13 @@
     "https://github.com/OpenNMS/cordova-plugin-storage.git",
     "https://github.com/RangerRick/cordova-certificate-plugin.git",
     "https://github.com/Red-Folder/bgs-core.git",
-    "https://github.com/VersoSolutions/CordovaClipboard.git"
+    "https://github.com/VersoSolutions/CordovaClipboard.git",
+    "cordova-plugin-datepicker"
   ],
   "cordovaPlatforms": [
     {
       "platform": "android",
-      "version": "5.0.0",
+      "version": "4.1.1",
       "locator": "android"
     },
     {
