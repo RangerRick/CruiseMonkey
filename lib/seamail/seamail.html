@@ -2,7 +2,7 @@
 	<ion-header-bar ng-class="'bar-subheader'">
 		<div class="row">
 			<div class="col">
-				<img img-cache ic-src="{{twitarrRoot}}api/v2/user/photo/{{user.username}}" />
+				<img img-cache ic-src="{{twitarrRoot}}api/v2/user/photo/{{user.username}}" ng-if="twitarrRoot &amp;&amp; user.username" />
 			</div>
 			<div class="col col-75">
 				<textarea required wrap="soft" ng-model="newMessage.text" ng-trim="true" placeholder="Add a message to this discussion..." style="resize: none; width: 100%"></textarea>
@@ -16,12 +16,12 @@
 		<ion-refresher pulling-text="Pull to refresh..." on-refresh="refreshMessages()"></ion-refresher>
 		<ion-scroll class="users" direction="x">
 			<span class="user" ng-click="openUser(user.username, $event)" ng-repeat="user in seamail.users">
-				<img img-cache ic-src="{{twitarrRoot}}api/v2/user/photo/{{user.username}}" title="{{user.display_name}}" /> {{user.username}}
+				<img img-cache ic-src="{{twitarrRoot}}api/v2/user/photo/{{user.username}}" title="{{user.display_name}}" ng-if="twitarrRoot &amp;&amp; user.username" /> {{user.username}}
 			</span>
 		</ion-scroll>
 		<ion-list>
 			<ion-item ng-repeat="message in seamail.messages track by $index" class="item item-avatar item-text-wrap">
-				<img img-cache ic-src="{{twitarrRoot}}api/v2/user/photo/{{message.author}}" title="{{message.author_display_name}}" />
+				<img img-cache ic-src="{{twitarrRoot}}api/v2/user/photo/{{message.author}}" title="{{message.author_display_name}}" ng-if="twitarrRoot &amp;&amp; message.author" />
 				<div class="display-name">{{message.author_display_name}} <span class="display-handle">@{{message.author}}</span></div>
 				<p ng-bind-html="message.text"></p>
 				<div class="timestamp">{{message.timestamp.fromNow()}}</div>

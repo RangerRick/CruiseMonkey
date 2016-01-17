@@ -12,7 +12,7 @@
 				<div class="time">{{seamail.timestamp.format('dddd, MMMM Do, h:mma')}}</div>
 				<ion-scroll class="users" direction="x">
 					<span class="user" ng-click="openUser(user.username, $event)" ng-repeat="user in seamail.users">
-						<img img-cache ic-src="{{twitarrRoot}}api/v2/user/photo/{{user.username}}" title="{{user.display_name}}" /> {{user.username}}
+						<img img-cache ic-src="{{twitarrRoot}}api/v2/user/photo/{{user.username}}" title="{{user.display_name}}" ng-if="twitarrRoot &amp;&amp; user.username" /> {{user.username}}
 					</span>
 				</ion-scroll>
 			</ion-item>
