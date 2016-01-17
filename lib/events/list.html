@@ -15,16 +15,19 @@
 		<ion-list>
 			<span ng-repeat="entry in events track by entry.getId()" id="{{entry.getId()}}">
 				<ion-item ng-if="isDay(entry)" class="item-divider event-header">{{prettyDate(entry.day)}}</ion-item>
-				<ion-item ng-if="!isDay(entry)" ng-class="'list-entry item-text-wrap ' + (entry.isEven()? 'even':'odd')">
+				<ion-item ng-if="!isDay(entry)" ng-class="'item-text-wrap list-entry ' + (entry.isOfficial()? 'official':'unofficial') + ' ' + (entry.isEven()? 'even':'odd')">
 					<span class="item-note">
 						<button id="{{entry.getId()}}-favorite" ng-click="toggleFavorite(entry)" class="button button-small button-clear button-navy" ng-show="showFavorite(entry)"><i class="icon" ng-class="entry.isFavorite(user.username)? 'active ion-ios-heart':'ion-ios-heart-outline'"></i></button>
-						<button class="public button button-small button-clear button-navy" ng-show="showEditable(entry)"><i ng-class="'icon ' + (entry.getVisibility() === 'all'? 'ion-eye':'ion-eye-disabled')"></i></button>
 						<button class="button button-small button-clear button-navy" ng-click="openPopover($event, entry)" ng-show="showEditable(entry)"><i class="icon ion-android-more-vertical"></i></button>
 					</span>
 					<span>
-					<div class="summary" ng-bind-html="highlight(entry.getSummary(), searchString)"></div>
+					<div class="summary">
+						<span ng-bind-html="highlight(entry.getSummary(), searchString)"></span>
+						<i class="icon icon-navy ion-eye-disabled" ng-if="entry.getVisibility() !== 'all'"></i>
+					</div>
 					<div class="time">Time: {{entry.getDisplayTime()}}</div>
-					<div class="createdBy" ng-if="entry.getUsername() != 'official'" ng-bind-html="'Created By: ' + highlight(entry.getUsername(), searchString)" ng-click="openUser(entry.getUsername(), $event)"></div>
+					<div class="createdBy" ng-if="entry.isOfficial()"><img src="../data/boat.svg" style="max-height: 14px" ng-if="entry.isOfficial()" /> Official Event</div>
+					<div class="createdBy" ng-if="!entry.isOfficial()" ng-bind-html="'Created By: ' + highlight(entry.getUsername(), searchString)" ng-click="openUser(entry.getUsername(), $event)"></div>
 					<div class="location" ng-if="entry.getLocation()">Location: <span ng-bind-html="highlight(entry.getLocation(), searchString)"></span></div>
 					<div class="description" ng-if="entry.getDescription()" ng-bind-html="highlight(entry.getFormattedDescription(), searchString)"></div>
 					</span>

@@ -1,11 +1,12 @@
 <ion-view class="seamail" title="Seamail">
 	<ion-nav-buttons side="secondary">
-		<button class="button button-icon icon cm-icon-compose" ng-click="newSeamail()"></button>
+		<button class="button button-icon icon cm-icon-compose" ng-click="newSeamail()" ng-if="user.loggedIn"></button>
 	</ion-nav-buttons>
 	<ion-content scroll="true" padding="false" delegate-handle="seamail" ng-click="closeKeyboard()">
 		<ion-refresher pulling-text="Pull to refresh..." on-refresh="doRefresh()"></ion-refresher>
 		<ion-list>
-			<ion-item ng-if="seamails.length === 0">You have no Seamail discussions.</ion-item>
+			<ion-item class="item-text-wrap" ng-if="!UserService.loggedIn()">You must be logged in to view your Seamail discussions.</ion-item>
+			<ion-item class="item-text-wrap" ng-if="seamails.length === 0 &amp;&amp; user.loggedIn">You have no Seamail discussions.</ion-item>
 			<ion-item ng-repeat="seamail in seamails track by seamail.id" class="item-text-wrap" href="#/tab/seamail/{{seamail.id}}">
 				<div class="title"><i ng-if="seamail.is_unread" class="icon ion-record blue"></i> {{seamail.subject}}</div>
 				<div class="messages">{{seamail.messages}}</div>

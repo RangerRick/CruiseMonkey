@@ -72,10 +72,8 @@ $simpleBorder: 1px solid black;
 $headerColor: $rciYellow;
 $headerBG: $rciNavyBlue;
 
-$contentBG: #f8f8f8;
-
 $mainBG: white;
-$alternateBG: $cmBabyBlue;
+$alternateBG: #f8f8f8;
 
 $gutterMonkey: url(../images/cruise-monkey-transparent-bg.png);
 
@@ -806,10 +804,6 @@ ion-popover-view.fit ion-content {
 }
 
 .list-entry {
-	border-bottom: $simpleBorder;
-	/*
-	padding: 10px;
-	*/
 	.item-note {
 		margin: -10px;
 	}
@@ -850,15 +844,33 @@ ion-side-menu {
 	}
 }
 
+$officialEventColor: #3c66a6;
+$unofficialEventColor: $darkGrey;
+$eventMarkerSize: 8px;
+
+ion-item.item.item-text-wrap.list-entry.official.odd {
+	color: $officialEventColor;
+	background-color: $mainBG !important;
+	border-left: $eventMarkerSize solid mix($rciNavyBlue, $mainBG, 60%);
+}
+ion-item.item.item-text-wrap.list-entry.official.even {
+	color: $officialEventColor;
+	background-color: $alternateBG !important;
+	border-left: $eventMarkerSize solid mix($rciNavyBlue, $mainBG, 60%);
+}
+ion-item.item.item-text-wrap.list-entry.unofficial.odd {
+	color: $unofficialEventColor;
+	background-color: $mainBG !important;
+	border-left: $eventMarkerSize solid $mainBG;
+}
+ion-item.item.item-text-wrap.list-entry.unofficial.even {
+	color: $unofficialEventColor;
+	background-color: $alternateBG !important;
+	border-left: $eventMarkerSize solid $alternateBG;
+}
+
 .event-list {
 	font-family: $eventListFont;
-	
-	.odd {
-		background-color: $mainBG;
-	}
-	.even {
-		background-color: $alternateBG;
-	}
 
 	.item-note {
 		.button {

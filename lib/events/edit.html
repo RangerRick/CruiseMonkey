@@ -32,6 +32,12 @@
 					</label>
 					Make Public?
 				</label>
+				<label class="item item-checkbox">
+					<label class="checkbox">
+						<input type="checkbox" ng-model="eventData.isOfficial" name="eIsOfficial" />
+					</label>
+					Make Official?
+				</label>
 				<label class="item item-input item-stacked-label">
 					<span class="input-label">Event Start</span> <span ng-show="form.eStartDate.$invalid" class="invalid">Required.</span>
 					<span><input type="datetime-local" ng-model="eventData.startDate" name="eStartDate" required /></span>
