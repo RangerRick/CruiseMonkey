@@ -6,11 +6,11 @@
 		<ion-list>
 			<span ng-repeat="amenity in amenities">
 				<ion-item class="item-divider event-header yellow" ng-if="amenity.type === 'deck'" ng-bind-html="'Deck ' + amenity.getFloor()"></ion-item>
-				<a class="item item-icon-right item-text-wrap" ng-if="amenity.type === 'amenity'">
+				<ion-item class="item-icon-right item-text-wrap" ng-if="amenity.type === 'amenity'">
 					<div class="summary" ng-bind-html="highlight(amenity.getSummary(), searchString)"></div>
 					<div class="description" ng-show="amenity.getDescription()" ng-bind-html="highlight(amenity.getDescription(), searchString)"></div>
 					<i ng-if="amenity.getIcon()" class="icon {{amenity.getIcon()}}"></i>
-				</a>
+				</ion-item>
 			</span>
 		</ion-list>
 	</ion-content>

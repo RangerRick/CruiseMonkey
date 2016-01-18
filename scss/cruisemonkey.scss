@@ -39,6 +39,12 @@ $greySVG: "#{$imagePath}/entypo/grey/SVG";
 	font-weight: 600;
 }
 
+$jocoBlueDark: #003d5d;
+$jocoBlueLight: #005777;
+$jocoTanDark: darken(#dad3bc, 30%);
+$jocoTanLight: #e7e1d1;
+$jocoTanLighter: lighten($jocoTanLight, 6%);
+
 $rciNavyBlue: #061557;
 $rciLightBlue: #0073bb;
 $rciYellow: #febd11;
@@ -46,41 +52,27 @@ $cmBabyBlue: #ddf2ff;
 $darkGrey: #444;
 $lightGrey: #ddd;
 
+$cmForeground: black;
+$cmForegroundAlternate: $jocoBlueLight;
+$cmBackground: white;
+$cmBackgroundAlternate: $jocoTanLighter;
+$cmDetailForeground: $jocoTanLighter;
+$cmDetailBackground: $jocoBlueDark;
+$cmDetailBackgroundAlternate: $jocoBlueLight;
+
 $defaultFont: Nexa, "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
 $defaultLightFont: "Helvetica Neue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
 $eventListFont: Casper, "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
 $sidebarHeaderFont: Nexa, "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
 $headerFont: $sidebarHeaderFont;
 
-$gutterShadow: 0px 0px 5px 6px rgba(0,0,0,0.4);
-$gutterTransition: all 0.1s ease-out;
-$gutterSeparator: 1px solid #aaa;
-
-$gutterBG: #ccc;
-$gutterColor: black;
-
-$gutterDisabledColor: #bbb;
-
-$gutterSelectedBG: #333;
-$gutterSelectedColor: white;
-
-$gutterHoverBG: $cmBabyBlue;
-$gutterHoverColor: black;
-
-$simpleBorder: 1px solid black;
-
-$headerColor: $rciYellow;
-$headerBG: $rciNavyBlue;
-
-$mainBG: white;
-$alternateBG: #f8f8f8;
-
-$gutterMonkey: url(../images/cruise-monkey-transparent-bg.png);
+$headerColor: white;
+$headerBG: $cmDetailBackground;
 
 /* Ionic Overrides */
 /* $font-family-sans-serif: $defaultFont; */
 /* $font-family-light-sans-serif: $defaultLightFont; */
-$dark: $rciNavyBlue;
+$dark: $cmDetailBackground;
 $light: white;
 
 $item-divider-bg: $dark;
@@ -91,11 +83,11 @@ $input-color-placeholder: #ccc !important;
 
 $menu-animation-speed: 100ms;
 
-$item-default-bg:                 $light;
-$item-default-border:             $lightGrey;
-$item-default-text:               $darkGrey;
-$item-default-active-bg:          $light;
-$item-default-active-border:      $lightGrey;
+$item-default-bg:                 $cmBackground;
+$item-default-border:             $cmBackgroundAlternate;
+$item-default-text:               $cmForeground;
+$item-default-active-bg:          lighten($item-default-bg, 50%);
+$item-default-active-border:      lighten($item-default-border, 50%);
 $item-padding:                    10px;
 
 $button-small-font-size:          20px;
@@ -103,19 +95,18 @@ $button-small-height:             30px;
 $button-small-padding:            2px;
 $button-small-icon-size:          28px;
 
-$bar-dark-text:                   $rciYellow;
-$button-dark-text:                $rciYellow;
+$bar-dark-text:                   white;
+$button-dark-text:                white;
 
-$tabs-dark-bg:                    $dark;
-$tabs-dark-border:                $rciLightBlue;
-$tabs-dark-text:                  $rciYellow;
+$tabs-dark-bg:                    $cmDetailBackground;
+$tabs-dark-border:                $cmDetailBackgroundAlternate;
+$tabs-dark-text:                  white;
 
 .tabs-cm .tab-item.has-badge span.badge {
 	opacity: 1;
 }
 
 $popover-width:                   160px;
-/* $popover-bg-color:                $dark; */
 
 #toast-container > div {
 	opacity: 0.95;
@@ -123,7 +114,8 @@ $popover-width:                   160px;
 	filter: alpha(opacity=95);
 }
 .toast-info {
-	background-color: $rciLightBlue;
+	color: $cmDetailForeground;
+	background-color: $cmDetailBackground;
 }
 
 @import "../bower_components/ionic/scss/ionic";
@@ -131,17 +123,17 @@ $popover-width:                   160px;
 
 .filter-bar {
 	.bar-dark .button.button-clear {
-		color: $rciYellow;
+		color: $cmDetailForeground;
 	}
 }
 
-@include tabs-striped('tabs-cm', $rciYellow, $dark);
-@include tabs-striped-background('tabs-background-cm', $dark);
-@include tabs-striped-color('tabs-color-cm', $dark);
-@include tabs-background('tabs-background-cm', $dark, $rciLightBlue);
+@include tabs-striped('tabs-cm', $cmDetailForeground, $cmDetailBackground);
+@include tabs-striped-background('tabs-background-cm', $cmDetailBackground);
+@include tabs-striped-color('tabs-color-cm', $cmDetailBackground);
+@include tabs-background('tabs-background-cm', $cmDetailBackground, $cmDetailForeground);
 
 ion-tabs {
-	@include tabs-standard-color('tabs-color-active-cm', $dark, $rciYellow);
+	@include tabs-standard-color('tabs-color-active-cm', $cmDetailBackground, $cmDetailForeground);
 }
 
 /** icons **/
@@ -280,23 +272,23 @@ ion-tabs {
 	}
 }
 
-$button-yellow-bg: $rciYellow;
-$button-yellow-text: $rciNavyBlue;
-$button-yellow-border: $rciNavyBlue;
+$button-yellow-bg: $cmBackground;
+$button-yellow-text: $cmForeground;
+$button-yellow-border: $cmDetailBackground;
 $button-yellow-active-bg: $button-light-active-bg;
-$button-yellow-active-border: $rciNavyBlue;
+$button-yellow-active-border: $cmDetailBackground;
 
-$button-navy-bg: $rciNavyBlue;
-$button-navy-text: $rciYellow;
-$button-navy-border: darken($rciNavyBlue, 10%);
-$button-navy-active-bg: $rciLightBlue;
-$button-navy-active-border: $rciNavyBlue;
+$button-navy-bg: $cmDetailBackground;
+$button-navy-text: $cmDetailForeground;
+$button-navy-border: darken($cmDetailBackground, 10%);
+$button-navy-active-bg: $cmDetailBackgroundAlternate;
+$button-navy-active-border: $cmDetailBackgroundAlternate;
 
-$button-blue-bg: $rciLightBlue;
-$button-blue-text: $rciNavyBlue;
-$button-blue-border: $rciNavyBlue;
+$button-blue-bg: $cmDetailBackgroundAlternate;
+$button-blue-text: $cmDetailForeground;
+$button-blue-border: darken($cmDetailBackgroundAlternate, 10%);
 $button-blue-active-bg: $button-light-active-bg;
-$button-blue-active-border: $rciNavyBlue;
+$button-blue-active-border: $cmDetailBackground;
 
 .item-complex .item-content,
 .item-radio .item-content {
@@ -329,37 +321,37 @@ $item-padding-orig: 16px;
 }
 
 .cm, .yellow {
-	color: $rciYellow;
+	color: $cmDetailForeground;
 }
 
 .navy {
-	color: $rciNavyBlue;
+	color: $cmDetailBackground;
 }
 
 .blue {
-	color: $rciLightBlue;
+	color: $cmDetailBackgroundAlternate;
 }
 
 .icon {
 	&.icon-cm, &.icon-yellow {
-		color: $rciYellow;
+		color: $cmDetailForeground;
 		&.active {
 			opacity: 1;
-			color: $rciYellow;
+			color: $cmDetailForeground;
 		}
 	}
 	&.icon-navy {
-		color: $rciNavyBlue;
+		color: $cmDetailBackground;
 		&.active {
 			opacity: 1;
-			color: $rciNavyBlue;
+			color: $cmDetailBackground;
 		}
 	}
 	&.icon-blue {
-		color: $rciLightBlue;
+		color: $cmDetailBackgroundAlternate;
 		&.active {
 			opacity: 1;
-			color: $rciLightBlue;
+			color: $cmDetailBackgroundAlternate;
 		}
 	}
 }
@@ -390,7 +382,7 @@ $item-padding-orig: 16px;
 			padding-bottom: 2px;
 		}
 	}
-	background-color: #f4f4f4;
+	background-color: $cmDetailForeground;
 }
 
 .button {
@@ -470,7 +462,7 @@ div.cm-notification {
 
 body {
   font-family: $defaultFont;
-	color: $darkGrey;
+	color: $cmBackground;
 }
 
 a:link,
@@ -503,7 +495,6 @@ a.tab-item:hover {
 
 ion-popover-view.fit {
 	height: auto !important;
-	/*background-color: $dark;*/
 }
 
 ion-popover-view.fit ion-content {
@@ -516,14 +507,6 @@ ion-popover-view.fit ion-content {
 
 .platform-android ion-popover-view.fit {
 	margin-top: 10px !important;
-}
-
-.events-chooser {
-	.item {
-		color: $dark;
-		background-color: $dark;
-		border: 0;
-	}
 }
 
 .add-event-form span.invalid {
@@ -539,9 +522,9 @@ ion-popover-view.fit ion-content {
 	.heading {
 		font-weight: bold;
 		font-size: $font-size-large;
-		border-top: 1px solid $dark;
-		border-bottom: 2px solid $dark;
-		background-color: #ddd;
+		border-top: 1px solid $cmDetailBackground;
+		border-bottom: 2px solid $cmDetailBackground;
+		background-color: $cmBackgroundAlternate;
 	}
 
 	textarea,
@@ -559,7 +542,7 @@ ion-popover-view.fit ion-content {
 	input[type="search"],
 	input[type="tel"],
 	input[type="color"] {
-		border: 1px solid $dark;
+		border: 1px solid $cmDetailBackground;
 	 	padding: 2px;
 	 	padding-left: 5px;
 	 	padding-right: 5px;
@@ -596,7 +579,7 @@ ion-popover-view.fit ion-content {
 
 .info {
 	.item {
-		color: $rciNavyBlue;
+		color: $cmDetailBackground;
 	}
 }
 
@@ -706,8 +689,8 @@ ion-popover-view.fit ion-content {
 		text-align: center;
 		border-bottom-left-radius: 5px;
 		border-bottom-right-radius: 5px;
-		color: $rciYellow;
-		background-color: $rciNavyBlue;
+		color: $cmDetailForeground;
+		background-color: $cmDetailBackground;
 	}
 }
 
@@ -792,7 +775,7 @@ ion-popover-view.fit ion-content {
 	}
 	.timestamp {
 		display: block;
-		color: #aaa;
+		color: rgba($cmForeground,0.7);
 		font-size: $font-size-small;
 	}
 }
@@ -800,33 +783,13 @@ ion-popover-view.fit ion-content {
 .searchable {
 	.highlight {
 		background-color: $rciYellow;
-	}	
+	}
 }
 
 .list-entry {
 	.item-note {
 		margin: -10px;
 	}
-}
-
-ion-side-menu {
-	.item.active {
-		background-color: $cmBabyBlue;
-		/* border-bottom: 3px solid $item-default-active-border; */
-		.item-content {
-			background-color: transparent;
-		}
-	}
-}
-
-#nav li.item > * {
-	display: inline-block;
-	width: 100%;
-	padding: 4px;
-}
-
-#nav li.item > *.active {
-	background-color: $cmBabyBlue;
 }
 
 /*
@@ -844,29 +807,35 @@ ion-side-menu {
 	}
 }
 
-$officialEventColor: #3c66a6;
-$unofficialEventColor: $darkGrey;
+.events-chooser {
+	.item {
+		border: none
+	}
+}
+
+$officialEventColor: mx($cmDetailBackgroundAlternate, $cmForeground, 50%);
+$unofficialEventColor: $cmForeground;
 $eventMarkerSize: 8px;
 
 ion-item.item.item-text-wrap.list-entry.official.odd {
 	color: $officialEventColor;
-	background-color: $mainBG !important;
-	border-left: $eventMarkerSize solid mix($rciNavyBlue, $mainBG, 60%);
+	background-color: $cmBackgroundAlternate !important;
+	border-left: $eventMarkerSize solid mix($cmDetailBackgroundAlternate, $cmBackground, 60%);
 }
 ion-item.item.item-text-wrap.list-entry.official.even {
 	color: $officialEventColor;
-	background-color: $alternateBG !important;
-	border-left: $eventMarkerSize solid mix($rciNavyBlue, $mainBG, 60%);
+	background-color: $cmBackground !important;
+	border-left: $eventMarkerSize solid mix($cmDetailBackgroundAlternate, $cmBackground, 60%);
 }
 ion-item.item.item-text-wrap.list-entry.unofficial.odd {
 	color: $unofficialEventColor;
-	background-color: $mainBG !important;
-	border-left: $eventMarkerSize solid $mainBG;
+	background-color: $cmBackgroundAlternate !important;
+	border-left: $eventMarkerSize solid $cmBackgroundAlternate;
 }
 ion-item.item.item-text-wrap.list-entry.unofficial.even {
 	color: $unofficialEventColor;
-	background-color: $alternateBG !important;
-	border-left: $eventMarkerSize solid $alternateBG;
+	background-color: $cmBackground !important;
+	border-left: $eventMarkerSize solid $cmBackground;
 }
 
 .event-list {
@@ -888,9 +857,9 @@ ion-item.item.item-text-wrap.list-entry.unofficial.even {
 		background-color: $headerBG;
 		margin-top: -1;
 		margin-bottom: 0;
-		border-color: #000;
+		border-color: $cmDetailBackground;
 	}
-	
+
 }
 
 .summary {
