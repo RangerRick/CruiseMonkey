@@ -3,11 +3,15 @@ var path = require('path'),
 	argv = require('yargs').argv,
 	ngAnnotatePlugin = require('ng-annotate-webpack-plugin');
 
-argv.env = argv.env || 'development';
+argv.env = argv.env === 'production'? 'production':'development';
 
 var outputDirectory = './www';
 
 var plugins = [
+	new webpack.DefinePlugin({
+		__DEVELOPMENT__: argv.env === 'development',
+		__PRODUCTION__: argv.env === 'production'
+	}),
 	new webpack.ResolverPlugin([
 		new webpack.ResolverPlugin.DirectoryDescriptionFilePlugin('package.json', ['main']),
 		new webpack.ResolverPlugin.DirectoryDescriptionFilePlugin('bower.json', ['main'])
@@ -50,7 +54,7 @@ var plugins = [
 ];
 
 if (argv.env !== 'development') {
-	plugins.push(new webpack.optimize.OccurenceOrderPlugin(true));
+	//plugins.push(new webpack.optimize.OccurenceOrderPlugin(true));
 	plugins.push(new webpack.optimize.UglifyJsPlugin({
 		mangle: {
 			except: [ '$super', '$', 'jQuery', 'exports', 'require', 'angular', 'ionic' ]

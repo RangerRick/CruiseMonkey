@@ -6,7 +6,7 @@
   "build": 40354,
   "scripts": {
     "build": "webpack --colors --display-error-details",
-    "release": "webpack --colors --display-error-details --env=production",
+    "release": "webpack --colors --display-error-details --optimize-minimize --optimize-dedupe --env=production",
     "verbose-build": "webpack --debug --colors --display-modules --display-chunks --display-error-details --display-origins --display-reasons",
     "ionic": "ionic emulate -slc --address=localhost ios",
     "device": "ionic run --device -slc ios",

@@ -1,4 +1,7 @@
 <ion-view title="Twit-Arr" class="twitarr">
+	<ion-nav-buttons side="primary">
+		<button class="button button-clear"><ion-spinner ng-show="loading"></ion-spinner></button>
+	</ion-nav-buttons>
 	<ion-nav-buttons side="secondary">
 		<button class="button button-icon icon cm-icon-compose" ng-click="newTweet()" ng-if="u.loggedIn()"></button>
 	</ion-nav-buttons>
@@ -10,10 +13,10 @@
 				<i class="icon ion-alert-circled yellow"></i>
 				<span ng-bind-html="error" style="padding-left: 20px"></span>
 			</ion-item>
-			<ion-item ng-if="entries.length === 0" class="item-text-wrap">
+			<ion-item ng-if="!error &amp;&amp; entries &amp;&amp; entries.length === 0" class="item-text-wrap">
 				There are no posts in the Twit-Arr stream.
 			</ion-item>
-			<ion-item ng-repeat="entry in entries" class="item item-avatar item-text-wrap" id="{{entry.id}}" href="#/tab/twitarr/{{entry.id}}">
+			<ion-item ng-repeat="entry in entries track by entry.id" class="item item-avatar item-text-wrap" id="{{entry.id}}" href="#/tab/twitarr/{{entry.id}}">
 				<img img-cache ic-src="{{twitarrRoot + 'api/v2/user/photo/' + entry.author}}" ng-click="openUser(entry.author, $event)" ng-if="twitarrRoot &amp;&amp; entry.author" />
 				<span class="item-note commands" ng-if="user.loggedIn">
 					<button ng-class="'button button-clear button-small icon ' + (entry.likes &amp;&amp; entry.likes.indexOf(user.username) >= 0? 'ion-ios-heart':'ion-ios-heart-outline')" ng-click="toggleLike(entry)"></button>
