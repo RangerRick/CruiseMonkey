@@ -61,11 +61,10 @@ $cmDetailBackground: $jocoBlueDark;
 $cmDetailBackgroundAlternate: $jocoBlueLight;
 $cmHighlight: green;
 
-$defaultFont: Nexa, "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
+$defaultFont: -apple-system, Nexa, "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
 $defaultLightFont: "Helvetica Neue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
-$eventListFont: Casper, "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
-$sidebarHeaderFont: Nexa, "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
-$headerFont: $sidebarHeaderFont;
+$eventListFont: -apple-system, Casper, "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
+$headerFont: -apple-system, Nexa, "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
 
 $headerColor: white;
 $headerBG: $cmDetailBackground;
@@ -96,6 +95,7 @@ $button-small-height:             30px;
 $button-small-padding:            2px;
 $button-small-icon-size:          28px;
 
+$bar-height:                      44px;
 $bar-dark-text:                   white;
 $button-dark-text:                white;
 
@@ -109,6 +109,14 @@ $tabs-dark-text:                  white;
 
 $popover-width:                   160px;
 
+/*
+.ionic_toast {
+	border-radius: 5px !important;
+	color: $cmDetailForeground !important;
+	background-color: $cmDetailBackgroundAlternate !important;
+	border-color: $cmForeground !important;
+}
+
 #toast-container > div {
 	opacity: 0.95;
 	-ms-filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=95);
@@ -118,6 +126,7 @@ $popover-width:                   160px;
 	color: $cmDetailForeground;
 	background-color: $cmDetailBackground;
 }
+*/
 
 @import "../bower_components/ionic/scss/ionic";
 @import "../bower_components/ionic-filter-bar/scss/ionic.filter.bar";
@@ -423,12 +432,6 @@ $item-padding-orig: 16px;
 			padding-left: 10px;
 		}
 	}
-}
-
-.bar-bold {
-	font-family: $sidebarHeaderFont;
-	font-weight: bold;
-	font-size: 26px;
 }
 
 div.cm-notification {
@@ -784,7 +787,8 @@ ion-popover-view.fit ion-content {
 
 .searchable {
 	.highlight {
-		background-color: $rciYellow;
+		color: $cmDetailForeground;
+		background-color: $cmHighlight;
 	}
 }
 
