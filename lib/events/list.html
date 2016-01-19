@@ -2,6 +2,7 @@
 	<ion-header-bar class="bar-dark" animation="no-animation" ng-click="scrollTop()">
 		<div class="buttons">
 			<button class="button button-icon icon-yellow cm-icon-clock" ng-click="goToNow()"></button>
+			<button class="button button-clear"><ion-spinner ng-show="loading"></ion-spinner></button>
 		</div>
 		<h1 class="title"><span ng-click="openEventTypePopover($event)">{{eventType.capitalize()}} Events <span style="font-size: x-small">&#9660;</span></span></h1>
 		<div class="buttons">
@@ -11,11 +12,11 @@
 		</div>
 	</ion-header-bar>
 	<ion-content ion-sticky scroll="true" padding="false" id="event-content" delegate-handle="event-scroll" ng-click="closeKeyboard()">
-		<ion-refresher pulling-text="Pull to refresh..." on-refresh="refresh()"></ion-refresher>
+		<ion-refresher pulling-text="Pull to refresh..." on-refresh="doRefresh()"></ion-refresher>
 		<ion-list>
 			<span ng-repeat="entry in events track by entry.getId()" id="{{entry.getId()}}">
 				<ion-item ng-if="isDay(entry)" class="item-divider event-header">{{prettyDate(entry.day)}}</ion-item>
-				<ion-item ng-if="!isDay(entry)" ng-class="'item-text-wrap list-entry ' + (entry.isOfficial()? 'official':'unofficial') + ' ' + (entry.isEven()? 'even':'odd')">
+				<ion-item ng-if="!isDay(entry)" ng-class="'item-text-wrap list-entry ' + getCssClass(entry)">
 					<span class="item-note">
 						<button id="{{entry.getId()}}-favorite" ng-click="toggleFavorite(entry)" class="button button-small button-clear button-navy" ng-show="showFavorite(entry)"><i class="icon" ng-class="entry.isFavorite(user.username)? 'active ion-ios-heart':'ion-ios-heart-outline'"></i></button>
 						<button class="button button-small button-clear button-navy" ng-click="openPopover($event, entry)" ng-show="showEditable(entry)"><i class="icon ion-android-more-vertical"></i></button>

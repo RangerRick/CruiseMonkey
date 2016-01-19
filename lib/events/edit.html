@@ -1,11 +1,11 @@
-<ion-modal-view>
+<ion-modal-view ng-controller="CMEditEventCtrl">
 	<ion-header-bar class="bar-dark">
 		<div class="buttons">
-			<button class="button button-clear button-yellow" ng-click="cancelModal($event)" ng-disabled="isDisabled">Close</button>
+			<button class="button button-clear button-yellow" ng-click="closeEditEvent($event)" ng-disabled="isDisabled">Close</button>
 		</div>
 		<h1 class="title">{{eventData.id? 'Edit':'Add an'}} Event</h1>
 		<div class="buttons">
-			<button class="button button-clear button-yellow" ng-click="saveModal(eventData)" ng-disabled="form.$invalid || !eventData.isValid()">{{eventData.id? 'Save':'Add'}}</button>
+			<button class="button button-clear button-yellow" ng-click="saveEvent()" ng-disabled="form.$invalid || !eventData.isValid()">{{eventData.id? 'Save':'Add'}}</button>
 		</div>
 	</ion-header-bar>
 

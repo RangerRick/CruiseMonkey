@@ -59,6 +59,7 @@ $cmBackgroundAlternate: $jocoTanLighter;
 $cmDetailForeground: $jocoTanLighter;
 $cmDetailBackground: $jocoBlueDark;
 $cmDetailBackgroundAlternate: $jocoBlueLight;
+$cmHighlight: green;
 
 $defaultFont: Nexa, "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
 $defaultLightFont: "Helvetica Neue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
@@ -461,8 +462,9 @@ div.cm-notification {
 }
 
 body {
-  font-family: $defaultFont;
-	color: $cmBackground;
+	font-family: $defaultFont;
+	color: $cmForeground;
+	background-color: $cmBackground;
 }
 
 a:link,
@@ -815,27 +817,37 @@ ion-popover-view.fit ion-content {
 
 $officialEventColor: mx($cmDetailBackgroundAlternate, $cmForeground, 50%);
 $unofficialEventColor: $cmForeground;
+
+$officialMarkerColor: mix($cmDetailBackgroundAlternate, $cmBackground, 60%);
+$myMarkerColor: mix($cmHighlight, $cmBackgroundAlternate, 50%);
+
 $eventMarkerSize: 8px;
 
 ion-item.item.item-text-wrap.list-entry.official.odd {
 	color: $officialEventColor;
 	background-color: $cmBackgroundAlternate !important;
-	border-left: $eventMarkerSize solid mix($cmDetailBackgroundAlternate, $cmBackground, 60%);
+	border-left: $eventMarkerSize solid $officialMarkerColor;
 }
 ion-item.item.item-text-wrap.list-entry.official.even {
 	color: $officialEventColor;
 	background-color: $cmBackground !important;
-	border-left: $eventMarkerSize solid mix($cmDetailBackgroundAlternate, $cmBackground, 60%);
+	border-left: $eventMarkerSize solid $officialMarkerColor;
 }
 ion-item.item.item-text-wrap.list-entry.unofficial.odd {
 	color: $unofficialEventColor;
 	background-color: $cmBackgroundAlternate !important;
 	border-left: $eventMarkerSize solid $cmBackgroundAlternate;
+	&.mine {
+		border-left: $eventMarkerSize solid $myMarkerColor;
+	}
 }
 ion-item.item.item-text-wrap.list-entry.unofficial.even {
 	color: $unofficialEventColor;
 	background-color: $cmBackground !important;
 	border-left: $eventMarkerSize solid $cmBackground;
+	&.mine {
+		border-left: $eventMarkerSize solid $myMarkerColor;
+	}
 }
 
 .event-list {
