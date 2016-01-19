@@ -3,10 +3,10 @@
   "version": "5.9.0",
   "minSdk": "14",
   "description": "Keep Track of Your Cruise",
-  "build": 40354,
+  "build": 40355,
   "scripts": {
     "build": "webpack --colors --display-error-details",
-    "release": "webpack --colors --display-error-details --optimize-minimize --optimize-dedupe --env=production",
+    "release": "webpack --colors --display-error-details --optimize-minimize --optimize-dedupe --env=production && ionic build --release",
     "verbose-build": "webpack --debug --colors --display-modules --display-chunks --display-error-details --display-origins --display-reasons",
     "ionic": "ionic emulate -slc --address=localhost ios",
     "device": "ionic run --device -slc ios",
@@ -81,7 +81,8 @@
     "https://github.com/RangerRick/cordova-certificate-plugin.git",
     "https://github.com/Red-Folder/bgs-core.git",
     "https://github.com/VersoSolutions/CordovaClipboard.git",
-    "cordova-plugin-datepicker"
+    "cordova-plugin-datepicker",
+    "cordova-plugin-crosswalk-webview"
   ],
   "cordovaPlatforms": [
     {
