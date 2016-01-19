@@ -17,7 +17,7 @@
     "javascript-state-machine": "~2.3.5",
     "jquery": "~2.1.4",
     "ng-file-upload": "~11.0.0",
-    "ngCordova": "~0.1.23-alpha",
+    "ngCordova": "~0.1.24-alpha",
     "lokijs": "master",
     "angular-imgcache": "angular-imgcache.js#~0.1.0",
     "moment": "momentjs#~2.11.0",

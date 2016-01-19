@@ -34,5 +34,6 @@
 		"use-isnan": 2,
 		"valid-jsdoc": 1,
 		"valid-typeof": 2,
+		"quote-props": [1, "as-needed"]
 	}
 }
