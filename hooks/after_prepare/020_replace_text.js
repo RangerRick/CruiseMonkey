@@ -25,9 +25,6 @@ if (process.env.TARGET) {
       replace_string_in_file(fullfilename, '\\*\\*\\*VERSION\\*\\*\\*', configobj.version);
       replace_string_in_file(fullfilename, '\\*\\*\\*BUILD\\*\\*\\*', configobj.build);
       replace_string_in_file(fullfilename, 'var isMobile = false', 'var isMobile = true');
-      replace_string_in_file(fullfilename, 'android\\:versionCode="[^"]*"', 'android:versionCode="' + configobj.build + '"');
-      replace_string_in_file(fullfilename, 'android\\:versionName="[^"]*"', 'android:versionName="' + configobj.version + '"');
-      replace_string_in_file(fullfilename, 'android\\:minSdkVersion="[^"]*"', 'android:minSdkVersion="' + configobj.minSdk + '"');
     } else {
       console.log('!!! missing ' + fullfilename);
     }
