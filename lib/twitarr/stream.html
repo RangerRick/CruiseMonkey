@@ -9,7 +9,7 @@
 	<ion-content scroll="true" padding="false" delegate-handle="twitarr" on-scroll="updateTopVisible()" ng-click="closeKeyboard()">
 		<ion-refresher pulling-text="Pull to refresh..." on-refresh="doRefresh(true)"></ion-refresher>
 		<ion-list>
-			<ion-item ng-if="error" class="item item-icon-left">
+			<ion-item ng-if="error" class="item item-text-wrap item-icon-left">
 				<i class="icon ion-alert-circled yellow"></i>
 				<span ng-bind-html="error" style="padding-left: 20px"></span>
 			</ion-item>
@@ -17,7 +17,7 @@
 				There are no posts in the Twit-Arr stream.
 			</ion-item>
 			<ion-item ng-repeat="entry in entries track by entry.id" class="item item-avatar item-text-wrap" id="{{entry.id}}" href="#/tab/twitarr/{{entry.id}}">
-				<img img-cache ic-src="{{twitarrRoot + 'api/v2/user/photo/' + entry.author}}" ng-click="openUser(entry.author, $event)" ng-if="twitarrRoot &amp;&amp; entry.author" />
+				<img cm-cache img-src="{{twitarrRoot + 'api/v2/user/photo/' + entry.author}}" ng-click="openUser(entry.author, $event)" ng-if="twitarrRoot &amp;&amp; entry.author" />
 				<span class="item-note commands" ng-if="user.loggedIn">
 					<button ng-class="'button button-clear button-small icon ' + (entry.likes &amp;&amp; entry.likes.indexOf(user.username) >= 0? 'ion-ios-heart':'ion-ios-heart-outline')" ng-click="toggleLike(entry)"></button>
 					<button class="button button-clear button-small icon ion-reply" ng-click="newTweet(entry)"></button>
@@ -28,7 +28,7 @@
 					<span class="display-handle" ng-bind-html="getDisplayHandle(entry.author)"></span>
 				</span>
 				<p class="tweet-text" twitter-html="entry.text"></p>
-				<img img-cache ic-src="{{twitarrRoot + 'photo/small_thumb/' + entry.photo.id}}" ng-if="twitarrRoot &amp;&amp; entry.photo" style="width: 100%; max-width: 400px"/>
+				<img cm-cache img-src="{{twitarrRoot + 'photo/small_thumb/' + entry.photo.id}}" ng-if="twitarrRoot &amp;&amp; entry.photo" style="width: 100%; max-width: 400px"/>
 				<p class="timeframe">{{entry.display_timestamp}}</p>
 			</ion-item>
 		</ion-list>

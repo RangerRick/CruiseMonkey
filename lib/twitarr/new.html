@@ -19,7 +19,7 @@
 				</div>
 			</div>
 			<div class="item item-image" ng-if="tweet.photo">
-				<img img-cache ic-src="{{twitarrRoot}}photo/small_thumb/{{tweet.photo}}" style="width: 100%" />
+				<img cm-cache img-src="{{twitarrRoot}}photo/small_thumb/{{tweet.photo}}" style="width: 100%" />
 			</div>
 			<div class="item" ng-if="photoUploading">
 				<progress value="{{photoUploading.loaded}}" max="{{photoUploading.total}}"></progress>

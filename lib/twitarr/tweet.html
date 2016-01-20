@@ -6,13 +6,13 @@
 		<ion-refresher pulling-text="Pull to refresh..." on-refresh="doRefresh()"></ion-refresher>
 		<ion-list>
 			<ion-item class="item-avatar item-text-wrap">
-				<img img-cache ic-src="{{twitarrRoot + 'api/v2/user/photo/' + tweet.author}}" ng-click="openUser(tweet.author, $event)" ng-if="twitarrRoot &amp;&amp; tweet.author" />
+				<img cm-cache img-src="{{twitarrRoot + 'api/v2/user/photo/' + tweet.author}}" ng-click="openUser(tweet.author, $event)" ng-if="twitarrRoot &amp;&amp; tweet.author" />
 				<span class="user" ng-click="openUser(tweet.author, $event)">
 					<span class="display-name" ng-bind-html="displayName"></span>
 					<span class="display-handle" ng-bind-html="displayHandle"></span>
 				</span>
 				<p class="tweet-text" twitter-html="tweet.text" ng-if="tweet.text"></p>
-				<img img-cache ic-src="{{twitarrRoot + 'photo/full/' + tweet.photo.id}}" ng-if="twitarrRoot &amp;&amp; tweet.photo" style="width: 100%; max-width: 600px" ng-click="showImage()" />
+				<img cm-cache img-src="{{twitarrRoot + 'photo/full/' + tweet.photo.id}}" ng-if="twitarrRoot &amp;&amp; tweet.photo" style="width: 100%; max-width: 600px" ng-click="showImage()" />
 				<p class="timeframe">{{tweet.display_timestamp}}</p>
 			</ion-item>
 		</ion-list>

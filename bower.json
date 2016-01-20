@@ -19,7 +19,6 @@
     "ng-file-upload": "~11.0.0",
     "ngCordova": "~0.1.24-alpha",
     "lokijs": "master",
-    "angular-imgcache": "angular-imgcache.js#~0.1.0",
     "moment": "momentjs#~2.11.0",
     "ion-sticky": "~1.0.4",
     "ionic-filter-bar": "~1.1.1",
