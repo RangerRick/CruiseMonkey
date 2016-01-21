@@ -147,6 +147,9 @@ ion-tabs {
 }
 
 /** icons **/
+.cm-icon-boat {
+	@extend .ion-android-boat;
+}
 .cm-icon-calendar {
 	@extend .ion-calendar;
 }
@@ -470,6 +473,7 @@ body {
 	background-color: $cmBackground;
 }
 
+a,
 a:link,
 a:visited,
 a:hover {
