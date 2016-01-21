@@ -1,5 +1,5 @@
 <a name="5.9.0"></a>
-## 5.9.0 (2015-01-21)
+## 5.9.0 (2016-01-21)
 
 5.9.0 (CruiseMonkey 2016) is a major refactor of the CM codebase, with a streamlined UI and a lot of under-the-hood cleanup.
 
