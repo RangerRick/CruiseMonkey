@@ -1,4 +1,18 @@
-<a name="5.0.8"</a>
+<a name="5.9.0"></a>
+## 5.9.0 (2015-01-21)
+
+5.9.0 (CruiseMonkey 2016) is a major refactor of the CM codebase, with a streamlined UI and a lot of under-the-hood cleanup.
+
+There are not (yet) any major new features over last year's release, but those will be coming now that the core is in good shape.
+
+#### Known Issues
+
+* amenities still lists amenities for Independence of the Seas
+* deck list is missing
+* images do not show any indication they are loading while they are loading (this is noticeable in the twit-arr view)
+* probably more things I can't think of at the moment
+
+<a name="5.0.8"></a>
 ## 5.0.8 (2015-01-25)
 
 
@@ -12,7 +26,7 @@
 
 
 
-<a name="5.0.7"</a>
+<a name="5.0.7"></a>
 ## 5.0.7 (2015-01-25)
 
 
@@ -39,7 +53,7 @@
 
 
 
-<a name="5.0.6"</a>
+<a name="5.0.6"></a>
 ## 5.0.6 (2015-01-25)
 
 
@@ -57,7 +71,7 @@
 
 
 
-<a name="5.0.5"</a>
+<a name="5.0.5"></a>
 ## 5.0.5 (2015-01-25)
 
 
@@ -69,7 +83,7 @@
 
 
 
-<a name="5.0.4"</a>
+<a name="5.0.4"></a>
 ## 5.0.4 (2015-01-24)
 
 
@@ -87,7 +101,7 @@
 
 
 
-<a name="5.0.3"</a>
+<a name="5.0.3"></a>
 ## 5.0.3 (2015-01-24)
 
 
@@ -104,7 +118,7 @@
 
 
 
-<a name="5.0.2"</a>
+<a name="5.0.2"></a>
 ## 5.0.2 (2015-01-20)
 
 
@@ -115,7 +129,7 @@
 
 
 
-<a name="5.0.1"</a>
+<a name="5.0.1"></a>
 ## 5.0.1 (2015-01-20)
 
 
@@ -132,7 +146,7 @@
 
 
 
-<a name="5.0.0"</a>
+<a name="5.0.0"></a>
 ## 5.0.0 (2015-01-19)
 
 
@@ -155,7 +169,7 @@
 
 
 
-<a name="4.9.7"</a>
+<a name="4.9.7"></a>
 ## 4.9.7 (2015-01-19)
 
 
@@ -179,7 +193,7 @@
 
 
 
-<a name="4.9.6"</a>
+<a name="4.9.6"></a>
 ## 4.9.6 (2015-01-16)
 
 
@@ -213,7 +227,7 @@
 
 
 
-<a name="4.9.5"</a>
+<a name="4.9.5"></a>
 ## 4.9.5 (2015-01-15)
 
 
