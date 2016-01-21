@@ -1,16 +1,23 @@
 var path = require('path'),
+	fs = require('fs'),
 	webpack = require('webpack'),
 	argv = require('yargs').argv,
 	ngAnnotatePlugin = require('ng-annotate-webpack-plugin');
 
+var configfile = path.join(__dirname, 'package.json');
+var configobj  = JSON.parse(fs.readFileSync(configfile, 'utf8'));
 argv.env = argv.env === 'production'? 'production':'development';
+
+console.log(configobj.name + ' v' + configobj.version + ' (build ' + configobj.build + ')');
 
 var outputDirectory = './www';
 
 var plugins = [
 	new webpack.DefinePlugin({
 		__DEVELOPMENT__: argv.env === 'development',
-		__PRODUCTION__: argv.env === 'production'
+		__PRODUCTION__: argv.env === 'production',
+		__VERSION__: JSON.stringify(configobj.version),
+		__BUILD__: JSON.stringify(configobj.build)
 	}),
 	new webpack.ResolverPlugin([
 		new webpack.ResolverPlugin.DirectoryDescriptionFilePlugin('package.json', ['main']),
@@ -33,24 +40,6 @@ var plugins = [
 		children: true,
 		async: true
 	})
-	 /*,
-	new webpack.optimize.CommonsChunkPlugin('about', 'about.bundle.js'),
-	new webpack.optimize.CommonsChunkPlugin('amenities', 'amenities.bundle.js'),
-	new webpack.optimize.CommonsChunkPlugin('cordova', 'cordova.bundle.js'),
-	new webpack.optimize.CommonsChunkPlugin('data', 'data.bundle.js'),
-	new webpack.optimize.CommonsChunkPlugin('decks', 'decks.bundle.js'),
-	new webpack.optimize.CommonsChunkPlugin('emoji', 'emoji.bundle.js'),
-	new webpack.optimize.CommonsChunkPlugin('events', 'events.bundle.js'),
-	new webpack.optimize.CommonsChunkPlugin('forums', 'forums.bundle.js'),
-	new webpack.optimize.CommonsChunkPlugin('info', 'info.bundle.js'),
-	new webpack.optimize.CommonsChunkPlugin('karaoke', 'karaoke.bundle.js'),
-	new webpack.optimize.CommonsChunkPlugin('login', 'login.bundle.js'),
-	new webpack.optimize.CommonsChunkPlugin('seamail', 'seamail.bundle.js'),
-	new webpack.optimize.CommonsChunkPlugin('settings', 'settings.bundle.js'),
-	new webpack.optimize.CommonsChunkPlugin('twitarr', 'twitarr.bundle.js'),
-	new webpack.optimize.CommonsChunkPlugin('user', 'user.bundle.js'),
-	new webpack.optimize.CommonsChunkPlugin('util', 'util.bundle.js')
-	*/
 ];
 
 if (argv.env !== 'development') {
@@ -76,87 +65,6 @@ module.exports = {
 			'ionic-angular',
 			'ngCordova'
 		],
-		/*
-		'about':[
-			'./lib/about/Controller',
-			'./lib/about/about.html'
-		],
-		'amenities':[
-			'./lib/amenities/Controller',
-			'./lib/amenities/amenities.html'
-		],
-		'cordova':[
-			'./lib/cordova/Initializer',
-			'./lib/cordova/Notifications'
-		],
-		'data':[
-			'./lib/data/DB',
-			'./lib/data/Model',
-			'./lib/data/Upgrades'
-		],
-		'decks':[
-			'./lib/decks/Controller',
-			'./lib/decks/Service',
-			'./lib/decks/list.html'
-		],
-		'emoji':[
-			'./lib/emoji/Emoji',
-			'./lib/emoji/emoji.html'
-		],
-		'events':[
-			'./lib/events/Controller',
-			'./lib/events/Service',
-			'./lib/events/chooser.html',
-			'./lib/events/edit.html',
-			'./lib/events/list.html'
-		],
-		'forums':[
-			'./lib/forums/Controller',
-			'./lib/forums/Service',
-			'./lib/forums/list.html',
-			'./lib/forums/view.html'
-		],
-		'info':[
-			'./lib/info/help.html',
-			'./lib/info/info.html'
-		],
-		'karaoke':[
-			'./lib/karaoke/Controller',
-			'./lib/karaoke/list.html'
-		],
-		'login':[
-			'./lib/login/Controller'
-		],
-		'seamail':[
-			'./lib/seamail/Controller',
-			'./lib/seamail/New.',
-			'./lib/seamail/Service',
-			'./lib/seamail/autocomplete-template.html',
-			'./lib/seamail/new.html',
-			'./lib/seamail/seamail.html',
-			'./lib/seamail/seamails.html'
-		],
-		'settings':[
-			'./lib/settings/Controller',
-			'./lib/settings/Service',
-			'./lib/settings/settings.html'
-		],
-		'twitarr':[
-			'./lib/twitarr/Controller',
-			'./lib/twitarr/Service',
-			'./lib/twitarr/new.html',
-			'./lib/twitarr/stream.html',
-			'./lib/twitarr/tweet.html'
-		],
-		'user':[
-			'./lib/user/Detail',
-			'./lib/user/User',
-			'./lib/user/detail.html'
-		],
-		'util':[
-			'./lib/util/Service',
-		],
-		*/
 		'app': [
 			'./lib/index'
 		]

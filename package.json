@@ -3,7 +3,7 @@
   "version": "5.9.0",
   "minSdk": "14",
   "description": "Keep Track of Your Cruise",
-  "build": 40356,
+  "build": 40357,
   "dependencies": {
     "feedparser": "*",
     "googleapis": "*",
@@ -96,7 +96,7 @@
     }
   ],
   "scripts": {
-    "build": "webpack --colors --display-error-details",
+    "build": "webpack --colors --display-error-details && ionic build",
     "release": "webpack --colors --display-error-details --optimize-minimize --optimize-dedupe --env=production && ionic build --release",
     "verbose-build": "webpack --debug --colors --display-modules --display-chunks --display-error-details --display-origins --display-reasons",
     "genymotion": "ionic run -slc android",
