@@ -428,12 +428,9 @@ $item-padding-orig: 16px;
 	}
 }
 
-.help {
-	.item {
-		ul {
-			list-style: disc;
-			padding-left: 10px;
-		}
+.item {
+	ul {
+		list-style: disc; padding-left: 20px;
 	}
 }
 

@@ -3,14 +3,14 @@
 		<ion-list>
 			<span ng-controller="CMLoginCtrl">
 				<form class="logout-form" novalidate ng-if="user.loggedIn">
-					<ion-item class="heading">Log Out</ion-item>
+					<ion-item class="heading notop">Log Out</ion-item>
 					<ion-item>Currently logged in as: {{user.username}}</ion-item>
 					<ion-item class="text-right">
 						<button class="button button-dark" ng-click="logOut()" style="margin-top: 0; margin-bottom: 0">Log Out</button>
 					</ion-item>
 				</form>
 				<form class="login-form" novalidate ng-if="!user.loggedIn">
-					<ion-item class="heading">Log In</ion-item>
+					<ion-item class="heading notop">Log In</ion-item>
 					<label class="item item-input item-stacked-label">
 						<span class="input-label">Username:</span>
 						<input id="loginUsername" type="text" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="off" ng-model="user.username" name="username" autofocus="autofocus" required />
