@@ -54,7 +54,8 @@ Before you can build CruiseMonkey, you must first install [Node.JS](http://nodej
 Compiling the Javascript
 ------------------------
 
-`npm run build`
+* To compile the JavaScript once, run: `npm run build`
+* To continuously compile the JavaScript as you edit: `npm run watch`
 
 Starting a browser session for this project
 --------------------------------------------
@@ -62,13 +63,27 @@ Starting a browser session for this project
 1. `ionic run browser`
   * you can exchange browser for the platform of your choice
 
+Starting an Emulator
+--------------------
+
+* Android: `npm run android`
+* iOS: `npm run ios`
+
+Note that if you run `npm run watch` in one window and then start the emulator in another, you can live-edit code and it will auto-refresh in the emulator.
+
+Other Commands
+--------------
+
+* `npm run verbose-build`: Do a "verbose" webpack build, which can give more information on what is being done during compilation.
+* `npm run genymotion`: Run the Android build in the Genymotion emulator rather than the (slower) Android emulator.  (Requires a Genymotion installation.)
+* `npm run release`: Run webpack and build in release mode.  This makes a smaller, faster build with unreadable JavaScript.
+
 Contact
 =======
 
-* E-Mail: You can reach me (Benjamin Reed) at [testflight@raccoonfink.com](mailto:testflight@raccoonfink.com).
-* IRC: Join us on IRC in #twitarr on irc.freenode.net.
-* Slack: Join us in #twitarr and #cruisemonkey on [Slack](http://cm.raccoonfink.com/slack/)
-* Forums: You can also discuss CruiseMonkey on the [JoCo Forums](http://www.jonathancoulton.com/forums/index.php?p=/discussion/2381/cruisemonkey-5).
+* E-Mail: You can reach me (Benjamin Reed) at [cruisemonkey@raccoonfink.com](mailto:cruisemonkey@raccoonfink.com).
+* Slack: Join us in #twitarr and #cruisemonkey on [Slack](http://cm.raccoonfink.com/slack/).
+* Forums: You can also discuss CruiseMonkey on the [JoCo Forums](http://www.jonathancoulton.com/forums/index.php?p=/discussion/2448/twit-arr-and-cruisemonkey-2016).
 
 Licensing
 =========
@@ -80,5 +95,3 @@ Release Notes
 =============
 
 The release notes can now be found [here](CHANGELOG.md).
-
-[twit-arr beta thread]: http://www.jonathancoulton.com/forums/index.php?p=/discussion/2378/twitarr-beta
