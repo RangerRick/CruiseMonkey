@@ -1,16 +1,14 @@
 <ion-view class="event-list searchable">
-	<ion-header-bar class="bar-dark" animation="no-animation" ng-click="scrollTop()">
-		<div class="buttons">
-			<button class="button button-icon icon-yellow cm-icon-clock" ng-click="goToNow()"></button>
-			<button class="button button-clear"><ion-spinner ng-show="loading"></ion-spinner></button>
-		</div>
-		<h1 class="title"><span ng-click="openEventTypePopover($event)">{{eventType.capitalize()}} Events <span style="font-size: x-small">&#9660;</span></span></h1>
-		<div class="buttons">
-			<button class="button button-icon icon-yellow cm-icon-plus" ng-click="addEvent()" ng-if="u.loggedIn()"></button>
-			<button class="button button-icon icon cm-icon-search" ng-click="showFilterBar()"></button>
-			<!--<button class="button button-icon icon cm-icon-more" ng-click="showOptions($event)"></button>-->
-		</div>
-	</ion-header-bar>
+	<ion-nav-buttons side="primary">
+		<button class="button button-icon icon-yellow cm-icon-clock" ng-click="goToNow()"></button>
+	</ion-nav-buttons>
+	<ion-nav-title ng-click="openEventTypePopover($event)" class="event-title">
+		<span>{{eventType.capitalize()}} Events <span style="font-size: x-small">&#9660;</span></span>
+	</ion-nav-title>
+	<ion-nav-buttons side="secondary">
+		<button class="button button-icon icon-yellow cm-icon-plus" ng-click="addEvent()" ng-if="u.loggedIn()"></button>
+		<button class="button button-icon icon cm-icon-search" ng-click="showFilterBar()"></button>
+	</ion-nav-buttons>
 	<ion-content ion-sticky scroll="true" padding="false" id="event-content" delegate-handle="event-scroll" ng-click="closeKeyboard()">
 		<ion-refresher pulling-text="Pull to refresh..." on-refresh="doRefresh()"></ion-refresher>
 		<ion-list>

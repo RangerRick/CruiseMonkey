@@ -11,19 +11,19 @@
 				</form>
 				<form class="login-form" novalidate ng-if="!user.loggedIn">
 					<ion-item class="heading">Log In</ion-item>
-					<label class="item item-input">
-						<span class="input-label">Username</span>
+					<label class="item item-input item-stacked-label">
+						<span class="input-label">Username:</span>
 						<input id="loginUsername" type="text" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="off" ng-model="user.username" name="username" autofocus="autofocus" required />
 					</label>
-					<label class="item item-input">
-						<span class="input-label">Password</span>
+					<label class="item item-input item-stacked-label">
+						<span class="input-label">Password:</span>
 						<input id="loginPassword" type="password" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="off" ng-model="user.password" name="password" required />
 					</label>
-					<ion-item class="item item-text-wrap">
-						Need a Twit-arr account? <a ng-click="goToTwitarr()" style="text-decoration:underline;cursor:pointer">Create one here.</a><br>
+					<ion-item class="item item-text-wrap nobottom">
+						Need a Twit-arr account? <a ng-click="goToTwitarr()" style="text-decoration:underline;cursor:pointer">Create one here.</a><br />
 						Lost your password? <a ng-click="goToLostPassword()" style="text-decoration:underline;cursor:pointer">Reset it here.</a>
 					</ion-item>
-					<ion-item class="text-right">
+					<ion-item class="text-right notop">
 						<button class="button button-dark" ng-click="logIn(user)" ng-disabled="form.$invalid || !canSubmit(user)" style="margin-top: 0; margin-bottom: 0">Log In</button>
 					</ion-item>
 				</form>
@@ -31,39 +31,30 @@
 
 			<form class="settings-form" novalidate>
 				<ion-item class="heading">Network Configuration</ion-item>
-				<label class="item item-input">
-					<span class="input-label">Twit-Arr URL</span>
+				<label class="item item-input item-stacked-label">
+					<span class="input-label">Twit-Arr URL:</span>
 					<input type="url" name="twitarrRoot" ng-model="settings.twitarrRoot" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="off" />
 				</label>
-				<!--
-				<label class="item item-input">
+				<label class="item item-input item-stacked-label item-text-wrap">
+					<span class="input-label wide">
+						Status Check Interval:
+					</span>
 					<div class="row">
-						<span class="input-label col">
-							Status Check Interval
-						</span>
-						<div style="white-space: normal; margin-left: 20px; padding: 5px">
-							how often CruiseMonkey checks for @mentions or seamail while you're using it
+						<div class="smaller wide">
+							How often CruiseMonkey checks for events, @mentions, or seamail while you're using it.
 						</div>
 					</div>
 					<div class="range row">
-						<div class="col">
+						<div class="col col-33">
 							<span>{{settings.backgroundInterval}} seconds</span>
 						</div>
-						<input class="col" type="range" name="bgi" ng-model="$parent.settings.backgroundInterval" min="10" max="300" value="{{settings.backgroundInterval}}" />
+						<input class="col col-67" type="range" name="bgi" ng-model="$parent.settings.backgroundInterval" min="10" max="300" value="{{settings.backgroundInterval}}" />
 					</div>
 				</label>
-				-->
 				<ion-item class="text-right">
 					<button class="button button-dark" ng-click="saveSettings()" ng-disabled="form.$invalid || isUnchanged()">Save</button>
 					<button class="button button-assertive" ng-click="resetSettings()" ng-disabled="form.$invalid">Default</button>
 				</ion-item>
-				<!--
-				<ion-item class="heading">Reset Your Cache</ion-item>
-				<ion-item class="item-text-wrap">
-					<p>This will clear your local client cache and re-sync from the CruiseMonkey server.  Any events or favorites you have created will come back, as long as CruiseMonkey had previously synced them to the server.  If you are not online when you hit this, it will probably leave you with an empty CruiseMonkey!</p>
-					<div class="text-right"><button class="button button-dark" ng-click="resetDatabase()">Reset Cache</button></div>
-				</ion-item>
-				-->
 			</form>
 		</ion-list>
 	</ion-content>

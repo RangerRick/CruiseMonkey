@@ -473,7 +473,7 @@ body {
 a:link,
 a:visited,
 a:hover {
-	color: black;
+	color: $cmDetailBackground;
 	text-decoration: none;
 }
 
@@ -520,41 +520,42 @@ ion-popover-view.fit ion-content {
 }
 
 .settings {
+	$settings-border-color: $cmBackgroundAlternate;
 	.item {
-		border:0;
-		border-top: 1px solid white;
+		border: none;
+		/*border-color: $settings-border-color;*/
+		&.item-input {
+			padding-left: 6px;
+			padding-right: 6px;
+		}
+		input[type="text"], input[type="password"], input[type="url"] {
+			background-color: lighten($cmBackgroundAlternate, 4%);
+			margin-top: 5px;
+			margin-bottom: 5px;
+			padding-left: 4px;
+			padding-right: 4px;
+			border: 1px solid darken($cmBackgroundAlternate, 15%);
+		}
 	}
 	.heading {
 		font-weight: bold;
 		font-size: $font-size-large;
-		border-top: 1px solid $cmDetailBackground;
+		border-top: 2px solid $cmDetailBackground;
 		border-bottom: 2px solid $cmDetailBackground;
-		background-color: $cmBackgroundAlternate;
+		background-color: darken($cmBackgroundAlternate, 10%);
 	}
-
-	textarea,
-	input[type="text"],
-	input[type="password"],
-	input[type="datetime"],
-	input[type="datetime-local"],
-	input[type="date"],
-	input[type="month"],
-	input[type="time"],
-	input[type="week"],
-	input[type="number"],
-	input[type="email"],
-	input[type="url"],
-	input[type="search"],
-	input[type="tel"],
-	input[type="color"] {
-		border: 1px solid $cmDetailBackground;
-	 	padding: 2px;
-	 	padding-left: 5px;
-	 	padding-right: 5px;
-	 	margin-left: 5px;
-	 	margin-right: 5px;
+	.nobottom {
+		border-bottom: none;
 	}
-
+	.notop {
+		border-top: none;
+	}
+	.smaller {
+		font-size: $font-size-small;
+	}
+	.input-label.wide {
+		width: 100%;
+	}
 }
 
 .user-detail {
@@ -852,6 +853,13 @@ ion-item.item.item-text-wrap.list-entry.unofficial.even {
 	&.mine {
 		border-left: $eventMarkerSize solid $myMarkerColor;
 	}
+}
+
+.event-title.nav-bar-title {
+	padding: 0.5em 2em;
+	margin: 0.5em 2em;
+	padding-top: 2em;
+	margin-top: 2em;
 }
 
 .event-list {
