@@ -5,6 +5,11 @@
 
 There are not (yet) any major new features over last year's release, but those will be coming now that the core is in good shape.
 
+#### Changes
+
+* build 40359
+  * fix centering of event tab title
+
 #### Known Issues
 
 * amenities still lists amenities for Independence of the Seas
