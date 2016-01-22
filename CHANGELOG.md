@@ -1,23 +1,18 @@
-<a name="5.9.1"></a>
-## 5.9.1 (2016-01-22)
-
-#### Changes
-
-* build 40363
-  * events clean up after themselves properly when you log in/out
-  * events view uses cache right away before refreshing from twit-arr
-  * events can now have no end-date (these just put a "marker" in the event list without taking up a time range)
-  * event editing fixes invalid date ranges automagically
-  * event start/end time editing uses native controls if possible, & less-sucky controls if not
-
 <a name="5.9.0"></a>
-## 5.9.0 (2016-01-21)
+## 5.9.0 (2016)
 
 5.9.0 (CruiseMonkey 2016) is a major refactor of the CM codebase, with a streamlined UI and a lot of under-the-hood cleanup.
 
 There are not (yet) any major new features over last year's release, but those will be coming now that the core is in good shape.
 
 #### Changes
+
+* build 40364
+  * events clean up after themselves properly when you log in/out
+  * events view uses cache right away before refreshing from twit-arr
+  * events can now have no end-date (these just put a "marker" in the event list without taking up a time range)
+  * event editing fixes invalid date ranges automagically
+  * event start/end time editing uses native controls if possible, & less-sucky controls if not
 
 * build 40361
   * users without a display name now get an @ in the tweet stream
