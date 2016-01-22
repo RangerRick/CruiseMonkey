@@ -177,6 +177,12 @@ ion-tabs {
 .cm-icon-info {
 	@extend .ion-information-circled;
 }
+.cm-icon-favorited {
+	@extend .ion-android-favorite;
+}
+.cm-icon-unfavorited {
+	@extend .ion-android-favorite-outline;
+}
 .cm-icon-more {
 	@extend .ion-more;
 }
@@ -188,6 +194,9 @@ ion-tabs {
 }
 .cm-icon-refresh {
 	@extend .ion-refresh;
+}
+.cm-icon-reply {
+	@extend .ion-reply;
 }
 .cm-icon-search {
 	@extend .ion-search;
@@ -273,6 +282,9 @@ ion-tabs {
 	}
 	.cm-icon-refresh {
 		@extend .ion-ios-refresh-empty;
+	}
+	.cm-icon-reply {
+		@extend .ion-ios-undo;
 	}
 	.cm-icon-search {
 		@extend .ion-ios-search;
