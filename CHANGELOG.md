@@ -7,6 +7,12 @@ There are not (yet) any major new features over last year's release, but those w
 
 #### Changes
 
+* build 40361
+  * users without a display name now get an @ in the tweet stream
+  * reply/like/delete/edit of tweets now works
+  * highlights are fixed in karaoke search
+  * popup confirmation on logout
+
 * build 40359
   * fix centering of event tab title
 
