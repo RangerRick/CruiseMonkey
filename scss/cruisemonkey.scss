@@ -530,6 +530,7 @@ ion-popover-view.fit ion-content {
 .add-event-form span.invalid {
 	float: right;
 	color: red;
+	padding-right: 10px;
 }
 
 .settings {
@@ -876,6 +877,16 @@ ion-item.item.item-text-wrap.list-entry.unofficial.even {
 	margin-top: 2em;
 }
 */
+
+.event-edit {
+	.disabled {
+		opacity: .3;
+	}
+	input[type="date"], input[type="time"] {
+		display: inline-block;
+		width: 80px;
+	}
+}
 
 .event-list {
 	font-family: $eventListFont;

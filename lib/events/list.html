@@ -12,7 +12,7 @@
 	<ion-content ion-sticky scroll="true" padding="false" id="event-content" delegate-handle="event-scroll" ng-click="closeKeyboard()">
 		<ion-refresher pulling-text="Pull to refresh..." on-refresh="doRefresh()"></ion-refresher>
 		<ion-list>
-			<span ng-repeat="entry in events track by entry.getId()" id="{{entry.getId()}}">
+			<span ng-repeat="entry in events track by entry.getHash()" id="{{entry.getId()}}">
 				<ion-item ng-if="isDay(entry)" class="item-divider event-header">{{prettyDate(entry.day)}}</ion-item>
 				<ion-item ng-if="!isDay(entry)" ng-class="'item-text-wrap list-entry ' + getCssClass(entry)">
 					<span class="item-note">
@@ -22,7 +22,7 @@
 					<span>
 					<div class="summary">
 						<span ng-bind-html="highlight(entry.getSummary(), searchString)"></span>
-						<i class="icon icon-navy ion-eye-disabled" ng-if="entry.getVisibility() !== 'all'"></i>
+						<i class="icon icon-navy ion-eye-disabled" ng-if="!entry.isShared()"></i>
 					</div>
 					<div class="time">Time: {{entry.getDisplayTime()}}</div>
 					<div class="createdBy" ng-if="entry.isOfficial()"><img src="../data/boat.svg" style="max-height: 14px" ng-if="entry.isOfficial()" /> Official Event</div>

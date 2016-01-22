@@ -22,7 +22,6 @@
     "moment": "momentjs#~2.11.0",
     "ion-sticky": "~1.0.4",
     "ionic-filter-bar": "~1.1.1",
-    "modernizr": "~3.2.0",
     "winstore-jscompat": "https://github.com/MSOpenTech/winstore-jscompat.git",
     "d3": "~3.5.12",
     "ngFitText": "~3.3.3",
