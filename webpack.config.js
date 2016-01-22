@@ -105,8 +105,24 @@ module.exports = {
 				loaders: ['style', 'css', 'sass']
 			},
 			{
-				test: /\.(ttf|eot|otf|svg|woff|woff2)\b/,
-				loader: 'file?prefix=font/'
+				test: /\.eot(\?v=\d+\.\d+\.\d+)?$/,
+				loader: "url?limit=10000&mimetype=application/vnd.ms-fontobject"
+			},
+			{
+				test: /\.otf(\?v=\d+\.\d+\.\d+)?$/,
+				loader: "url?limit=10000&mimetype=application/x-font-opentype"
+			},
+			{
+				test: /\.svg(\?v=\d+\.\d+\.\d+)?$/,
+				loader: "url?limit=10000&mimetype=image/svg+xml"
+			},
+			{
+				test: /\.ttf(\?v=\d+\.\d+\.\d+)?$/,
+				loader: "url?limit=10000&mimetype=application/octet-stream"
+			},
+			{
+				test: /\.woff2?(\?v=\d+\.\d+\.\d+)?$/,
+				loader: "url?limit=10000&mimetype=application/font-woff"
 			},
 			{
 				test: /[\/]lokijs\.js$/,
@@ -115,14 +131,6 @@ module.exports = {
 			{
 				test: /[\/]angular\.js$/,
 				loader: 'expose?angular!exports?angular'
-			},
-			{
-				test: /[\/]angular-imgcache\.js$/,
-				loader: 'imports?ImgCache=imgcache.js'
-			},
-			{
-				test: /[\/]imgcache\.js$/,
-				loader: 'expose?ImgCache!exports?ImgCache'
 			},
 			{
 				test: /[\/]ionic\.js$/,
