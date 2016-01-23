@@ -10,12 +10,8 @@
 			<ion-item ng-repeat="seamail in seamails track by seamail.id" class="item-text-wrap" href="#/tab/seamail/{{seamail.id}}">
 				<div class="title"><i ng-if="seamail.is_unread" class="icon ion-record blue"></i> {{seamail.subject}}</div>
 				<div class="messages">{{seamail.messages}}</div>
-				<div class="time">{{seamail.timestamp.format('dddd, MMMM Do, h:mma')}}</div>
-				<ion-scroll class="users" direction="x">
-					<span class="user" ng-click="openUser(user.username, $event)" ng-repeat="user in seamail.users">
-						<img cm-cache img-src="{{twitarrRoot}}api/v2/user/photo/{{user.username}}" title="{{user.display_name}}" ng-if="twitarrRoot &amp;&amp; user.username" /> {{user.username}}
-					</span>
-				</ion-scroll>
+				<div class="timestamp">{{seamail.timestamp.format('dddd, MMMM Do, h:mma')}}</div>
+				<div ng-include="userListTemplate"></div>
 			</ion-item>
 		</ion-list>
 	</ion-content>

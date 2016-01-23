@@ -15,12 +15,10 @@
 		</ion-list>
 		<ion-scroll>
 			<ion-refresher pulling-text="Pull to refresh..." on-refresh="refreshMessages()"></ion-refresher>
-			<ion-scroll class="users" direction="x">
-				<span class="user" ng-click="openUser(user.username, $event)" ng-repeat="user in seamail.users">
-					<img cm-cache img-src="{{twitarrRoot}}api/v2/user/photo/{{user.username}}" title="{{user.display_name}}" ng-if="twitarrRoot &amp;&amp; user.username" /> {{user.username}}
-				</span>
-			</ion-scroll>
 			<ion-list>
+				<ion-item>
+					<div ng-include="userListTemplate"></div>
+				</ion-item>
 				<ion-item ng-repeat="message in seamail.messages track by $index" class="item item-avatar item-text-wrap">
 					<img cm-cache img-src="{{twitarrRoot}}api/v2/user/photo/{{message.author}}" title="{{message.author_display_name}}" ng-if="twitarrRoot &amp;&amp; message.author" />
 					<div class="display-name">{{message.author_display_name}} <span class="display-handle">@{{message.author}}</span></div>

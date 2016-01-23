@@ -1,0 +1,19 @@
+<span ng-controller="CMSeamailUserListCtrl" class="user-list">
+	<div class="users" ng-if="userList.closed">
+		<div class="toggle">
+			<span ng-click="toggle($event)">
+				<i class="icon ion-android-arrow-dropright-circle"></i> Show Users
+			</span>
+		</div>
+	</div>
+	<div class="users" ng-if="!userList.closed">
+		<div class="toggle">
+			<span ng-click="toggle($event)">
+				<i class="icon ion-android-arrow-dropdown-circle"></i> Hide Users
+			</span>
+		</div>
+		<span class="user" ng-click="openUser(user.username, $event)" ng-repeat="user in seamail.users track by user.username">
+			<img cm-cache img-src="{{twitarrRoot}}api/v2/user/photo/{{user.username}}" title="{{user.display_name}}" ng-if="twitarrRoot &amp;&amp; user.username" /> {{user.username}}
+		</span>
+	</div>
+</span>
