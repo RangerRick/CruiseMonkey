@@ -7,6 +7,15 @@ There are not (yet) any major new features over last year's release, but those w
 
 #### Changes
 
+* build 40365
+  * default login timeout is now 20 seconds
+  * favorites now display properly
+  * log out if twit-arr URL is changed
+  * event editor cleanup and themeing
+  * seamail input works on Android
+  * seamail UI improvements
+  * login username input box should (hopefully) render right now
+
 * build 40364
   * events clean up after themselves properly when you log in/out
   * events view uses cache right away before refreshing from twit-arr
