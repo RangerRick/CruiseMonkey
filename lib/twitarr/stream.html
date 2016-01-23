@@ -21,7 +21,7 @@
 				<span class="item-note commands" ng-if="user.loggedIn">
 					<button class="button button-clear button-small icon cm-icon-reply" ng-click="editTweet({tweet:entry, reply:true}, $event)" ng-if="entry.author !== user.username"></button>
 					<button class="button button-clear button-small icon ion-android-more-vertical" ng-click="tweetOptions(entry, $event)" ng-if="entry.author === user.username"></button>
-					<button ng-class="'button button-clear button-small icon ' + (entry.likes &amp;&amp; entry.likes.indexOf(user.username) >= 0? 'cm-icon-favorited':'cm-icon-unfavorited')" ng-click="toggleLike(entry, $event)"></button>
+					<button ng-class="'button button-clear button-small icon ' + (isLiked(entry)? 'cm-icon-favorited':'cm-icon-unfavorited')" ng-click="toggleLike(entry, $event)"></button>
 				</span>
 				<span class="user">
 					<span class="display-name" ng-bind-html="getDisplayName(entry.author)"></span>
