@@ -22,7 +22,7 @@ if (rootdir) {
 	filestoreplace.forEach(function(val, index, array) {
 		var fullfilename = path.join(rootdir, val);
 		if (fs.existsSync(fullfilename)) {
-			replace_string_in_file(fullfilename, ' version="[^"]*"', ' version="' + configobj.version + '"');
+			replace_string_in_file(fullfilename, ' version="\\d+\\.\\d+\\.\\d+"', ' version="' + configobj.version + '"');
 			replace_string_in_file(fullfilename, 'ios-CFBundleVersion="[^"]*"', 'ios-CFBundleVersion="' + configobj.build + '"');
 			replace_string_in_file(fullfilename, 'android-versionCode="[^"]*"', 'android-versionCode="' + configobj.build + '"');
 		} else {
