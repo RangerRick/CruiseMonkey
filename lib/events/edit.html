@@ -40,24 +40,48 @@
 				</label>
 				<ion-item>
 					<span class="input-label">Event Start</span> <span ng-show="form.eStartDate.$invalid || form.eStartTime.$invalid" class="invalid">Required.</span>
-					<div ng-if="hasNative">
-						<span ng-click="datePicker('start')">{{eventData.startDate | date:'mediumDate'}}</span>
-						<span ng-click="timePicker('start')">{{eventData.startDate | date:'shortTime'}}</span>
+					<div ng-if="hasNative" class="date-edit">
+						<span class="picker">
+							<i class="icon cm-icon-calendar"></i>
+							<span ng-click="datePicker('start')" class="date">{{eventData.startDate | date:'mediumDate'}}</span>
+						</span>
+						<span class="picker">
+							<i class="icon cm-icon-clock"></i>
+							<span ng-click="timePicker('start')" class="time">{{eventData.startDate | date:'shortTime'}}</span>
+						</span>
 					</div>
-					<div ng-if="!hasNative">
-						<input type="date" ng-model="eventData.startDate" name="eStartDate" max="{{ maxStartDate.toDate() | date:'yyyy-MM-dd'}}" required />
-						<input type="time" ng-model="eventData.startDate" name="eStartTime" max="{{ maxStartDate.toDate() | date:'HH:mm'}}"required />
+					<div ng-if="!hasNative" class="date-edit">
+						<span class="picker">
+							<i class="icon cm-icon-calendar"></i>
+							<input type="date" class="date" ng-model="eventData.startDate" name="eStartDate" max="{{ maxStartDate.toDate() | date:'yyyy-MM-dd'}}" required />
+						</span>
+						<span class="picker">
+							<i class="icon cm-icon-clock"></i>
+							<input type="time" class="time" ng-model="eventData.startDate" name="eStartTime" max="{{ maxStartDate.toDate() | date:'HH:mm'}}"required />
+						</span>
 					</div>
 				</ion-item>
 				<ion-item ng-class="{ 'disabled': eventData.noEndDate }">
 					<span class="input-label">Event End</span> <span ng-show="form.eEndDate.$invalid || form.eEndTime.$invalid" class="invalid">Required.</span>
-					<div ng-if="hasNative">
-						<span ng-click="datePicker('end')">{{eventData.endDate | date:'mediumDate'}}</span>
-						<span ng-click="timePicker('end')">{{eventData.endDate | date:'shortTime'}}</span>
+					<div ng-if="hasNative" class="date-edit">
+						<span class="picker">
+							<i class="icon cm-icon-calendar"></i>
+							<span ng-click="datePicker('end')" class="date">{{eventData.endDate | date:'mediumDate'}}</span>
+						</span>
+						<span class="picker">
+							<i class="icon cm-icon-clock"></i>
+							<span ng-click="timePicker('end')" class="time">{{eventData.endDate | date:'shortTime'}}</span>
+						</span>
 					</div>
-					<div ng-if="!hasNative">
-						<input type="date" ng-model="eventData.endDate" name="eEndDate" max="{{ maxEndDate.toDate() | date:'yyyy-MM-dd'}}" ng-required="!eventData.noEndDate" ng-readonly="eventData.noEndDate" />
-						<input type="time" ng-model="eventData.endDate" name="eEndTime" max="{{ maxEndDate.toDate() | date:'HH:mm'}}" ng-required="!eventData.noEndDate" ng-readonly="eventData.noEndDate" />
+					<div ng-if="!hasNative" class="date-edit">
+						<span class="picker">
+							<i class="icon cm-icon-calendar"></i>
+							<input type="date" class="date" ng-model="eventData.endDate" name="eEndDate" max="{{ maxEndDate.toDate() | date:'yyyy-MM-dd'}}" ng-required="!eventData.noEndDate" ng-readonly="eventData.noEndDate" />
+						</span>
+						<span class="picker">
+							<i class="icon cm-icon-clock"></i>
+							<input type="time" class="time" ng-model="eventData.endDate" name="eEndTime" max="{{ maxEndDate.toDate() | date:'HH:mm'}}" ng-required="!eventData.noEndDate" ng-readonly="eventData.noEndDate" />
+						</span>
 					</div>
 				</ion-item>
 				<label class="item item-checkbox">

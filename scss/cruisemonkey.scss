@@ -882,10 +882,51 @@ ion-item.item.item-text-wrap.list-entry.unofficial.even {
 	.disabled {
 		opacity: .3;
 	}
+
+	.date-edit {
+		i, input, span {
+			margin: 5px;
+			padding: 5px;
+		}
+		i {
+			margin-right: 0;
+		}
+		input, span {
+			margin-left: 0;
+		}
+		.picker {
+			display: inline-block;
+			background-color: $cmBackgroundAlternate;
+			border-radius: 5px;
+
+			.date {
+				width: 100px;
+				font-size: $font-size-base;
+				font-weight: normal;
+			}
+			.time {
+				width: 80px;
+				font-size: $font-size-base;
+				font-weight: normal;
+			}
+		}
+	}
+	/*
 	input[type="date"], input[type="time"] {
 		display: inline-block;
 		width: 80px;
 	}
+
+	.date-edit {
+		i, input, span {
+			margin: 5px;
+			padding: 5px;
+		}
+		input, span {
+			background-color: $cmBackgroundAlternate;
+		}
+	}
+	*/
 }
 
 .event-list {
