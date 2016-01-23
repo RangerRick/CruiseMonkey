@@ -535,6 +535,11 @@ ion-popover-view.fit ion-content {
 
 .settings {
 	$settings-border-color: $cmBackgroundAlternate;
+	.login-form {
+		p {
+			font-size: $font-size-base;
+		}
+	}
 	.item {
 		border: none;
 		/*border-color: $settings-border-color;*/
@@ -548,7 +553,9 @@ ion-popover-view.fit ion-content {
 			margin-bottom: 5px;
 			padding-left: 4px;
 			padding-right: 4px;
+			width: 100%;
 			border: 1px solid darken($cmBackgroundAlternate, 15%);
+			border-radius: 3px;
 		}
 	}
 	.heading {

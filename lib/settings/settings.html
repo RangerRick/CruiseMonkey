@@ -15,13 +15,13 @@
 						<span class="input-label">Username:</span>
 						<input id="loginUsername" type="text" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="off" ng-model="user.username" name="username" autofocus="autofocus" required />
 					</label>
-					<label class="item item-input item-stacked-label">
+					<label class="item item-input item-stacked-label nobottom">
 						<span class="input-label">Password:</span>
 						<input id="loginPassword" type="password" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="off" ng-model="user.password" name="password" required />
 					</label>
-					<ion-item class="item item-text-wrap nobottom">
-						Need a Twit-arr account? <a ng-click="goToTwitarr()" style="text-decoration:underline;cursor:pointer">Create one here.</a><br />
-						Lost your password? <a ng-click="goToLostPassword()" style="text-decoration:underline;cursor:pointer">Reset it here.</a>
+					<ion-item class="item item-text-wrap notop">
+						<p>Need a Twit-arr account? <a ng-click="goToTwitarr()" style="text-decoration:underline;cursor:pointer">Create one here.</a></p>
+						<p>Lost your password? <a ng-click="goToLostPassword()" style="text-decoration:underline;cursor:pointer">Reset it here.</a></p>
 					</ion-item>
 					<ion-item class="text-right notop">
 						<button class="button button-dark" ng-click="logIn(user)" ng-disabled="form.$invalid || !canSubmit(user)" style="margin-top: 0; margin-bottom: 0">Log In</button>
