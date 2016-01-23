@@ -780,7 +780,7 @@ ion-popover-view.fit ion-content {
 			*/
 			display: block;
 			width: 100%;
-			font-size: $font-size-base - 1px;
+			font-size: $font-size-base;
 		}
 		.user {
 			display: inline-block;
@@ -789,10 +789,16 @@ ion-popover-view.fit ion-content {
 			vertical-align: middle;
 		}
 	}
+	.title {
+		font-family: $headings-font-family;
+		font-weight: $headings-font-weight;
+		line-height: $headings-line-height;
+		font-size: $font-size-large;
+	}
 	.timestamp {
 		display: block;
-		color: rgba($cmForeground,0.7);
-		font-size: $font-size-small;
+		color: rgba($cmForeground,0.6);
+		font-size: $font-size-base;
 	}
 
 	.col-post {
@@ -1032,3 +1038,19 @@ ion-item.item.item-text-wrap.list-entry.unofficial.even {
 		-webkit-user-drag: none;
 	}
 }
+
+/*
+.user-sizeable-min {
+	overflow: visible;
+	white-space: normal;
+	font-size: 150%;
+	line-height: 150%;
+}
+
+.user-sizeable {
+	overflow: visible;
+	white-space: normal;
+	font-size: 200%;
+	line-height: 200%;
+}
+*/

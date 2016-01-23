@@ -24,12 +24,12 @@
 					<button ng-class="'button button-clear button-small icon ' + (isLiked(entry)? 'cm-icon-favorited':'cm-icon-unfavorited')" ng-click="toggleLike(entry, $event)"></button>
 				</span>
 				<span class="user">
-					<span class="display-name" ng-bind-html="getDisplayName(entry.author)"></span>
-					<span class="display-handle" ng-bind-html="getDisplayHandle(entry.author)"></span>
+					<span class="display-name user-sizeable" ng-bind-html="getDisplayName(entry.author)"></span>
+					<span class="display-handle user-sizeable" ng-bind-html="getDisplayHandle(entry.author)"></span>
 				</span>
-				<p class="tweet-text" twitter-html="entry.text"></p>
+				<p class="tweet-text user-sizeable" twitter-html="entry.text"></p>
 				<img cm-cache img-src="{{twitarrRoot + 'photo/small_thumb/' + entry.photo.id}}" ng-if="twitarrRoot &amp;&amp; entry.photo" style="width: 100%; max-width: 400px"/>
-				<p class="timeframe">{{entry.display_timestamp}}</p>
+				<p class="timeframe user-sizeable">{{entry.display_timestamp}}</p>
 			</ion-item>
 		</ion-list>
 		<ion-infinite-scroll on-infinite="loadMore()" ng-if="entries.length < 500 &amp;&amp; !done" distance="10%"></ion-infinite-scroll>

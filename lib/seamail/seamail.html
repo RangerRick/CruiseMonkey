@@ -5,7 +5,7 @@
 				<img cm-cache img-src="{{twitarrRoot}}api/v2/user/photo/{{user.username}}" ng-if="twitarrRoot &amp;&amp; user.username" />
 				<div class="row">
 					<div class="col">
-						<textarea required wrap="soft" ng-model="newMessage.text" ng-trim="true" placeholder="Add a message to this discussion..." style="resize: none; width: 100%"></textarea>
+						<textarea required wrap="soft" ng-model="newMessage.text" ng-trim="true" placeholder="Add a message to this discussion..." style="resize: none; width: 100%" rows="5"></textarea>
 					</div>
 					<div class="col col-post">
 						<button class="button button-small button-icon icon cm-icon-send icon-navy" style="float: right" ng-click="postMessage()" ng-disabled="form.$invalid"></button>
