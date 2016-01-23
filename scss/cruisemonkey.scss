@@ -39,6 +39,12 @@ $greySVG: "#{$imagePath}/entypo/grey/SVG";
 	font-weight: 600;
 }
 
+/*
+$font-size-base: 16px;
+$font-size-large: $font-size-base * 1.3;
+$font-size-small: $font-size-base * 0.7;
+*/
+
 $jocoBlueDark: #003d5d;
 $jocoBlueLight: #005777;
 $jocoTanDark: darken(#dad3bc, 30%);
@@ -758,6 +764,10 @@ ion-popover-view.fit ion-content {
 }
 
 .seamail {
+	p {
+		font-size: $font-size-base;
+		color: $cmForeground;
+	}
 	.users {
 		overflow: visible;
 		white-space: normal;
