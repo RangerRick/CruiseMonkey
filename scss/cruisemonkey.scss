@@ -195,6 +195,9 @@ ion-tabs {
 .cm-icon-music-note {
 	@extend .ion-music-note;
 }
+.cm-icon-people {
+	@extend .ion-android-people;
+}
 .cm-icon-plus {
 	@extend .ion-plus;
 }
@@ -282,6 +285,9 @@ ion-tabs {
 	}
 	.cm-icon-music-note {
 		@extend .ion-ios-musical-notes;
+	}
+	.cm-icon-people {
+		@extend .ion-ios-people;
 	}
 	.cm-icon-plus {
 		@extend .ion-ios-plus-empty;
@@ -798,6 +804,9 @@ ion-popover-view.fit ion-content {
 			white-space: nowrap;
 			vertical-align: middle;
 		}
+		&.list-view .user {
+			display: block;
+		}
 	}
 	.title {
 		font-family: $headings-font-family;
@@ -820,6 +829,16 @@ ion-popover-view.fit ion-content {
 		flex: 0 0 50px;
 		max-width: 50px;
 		padding: 0;
+	}
+
+	.bar {
+		&.bar-light {
+			@include bar-style(white, $cmBackgroundAlternate, $cmForeground);
+			&.bar-footer {
+				background-image: none;
+				border-top: 1px solid $cmBackgroundAlternate;
+			}
+		}
 	}
 }
 

@@ -1,31 +1,23 @@
-<ion-view class="seamail" title="{{seamail.subject}}">
-	<ion-content class="seamail" scroll="false">
+<ion-view class="seamail" title="Seamail Detail">
+	<ion-nav-buttons size="primary">
+		<button class="button button-icon icon cm-icon-people" ng-click="openUserList($event)"></button>
+	</ion-nav-buttons>
+	<ion-content class="seamail" delegate-handle="seamail">
 		<ion-list>
-			<ion-item class="item item-avatar">
-				<img cm-cache img-src="{{twitarrRoot}}api/v2/user/photo/{{user.username}}" ng-if="twitarrRoot &amp;&amp; user.username" />
-				<div class="row">
-					<div class="col">
-						<textarea required wrap="soft" ng-model="newMessage.text" ng-trim="true" placeholder="Add a message to this discussion..." style="resize: none; width: 100%" rows="5"></textarea>
-					</div>
-					<div class="col col-post">
-						<button class="button button-small button-icon icon cm-icon-send icon-navy" style="float: right" ng-click="postMessage()" ng-disabled="form.$invalid"></button>
-					</div>
-				</div>
+			<ion-item ng-repeat="message in seamail.messages track by message.hash" class="item item-avatar item-text-wrap">
+				<img cm-cache img-src="{{twitarrRoot}}api/v2/user/photo/{{message.author}}" title="{{message.author_display_name}}" ng-if="twitarrRoot &amp;&amp; message.author" />
+				<div class="display-name">{{message.author_display_name}} <span class="display-handle">@{{message.author}}</span></div>
+				<p ng-bind-html="message.text"></p>
+				<div class="timestamp">{{message.timestamp.fromNow()}}</div>
 			</ion-item>
 		</ion-list>
-		<ion-scroll>
-			<ion-refresher pulling-text="Pull to refresh..." on-refresh="refreshMessages()"></ion-refresher>
-			<ion-list>
-				<ion-item>
-					<div ng-include="userListTemplate"></div>
-				</ion-item>
-				<ion-item ng-repeat="message in seamail.messages track by $index" class="item item-avatar item-text-wrap">
-					<img cm-cache img-src="{{twitarrRoot}}api/v2/user/photo/{{message.author}}" title="{{message.author_display_name}}" ng-if="twitarrRoot &amp;&amp; message.author" />
-					<div class="display-name">{{message.author_display_name}} <span class="display-handle">@{{message.author}}</span></div>
-					<p ng-bind-html="message.text"></p>
-					<div class="timestamp">{{message.timestamp.fromNow()}}</div>
-				</ion-item>
-			</ion-list>
-		</ion-scroll>
 	</ion-content>
+	<form name="newMessageForm" ng-submit="postMessage()" novalidate>
+		<ion-footer-bar class="bar-light message-footer">
+			<textarea required wrap="soft" ng-model="newMessage.text" ng-trim="true" placeholder="Add a message to this discussion..." style="resize: none; width: 100%" rows="2"></textarea>
+			<div class="footer-btn-wrap">
+				<button class="button button-icon icon cm-icon-send footer-btn icon-navy" style="float: right" ng-disabled="form.$invalid"></button>
+			</div>
+		</ion-footer-bar>
+	</form>
 </ion-view>
