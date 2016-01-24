@@ -7,6 +7,11 @@ There are not (yet) any major new features over last year's release, but those w
 
 #### Changes
 
+* build 40366
+  * fix event redraw after loading cache
+  * tweaked some font sizes
+  * improve seamail UI to be more IM/SMS-like
+
 * build 40365
   * default login timeout is now 20 seconds
   * favorites now display properly
