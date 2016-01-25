@@ -2,6 +2,9 @@
 	<ion-nav-buttons side="secondary">
 		<button class="button button-clear"><ion-spinner ng-show="loading"></ion-spinner></button>
 	</ion-nav-buttons>
+	<ion-nav-title>
+		<span ng-click="scrollTop()">Tweet Detail</span>
+	</ion-nav-title>
 	<ion-content delegate-handle="tweet-detail">
 		<ion-refresher pulling-text="Pull to refresh..." on-refresh="doRefresh()"></ion-refresher>
 		<ion-list>

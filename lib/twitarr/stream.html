@@ -1,7 +1,10 @@
-<ion-view title="Twit-Arr" class="twitarr">
+<ion-view class="twitarr">
 	<ion-nav-buttons side="primary">
 		<button class="button button-clear"><ion-spinner ng-show="loading"></ion-spinner></button>
 	</ion-nav-buttons>
+	<ion-nav-title>
+		<span ng-click="scrollTop()">Twit-Arr</span>
+	</ion-nav-title>
 	<ion-nav-buttons side="secondary">
 		<button class="button button-icon icon cm-icon-compose" ng-click="editTweet({create:true}, $event)" ng-if="user.loggedIn"></button>
 	</ion-nav-buttons>
