@@ -198,6 +198,12 @@ ion-tabs {
 .cm-icon-music-note {
 	@extend .ion-music-note;
 }
+.cm-icon-nav-left {
+	@extend .ion-chevron-left;
+}
+.cm-icon-nav-right {
+	@extend .ion-chevron-right;
+}
 .cm-icon-people {
 	@extend .ion-android-people;
 }
@@ -245,6 +251,12 @@ ion-tabs {
 	.cm-icon-more {
 		@extend .ion-android-more-vertical;
 	}
+	.cm-icon-nav-left {
+		@extend .ion-android-arrow-dropleft-circle;
+	}
+	.cm-icon-nav-right {
+		@extend .ion-android-arrow-dropright-circle;
+	}
 	.cm-icon-plus {
 		@extend .ion-android-add;
 	}
@@ -291,6 +303,12 @@ ion-tabs {
 	}
 	.cm-icon-music-note {
 		@extend .ion-ios-musical-notes;
+	}
+	.cm-icon-nav-left {
+		@extend .ion-ios-arrow-left;
+	}
+	.cm-icon-nav-right {
+		@extend .ion-ios-arrow-right;
 	}
 	.cm-icon-people {
 		@extend .ion-ios-people;

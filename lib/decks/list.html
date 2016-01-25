@@ -1,15 +1,15 @@
 <style>
-	.icon-blank {
-		color: transparent;
-	}
+.icon-blank {
+	color: transparent;
+}
 </style>
 <ion-view class="deck-plans">
 	<ion-nav-title>
-		Deck {{deck}}
+		<span ng-click="scrollTop()">Deck {{deck}}</span>
 	</ion-nav-title>
 	<ion-nav-buttons side="right">
-		<button class="button button-clear" ng-click="previous()"><i ng-class="hasPrevious? 'icon icon-cm ion-chevron-left':'icon ion-arrow-left-b icon-blank'"></i></button>
-		<button class="button button-clear" ng-click="next()"><i ng-class="hasNext? 'icon icon-cm ion-chevron-right':'icon ion-arrow-right-b icon-blank'"></i></button>
+		<button class="button button-clear" ng-click="previous()"><i ng-class="'icon cm-icon-nav-left' + (hasPrevious? '':' icon-blank')"></i></button>
+		<button class="button button-clear" ng-click="next()"><i ng-class="'icon cm-icon-nav-right' + (hasNext? '':' icon-blank')"></i></button>
 	</ion-nav-buttons>
 	<ion-content scroll="true" delegate-handle="deck-list">
 		<ion-slide-box show-pager="false" active-slide="currentSlide" on-slide-changed="slideChanged($index)">
