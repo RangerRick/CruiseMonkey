@@ -54,7 +54,7 @@
     "shelljs": "*",
     "style-loader": "^0.13.0",
     "url-loader": "^0.5.7",
-    "webpack": "^2.0.4-beta",
+    "webpack": "^1.12.12",
     "yargs": "^3.31.0"
   },
   "cordovaPlugins": [
