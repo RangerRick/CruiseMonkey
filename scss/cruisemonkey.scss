@@ -189,6 +189,9 @@ ion-tabs {
 .cm-icon-unfavorited {
 	@extend .ion-android-favorite-outline;
 }
+.cm-icon-map {
+	@extend .ion-map;
+}
 .cm-icon-more {
 	@extend .ion-more;
 }
@@ -235,6 +238,9 @@ ion-tabs {
 	}
 	.cm-icon-image {
 		@extend .ion-android-image;
+	}
+	.cm-icon-map {
+		@extend .ion-android-map;
 	}
 	.cm-icon-more {
 		@extend .ion-android-more-vertical;
@@ -1052,6 +1058,14 @@ ion-item.item.item-text-wrap.list-entry.unofficial.even {
 			-webkit-user-drag: none;
 			font-size: 200px;
 			text-align: center;
+		}
+	}
+
+	$pager-height: 18px;
+	.has-footer {
+		bottom: $pager-height;
+		&.has-tabs {
+			bottom: $tabs-height + $pager-height;
 		}
 	}
 
