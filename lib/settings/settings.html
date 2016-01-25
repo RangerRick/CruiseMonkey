@@ -9,8 +9,12 @@
 						<button class="button button-dark" ng-click="logOut()" style="margin-top: 0; margin-bottom: 0">Log Out</button>
 					</ion-item>
 				</form>
-				<form class="login-form" novalidate ng-if="!user.loggedIn">
+				<form class="login-form" novalidate ng-if="!user.loggedIn" ng-submit="logIn(user)">
 					<ion-item class="heading notop">Log In</ion-item>
+					<ion-item class="item item-text-wrap">
+						<p>Need a Twit-arr account? <a ng-click="goToTwitarr()" style="text-decoration:underline;cursor:pointer">Create one here.</a></p>
+						<p>Lost your password? <a ng-click="goToLostPassword()" style="text-decoration:underline;cursor:pointer">Reset it here.</a></p>
+					</ion-item>
 					<label class="item item-input item-stacked-label">
 						<span class="input-label">Username:</span>
 						<input id="loginUsername" type="text" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="off" ng-model="user.username" name="username" autofocus="autofocus" required />
@@ -19,12 +23,8 @@
 						<span class="input-label">Password:</span>
 						<input id="loginPassword" type="password" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="off" ng-model="user.password" name="password" required />
 					</label>
-					<ion-item class="item item-text-wrap notop">
-						<p>Need a Twit-arr account? <a ng-click="goToTwitarr()" style="text-decoration:underline;cursor:pointer">Create one here.</a></p>
-						<p>Lost your password? <a ng-click="goToLostPassword()" style="text-decoration:underline;cursor:pointer">Reset it here.</a></p>
-					</ion-item>
 					<ion-item class="text-right notop">
-						<button class="button button-dark" ng-click="logIn(user)" ng-disabled="form.$invalid || !canSubmit(user)" style="margin-top: 0; margin-bottom: 0">Log In</button>
+						<button class="button button-dark" ng-disabled="form.$invalid || !canSubmit(user)" style="margin-top: 0; margin-bottom: 0">Log In</button>
 					</ion-item>
 				</form>
 			</span>
