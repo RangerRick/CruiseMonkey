@@ -125,6 +125,10 @@ module.exports = {
 				loader: "url?limit=10000&mimetype=application/font-woff"
 			},
 			{
+				test: /\.(jpe?g|png|gif|svg)$/i,
+				loader: "url?limit=10000"
+			},
+			{
 				test: /[\/]lokijs\.js$/,
 				loader: 'imports?exports=>false&define=>false!exports?loki'
 			},
