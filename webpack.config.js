@@ -113,10 +113,6 @@ module.exports = {
 				loader: "url?limit=10000&mimetype=application/x-font-opentype"
 			},
 			{
-				test: /\.svg(\?v=\d+\.\d+\.\d+)?$/,
-				loader: "url?limit=10000&mimetype=image/svg+xml"
-			},
-			{
 				test: /\.ttf(\?v=\d+\.\d+\.\d+)?$/,
 				loader: "url?limit=10000&mimetype=application/octet-stream"
 			},
@@ -125,8 +121,13 @@ module.exports = {
 				loader: "url?limit=10000&mimetype=application/font-woff"
 			},
 			{
-				test: /\.(jpe?g|png|gif|svg)$/i,
-				loader: "url?limit=10000"
+				test: /\.svg(\?v=\d+\.\d+\.\d+)?$/,
+				/*loader: "url?limit=10000&mimetype=image/svg+xml"*/
+				loader: "file"
+			},
+			{
+				test: /\.(jpe?g|png|gif)$/i,
+				loader: "file"
 			},
 			{
 				test: /[\/]lokijs\.js$/,
