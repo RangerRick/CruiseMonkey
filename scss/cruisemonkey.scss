@@ -67,10 +67,10 @@ $cmDetailBackground: $jocoBlueDark;
 $cmDetailBackgroundAlternate: $jocoBlueLight;
 $cmHighlight: green;
 
-$defaultFont: -apple-system, Nexa, "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
+$defaultFont: system, -apple-system, BlinkMacSystemFont, Nexa, "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
 $defaultLightFont: "Helvetica Neue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
-$eventListFont: -apple-system, Casper, "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
-$headerFont: -apple-system, Nexa, "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
+$eventListFont: system, -apple-system, BlinkMacSystemFont, Casper, "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
+$headerFont: system, -apple-system, BlinkMacSystemFont, Nexa, "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
 
 $headerColor: white;
 $headerBG: $cmDetailBackground;
@@ -654,7 +654,8 @@ ion-popover-view.fit ion-content {
 }
 .karaoke {
 	.artist-entry {
-		font-size: 14px;
+		padding: 8px;
+		font-size: $font-size-base;
 		.song {
 			margin-left: 10px;
 		}
