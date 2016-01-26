@@ -1,6 +1,6 @@
 <ion-view class="seamail" title="Seamails">
 	<ion-nav-buttons side="secondary">
-		<button class="button button-icon icon cm-icon-compose" ng-click="newSeamail()" ng-if="user.loggedIn"></button>
+		<button class="button button-icon icon cm-icon-compose" ng-click="newSeamail($event)" ng-if="user.loggedIn"></button>
 	</ion-nav-buttons>
 	<ion-nav-title>
 		<span ng-click="scrollTop()">Seamails</span>

@@ -1,11 +1,11 @@
 <ion-modal-view ng-class="'fit twitarr'">
 	<ion-header-bar class="bar-dark">
 		<div class="buttons">
-			<button class="button button-clear button-yellow" ng-click="closeModal()">Close</button>
+			<button class="button button-clear button-yellow" ng-click="closeModal($event)">Close</button>
 		</div>
 		<h1 class="title">New Tweet</h1>
 		<div class="buttons">
-			<button class="button button-clear button-icon icon cm-icon-send button-yellow" ng-click="postTweet(tweet)" ng-disabled="photoUploading || !tweet.text"></button>
+			<button class="button button-clear button-icon icon cm-icon-send button-yellow" ng-click="postTweet($event, tweet)" ng-disabled="photoUploading || !tweet.text"></button>
 		</div>
 	</ion-header-bar>
 	<ion-content>

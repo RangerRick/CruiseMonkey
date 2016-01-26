@@ -5,7 +5,7 @@
 		</div>
 		<h1 class="title">{{eventData.id? 'Edit':'Add an'}} Event</h1>
 		<div class="buttons">
-			<button class="button button-clear button-yellow" ng-click="saveEvent()" ng-disabled="form.$invalid || !eventData.isValid()">{{eventData.id? 'Save':'Add'}}</button>
+			<button class="button button-clear button-yellow" ng-click="saveEvent($event)" ng-disabled="form.$invalid || !eventData.isValid()">{{eventData.id? 'Save':'Add'}}</button>
 		</div>
 	</ion-header-bar>
 

@@ -4,7 +4,7 @@
 			<div class="col col-10">To:</div>
 			<ion-scroll direction="x" class="col col-90">
 				<div ng-if="additionalUser" class="tag navy" style="display:inline; padding: 4px 6px;">{{additionalUser}}</div>
-				<div ng-repeat="selectedUser in selectedUsers" class="tag navy" style="display:inline; padding: 4px 6px;" ng-click="removeTag($index)">{{selectedUser}} <i class="icon ion-close-circled"></i></div>
+				<div ng-repeat="selectedUser in selectedUsers" class="tag navy" style="display:inline; padding: 4px 6px;" ng-click="removeTag($event, $index)">{{selectedUser}} <i class="icon ion-close-circled"></i></div>
 			</ion-scroll>
 		</div>
 		<div class="row">
