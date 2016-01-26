@@ -29,7 +29,7 @@
 				</form>
 			</span>
 
-			<form class="settings-form" novalidate>
+			<form class="settings-form" novalidate ng-submit="saveSettings()">
 				<ion-item class="heading">Network Configuration</ion-item>
 				<label class="item item-input item-stacked-label">
 					<span class="input-label">Twit-Arr URL:</span>
@@ -52,10 +52,22 @@
 					</div>
 				</label>
 				<ion-item class="text-right">
-					<button class="button button-dark" ng-click="saveSettings()" ng-disabled="form.$invalid || isUnchanged()">Save</button>
-					<button class="button button-assertive" ng-click="resetSettings()" ng-disabled="form.$invalid">Default</button>
+					<button class="button button-dark" ng-disabled="form.$invalid || isUnchanged()">Save</button>
+					<button class="button button-assertive" ng-click="resetSettings($event)" ng-disabled="form.$invalid">Default</button>
 				</ion-item>
 			</form>
+
+			<form class="cache-form" novalidate ng-submit="clearCache()">
+				<ion-item class="heading">Clear Cache</ion-item>
+				<label class="item item-input item-text-wrap item-stacked-label nobottom">
+					<span class="input-label">Clear Cache</span>
+					<p>Clear the image and user profile caches.</p>
+				</label>
+				<ion-item class="text-right notop">
+					<button class="button button-dark">Clear Cache</button>
+				</ion-item>
+			</form>
+
 		</ion-list>
 	</ion-content>
 </ion-view>
