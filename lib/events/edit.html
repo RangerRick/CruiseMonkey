@@ -43,11 +43,7 @@
 					<div ng-if="hasNative" class="date-edit">
 						<span class="picker">
 							<i class="icon cm-icon-calendar"></i>
-							<span ng-click="datePicker('start')" class="date">{{eventData.startDate | date:'mediumDate'}}</span>
-						</span>
-						<span class="picker">
-							<i class="icon cm-icon-clock"></i>
-							<span ng-click="timePicker('start')" class="time">{{eventData.startDate | date:'shortTime'}}</span>
+							<span ng-click="datePicker('start')">{{eventData.startDate | date:'medium'}}</span>
 						</span>
 					</div>
 					<div ng-if="!hasNative" class="date-edit">
@@ -66,11 +62,7 @@
 					<div ng-if="hasNative" class="date-edit">
 						<span class="picker">
 							<i class="icon cm-icon-calendar"></i>
-							<span ng-click="datePicker('end')" class="date">{{eventData.endDate | date:'mediumDate'}}</span>
-						</span>
-						<span class="picker">
-							<i class="icon cm-icon-clock"></i>
-							<span ng-click="timePicker('end')" class="time">{{eventData.endDate | date:'shortTime'}}</span>
+							<span ng-click="datePicker('end')">{{eventData.endDate | date:'medium'}}</span>
 						</span>
 					</div>
 					<div ng-if="!hasNative" class="date-edit">

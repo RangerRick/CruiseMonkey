@@ -965,11 +965,11 @@ ion-item.item.item-text-wrap.list-entry.unofficial.even {
 			display: inline-block;
 			background-color: $cmBackgroundAlternate;
 			border-radius: 5px;
+			font-size: $font-size-base;
+			font-weight: normal;
 
 			.date {
 				width: 100px;
-				font-size: $font-size-base;
-				font-weight: normal;
 			}
 			.time {
 				width: 80px;
