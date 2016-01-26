@@ -25,7 +25,7 @@
 						<i class="icon icon-navy ion-eye-disabled" ng-if="!entry.isShared()"></i>
 					</div>
 					<div class="time">Time: {{entry.getDisplayTime()}}</div>
-					<div class="createdBy" ng-if="entry.isOfficial()"><img src="../data/boat.svg" style="max-height: 14px" ng-if="entry.isOfficial()" /> Official Event</div>
+					<div class="createdBy" ng-if="entry.isOfficial()"><img ng-src="{{officialIcon}}" style="max-height: 14px" ng-if="entry.isOfficial()" /> Official Event</div>
 					<div class="createdBy" ng-if="!entry.isOfficial()" ng-bind-html="'Created By: ' + highlight(entry.getUsername(), searchString)" ng-click="openUser(entry.getUsername(), $event)"></div>
 					<div class="location" ng-if="entry.getLocation()">Location: <span ng-bind-html="highlight(entry.getLocation(), searchString)"></span></div>
 					<div class="description" ng-if="entry.getDescription()" ng-bind-html="highlight(entry.getFormattedDescription(), searchString)"></div>
