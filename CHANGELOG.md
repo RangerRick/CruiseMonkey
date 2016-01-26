@@ -3,9 +3,18 @@
 
 5.9.0 (CruiseMonkey 2016) is a major refactor of the CM codebase, with a streamlined UI and a lot of under-the-hood cleanup.
 
-There are not (yet) any major new features over last year's release, but those will be coming now that the core is in good shape.
-
 #### Changes
+
+* build 40367
+  * fix flickering on twit-arr refresh
+  * maybe a good fix for the login username rendering?
+  * show tweet history in "Tweet Details"
+  * deck maps are back
+  * amenities now match Freedom of the Seas
+  * button for clearing image and user caches
+  * karaoke layout cleanup
+  * better date/time picker for event editing
+  * handle new twit-arr emoji formatting
 
 * build 40366
   * fix event redraw after loading cache
