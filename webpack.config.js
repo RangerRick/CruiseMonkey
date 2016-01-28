@@ -43,7 +43,8 @@ var plugins = [
 ];
 
 if (argv.env !== 'development') {
-	//plugins.push(new webpack.optimize.OccurenceOrderPlugin(true));
+	plugins.push(new webpack.optimize.OccurenceOrderPlugin(true));
+	plugins.push(new webpack.optimize.DedupePlugin());
 	plugins.push(new webpack.optimize.UglifyJsPlugin({
 		mangle: {
 			except: [ '$super', '$', 'jQuery', 'exports', 'require', 'angular', 'ionic' ]
@@ -57,12 +58,12 @@ module.exports = {
 			'es5-shim',
 			'classlist',
 			'winstore-jscompat/winstore-jscompat',
-			'ionic',
+			'ionic/release/js/ionic',
 			'angular',
 			'angular-animate',
 			'angular-sanitize',
 			'angular-ui-router',
-			'ionic-angular',
+			'ionic/release/js/ionic-angular',
 			'ngCordova'
 		],
 		'app': [
@@ -79,10 +80,10 @@ module.exports = {
 			'ionic-filter-bar': 'ionic-filter-bar/dist/ionic.filter.bar'
 		},
 		root: [
-			__dirname,
-			path.resolve(__dirname, 'bower_components/ionic/release/js'),
+			/* __dirname, */
+			/* path.resolve(__dirname, 'bower_components/ionic/release/js'), */
 			path.resolve(__dirname, 'bower_components'),
-			path.resolve(__dirname, 'node_modules')
+			/* path.resolve(__dirname, 'node_modules') */
 		]
 	},
 	module: {

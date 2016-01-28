@@ -207,6 +207,9 @@ ion-tabs {
 .cm-icon-people {
 	@extend .ion-android-people;
 }
+.cm-icon-person {
+	@extend .ion-person;
+}
 .cm-icon-plus {
 	@extend .ion-plus;
 }
@@ -256,6 +259,9 @@ ion-tabs {
 	}
 	.cm-icon-nav-right {
 		@extend .ion-android-arrow-dropright-circle;
+	}
+	.cm-icon-person {
+		@extend .ion-android-person;
 	}
 	.cm-icon-plus {
 		@extend .ion-android-add;
@@ -312,6 +318,9 @@ ion-tabs {
 	}
 	.cm-icon-people {
 		@extend .ion-ios-people;
+	}
+	.cm-icon-person {
+		@extend .ion-ios-person;
 	}
 	.cm-icon-plus {
 		@extend .ion-ios-plus-empty;
@@ -643,6 +652,29 @@ ion-popover-view.fit ion-content {
 .info {
 	.item {
 		color: $cmDetailBackground;
+	}
+}
+
+.profile {
+	label.item.item-input.item-profile {
+		height: 80px + ($item-padding * 2);
+		.input-label {
+			position: absolute;
+			top: $item-padding;
+		}
+		div.img-container {
+			display: block;
+			position: absolute;
+			right: $item-padding;
+		}
+		img {
+			height: 80px;
+			/*
+			display: block;
+			position: absolute;
+			right: $item-padding;
+			*/
+		}
 	}
 }
 

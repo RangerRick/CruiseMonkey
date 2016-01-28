@@ -28,7 +28,9 @@
     "moment-timezone": "~0.5.0",
     "ionic-toast": "~0.2.0",
     "string-hash": "https://github.com/darkskyapp/string-hash.git",
-    "angular-cache": "~4.5.0"
+    "angular-cache": "~4.5.0",
+    "ng-file-model": "*",
+    "angular-file-upload": "~2.2.0"
   },
   "resolutions": {
     "angular-ui-router": "~0.2.15",

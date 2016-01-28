@@ -26,15 +26,10 @@
 			</div>
 			<span>
 				<div class="row">
-					<div class="col" ng-if="!canCamera">
-						<input type="file" id="file-upload" accept="image/*;capture=camera" onchange="angular.element(this).scope().fileSelected(this.files)" style="visibility:hidden;position:absolute;top:-50;left:-50"></input>
-						<button class="button button-dark" ng-click="selectFile()">
-							<i class="icon cm-icon-image"></i> Add or <i class="icon cm-icon-camera"></i> Take Photo
+					<div class="col">
+						<button class="button button-dark" on-touch="getPhoto($event)">
+							<i class="icon cm-icon-image"></i> / <i class="icon cm-icon-camera"></i> Add Photo
 						</button>
-					</div>
-					<div class="col" ng-if="canCamera">
-						<button class="button button-dark" ng-click="addPhoto()"><i class="icon cm-icon-image"></i> Add Photo</button>
-						<button class="button button-dark" ng-click="takePhoto()"><i class="icon cm-icon-camera"></i> Take Photo</button>
 					</div>
 				</div>
 			</span>
