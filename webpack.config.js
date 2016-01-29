@@ -52,7 +52,7 @@ if (argv.env !== 'development') {
 	}));
 }
 
-module.exports = {
+var options = {
 	entry: {
 		'vendor': [
 			'es5-shim',
@@ -150,3 +150,10 @@ module.exports = {
 		cordova: '{}'
 	}
 };
+
+if (argv.env === 'development') {
+	options.output.pathinfo = true;
+	options.devtool = 'eval';
+}
+
+module.exports = options;
