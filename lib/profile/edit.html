@@ -4,10 +4,16 @@
 			<form>
 				<label class="item item-input item-profile">
 					<span class="input-label">Profile Photo:</span>
-					<div class="img-container" on-touch="replaceImage($event)">
+					<div class="img-container" on-tap="replaceImage($event)" ng-if="!p.hasNative()">
+						<img ng-src="{{getImageUrl()}}" ng-if="twitarrRoot &amp;&amp; user.username" />
+					</div>
+					<div class="img-container" on-touch="replaceImage($event)" ng-if="p.hasNative()">
 						<img ng-src="{{getImageUrl()}}" ng-if="twitarrRoot &amp;&amp; user.username" />
 					</div>
 				</label>
+				<div class="item" ng-if="photoUploading">
+					<progress value="{{photoUploading}}" max="100"></progress>
+				</div>
 			</form>
 			<form novalidate ng-submit="save()">
 				<label class="item item-input item-stacked-label">
