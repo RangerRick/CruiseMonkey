@@ -74,11 +74,13 @@
     "https://github.com/katzer/cordova-plugin-local-notifications.git",
     "https://github.com/OpenNMS/cordova-plugin-json-storage.git",
     "https://github.com/RangerRick/cordova-certificate-plugin.git",
+    "https://github.com/RangerRick/cordova-HTTP.git",
     "https://github.com/Red-Folder/bgs-core.git",
     "https://github.com/VersoSolutions/CordovaClipboard.git",
     "cordova-plugin-datepicker",
     "cordova-plugin-filepath",
-    "cordova-plugin-chrome-apps-system-memory"
+    "cordova-plugin-chrome-apps-system-memory",
+    "https://github.com/RangerRick/cordova-HTTP.git"
   ],
   "cordovaPlatforms": [
     {
