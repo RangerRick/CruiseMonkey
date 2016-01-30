@@ -5,6 +5,16 @@
 
 #### Changes
 
+* build 40368
+  * rework image handling; uploading images works properly on iOS, Android, and browser
+  * added profile editing
+  * re-enable custom HTTP library for better SSL/certificate handling
+  * remove broken spinners
+  * fix angular issues that would cause breakage in browser version
+  * fix double-escaping of some HTML entities
+  * event search now includes the name of the day ("sunday" is searchable)
+  * scroll to the next event the first time events are opened
+
 * build 40367
   * fix flickering on twit-arr refresh
   * maybe a good fix for the login username rendering?
