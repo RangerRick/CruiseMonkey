@@ -1,0 +1,188 @@
+.cm-icon-boat {
+	@extend .ion-android-boat;
+}
+.cm-icon-calendar {
+	@extend .ion-calendar;
+}
+.cm-icon-camera {
+	@extend .ion-camera;
+}
+.cm-icon-chatbox {
+	@extend .ion-chatbox;
+}
+.cm-icon-clock {
+	@extend .ion-clock;
+}
+.cm-icon-compose {
+	@extend .ion-compose;
+}
+.cm-icon-email {
+	@extend .ion-email;
+}
+.cm-icon-home {
+	@extend .ion-home;
+}
+.cm-icon-image {
+	@extend .ion-image;
+}
+.cm-icon-info {
+	@extend .ion-information-circled;
+}
+.cm-icon-favorited {
+	@extend .ion-android-favorite;
+}
+.cm-icon-unfavorited {
+	@extend .ion-android-favorite-outline;
+}
+.cm-icon-map {
+	@extend .ion-map;
+}
+.cm-icon-more {
+	@extend .ion-more;
+}
+.cm-icon-music-note {
+	@extend .ion-music-note;
+}
+.cm-icon-nav-left {
+	@extend .ion-chevron-left;
+}
+.cm-icon-nav-right {
+	@extend .ion-chevron-right;
+}
+.cm-icon-people {
+	@extend .ion-android-people;
+}
+.cm-icon-person {
+	@extend .ion-person;
+}
+.cm-icon-plus {
+	@extend .ion-plus;
+}
+.cm-icon-refresh {
+	@extend .ion-refresh;
+}
+.cm-icon-reply {
+	@extend .ion-reply;
+}
+.cm-icon-search {
+	@extend .ion-search;
+}
+.cm-icon-send {
+	@extend .ion-paper-airplane;
+}
+.cm-icon-settings {
+	@extend .ion-settings;
+}
+
+.platform-android {
+	.cm-icon-calendar {
+		@extend .ion-android-calendar;
+	}
+	.cm-icon-camera {
+		@extend .ion-android-camera;
+	}
+	.cm-icon-chatbox {
+		@extend .ion-android-chat;
+	}
+	.cm-icon-clock {
+		@extend .ion-android-time;
+	}
+	.cm-icon-email {
+		@extend .ion-android-mail;
+	}
+	.cm-icon-image {
+		@extend .ion-android-image;
+	}
+	.cm-icon-map {
+		@extend .ion-android-map;
+	}
+	.cm-icon-more {
+		@extend .ion-android-more-vertical;
+	}
+	.cm-icon-nav-left {
+		@extend .ion-android-arrow-dropleft-circle;
+	}
+	.cm-icon-nav-right {
+		@extend .ion-android-arrow-dropright-circle;
+	}
+	.cm-icon-person {
+		@extend .ion-android-person;
+	}
+	.cm-icon-plus {
+		@extend .ion-android-add;
+	}
+	.cm-icon-refresh {
+		@extend .ion-ion-android-refresh;
+	}
+	.cm-icon-search {
+		@extend .ion-android-search;
+	}
+	.cm-icon-send {
+		@extend .ion-android-send;
+	}
+	.cm-icon-settings {
+		@extend .ion-android-settings;
+	}
+}
+.platform-ios {
+	.cm-icon-calendar {
+		@extend .ion-ios-calendar-outline;
+	}
+	.cm-icon-camera {
+		@extend .ion-ios-camera;
+	}
+	.cm-icon-chatbox {
+		@extend .ion-ios-chatboxes;
+	}
+	.cm-icon-clock {
+		@extend .ion-ios-clock-outline;
+	}
+	.cm-icon-compose {
+		@extend .ion-ios-compose-outline;
+	}
+	.cm-icon-email {
+		@extend .ion-ios-email;
+	}
+	.cm-icon-home {
+		@extend .ion-ios-home;
+	}
+	.cm-icon-info {
+		@extend .ion-ios-information;
+	}
+	.cm-icon-more {
+		@extend .ion-ios-more;
+	}
+	.cm-icon-music-note {
+		@extend .ion-ios-musical-notes;
+	}
+	.cm-icon-nav-left {
+		@extend .ion-ios-arrow-left;
+	}
+	.cm-icon-nav-right {
+		@extend .ion-ios-arrow-right;
+	}
+	.cm-icon-people {
+		@extend .ion-ios-people;
+	}
+	.cm-icon-person {
+		@extend .ion-ios-person;
+	}
+	.cm-icon-plus {
+		@extend .ion-ios-plus-empty;
+	}
+	.cm-icon-refresh {
+		@extend .ion-ios-refresh-empty;
+	}
+	.cm-icon-reply {
+		@extend .ion-ios-undo;
+	}
+	.cm-icon-search {
+		@extend .ion-ios-search;
+	}
+	.cm-icon-send {
+		@extend .ion-ios-paperplane;
+	}
+	.cm-icon-settings {
+		@extend .ion-ios-cog;
+	}
+}
