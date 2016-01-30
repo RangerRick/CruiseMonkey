@@ -1,0 +1,59 @@
+<ion-view view-title="Edit Profile" class="profile">
+	<ion-content>
+		<ion-list>
+			<form>
+				<label class="item item-input item-profile">
+					<span class="input-label">Profile Photo:</span>
+					<div class="img-container" on-tap="replaceImage($event)" ng-if="!p.hasNative()">
+						<img ng-src="{{getImageUrl()}}" ng-if="twitarrRoot &amp;&amp; user.username" />
+					</div>
+					<div class="img-container" on-touch="replaceImage($event)" ng-if="p.hasNative()">
+						<img ng-src="{{getImageUrl()}}" ng-if="twitarrRoot &amp;&amp; user.username" />
+					</div>
+				</label>
+				<div class="item" ng-if="photoUploading">
+					<progress value="{{photoUploading}}" max="100"></progress>
+				</div>
+			</form>
+			<form novalidate ng-submit="save()">
+				<label class="item item-input item-stacked-label">
+					<span class="input-label">Display Name:</span>
+					<input type="text" ng-model="user.display_name">
+				</label>
+				<label class="item item-input item-stacked-label">
+					<span class="input-label">Real Name:</span>
+					<input type="text" ng-model="user.real_name">
+				</label>
+				<label class="item item-input item-stacked-label">
+					<span class="input-label">Room Number:</span>
+					<input type="text" ng-model="user.room_number">
+				</label>
+				<label class="item item-input item-stacked-label">
+					<span class="input-label">Home:</span>
+					<input type="text" placeholder="Where are you from?" ng-model="user.home_location">
+				</label>
+				<label class="item item-input item-stacked-label">
+					<span class="input-label">Current Location:</span>
+					<input type="text" placeholder="Where are you now?" ng-model="user.current_location">
+				</label>
+				<label class="item item-input item-stacked-label">
+					<span class="input-label">E-Mail Address:</span>
+					<input type="email" ng-model="user.email">
+				</label>
+				<ion-item class="item item-toggle">
+					Make E-Mail Address Public?
+					<label class="toggle toggle-dark">
+						<input type="checkbox" ng-model="user['email_public?']">
+						<div class="track">
+							<div class="handle"></div>
+						</div>
+					</label>
+				</ion-item>
+				<ion-item class="text-right">
+					<button class="button button-dark" ng-disabled="form.$invalid || !isModified()">Save</button>
+					<button class="button button-assertive" ng-click="reset($event)" ng-disabled="form.$invalid || !isModified()" ng-click="reset($event)">Reset</button>
+				</ion-item>
+			</form>
+		</ion-list>
+	</ion-content>
+</ion-view>

@@ -1,9 +1,9 @@
 {
   "name": "CruiseMonkey",
-  "version": "5.9.0",
+  "version": "2016.0.0",
   "minSdk": "14",
   "description": "Keep Track of Your Cruise",
-  "build": 40367,
+  "build": 40368,
   "dependencies": {
     "feedparser": "*",
     "googleapis": "*",
@@ -74,11 +74,13 @@
     "https://github.com/katzer/cordova-plugin-local-notifications.git",
     "https://github.com/OpenNMS/cordova-plugin-json-storage.git",
     "https://github.com/RangerRick/cordova-certificate-plugin.git",
+    "https://github.com/RangerRick/cordova-HTTP.git",
     "https://github.com/Red-Folder/bgs-core.git",
     "https://github.com/VersoSolutions/CordovaClipboard.git",
     "cordova-plugin-datepicker",
     "cordova-plugin-filepath",
-    "cordova-plugin-chrome-apps-system-memory"
+    "cordova-plugin-chrome-apps-system-memory",
+    "https://github.com/RangerRick/cordova-HTTP.git"
   ],
   "cordovaPlatforms": [
     {
@@ -99,8 +101,9 @@
   ],
   "scripts": {
     "build": "webpack --colors --display-error-details && ionic build",
+    "prepare": "webpack --colors --display-error-details && ionic prepare",
     "increment": "bin/update-build-number.js",
-    "release": "webpack --colors --display-error-details --optimize-minimize --optimize-dedupe --env=production && ionic build --release && bin/sign-android.sh",
+    "release": "webpack --colors --display-error-details --env=production && ionic build --release && bin/sign-android.sh",
     "verbose-build": "webpack --debug --colors --display-modules --display-chunks --display-error-details --display-origins --display-reasons",
     "genymotion": "ionic run -slc android",
     "android": "ionic emulate -slc android",
