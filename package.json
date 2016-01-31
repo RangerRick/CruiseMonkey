@@ -80,7 +80,12 @@
     "cordova-plugin-datepicker",
     "cordova-plugin-filepath",
     "cordova-plugin-chrome-apps-system-memory",
-    "https://github.com/RangerRick/cordova-HTTP.git"
+    "https://github.com/RangerRick/cordova-HTTP.git",
+    "https://github.com/christocracy/cordova-plugin-background-fetch.git",
+    {
+      "locator": "https://github.com/christocracy/cordova-plugin-background-fetch.git",
+      "id": "org.transistorsoft.cordova.plugin.background.fetch"
+    }
   ],
   "cordovaPlatforms": [
     {
