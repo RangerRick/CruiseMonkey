@@ -932,6 +932,20 @@ ion-item.item.item-text-wrap.list-entry.unofficial.even {
 	}
 }
 
+.cm-slider.bar {
+	height: 18px;
+	background-color: $cmDetailForeground;
+	.slider-pager {
+		height: 18px;
+		bottom: 0;
+		.slider-pager-page {
+			line-height: 14px;
+			padding-top: 2px;
+			padding-bottom: 2px;
+		}
+	}
+}
+
 /*
 .user-sizeable-min {
 	overflow: visible;
