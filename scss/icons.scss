@@ -19,6 +19,9 @@
 .cm-icon-email {
 	@extend .ion-email;
 }
+.cm-icon-flag {
+	@extend .ion-flag;
+}
 .cm-icon-home {
 	@extend .ion-home;
 }
@@ -142,6 +145,9 @@
 	}
 	.cm-icon-email {
 		@extend .ion-ios-email;
+	}
+	.cm-icon-flag {
+		@extend .ion-ios-flag;
 	}
 	.cm-icon-home {
 		@extend .ion-ios-home;

@@ -2,36 +2,45 @@
 	<ion-content>
 		<ion-list>
 			<ion-item class="item item-icon-right" href="#/tab/info/settings">
+				<span class="read"></span>
 				Settings
 				<i class="icon cm-icon-settings"></i>
 			</ion-item>
 			<ion-item class="item item-icon-right" href="#/tab/info/profile" ng-if="user.loggedIn">
+				<span class="read"></span>
 				Edit Profile
 				<i class="icon cm-icon-person"></i>
 			</ion-item>
 			<ion-item class="item item-icon-right" href="#/tab/info/announcements">
+				<span ng-if="!tagAnnouncements" class="read"></span>
+				<span ng-if="tagAnnouncements" class="unread"></span>
 				Announcements
-				<i class="icon cm-icon-home"></i>
+				<i class="icon cm-icon-flag"></i>
 			</ion-item>
 			<ion-item class="item item-icon-right" href="#/tab/info/amenities">
+				<span class="read"></span>
 				Amenities
 				<i class="icon cm-icon-home"></i>
 			</ion-item>
 			<ion-item class="item item-icon-right" href="#/tab/info/decks">
+				<span class="read"></span>
 				Deck Maps
 				<i class="icon cm-icon-map"></i>
 			</ion-item>
 			<!--
 			<ion-item class="item item-icon-right" href="#/tab/info/forums">
+				<span class="read"></span>
 				Forums
 				<i class="icon ion-quote"></i>
 			</ion-item>
 			-->
 			<ion-item class="item item-icon-right" href="#/tab/info/karaoke">
+				<span class="read"></span>
 				Karaoke Song List
 				<i class="icon cm-icon-music-note"></i>
 			</ion-item>
 			<ion-item class="item item-icon-right" href="#/tab/info/about">
+				<span class="read"></span>
 				About CruiseMonkey
 				<i class="icon cm-icon-info"></i>
 			</ion-item>

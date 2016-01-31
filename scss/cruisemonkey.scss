@@ -66,10 +66,11 @@ $cmHighlight: green;
 $defaultFont: system, -apple-system, BlinkMacSystemFont, Nexa, "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
 $defaultLightFont: "Helvetica Neue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
 $eventListFont: system, -apple-system, BlinkMacSystemFont, Casper, "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
-$headerFont: system, -apple-system, BlinkMacSystemFont, Nexa, "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
+$headingFont: system, -apple-system, BlinkMacSystemFont, Nexa, "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
 
-$headerColor: white;
-$headerBG: $cmDetailBackground;
+$headingColor: white;
+$headingBG: $cmDetailBackground;
+$headings-font-weight: 700;
 
 /* Ionic Overrides */
 /* $font-family-sans-serif: $defaultFont; */
@@ -80,6 +81,7 @@ $light: white;
 $item-divider-bg: $dark;
 $item-divider-color: $light;
 $item-avatar-border-radius: 5px;
+$item-icon-font-size: 32px;
 
 $input-color-placeholder: #ccc !important;
 
@@ -106,7 +108,16 @@ $tabs-dark-border:                $cmDetailBackgroundAlternate;
 $tabs-dark-text:                  white;
 
 .tabs-cm .tab-item.has-badge span.badge {
+	color: transparent;
+	background-color: transparent;
 	opacity: 1;
+	top: 8%;
+}
+.tabs-cm .tab-item.has-badge span.badge:after {
+	content: "●";
+	font-size: 24px;
+	color: red;
+	background-color: transparent;
 }
 
 $popover-width:                   160px;
@@ -412,6 +423,24 @@ ion-popover-view.fit ion-content {
 			padding: 0;
 		}
 	}
+}
+
+.read {
+	color: transparent;
+	background-color: transparent;
+}
+.read:after {
+	color: transparent;
+	font-size: $font-size-large;
+	content: "●";
+}
+.unread {
+	color: transparent;
+}
+.unread:after {
+	color: red;
+	font-size: $font-size-large;
+	content: "●";
 }
 
 .info {
@@ -810,11 +839,11 @@ ion-item.item.item-text-wrap.list-entry.unofficial.even {
 	}
 
 	.event-header {
-		font-family: $headerFont;
+		font-family: $headingFont;
 		font-size: $font-size-large;
 		padding: 5px;
-		color: $headerColor;
-		background-color: $headerBG;
+		color: $headingColor;
+		background-color: $headingBG;
 		margin-top: -1;
 		margin-bottom: 0;
 		border-color: $cmDetailBackground;
