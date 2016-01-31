@@ -69,6 +69,7 @@
     "cordova-plugin-whitelist",
     "ionic-plugin-keyboard",
     "cordova-plugin-camera",
+    "https://github.com/zfoltin/cordova-plugin-app-event.git",
     "cordova-plugin-inappbrowser",
     "cordova-plugin-spinner-dialog",
     "https://github.com/katzer/cordova-plugin-local-notifications.git",
@@ -81,7 +82,6 @@
     "cordova-plugin-filepath",
     "cordova-plugin-chrome-apps-system-memory",
     "https://github.com/RangerRick/cordova-HTTP.git",
-    "https://github.com/christocracy/cordova-plugin-background-fetch.git",
     {
       "locator": "https://github.com/christocracy/cordova-plugin-background-fetch.git",
       "id": "org.transistorsoft.cordova.plugin.background.fetch"
