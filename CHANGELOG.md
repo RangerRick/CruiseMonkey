@@ -1,9 +1,19 @@
-<a name="5.9.0"></a>
-## 5.9.0 (2016)
+<a name="2016.0.0"></a>
+## 2016.0.0
 
-5.9.0 (CruiseMonkey 2016) is a major refactor of the CM codebase, with a streamlined UI and a lot of under-the-hood cleanup.
+We are at a release-candidate stage for CruiseMonkey 2016, so the version hsa been changed to reflect that.
 
 #### Changes
+
+* build 40369
+  * you can now view announcements in the ship tab
+  * photo-posting should be more reliable
+  * settings storage is fixed
+  * background fetch is working again (as much as it can)
+  * seamail, twitarr mentions, and notifications now show badges in the UI
+  * event modification and deletion is updated to support the (changed) twit-arr backend API
+  * event views scroll to "now" on first view
+  * "now" and "top" buttons in the event view work as expected
 
 * build 40368
   * rework image handling; uploading images works properly on iOS, Android, and browser
@@ -14,6 +24,13 @@
   * fix double-escaping of some HTML entities
   * event search now includes the name of the day ("sunday" is searchable)
   * scroll to the next event the first time events are opened
+
+<a name="5.9.0"></a>
+## 5.9.0 (2016)
+
+5.9.0 (CruiseMonkey 2016) is a major refactor of the CM codebase, with a streamlined UI and a lot of under-the-hood cleanup.
+
+#### Changes
 
 * build 40367
   * fix flickering on twit-arr refresh
