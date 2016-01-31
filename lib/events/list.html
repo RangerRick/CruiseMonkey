@@ -1,6 +1,7 @@
 <ion-view class="event-list searchable">
 	<ion-nav-buttons side="primary">
-		<button class="button button-icon icon-yellow cm-icon-clock" ng-click="goToNow($event)"></button>
+		<button class="button button-icon icon-yellow cm-icon-clock" ng-click="goToNow($event, true)"></button>
+		<button class="button button-icon icon-yellow cm-icon-nav-up" ng-click="scrollTop($event)"></button>
 	</ion-nav-buttons>
 	<ion-nav-title ng-click="openEventTypePopover($event)" class="event-title">
 		<span>{{eventType.capitalize()}} Events <span style="font-size: x-small">&#9660;</span></span>

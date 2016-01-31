@@ -52,6 +52,12 @@
 .cm-icon-nav-right {
 	@extend .ion-chevron-right;
 }
+.cm-icon-nav-up {
+	@extend .ion-chevron-up;
+}
+.cm-icon-nav-down {
+	@extend .ion-chevron-down;
+}
 .cm-icon-people {
 	@extend .ion-android-people;
 }
@@ -107,6 +113,12 @@
 	}
 	.cm-icon-nav-right {
 		@extend .ion-android-arrow-dropright-circle;
+	}
+	.cm-icon-nav-up {
+		@extend .ion-android-arrow-dropup-circle;
+	}
+	.cm-icon-nav-down {
+		@extend .ion-android-arrow-dropdown-circle;
 	}
 	.cm-icon-person {
 		@extend .ion-android-person;
@@ -166,6 +178,12 @@
 	}
 	.cm-icon-nav-right {
 		@extend .ion-ios-arrow-right;
+	}
+	.cm-icon-nav-up {
+		@extend .ion-ios-arrow-up;
+	}
+	.cm-icon-nav-down {
+		@extend .ion-ios-arrow-down;
 	}
 	.cm-icon-people {
 		@extend .ion-ios-people;
