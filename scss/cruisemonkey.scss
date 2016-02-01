@@ -107,13 +107,13 @@ $tabs-dark-bg:                    $cmDetailBackground;
 $tabs-dark-border:                $cmDetailBackgroundAlternate;
 $tabs-dark-text:                  white;
 
-.tabs-cm .tab-item.has-badge span.badge {
+.tabs .tab-item.has-badge span.badge {
 	color: transparent;
 	background-color: transparent;
 	opacity: 1;
 	top: 8%;
 }
-.tabs-cm .tab-item.has-badge span.badge:after {
+.tabs .tab-item.has-badge span.badge:after {
 	content: "●";
 	font-size: 24px;
 	color: red;
@@ -121,25 +121,6 @@ $tabs-dark-text:                  white;
 }
 
 $popover-width:                   160px;
-
-/*
-.ionic_toast {
-	border-radius: 5px !important;
-	color: $cmDetailForeground !important;
-	background-color: $cmDetailBackgroundAlternate !important;
-	border-color: $cmForeground !important;
-}
-
-#toast-container > div {
-	opacity: 0.95;
-	-ms-filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=95);
-	filter: alpha(opacity=95);
-}
-.toast-info {
-	color: $cmDetailForeground;
-	background-color: $cmDetailBackground;
-}
-*/
 
 @import "../bower_components/ionic/scss/ionic";
 @import "../bower_components/ionic-filter-bar/scss/ionic.filter.bar";
