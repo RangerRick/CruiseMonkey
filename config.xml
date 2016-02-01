@@ -27,6 +27,9 @@
   <preference name="FadeSplashScreenDuration" value="1"/>
   <preference name="android-minSdkVersion" value="14"/>
   <preference name="android-targetSdkVersion" value="19"/>
+  <preference name="windows-target-version" value="8.1"/>
+  <preference name="windows-phone-target-version" value="8.1"/>
+  <preference name="WindowsDefaultUriPrefix" value="ms-appx://"/>
   <feature name="Clipboard">
     <param name="ios-package" onload="true" value="CDVClipboard"/>
   </feature>
