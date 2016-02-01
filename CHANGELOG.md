@@ -1,3 +1,13 @@
+<a name="2016.1.0"></a>
+## 2016.1.0
+
+2016.1.0 is intended to be the second major release of CruiseMonkey for JoCo Cruise 2016.
+
+#### Changes
+
+* build 40400
+  * read-only support for forums
+
 <a name="2016.0.0"></a>
 ## 2016.0.0
 
