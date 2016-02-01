@@ -5,6 +5,13 @@ We are at a release-candidate stage for CruiseMonkey 2016, so the version hsa be
 
 #### Changes
 
+* build 40371
+  * fix image upload progress (and side-effects)
+  * navigation-restoration was messy, only supporting tab restoration for now
+
+* build 40370
+  * re-build of 40369
+
 * build 40369
   * you can now view announcements in the ship tab
   * photo-posting should be more reliable
