@@ -3,7 +3,7 @@
   "version": "2016.1.0",
   "minSdk": "14",
   "description": "Keep Track of Your Cruise",
-  "build": 40371,
+  "build": 40372,
   "dependencies": {
     "feedparser": "*",
     "googleapis": "*",
