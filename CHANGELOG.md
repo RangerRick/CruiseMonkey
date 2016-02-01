@@ -1,9 +1,12 @@
 <a name="2016.0.0"></a>
 ## 2016.0.0
 
-We are at a release-candidate stage for CruiseMonkey 2016, so the version hsa been changed to reflect that.
+We are at a release-candidate stage for CruiseMonkey 2016, so the version has been changed to reflect that.
 
 #### Changes
+
+* build 40372
+  * event view shows all events on first load
 
 * build 40371
   * fix image upload progress (and side-effects)
