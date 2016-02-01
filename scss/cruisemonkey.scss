@@ -473,9 +473,26 @@ ion-popover-view.fit ion-content {
 }
 
 .forums {
-	.last-reply {
-		opacity:.4;
-		font-size: $font-size-small;
+	.item-divider {
+		h2 {
+			color: $cmDetailForeground;
+		}
+	}
+	.item {
+		.title {
+			font-family: $headings-font-family;
+			font-weight: $headings-font-weight;
+			line-height: $headings-line-height;
+			font-size: $font-size-large;
+		}
+		.last-reply {
+			opacity:.6;
+			font-size: $font-size-base;
+		}
+		.post-photo {
+			width: 100%;
+			max-width: 400px;
+		}
 	}
 }
 .karaoke {
