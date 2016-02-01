@@ -7,16 +7,13 @@ node_js:
 #services:
 #  - couchdb
 before_install:
-  - 'npm install -g bower gulp'
+  - 'npm install -g webpack-cli bower karma-cli'
   - 'npm install'
-  - 'npm install pouchdb-server'
   - 'bower install'
-  - 'gem install compass'
-  - 'sudo pip install couchapp'
 #before_script:
 #  - './setup-travis.sh'
-script: gulp test
+#script: npm run test
 cache:
   directories:
     - node_modules
-    - app/bower_components
+    - bower_components
