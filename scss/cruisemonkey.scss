@@ -368,7 +368,7 @@ ion-popover-view.fit ion-content {
 			padding-left: 6px;
 			padding-right: 6px;
 		}
-		input[type="text"], input[type="password"], input[type="url"] {
+		input[type="text"], input[type="password"], input[type="url"], #loginUsername, #loginPassword {
 			background-color: lighten($cmBackgroundAlternate, 4%);
 			margin-top: 5px;
 			margin-bottom: 5px;
