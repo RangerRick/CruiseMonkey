@@ -1,4 +1,4 @@
-<ion-modal-view ng-class="'fit seamail'" ng-controller="NewSeamailCtrl">
+<ion-modal-view ng-class="'fit seamail'" ng-controller="NewSeamailCtrl" cache-view="false">
 	<form name="seamailForm">
 	<ion-header-bar class="bar-dark">
 		<div class="buttons">
@@ -11,7 +11,7 @@
 	</ion-header-bar>
 	<ion-content>
 		<ion-list>
-			<auto-complete model="message.users" class="item"></auto-complete>
+			<auto-complete model="message.users" additional-user="sendTo" class="item"></auto-complete>
 			<label class="item item-input">
 				<input type="text" name="subject" ng-model="message.subject" ng-trim="true" placeholder="Subject" required>
 			</label>

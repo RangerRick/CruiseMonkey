@@ -140,11 +140,11 @@
   <config-file parent="NSAppTransportSecurity" platform="ios" target="*-Info.plist">
     <dict>
       <key>NSAllowsArbitraryLoads</key>
-      <true/>
+      <true></true>
     </dict>
   </config-file>
   <config-file parent="UIRequiresFullScreen" platform="ios" target="*-Info.plist">
-    <true/>
+    <true></true>
   </config-file>
   <config-file platform="ios" target="project.pbxproj">
     <build-property name="ENABLE_BITCODE" value="NO"/>

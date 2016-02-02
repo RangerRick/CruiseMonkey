@@ -15,6 +15,12 @@ We are at a release-candidate stage for CruiseMonkey 2016, so the version has be
 
 #### Changes
 
+* build 40373
+  * always use Eastern time (issue #87)
+  * decode HTML entities when re-editing tweets (issue #88)
+  * fix new seamail dialog (issue #86)
+  * fix android upload (issue #85)
+
 * build 40372
   * event view shows all events on first load
 
