@@ -668,11 +668,13 @@ ion-popover-view.fit ion-content {
 			display: block;
 		}
 	}
-	.title {
-		font-family: $headings-font-family;
-		font-weight: $headings-font-weight;
-		line-height: $headings-line-height;
-		font-size: $font-size-large;
+	.item {
+		.title {
+			font-family: $headings-font-family;
+			font-weight: $headings-font-weight;
+			line-height: $headings-line-height;
+			font-size: $font-size-large;
+		}
 	}
 
 	.timestamp {
