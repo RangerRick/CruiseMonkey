@@ -3,10 +3,10 @@
 		<ion-list>
 			<ion-item class="item item-icon-right" href="#/tab/info/settings">
 				<span class="read"></span>
-				Settings / <span ng-if="user.loggedIn">Log Out</span><span ng-if="!user.loggedIn">Log In</span>
+				Settings / <span ng-if="u.loggedIn()">Log Out</span><span ng-if="!u.loggedIn()">Log In</span>
 				<i class="icon cm-icon-settings"></i>
 			</ion-item>
-			<ion-item class="item item-icon-right" href="#/tab/info/profile" ng-if="user.loggedIn">
+			<ion-item class="item item-icon-right" href="#/tab/info/profile" ng-if="u.loggedIn()">
 				<span class="read"></span>
 				Edit Profile
 				<i class="icon cm-icon-person"></i>
