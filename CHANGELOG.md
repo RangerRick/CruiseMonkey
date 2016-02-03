@@ -18,12 +18,6 @@ We are at a release-candidate stage for CruiseMonkey 2016, so the version has be
 
 #### Changes
 
-* build 40374
-  * make it clear that log in/out is in settings (issue #89)
-  * seamail UI shows "Loading" until loaded
-  * make sure time zones are handled cleanly (just in case)
-  * maybe finally fixed formatting of the login input? (issue #82)
-
 * build 40373
   * always use Eastern time (issue #87)
   * decode HTML entities when re-editing tweets (issue #88)
