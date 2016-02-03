@@ -5,6 +5,10 @@ CruiseMonkey 2016.0 is ready for release.
 
 #### Changes
 
+* build 40375
+  * fix profile layout on small screens
+  * fix various display bugs in notification dots (issue #91)
+
 * build 40374
   * make it clear that log in/out is in settings (issue #89)
   * seamail UI shows "Loading" until loaded
