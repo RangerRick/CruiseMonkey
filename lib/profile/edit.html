@@ -16,30 +16,30 @@
 				</div>
 			</form>
 			<form novalidate ng-submit="save()">
-				<label class="item item-input item-stacked-label">
-					<span class="input-label">Display Name:</span>
+				<ion-item class="item">
+					<div class="input-label">Display Name:</div>
 					<input type="text" ng-model="user.display_name">
-				</label>
-				<label class="item item-input item-stacked-label">
-					<span class="input-label">Real Name:</span>
+				</ion-item>
+				<ion-item class="item">
+					<div class="input-label">Real Name:</div>
 					<input type="text" ng-model="user.real_name">
-				</label>
-				<label class="item item-input item-stacked-label">
-					<span class="input-label">Room Number:</span>
-					<input type="text" ng-model="user.room_number">
-				</label>
-				<label class="item item-input item-stacked-label">
-					<span class="input-label">Home:</span>
+				</ion-item>
+				<ion-item class="item">
+					<div class="input-label">Room Number:</div>
+					<input type="number" ng-model="user.room_number">
+				</ion-item>
+				<ion-item class="item">
+					<div class="input-label">Home:</div>
 					<input type="text" placeholder="Where are you from?" ng-model="user.home_location">
-				</label>
-				<label class="item item-input item-stacked-label">
-					<span class="input-label">Current Location:</span>
+				</ion-item>
+				<ion-item class="item">
+					<div class="input-label">Current Location:</div>
 					<input type="text" placeholder="Where are you now?" ng-model="user.current_location">
-				</label>
-				<label class="item item-input item-stacked-label">
-					<span class="input-label">E-Mail Address:</span>
+				</ion-item>
+				<ion-item class="item">
+					<div class="input-label">E-Mail Address:</div>
 					<input type="email" ng-model="user.email">
-				</label>
+				</ion-item>
 				<ion-item class="item item-toggle">
 					Make E-Mail Address Public?
 					<label class="toggle toggle-dark">
