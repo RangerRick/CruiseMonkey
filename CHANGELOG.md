@@ -8,12 +8,31 @@
 * build 40400
   * read-only support for forums
 
+<a name="2016.0.1"></a>
+## 2016.0.1
+
+CruiseMonkey 2016.0 is ready for release.
+
+#### Changes
+
+* build 40374
+  * make it clear that log in/out is in settings (issue #89)
+  * seamail UI shows "Loading" until loaded
+  * make sure time zones are handled cleanly (just in case)
+  * maybe finally fixed formatting of the login input? (issue #82)
+
 <a name="2016.0.0"></a>
 ## 2016.0.0
 
 We are at a release-candidate stage for CruiseMonkey 2016, so the version has been changed to reflect that.
 
 #### Changes
+
+* build 40374
+  * make it clear that log in/out is in settings (issue #89)
+  * seamail UI shows "Loading" until loaded
+  * make sure time zones are handled cleanly (just in case)
+  * maybe finally fixed formatting of the login input? (issue #82)
 
 * build 40373
   * always use Eastern time (issue #87)
