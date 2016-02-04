@@ -1,9 +1,9 @@
-<ion-view class="twitarr">
+<ion-view title="Twit-Arr" class="twitarr">
 	<ion-nav-title>
 		<span ng-click="scrollTop()">Twit-Arr</span>
 	</ion-nav-title>
 	<ion-nav-buttons side="secondary">
-		<button class="button button-icon icon cm-icon-compose" ng-click="editTweet({create:true}, $event)" ng-if="user.loggedIn"></button>
+		<button class="button button-icon icon cm-icon-compose" ng-click="t.new($event)" ng-if="user.loggedIn"></button>
 	</ion-nav-buttons>
 	<span class="unread-count" ng-if="unreadCount &amp;&amp; unreadCount > 0">{{unreadCount}}</span>
 	<ion-content scroll="true" padding="false" delegate-handle="twitarr" on-scroll="updateTopVisible()" ng-click="closeKeyboard()">
@@ -16,21 +16,7 @@
 			<ion-item ng-if="!error &amp;&amp; entries &amp;&amp; entries.length === 0" class="item-text-wrap">
 				There are no posts in the Twit-Arr stream.
 			</ion-item>
-			<ion-item ng-repeat="entry in entries track by entry.tracker" class="item item-avatar item-text-wrap" id="{{entry.id}}" href="#/tab/twitarr/{{entry.id}}">
-				<img cm-cache img-src="{{twitarrRoot + 'api/v2/user/photo/' + entry.author}}" ng-click="openUser(entry.author, $event)" ng-if="twitarrRoot &amp;&amp; entry.author" />
-				<span class="item-note commands" ng-if="user.loggedIn">
-					<button class="button button-clear button-small icon cm-icon-reply" ng-click="editTweet({tweet:entry, reply:true}, $event)" ng-if="entry.author !== user.username"></button>
-					<button class="button button-clear button-small icon ion-android-more-vertical" ng-click="tweetOptions(entry, $event)" ng-if="entry.author === user.username"></button>
-					<button ng-class="'button button-clear button-small icon ' + (isLiked(entry)? 'cm-icon-favorited':'cm-icon-unfavorited')" ng-click="toggleLike(entry, $event)"></button>
-				</span>
-				<span class="user">
-					<span class="display-name user-sizeable" ng-bind-html="getDisplayName(entry.author)"></span>
-					<span class="display-handle user-sizeable" ng-bind-html="getDisplayHandle(entry.author)"></span>
-				</span>
-				<p class="tweet-text user-sizeable" twitter-html="entry.text"></p>
-				<img cm-cache img-src="{{twitarrRoot + 'photo/small_thumb/' + entry.photo.id}}" ng-if="twitarrRoot &amp;&amp; entry.photo" style="width: 100%; max-width: 400px"/>
-				<p class="timeframe user-sizeable">{{entry.display_timestamp}}</p>
-			</ion-item>
+			<cm-tweet ng-repeat="tweet in entries track by tweet.tracker" allow-recursion="true"></cm-tweet>
 		</ion-list>
 		<ion-infinite-scroll on-infinite="loadMore()" ng-if="entries.length < 500 &amp;&amp; !done" distance="10%"></ion-infinite-scroll>
 	</ion-content>

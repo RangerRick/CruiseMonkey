@@ -122,24 +122,9 @@ $tabs-dark-text:                  white;
 
 $popover-width:                   160px;
 
-/*
-.ionic_toast {
-	border-radius: 5px !important;
-	color: $cmDetailForeground !important;
-	background-color: $cmDetailBackgroundAlternate !important;
-	border-color: $cmForeground !important;
-}
-
-#toast-container > div {
-	opacity: 0.95;
-	-ms-filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=95);
-	filter: alpha(opacity=95);
-}
-.toast-info {
-	color: $cmDetailForeground;
-	background-color: $cmDetailBackground;
-}
-*/
+$z-index-view-below: 2;
+$z-index-view-above: 3;
+$z-index-bar: 9;
 
 @import "../bower_components/ionic/scss/ionic";
 @import "../bower_components/ionic-filter-bar/scss/ionic.filter.bar";
@@ -204,6 +189,12 @@ $item-padding-orig: 16px;
   }
 }
 
+.tweet.item {
+	.item-content {
+		padding-right: $item-padding;
+	}
+}
+
 .icon {
 	&.icon-cm, &.icon-yellow {
 		color: $cmDetailForeground;
@@ -228,15 +219,6 @@ $item-padding-orig: 16px;
 	}
 }
 
-.cm-dice {
-	@extend .ion;
-	font-family: sans-serif;
-}
-
-.cm-dice:before {
-	content: "\2685";
-}
-
 .cm, .yellow {
 	color: $cmDetailForeground;
 }
@@ -247,6 +229,10 @@ $item-padding-orig: 16px;
 
 .blue {
 	color: $cmDetailBackgroundAlternate;
+}
+
+.cm-directive {
+	z-index: $z-index-view-above;
 }
 
 .announcements {
@@ -536,6 +522,9 @@ ion-popover-view.fit ion-content {
 		}
 		*/
 	}
+	.tweet-reply {
+		opacity: .4;
+	}
 	.item {
 		.user {
 			white-space: nowrap;
@@ -575,7 +564,7 @@ ion-popover-view.fit ion-content {
 	}
 
 	.unread-count {
-		z-index: 10000;
+		z-index: $z-index-bar;
 		position: fixed;
 		top: $bar-height;
 		right: 0;
@@ -615,7 +604,7 @@ ion-popover-view.fit ion-content {
 		background-size: contain;
 		background-repeat: no-repeat;
 		background-position: center, center;
-		z-index: 1;
+		z-index: $z-index-view-above;
 	}
 }
 

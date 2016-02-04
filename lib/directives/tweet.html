@@ -1,0 +1,12 @@
+<ion-item class="tweet item item-avatar item-text-wrap" id="{{tweet.id}}" ng-attr-href="{{ allowRecursion? '#/tab/twitarr/' + tweet.id : undefined }}">
+	<cm-user-avatar username="tweet.author"></cm-user-avatar>
+	<span class="item-note commands" ng-if="user.loggedIn">
+		<button class="button button-clear button-small icon cm-icon-reply" ng-click="reply(tweet, $event)" ng-if="tweet.author !== user.username"></button>
+		<button class="button button-clear button-small icon ion-android-more-vertical" ng-click="showOptions(tweet, $event)" ng-if="tweet.author === user.username"></button>
+		<button ng-class="'button button-clear button-small icon ' + (isLiked(tweet)? 'cm-icon-favorited':'cm-icon-unfavorited')" ng-click="toggleLike(tweet, $event)"></button>
+	</span>
+	<cm-user-display username="tweet.author" ng-if="tweet &amp;&amp; tweet.author"></cm-user-display>
+	<p class="tweet-text user-sizeable" twitter-html="tweet.text"></p>
+	<img cm-cache img-src="{{settings.twitarrRoot + 'photo/small_thumb/' + tweet.photo.id}}" ng-if="settings.twitarrRoot &amp;&amp; tweet.photo" style="width: 100%; max-width: 400px" ng-click="i.show(tweet.photo.id, $event)" />
+	<p class="timeframe user-sizeable">{{tweet.display_timestamp}}</p>
+</ion-item>

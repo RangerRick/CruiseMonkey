@@ -1,3 +1,11 @@
+.cm-dice {
+	@extend .ion;
+	font-family: sans-serif;
+}
+.cm-dice:before {
+	content: "\2685";
+}
+
 .cm-icon-boat {
 	@extend .ion-android-boat;
 }
