@@ -7,12 +7,6 @@
   "dependencies": {
     "feedparser": "*",
     "googleapis": "*",
-    "gulp": "*",
-    "gulp-concat": "*",
-    "gulp-minify-css": "*",
-    "gulp-rename": "*",
-    "gulp-sass": "*",
-    "gulp-util": "*",
     "moment": "*",
     "request": "*"
   },
@@ -30,6 +24,7 @@
     "expose-loader": "^0.7.1",
     "file-loader": "^0.8.5",
     "fs.extra": "*",
+    "ghooks": "^1.0.3",
     "gulp-jasmine": "*",
     "gulp-jshint": "*",
     "gulp-karma": "*",
@@ -110,6 +105,13 @@
       "locator": "android"
     }
   ],
+  "config": {
+    "ghooks": {
+      "pre-push": "npm run test",
+      "post-merge": "npm install",
+      "post-rewrite": "npm install"
+    }
+  },
   "scripts": {
     "build": "webpack --colors --display-error-details && ionic build",
     "prepare": "webpack --colors --display-error-details && ionic prepare",
