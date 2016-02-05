@@ -15,6 +15,24 @@ CruiseMonkey 2016.0 is ready for release.
 
 #### Changes
 
+* build 40377
+  * (hopefully) fix a couple of exceptions related to events and
+    clearing the cache
+
+* build 40376
+  * reworked tweet and tweet rendering to be faster, and look
+    the same between stream view and tweet detail view (including
+    fav/reply/edit/delete)
+  * drag left on a tweet in the tweet stream to view details
+  * fixed a number of bugs in creating, editing, replying, and
+    deleting tweets
+  * reduce the number of network calls needed to get un-cached images
+  * feedback when sending tweets to account for server slowness
+  * lots of smaller layout and update issues fixed all over
+  * switch to browser-based photo handling on Android (gallery-based
+    upload caused crashes)
+  * CM should perform better on Android < 5
+
 * build 40375
   * fix profile layout on small screens
   * fix various display bugs in notification dots (issue #91)

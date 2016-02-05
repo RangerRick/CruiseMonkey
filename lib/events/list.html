@@ -4,7 +4,7 @@
 		<button class="button button-icon icon-yellow cm-icon-nav-up" ng-click="scrollTop($event)"></button>
 	</ion-nav-buttons>
 	<ion-nav-title ng-click="openEventTypePopover($event)" class="event-title">
-		{{eventType.capitalize()}} Events <span style="font-size: x-small">&#9660;</span>
+		<span>{{getEventTypeDescription()}} <span style="font-size: x-small">&#9660;</span></span>
 	</ion-nav-title>
 	<ion-nav-buttons side="secondary">
 		<button class="button button-icon icon-yellow cm-icon-plus" ng-click="addEvent($event)" ng-if="u.loggedIn()"></button>

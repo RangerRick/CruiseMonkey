@@ -3,7 +3,7 @@
 		<div class="buttons">
 			<button class="button button-clear button-yellow" ng-click="closeModal($event)">Close</button>
 		</div>
-		<h1 class="title">New Tweet</h1>
+		<h1 class="title">{{title || 'New Tweet'}}</h1>
 		<div class="buttons">
 			<button class="button button-clear button-icon icon cm-icon-send button-yellow" ng-click="postTweet($event, tweet, originalTweet)" ng-disabled="photoUploading || !tweet.text"></button>
 		</div>
@@ -18,7 +18,8 @@
 					</label>
 				</div>
 			</div>
-			<div class="item item-image" ng-if="tweet.photo">
+			<!-- ng-click="removePhoto($event)" -->
+			<div class="item item-image" ng-if="twitarrRoot &amp;&amp; tweet.photo">
 				<img cm-cache img-src="{{twitarrRoot}}photo/small_thumb/{{tweet.photo}}" style="width: 100%" />
 			</div>
 			<div class="item" ng-if="photoUploading">
@@ -36,6 +37,10 @@
 					</div>
 				</div>
 			</span>
+			<div class="item item-text-wrap tweet-reply" ng-if="type === 'reply' &amp;&amp; referencedTweet &amp;&amp; referencedTweet.text">
+				<span class="tweet-text user-sizeable">{{referencedTweet.author}}</span>:
+				<span class="tweet-text user-sizeable" twitter-html="referencedTweet.text"></span>
+			</div>
 		</ion-list>
 	</ion-content>
 </ion-modal-view>

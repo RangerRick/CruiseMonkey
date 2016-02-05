@@ -122,6 +122,10 @@ $tabs-dark-text:                  white;
 
 $popover-width:                   160px;
 
+$z-index-view-below: 2;
+$z-index-view-above: 3;
+$z-index-bar: 9;
+
 @import "../bower_components/ionic/scss/ionic";
 @import "../bower_components/ionic-filter-bar/scss/ionic.filter.bar";
 
@@ -185,6 +189,12 @@ $item-padding-orig: 16px;
   }
 }
 
+.tweet.item {
+	.item-content {
+		padding-right: $item-padding;
+	}
+}
+
 .icon {
 	&.icon-cm, &.icon-yellow {
 		color: $cmDetailForeground;
@@ -209,13 +219,8 @@ $item-padding-orig: 16px;
 	}
 }
 
-.cm-dice {
-	@extend .ion;
-	font-family: sans-serif;
-}
-
-.cm-dice:before {
-	content: "\2685";
+.platform-android .action-sheet .button {
+	padding-left: 20px;
 }
 
 .cm, .yellow {
@@ -228,6 +233,10 @@ $item-padding-orig: 16px;
 
 .blue {
 	color: $cmDetailBackgroundAlternate;
+}
+
+.cm-directive {
+	z-index: $z-index-view-above;
 }
 
 .announcements {
@@ -534,6 +543,9 @@ ion-popover-view.fit ion-content {
 		}
 		*/
 	}
+	.tweet-reply {
+		opacity: .4;
+	}
 	.item {
 		.user {
 			white-space: nowrap;
@@ -573,7 +585,7 @@ ion-popover-view.fit ion-content {
 	}
 
 	.unread-count {
-		z-index: 10000;
+		z-index: $z-index-bar;
 		position: fixed;
 		top: $bar-height;
 		right: 0;
@@ -613,7 +625,7 @@ ion-popover-view.fit ion-content {
 		background-size: contain;
 		background-repeat: no-repeat;
 		background-position: center, center;
-		z-index: 1;
+		z-index: $z-index-view-above;
 	}
 }
 

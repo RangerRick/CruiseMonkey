@@ -30,7 +30,8 @@
     "string-hash": "https://github.com/darkskyapp/string-hash.git",
     "angular-cache": "~4.5.0",
     "ng-file-model": "*",
-    "angular-file-upload": "~2.2.0"
+    "angular-file-upload": "~2.2.0",
+    "angular-promise-queue": "~1.0.1"
   },
   "resolutions": {
     "angular-ui-router": "~0.2.15",

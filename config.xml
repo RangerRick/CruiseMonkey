@@ -30,6 +30,10 @@
   <preference name="windows-target-version" value="8.1"/>
   <preference name="windows-phone-target-version" value="8.1"/>
   <preference name="WindowsDefaultUriPrefix" value="ms-appx://"/>
+  <preference name="xwalkVersion" value="15+"/>
+  <preference name="xwalkCommandLine" value="--disable-pull-to-refresh-effect"/>
+  <preference name="xwalkMode" value="embedded"/>
+  <preference name="xwalkMultipleApk" value="true"/>
   <feature name="Clipboard">
     <param name="ios-package" onload="true" value="CDVClipboard"/>
   </feature>
@@ -159,5 +163,12 @@
       <string>UIInterfaceOrientationPortrait</string>
       <string>UIInterfaceOrientationPortraitUpsideDown</string>
     </array>
+  </config-file>
+  <config-file target="AndroidManifest.xml" parent="/*">
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
+    <uses-permission android:name="android.permission.CAMERA"/>
   </config-file>
 </widget>
