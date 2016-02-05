@@ -4,18 +4,11 @@ notifications:
 language: node_js
 node_js:
   - '4.1'
-#services:
-#  - couchdb
 before_install:
-  - 'npm install -g bower gulp'
+  - 'npm install -g ionic cordova bower webpack webpack-cli'
   - 'npm install'
-  - 'npm install pouchdb-server'
   - 'bower install'
-  - 'gem install compass'
-  - 'sudo pip install couchapp'
-#before_script:
-#  - './setup-travis.sh'
-script: gulp test
+script: npm test
 cache:
   directories:
     - node_modules
