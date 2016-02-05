@@ -91,7 +91,8 @@
       "locator": "https://github.com/christocracy/cordova-plugin-background-fetch.git",
       "id": "org.transistorsoft.cordova.plugin.background.fetch"
     },
-    "com-sarriaroman-photoviewer"
+    "com-sarriaroman-photoviewer",
+    "cordova-plugin-crosswalk-webview"
   ],
   "cordovaPlatforms": [
     {
