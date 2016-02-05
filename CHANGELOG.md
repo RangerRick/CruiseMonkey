@@ -5,6 +5,10 @@ CruiseMonkey 2016.0 is ready for release.
 
 #### Changes
 
+* build 40377
+  * (hopefully) fix a couple of exceptions related to events and
+    clearing the cache
+
 * build 40376
   * reworked tweet and tweet rendering to be faster, and look
     the same between stream view and tweet detail view (including
