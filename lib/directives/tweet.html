@@ -1,4 +1,4 @@
-<ion-item class="tweet item item-avatar item-text-wrap" id="{{tweet.id}}" ng-attr-href="{{ allowRecursion? '#/tab/twitarr/' + tweet.id : undefined }}">
+<ion-item class="tweet item item-avatar item-text-wrap" id="{{tweet.id}}" ng-attr-href="{{ allowRecursion? '#/tab/twitarr/' + tweet.id : undefined }}" on-drag-left="dragged($event, tweet)">
 	<cm-user-avatar username="tweet.author"></cm-user-avatar>
 	<span class="item-note commands" ng-if="settings.user.loggedIn">
 		<button class="button button-clear button-small icon cm-icon-reply" ng-click="reply(tweet, $event)" ng-if="tweet.author !== settings.user.username"></button>
