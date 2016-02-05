@@ -219,6 +219,10 @@ $item-padding-orig: 16px;
 	}
 }
 
+.platform-android .action-sheet .button {
+	padding-left: 20px;
+}
+
 .cm, .yellow {
 	color: $cmDetailForeground;
 }
