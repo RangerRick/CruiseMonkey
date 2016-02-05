@@ -7,12 +7,6 @@
   "dependencies": {
     "feedparser": "*",
     "googleapis": "*",
-    "gulp": "*",
-    "gulp-concat": "*",
-    "gulp-minify-css": "*",
-    "gulp-rename": "*",
-    "gulp-sass": "*",
-    "gulp-util": "*",
     "moment": "*",
     "request": "*"
   },
