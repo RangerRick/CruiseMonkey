@@ -3,7 +3,7 @@
   "version": "2016.0.1",
   "minSdk": "14",
   "description": "Keep Track of Your Cruise",
-  "build": 40375,
+  "build": 40376,
   "dependencies": {
     "feedparser": "*",
     "googleapis": "*",
@@ -87,12 +87,9 @@
     "cordova-plugin-filepath",
     "cordova-plugin-chrome-apps-system-memory",
     "https://github.com/RangerRick/cordova-HTTP.git",
-    {
-      "locator": "https://github.com/christocracy/cordova-plugin-background-fetch.git",
-      "id": "org.transistorsoft.cordova.plugin.background.fetch"
-    },
     "com-sarriaroman-photoviewer",
-    "cordova-plugin-crosswalk-webview"
+    "cordova-plugin-crosswalk-webview",
+    "https://github.com/christocracy/cordova-plugin-background-fetch.git"
   ],
   "cordovaPlatforms": [
     {
