@@ -5,6 +5,12 @@ CruiseMonkey 2016.0 is ready for release.
 
 #### Changes
 
+* build 40379
+  * reset notification dots no logout
+  * more robust "onaboat" handling, clear more state on boat day
+  * remove swipe/gesture thing, slows things down and too
+    much "magic"
+
 * build 40378
   * show a flag/marker on currently happening events (issue #79)
   * decode HTML entities before editing tweets (issue #96)
