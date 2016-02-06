@@ -1,4 +1,6 @@
-var assert = require('assert');
+'use strict';
+
+var assert = require('assert-plus');
 var jsdom = require('jsdom').jsdom;
 document = jsdom( '<html/>' );
 
@@ -65,7 +67,7 @@ describe('Twit-Arr Translator', function() {
 		});
 		it('handle usernames with traditionally problematic characters', function() {
 			assert.equal(translator.format('@john-r-s you are supported!'), '<cm-user username="john-r-s"></cm-user> you are supported!');
-		});;
+		});
 	});
 
 	describe('mixed content', function() {

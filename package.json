@@ -11,7 +11,7 @@
     "request": "*"
   },
   "devDependencies": {
-    "assert": "^1.3.0",
+    "assert-plus": "^1.0.0",
     "bower": "*",
     "commonmark": "*",
     "cordova-android": "*",
@@ -116,17 +116,17 @@
     }
   },
   "scripts": {
-    "build": "npm run lint && webpack --colors --display-error-details && ionic build",
-    "prepare": "npm run lint && webpack --colors --display-error-details && ionic prepare",
+    "build": "npm run lint && npm run test && webpack --colors --display-error-details && ionic build",
+    "prepare": "npm run lint && npm run test && webpack --colors --display-error-details && ionic prepare",
     "increment": "bin/update-build-number.js",
-    "release": "npm run lint && webpack --colors --display-error-details --env=production && ionic build --release && bin/sign-android.sh",
-    "verbose-build": "npm run lint && webpack --debug --colors --display-modules --display-chunks --display-error-details --display-origins --display-reasons",
+    "release": "npm run lint && npm run test && webpack --colors --display-error-details --env=production && ionic build --release && bin/sign-android.sh",
+    "verbose-build": "npm run lint && npm run test && webpack --debug --colors --display-modules --display-chunks --display-error-details --display-origins --display-reasons",
     "genymotion": "ionic run -slc android",
     "android": "ionic emulate -slc android",
     "ios": "ionic emulate -slc --address=localhost ios",
     "device": "ionic run --device -slc ios",
-    "watch": "npm run lint && webpack --colors --display-error-details --watch",
+    "watch": "webpack --colors --display-error-details --watch",
     "lint": "eslint . --ext .js",
-    "test": "npm run lint && mocha test"
+    "test": "mocha test"
   }
 }
