@@ -116,17 +116,17 @@
     }
   },
   "scripts": {
-    "build": "webpack --colors --display-error-details && ionic build",
-    "prepare": "webpack --colors --display-error-details && ionic prepare",
+    "build": "npm run lint && webpack --colors --display-error-details && ionic build",
+    "prepare": "npm run lint && webpack --colors --display-error-details && ionic prepare",
     "increment": "bin/update-build-number.js",
-    "release": "webpack --colors --display-error-details --env=production && ionic build --release && bin/sign-android.sh",
-    "verbose-build": "webpack --debug --colors --display-modules --display-chunks --display-error-details --display-origins --display-reasons",
+    "release": "npm run lint && webpack --colors --display-error-details --env=production && ionic build --release && bin/sign-android.sh",
+    "verbose-build": "npm run lint && webpack --debug --colors --display-modules --display-chunks --display-error-details --display-origins --display-reasons",
     "genymotion": "ionic run -slc android",
     "android": "ionic emulate -slc android",
     "ios": "ionic emulate -slc --address=localhost ios",
     "device": "ionic run --device -slc ios",
-    "watch": "webpack --colors --display-error-details --watch",
+    "watch": "npm run lint && webpack --colors --display-error-details --watch",
     "lint": "eslint . --ext .js",
-    "test": "mocha test"
+    "test": "npm run lint && mocha test"
   }
 }

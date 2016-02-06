@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 
+/* eslint-disable no-console */
 // this plugin replaces arbitrary text in arbitrary files
 
 var fs = require('fs.extra');
@@ -54,7 +55,7 @@ if (rootdir) {
     'platforms/android',
     'platforms/ios/www',
     'platforms/android/build/intermediates/manifests/full/debug',
-    'platforms/android/build/intermediates/manifests/full/release',
+    'platforms/android/build/intermediates/manifests/full/release'
   ];
 
   // CONFIGURE HERE
@@ -62,7 +63,7 @@ if (rootdir) {
   var filestoreplace = [
     'scripts/cruisemonkey/Config.js',
     'index.html',
-    'AndroidManifest.xml',
+    'AndroidManifest.xml'
   ];
 
   roots.forEach(function(root) {
@@ -89,3 +90,5 @@ if (rootdir) {
   });
 
 }
+
+/* eslint-enable no-console */

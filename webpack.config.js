@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 var path = require('path'),
 	fs = require('fs'),
 	webpack = require('webpack'),
@@ -27,14 +28,14 @@ var plugins = [
 		add: true
 	}),
 	new webpack.ProvidePlugin({
-		'$': 'jquery',
-		'jQuery': 'jquery',
+		$: 'jquery',
+		jQuery: 'jquery',
 		'window.jQuery': 'jquery'
 	}),
 	new webpack.optimize.CommonsChunkPlugin({
 		name: 'vendor',
 		filename: 'vendor.bundle.js',
-		minChunks: Infinity,
+		minChunks: Infinity
 	}),
 	new webpack.optimize.CommonsChunkPlugin({
 		children: true,
@@ -54,7 +55,7 @@ if (argv.env !== 'development') {
 
 var options = {
 	entry: {
-		'vendor': [
+		vendor: [
 			'es5-shim',
 			'classlist',
 			'winstore-jscompat/winstore-jscompat',
@@ -66,7 +67,7 @@ var options = {
 			'ionic/release/js/ionic-angular',
 			'ngCordova'
 		],
-		'app': [
+		app: [
 			'./lib/index'
 		]
 	},
@@ -80,10 +81,7 @@ var options = {
 			'ionic-filter-bar': 'ionic-filter-bar/dist/ionic.filter.bar'
 		},
 		root: [
-			/* __dirname, */
-			/* path.resolve(__dirname, 'bower_components/ionic/release/js'), */
-			path.resolve(__dirname, 'bower_components'),
-			/* path.resolve(__dirname, 'node_modules') */
+			path.resolve(__dirname, 'bower_components')
 		]
 	},
 	module: {
@@ -107,28 +105,28 @@ var options = {
 			},
 			{
 				test: /\.eot(\?v=\d+\.\d+\.\d+)?$/,
-				loader: "url?limit=10000&mimetype=application/vnd.ms-fontobject"
+				loader: 'url?limit=10000&mimetype=application/vnd.ms-fontobject'
 			},
 			{
 				test: /\.otf(\?v=\d+\.\d+\.\d+)?$/,
-				loader: "url?limit=10000&mimetype=application/x-font-opentype"
+				loader: 'url?limit=10000&mimetype=application/x-font-opentype'
 			},
 			{
 				test: /\.ttf(\?v=\d+\.\d+\.\d+)?$/,
-				loader: "url?limit=10000&mimetype=application/octet-stream"
+				loader: 'url?limit=10000&mimetype=application/octet-stream'
 			},
 			{
 				test: /\.woff2?(\?v=\d+\.\d+\.\d+)?$/,
-				loader: "url?limit=10000&mimetype=application/font-woff"
+				loader: 'url?limit=10000&mimetype=application/font-woff'
 			},
 			{
 				test: /\.svg(\?v=\d+\.\d+\.\d+)?$/,
-				/*loader: "url?limit=10000&mimetype=image/svg+xml"*/
-				loader: "file"
+				/*loader: 'url?limit=10000&mimetype=image/svg+xml'*/
+				loader: 'file'
 			},
 			{
 				test: /\.(jpe?g|png|gif)$/i,
-				loader: "file"
+				loader: 'file'
 			},
 			{
 				test: /[\/]lokijs\.js$/,
