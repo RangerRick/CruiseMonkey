@@ -25,7 +25,6 @@
     "d3": "~3.5.12",
     "ngFitText": "~3.3.3",
     "ionic-toast": "~0.2.0",
-    "string-hash": "https://github.com/darkskyapp/string-hash.git",
     "angular-cache": "~4.5.0",
     "ng-file-model": "*",
     "angular-file-upload": "~2.2.0",
