@@ -5,6 +5,10 @@ CruiseMonkey 2016.0 is ready for release.
 
 #### Changes
 
+* build 40380
+  * put events as the first tab
+  * make the "clear cache" button less confusing
+
 * build 40379
   * reset notification dots no logout
   * more robust "onaboat" handling, clear more state on boat day
