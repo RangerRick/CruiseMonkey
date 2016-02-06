@@ -24,6 +24,7 @@
 					<div class="summary">
 						<span ng-bind-html="highlight(entry.getSummary(), searchString)"></span>
 						<i class="icon icon-navy ion-eye-disabled" ng-if="!entry.isShared()"></i>
+						<i class="icon icon-navy cm-icon-flag" ng-if="currentEvents.includes(entry.getId())"></i>
 					</div>
 					<div class="time">Time: {{entry.getDisplayTime()}}</div>
 					<div class="createdBy" ng-if="entry.isOfficial()"><img ng-src="{{officialIcon}}" style="max-height: 14px" ng-if="entry.isOfficial()" /> Official Event</div>
