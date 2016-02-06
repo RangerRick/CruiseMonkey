@@ -5,7 +5,7 @@
 			<ion-item class="item item-text-wrap" ng-repeat="announcement in announcements track by announcement.id">
 				<div>
 				</div>
-				<p ng-bind-html="announcement.text"></p>
+				<p class="description" ng-bind-html="announcement.text"></p>
 				<div class="timestamp">
 					Posted
 					{{announcement.timestamp.fromNow()}} by
