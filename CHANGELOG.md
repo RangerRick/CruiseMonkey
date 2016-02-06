@@ -15,6 +15,12 @@ CruiseMonkey 2016.0 is ready for release.
 
 #### Changes
 
+* build 40378
+  * show a flag/marker on currently happening events (issue #79)
+  * decode HTML entities before editing tweets (issue #96)
+  * allow adding a photo when editing an existing tweet (issue #97)
+  * events go to "now" when you switch event filters (issue #98)
+
 * build 40377
   * (hopefully) fix a couple of exceptions related to events and
     clearing the cache

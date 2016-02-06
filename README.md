@@ -1,4 +1,6 @@
 [![Stories in Ready](https://badge.waffle.io/RangerRick/CruiseMonkey.png?label=ready&title=Ready)](https://waffle.io/RangerRick/CruiseMonkey)
+[![Build Status](https://travis-ci.org/RangerRick/CruiseMonkey.png)](https://travis-ci.org/RangerRick/CruiseMonkey)
+
 CruiseMonkey
 ============
 
