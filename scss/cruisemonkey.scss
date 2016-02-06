@@ -624,7 +624,7 @@ ion-popover-view.fit ion-content {
 
 .seamail {
 	p {
-		font-size: $font-size-base;
+		font-size: $font-size-large;
 		color: $cmForeground;
 	}
 	.users {
@@ -842,7 +842,7 @@ ion-item.item.item-text-wrap.list-entry.unofficial.even {
 
 .summary {
 	font-size: $font-size-large;
-	font-weight: bold;
+	font-weight: 900;
 	padding: 2px;
 	margin-right: 62px;
 	min-height: 32px;
@@ -862,7 +862,7 @@ ion-item.item.item-text-wrap.list-entry.unofficial.even {
 .description {
 	margin-top: 12px;
 	padding: 2px;
-	font-size: $font-size-base;
+	font-size: $font-size-large;
 }
 
 .name {
