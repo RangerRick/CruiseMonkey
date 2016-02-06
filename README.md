@@ -82,6 +82,21 @@ Other Commands
 * `npm run genymotion`: Run the Android build in the Genymotion emulator rather than the (slower) Android emulator.  (Requires a Genymotion installation.)
 * `npm run release`: Run webpack and build in release mode.  This makes a smaller, faster build with unreadable JavaScript.
 
+Developing on Windows
+---------------------
+
+1. Install Visual Studio Professional 2015
+   * Microsoft Web Developer Tools
+   * Universal Windows App Developer Tools
+   * Windows 8.1 and Windows Phone 8.0/8.1 Tools
+   * Cross Platform Mobile Development
+     * HTML/JavaScript (Apache Cordova)
+   * Common Tools
+     * Git for Windows
+     * GitHub Extension for Visual Studio
+2. Install [Node.JS](http://nodejs.org/)
+
+
 Contact
 =======
 
