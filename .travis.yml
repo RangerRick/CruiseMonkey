@@ -7,7 +7,7 @@ node_js:
 before_script:
   - './bin/clean.sh"
 before_install:
-  - 'npm install -g ionic cordova bower webpack webpack-cli karma-cli'
+  - 'npm install -g ionic cordova bower webpack webpack-cli mocha'
   - 'npm install'
   - 'bower install'
 script: npm test
