@@ -11,3 +11,8 @@ before_install:
   - 'npm install'
   - 'bower install'
 script: npm test
+cache:
+  directories:
+    - node_modules
+    - app/bower_components
+
