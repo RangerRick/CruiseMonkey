@@ -85,7 +85,7 @@
     "cordova-plugin-filepath",
     "cordova-plugin-chrome-apps-system-memory",
     "https://github.com/RangerRick/cordova-HTTP.git",
-    "com-sarriaroman-photoviewer",
+    "https://github.com/RangerRick/photoviewer.git#master",
     "cordova-plugin-crosswalk-webview",
     "https://github.com/christocracy/cordova-plugin-background-fetch.git"
   ],
@@ -114,6 +114,7 @@
     }
   },
   "scripts": {
+    "setup": "bower install && npm install && ionic state reset",
     "build": "webpack --colors --display-error-details && ionic build",
     "prepare": "webpack --colors --display-error-details && ionic prepare",
     "increment": "bin/update-build-number.js",
