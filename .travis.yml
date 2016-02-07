@@ -9,7 +9,3 @@ before_install:
   - 'npm install'
   - 'bower install'
 script: npm test
-cache:
-  directories:
-    - node_modules
-    - bower_components
