@@ -1,12 +1,14 @@
 #!/usr/bin/env node
 
+/* eslint-disable no-console */
+
 var fs = require('fs');
 var path = require('path');
 
 var rootdir = process.argv[2];
 
 String.prototype.endsWith = function(s) {
-	return this.length >= s.length && this.substr(this.length - s.length) == s;
+	return this.length >= s.length && this.substr(this.length - s.length) === s;
 };
 
 var deleteApksRecursive = function(p) {
@@ -32,3 +34,5 @@ if (rootdir) {
 } else {
 	console.warn('No rootdir specified!');
 }
+
+/* eslint-enable no-console */

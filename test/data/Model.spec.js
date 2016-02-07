@@ -1,4 +1,4 @@
-var assert = require('assert');
+var assert = require('assert-plus');
 var jsdom = require('jsdom').jsdom;
 document = jsdom( '<html/>' );
 

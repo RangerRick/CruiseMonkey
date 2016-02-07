@@ -5,7 +5,7 @@
 		</div>
 		<h1 class="title">{{title || 'New Tweet'}}</h1>
 		<div class="buttons">
-			<button class="button button-clear button-icon icon cm-icon-send button-yellow" ng-click="postTweet($event, tweet, originalTweet)" ng-disabled="photoUploading || !tweet.text"></button>
+			<button class="button button-clear button-icon icon cm-icon-send button-yellow" ng-click="postTweet($event, tweet, originalTweet)" ng-disabled="photoUploading || !tweet.text || !isModified(tweet)"></button>
 		</div>
 	</ion-header-bar>
 	<ion-content>

@@ -1,5 +1,7 @@
 #!/usr/bin/env node
 
+/* eslint-disable no-empty */
+
 // Add Platform Class
 // v1.0
 // Automatically adds the platform class to the body tag
@@ -76,7 +78,7 @@ if (rootdir) {
       var platform = platforms[x].trim().toLowerCase();
       var indexPath;
 
-      if(platform == 'android') {
+      if(platform === 'android') {
         indexPath = path.join('platforms', platform, 'assets', 'www', 'index.html');
       } else {
         indexPath = path.join('platforms', platform, 'www', 'index.html');
@@ -92,3 +94,5 @@ if (rootdir) {
   }
 
 }
+
+/* eslint-enable no-empty */
