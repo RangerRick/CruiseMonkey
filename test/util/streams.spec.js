@@ -39,31 +39,31 @@ describe('Streams Utilities', function() {
 
 	it('merge 3 sets of overlapping streams', function() {
 		var firstChunk = streamUtil.normalize([{
-			"id": "1",
-			"timestamp": "2016-01-01T01:00:00Z"
+			id: '1',
+			timestamp: '2016-01-01T01:00:00Z'
 		}, {
-			"id": "2",
-			"timestamp": "2016-01-01T02:00:00Z"
+			id: '2',
+			timestamp: '2016-01-01T02:00:00Z'
 		}, {
-			"id": "3",
-			"timestamp": "2016-01-01T03:00:00Z"
+			id: '3',
+			timestamp: '2016-01-01T03:00:00Z'
 		}]);
 		var secondChunk = streamUtil.normalize([{
-			"id": "2.5",
-			"timestamp": "2016-01-01T02:30:00Z"
+			id: '2.5',
+			timestamp: '2016-01-01T02:30:00Z'
 		}, {
-			"id": "4",
-			"timestamp": "2016-01-01T04:00:00Z"
+			id: '4',
+			timestamp: '2016-01-01T04:00:00Z'
 		}]);
 		var thirdChunk = streamUtil.normalize([{
-			"id": "3",
-			"timestamp": "2016-01-01T03:00:00Z"
+			id: '3',
+			timestamp: '2016-01-01T03:00:00Z'
 		}, {
-			"id": "3.5",
-			"timestamp": "2016-01-01T03:30:00Z"
+			id: '3.5',
+			timestamp: '2016-01-01T03:30:00Z'
 		}, {
-			"id": "5",
-			"timestamp": "2016-01-01T05:00:00Z"
+			id: '5',
+			timestamp: '2016-01-01T05:00:00Z'
 		}]);
 
 		var combined = streamUtil.merge(firstChunk, secondChunk, thirdChunk);
