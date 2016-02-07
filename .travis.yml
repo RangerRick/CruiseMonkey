@@ -3,13 +3,9 @@ notifications:
     - "chat.freenode.net#cruisemonkey"
 language: node_js
 node_js:
-  - '4.1'
+  - '4.2'
 before_install:
   - 'npm install -g ionic cordova bower webpack webpack-cli'
   - 'npm install'
   - 'bower install'
 script: npm test
-cache:
-  directories:
-    - node_modules
-    - app/bower_components
