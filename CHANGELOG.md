@@ -5,6 +5,10 @@
 
 #### Changes
 
+* build 40401
+  * fix crash on Android browsers that don't support
+    Object.assign API
+
 * build 40400
   * read-only support for forums
   * tweet stream filtering ("All", "@mentions", "Favorites")
