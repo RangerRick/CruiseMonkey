@@ -15,7 +15,7 @@
     "bower": "*",
     "commonmark": "*",
     "cordova-android": "*",
-    "cordova-config-utils": "^2.1.0",
+    "cordova-config-utils": "git+https://github.com/RangerRick/cordova-config-utils.git#master",
     "css-loader": "^0.23.1",
     "eslint": "^1.10.3",
     "eslint-friendly-formatter": "^1.2.2",
