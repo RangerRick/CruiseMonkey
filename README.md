@@ -85,17 +85,20 @@ Other Commands
 Developing on Windows
 ---------------------
 
+1. Enable Developer Mode
+   * Settings -> Update & Security -> Developer mode
 1. Install Visual Studio Professional 2015
    * Microsoft Web Developer Tools
    * Universal Windows App Developer Tools
    * Windows 8.1 and Windows Phone 8.0/8.1 Tools
    * Cross Platform Mobile Development
      * HTML/JavaScript (Apache Cordova)
-   * Common Tools
-     * Git for Windows
-     * GitHub Extension for Visual Studio
-2. Install [Node.JS](http://nodejs.org/)
-
+1. Install [Microsoft Emulator for Windows 10 Mobile](https://go.microsoft.com/fwlink/?LinkId=698769)
+1. Install [Node.JS](http://nodejs.org/)
+1. Install [Git](https://git-scm.com/download/win)
+   * Use Windows' default console window
+1. git clone https://github.com/RangerRick/CruiseMonkey.git
+1. Follow the "prereqs" install above
 
 Contact
 =======
