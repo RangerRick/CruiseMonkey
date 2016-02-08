@@ -27,7 +27,6 @@
     "angular-cache": "~4.5.0",
     "ng-file-model": "*",
     "angular-file-upload": "~2.2.0",
-    "angular-promise-queue": "~1.0.1",
     "moment-timezone": "^0.5.0"
   },
   "resolutions": {
