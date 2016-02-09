@@ -78,7 +78,8 @@
     "https://github.com/RangerRick/cordova-HTTP.git",
     "https://github.com/RangerRick/photoviewer.git#master",
     "cordova-plugin-crosswalk-webview",
-    "https://github.com/christocracy/cordova-plugin-background-fetch.git"
+    "https://github.com/christocracy/cordova-plugin-background-fetch.git",
+    "https://github.com/RangerRick/cordova-plugin-simple-image-picker.git"
   ],
   "cordovaPlatforms": [
     {
