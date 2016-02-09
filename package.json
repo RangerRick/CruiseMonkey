@@ -106,9 +106,9 @@
     }
   },
   "scripts": {
-    "setup": "bower install && npm install && ionic state reset && npm run lint && npm run test",
-    "build": "npm run lint && npm run test && webpack --colors --display-error-details && ionic build",
-    "prepare": "npm run lint && npm run test && webpack --colors --display-error-details && ionic prepare",
+    "setup": "bower install && npm install && ionic state reset",
+    "build": "webpack --colors --display-error-details && ionic build",
+    "prepare": "webpack --colors --display-error-details && ionic prepare",
     "increment": "bin/update-build-number.js",
     "release": "npm run lint && npm run test && webpack --colors --display-error-details --env=production && ionic build --release && bin/sign-android.sh",
     "verbose-build": "npm run lint && npm run test && webpack --debug --colors --display-modules --display-chunks --display-error-details --display-origins --display-reasons",
