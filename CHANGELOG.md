@@ -4,6 +4,11 @@
 2016.1.0 is intended to be the second major release of CruiseMonkey for JoCo Cruise 2016.
 
 #### Changes
+* build 40402
+  * fix android image picker once and for all (hopefully) by
+    writing my own stupid plugin rather than relying on the
+    cordova camera plugin
+  * fix likes not showing as liked on the tweet detail view
 
 * build 40401
   * fix crash on Android browsers that don't support
