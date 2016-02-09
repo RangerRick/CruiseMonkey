@@ -1,15 +1,15 @@
+hooks/after_plugin_add/010_register_plugin.js
+hooks/after_prepare/011_update_config.js
+hooks/before_platform_add/init_directories.js
+
 bin/
 bower_components/
-couchdb/
-engine/
 node_modules/
 platforms/
 plugins/
-temp/
 
 lib/3rdparty/
 www/
 
 # for now
-test/
-spec/
+#test/

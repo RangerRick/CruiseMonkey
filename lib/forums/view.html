@@ -1,5 +1,34 @@
-<ion-view view-title="{{forumName}}" class="forums">
-	<ion-content>
-		{{forumName}}
+<ion-view class="forums">
+	<ion-nav-title ng-click="scrollTop()">
+		Forum Detail
+	</ion-nav-title>
+	<ion-content ion-sticky delegate-handle="forum-scroll">
+		<ion-refresher pulling-text="Pull to refresh..." on-refresh="doRefresh(page)"></ion-refresher>
+		<ion-item class="item-divider item-text-wrap">
+			<h2>{{forum.subject}}</h2>
+		</ion-item>
+		<ion-item class="item item-avatar item-text-wrap" ng-repeat="post in forum.posts track by post.id">
+			<img cm-cache img-src="{{twitarrRoot + 'api/v2/user/photo/' + post.author}}" ng-click="openUser(post.author, $event)" ng-if="twitarrRoot &amp;&amp; post.author" />
+			<span class="item-note timestamp">
+				{{post.timestamp.fromNow()}}
+			</span>
+			<span class="user">
+				<span class="display-name user-sizeable" ng-bind-html="getDisplayName(post)"></span>
+				<span class="display-handle user-sizeable" ng-bind-html="getDisplayHandle(post)"></span>
+			</span>
+			<p ng-bind-html="post.text"></p>
+			<div ng-if="post.photos &amp;&amp; post.photos.length > 0">
+				<img class="post-photo" ng-repeat="photo in post.photos" cm-cache img-src="{{twitarrRoot + 'photo/small_thumb/' + photo.id}}" ng-if="twitarrRoot &amp;&amp; photo.id" on-tap="showImage(photo.id, $event)" />
+			</div>
+		</ion-item>
 	</ion-content>
+	<ion-footer-bar class="bar-dark">
+		<div class="buttons">
+			<button class="button button-icon icon cm-icon-nav-left" ng-click="previousPage()" ng-if="forum.prev_page != null"></button>
+		</div>
+		<h1 class="title">Page {{page+1}}</h1>
+		<div class="buttons">
+			<button class="button button-icon icon cm-icon-nav-right" ng-click="nextPage()" ng-if="forum.next_page != null"></button>
+		</div>
+	</ion-footer-bar>
 </ion-view>

@@ -27,6 +27,9 @@
 .cm-icon-email {
 	@extend .ion-email;
 }
+.cm-icon-filter {
+	@extend .ion-levels;
+}
 .cm-icon-flag {
 	@extend .ion-flag;
 }
@@ -107,6 +110,9 @@
 	.cm-icon-email {
 		@extend .ion-android-mail;
 	}
+	.cm-icon-filter {
+		@extend .ion-android-options;
+	}
 	.cm-icon-image {
 		@extend .ion-android-image;
 	}
@@ -165,6 +171,9 @@
 	}
 	.cm-icon-email {
 		@extend .ion-ios-email;
+	}
+	.cm-icon-filter {
+		@extend .ion-ios-settings;
 	}
 	.cm-icon-flag {
 		@extend .ion-ios-flag;

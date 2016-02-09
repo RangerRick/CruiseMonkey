@@ -17,6 +17,12 @@
 				Announcements
 				<i class="icon cm-icon-flag"></i>
 			</ion-item>
+			<ion-item class="item item-icon-right" href="#/tab/info/forums">
+				<span ng-if="!tagForums" class="read"></span>
+				<span ng-if="tagForums" class="unread"></span>
+				Forums
+				<i class="icon ion-quote"></i>
+			</ion-item>
 			<ion-item class="item item-icon-right" href="#/tab/info/amenities">
 				<span class="read"></span>
 				Amenities
@@ -27,13 +33,6 @@
 				Deck Maps
 				<i class="icon cm-icon-map"></i>
 			</ion-item>
-			<!--
-			<ion-item class="item item-icon-right" href="#/tab/info/forums">
-				<span class="read"></span>
-				Forums
-				<i class="icon ion-quote"></i>
-			</ion-item>
-			-->
 			<ion-item class="item item-icon-right" href="#/tab/info/karaoke">
 				<span class="read"></span>
 				Karaoke Song List

@@ -1,3 +1,24 @@
+<a name="2016.1.0"></a>
+## 2016.1.0
+
+2016.1.0 is intended to be the second major release of CruiseMonkey for JoCo Cruise 2016.
+
+#### Changes
+
+* build 40401
+  * fix crash on Android browsers that don't support
+    Object.assign API
+
+* build 40400
+  * read-only support for forums
+  * tweet stream filtering ("All", "@mentions", "Favorites")
+    (note, this only works on cm.raccoonfink.com at the moment)
+  * only allow "send" when an edited tweet has actually been
+    modified
+  * make font sizes match everywhere
+  * image popup uses local cache rather than redownloading
+  * viewing a seamail updates the notification dot immediately
+
 <a name="2016.0.1"></a>
 ## 2016.0.1
 

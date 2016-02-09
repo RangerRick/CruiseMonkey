@@ -5,9 +5,9 @@
 	<ion-content class="seamail" delegate-handle="seamail">
 		<ion-list>
 			<ion-item ng-repeat="message in seamail.messages track by message.hash" class="item item-avatar item-text-wrap">
-				<img cm-cache img-src="{{twitarrRoot}}api/v2/user/photo/{{message.author}}" title="{{message.author_display_name}}" ng-if="twitarrRoot &amp;&amp; message.author" />
-				<div class="display-name">{{message.author_display_name}} <span class="display-handle">@{{message.author}}</span></div>
-				<p ng-bind-html="message.text"></p>
+				<cm-user-avatar username="message.author"></cm-user-avatar>
+				<cm-user-display username="message.author"></cm-user-display>
+				<p class="description" ng-bind-html="message.text"></p>
 				<div class="timestamp">{{message.timestamp.fromNow()}}</div>
 			</ion-item>
 		</ion-list>

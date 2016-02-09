@@ -107,13 +107,13 @@ $tabs-dark-bg:                    $cmDetailBackground;
 $tabs-dark-border:                $cmDetailBackgroundAlternate;
 $tabs-dark-text:                  white;
 
-.tabs-cm .tab-item.has-badge span.badge {
+.tabs .tab-item.has-badge span.badge {
 	color: transparent;
 	background-color: transparent;
 	opacity: 1;
 	top: 8%;
 }
-.tabs-cm .tab-item.has-badge span.badge:after {
+.tabs .tab-item.has-badge span.badge:after {
 	content: "●";
 	font-size: 24px;
 	color: red;
@@ -331,6 +331,8 @@ ion-popover-view.fit ion-content {
 	background-color: transparent;
 	.item {
 		background-color: transparent;
+		border-left: none;
+		border-right: none;
 	}
 }
 
@@ -463,9 +465,26 @@ ion-popover-view.fit ion-content {
 }
 
 .forums {
-	.last-reply {
-		opacity:.4;
-		font-size: $font-size-small;
+	.item-divider {
+		h2 {
+			color: $cmDetailForeground;
+		}
+	}
+	.item {
+		.title {
+			font-family: $headings-font-family;
+			font-weight: $headings-font-weight;
+			line-height: $headings-line-height;
+			font-size: $font-size-large;
+		}
+		.last-reply {
+			opacity:.6;
+			font-size: $font-size-base;
+		}
+		.post-photo {
+			width: 100%;
+			max-width: 400px;
+		}
 	}
 }
 .karaoke {
@@ -624,7 +643,7 @@ ion-popover-view.fit ion-content {
 
 .seamail {
 	p {
-		font-size: $font-size-base;
+		font-size: $font-size-large;
 		color: $cmForeground;
 	}
 	.users {
@@ -842,7 +861,7 @@ ion-item.item.item-text-wrap.list-entry.unofficial.even {
 
 .summary {
 	font-size: $font-size-large;
-	font-weight: bold;
+	font-weight: 900;
 	padding: 2px;
 	margin-right: 62px;
 	min-height: 32px;
@@ -862,7 +881,7 @@ ion-item.item.item-text-wrap.list-entry.unofficial.even {
 .description {
 	margin-top: 12px;
 	padding: 2px;
-	font-size: $font-size-base;
+	font-size: $font-size-large;
 }
 
 .name {

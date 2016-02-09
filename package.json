@@ -1,9 +1,9 @@
 {
   "name": "CruiseMonkey",
-  "version": "2016.0.1",
+  "version": "2016.1.0",
   "minSdk": "14",
   "description": "Keep Track of Your Cruise",
-  "build": 40380,
+  "build": 40402,
   "dependencies": {
     "feedparser": "*",
     "googleapis": "*",
@@ -11,11 +11,11 @@
     "request": "*"
   },
   "devDependencies": {
-    "assert": "^1.3.0",
+    "assert-plus": "^1.0.0",
     "bower": "*",
     "commonmark": "*",
     "cordova-android": "*",
-    "cordova-config-utils": "^2.1.0",
+    "cordova-config-utils": "git+https://github.com/RangerRick/cordova-config-utils.git#master",
     "css-loader": "^0.23.1",
     "eslint": "^1.10.3",
     "eslint-friendly-formatter": "^1.2.2",
@@ -25,30 +25,21 @@
     "file-loader": "^0.8.5",
     "fs.extra": "*",
     "ghooks": "^1.0.3",
-    "gulp-jasmine": "*",
-    "gulp-jshint": "*",
-    "gulp-karma": "*",
     "html-loader": "^0.4.0",
     "imports-loader": "^0.6.5",
     "jsdom": "^8.0.2",
     "jshint": "*",
     "jshint-stylish": "*",
-    "karma": "*",
-    "karma-chrome-launcher": "*",
-    "karma-firefox-launcher": "*",
-    "karma-jasmine": "*",
-    "karma-phantomjs-launcher": "*",
-    "karma-safari-launcher": "*",
-    "karma-webdriver-launcher": "*",
     "line-reader": "*",
-    "lodash": "^3.10.1",
+    "lodash": "^4.3.0",
     "mocha": "^2.4.5",
     "moment": "^2.11.2",
     "moment-timezone": "^0.5.0",
     "ng-annotate-webpack-plugin": "^0.1.2",
     "ngtemplate-loader": "^1.3.1",
     "node-sass": "^3.4.2",
-    "phantomjs": "^1.9.19",
+    "phantomjs": "^2.1.3",
+    "phantomjs-prebuilt": "^2.1.3",
     "sass-loader": "^3.1.2",
     "script-loader": "^0.6.1",
     "shelljs": "*",
@@ -85,9 +76,10 @@
     "cordova-plugin-filepath",
     "cordova-plugin-chrome-apps-system-memory",
     "https://github.com/RangerRick/cordova-HTTP.git",
-    "com-sarriaroman-photoviewer",
+    "https://github.com/RangerRick/photoviewer.git#master",
     "cordova-plugin-crosswalk-webview",
-    "https://github.com/christocracy/cordova-plugin-background-fetch.git"
+    "https://github.com/christocracy/cordova-plugin-background-fetch.git",
+    "https://github.com/RangerRick/cordova-plugin-simple-image-picker.git"
   ],
   "cordovaPlatforms": [
     {
@@ -102,7 +94,7 @@
     },
     {
       "platform": "android",
-      "version": "5.0.0",
+      "version": "5.1.0",
       "locator": "android"
     }
   ],
@@ -114,11 +106,12 @@
     }
   },
   "scripts": {
-    "build": "webpack --colors --display-error-details && ionic build",
-    "prepare": "webpack --colors --display-error-details && ionic prepare",
+    "setup": "bower install && npm install && ionic state reset && npm run lint && npm run test",
+    "build": "npm run lint && npm run test && webpack --colors --display-error-details && ionic build",
+    "prepare": "npm run lint && npm run test && webpack --colors --display-error-details && ionic prepare",
     "increment": "bin/update-build-number.js",
-    "release": "webpack --colors --display-error-details --env=production && ionic build --release && bin/sign-android.sh",
-    "verbose-build": "webpack --debug --colors --display-modules --display-chunks --display-error-details --display-origins --display-reasons",
+    "release": "npm run lint && npm run test && webpack --colors --display-error-details --env=production && ionic build --release && bin/sign-android.sh",
+    "verbose-build": "npm run lint && npm run test && webpack --debug --colors --display-modules --display-chunks --display-error-details --display-origins --display-reasons",
     "genymotion": "ionic run -slc android",
     "android": "ionic emulate -slc android",
     "ios": "ionic emulate -slc --address=localhost ios",

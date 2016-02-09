@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<widget android-versionCode="40380" id="com.raccoonfink.cruisemonkey" ios-CFBundleVersion="40380" version="2016.0.1" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0" xmlns:android="http://schemas.android.com/apk/res/android">
+<widget android-versionCode="40402" id="com.raccoonfink.cruisemonkey" ios-CFBundleVersion="40402" version="2016.1.0" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0" xmlns:android="http://schemas.android.com/apk/res/android">
   <name>CruiseMonkey</name>
   <description>Keep Track of Your Cruise</description>
   <author email="rangerrick@befunk.com" href="https://github.com/RangerRick/CruiseMonkey">Benjamin Reed</author>
@@ -27,6 +27,9 @@
   <preference name="FadeSplashScreenDuration" value="1"/>
   <preference name="android-minSdkVersion" value="14"/>
   <preference name="android-targetSdkVersion" value="19"/>
+  <preference name="windows-target-version" value="8.1"/>
+  <preference name="windows-phone-target-version" value="8.1"/>
+  <preference name="WindowsDefaultUriPrefix" value="ms-appx://"/>
   <preference name="xwalkVersion" value="15+"/>
   <preference name="xwalkCommandLine" value="--disable-pull-to-refresh-effect"/>
   <preference name="xwalkMode" value="embedded"/>
