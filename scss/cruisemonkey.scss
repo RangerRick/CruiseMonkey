@@ -578,6 +578,7 @@ ion-popover-view.fit ion-content {
 .twitarr {
 	.tweet-input {
 		textarea {
+			font-size: $font-size-large;
 			background-color: transparent;
 			width: 100%;
 		}
@@ -692,7 +693,7 @@ ion-popover-view.fit ion-content {
 }
 
 .seamail {
-	p {
+	p, textarea {
 		font-size: $font-size-large;
 		color: $cmForeground;
 	}
