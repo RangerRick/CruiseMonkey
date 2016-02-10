@@ -2,10 +2,10 @@
   "name": "CruiseMonkey",
   "private": "true",
   "dependencies": {
-    "angular": "1.4.9",
-    "angular-animate": "~1.4.9",
-    "angular-mocks": "1.4.9",
-    "angular-sanitize": "~1.4.9",
+    "angular": "1.5.0",
+    "angular-animate": "~1.5.0",
+    "angular-mocks": "1.5.0",
+    "angular-sanitize": "~1.5.0",
     "angular-ui-router": "~0.2.15",
     "angular-uuid4": "~0.3.1",
     "base64": "~0.3.0",
@@ -31,8 +31,8 @@
   },
   "resolutions": {
     "angular-ui-router": "~0.2.15",
-    "angular": "1.4.9",
-    "angular-animate": "~1.4.9",
-    "angular-sanitize": "~1.4.9"
+    "angular": "1.5.0",
+    "angular-animate": "~1.5.0",
+    "angular-sanitize": "~1.5.0"
   }
 }
