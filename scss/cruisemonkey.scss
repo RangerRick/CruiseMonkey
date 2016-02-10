@@ -237,6 +237,56 @@ $item-padding-orig: 16px;
 
 .cm-directive {
 	z-index: $z-index-view-above;
+
+	&.deck {
+		display: block;
+		width: 95%;
+		max-width: 500px;
+		margin: auto;
+		margin-bottom: 10px;
+		padding: 10px;
+		user-drag: none;
+		-moz-user-select: none;
+		-webkit-user-drag: none;
+	}
+}
+
+.amenities {
+	/*
+	.summary {
+		margin-right: 62px;
+	}
+	*/
+	.description {
+		padding-right: 20px;
+	}
+}
+
+.amenity-deck {
+	#deck-dot {
+		border-radius: 50%;
+		width: 10px;
+		height: 10px;
+		margin-top: -5px;
+		margin-left: 5px;
+		position: absolute;
+		z-index: $z-index-bar;
+	}
+	.deck-title {
+		padding: 10px;
+		font-size: $font-size-large;
+		font-weight: bold;
+	}
+	.deck-description {
+		padding: 10px;
+		font-size: $font-size-base;
+	}
+	&.popover {
+		width: 200px;
+		&.wide {
+			width: 300px;
+		}
+	}
 }
 
 .announcements {
@@ -925,18 +975,6 @@ ion-item.item.item-text-wrap.list-entry.unofficial.even {
 		&.has-tabs {
 			bottom: $tabs-height + $pager-height;
 		}
-	}
-
-	img {
-		display: block;
-		width: 90%;
-		max-width: 500px;
-		margin: auto;
-		margin-bottom: 10px;
-		padding: 10px;
-		user-drag: none;
-		-moz-user-select: none;
-		-webkit-user-drag: none;
 	}
 }
 
