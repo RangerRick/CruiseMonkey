@@ -582,19 +582,6 @@ ion-popover-view.fit ion-content {
 			background-color: transparent;
 			width: 100%;
 		}
-		/*
-		.button-emoji {
-			min-width: 24px;
-			min-height: 24px;
-			width: 32px;
-			height: 32px;
-			border: 0;
-			padding: 0;
-		}
-		.button-emoji > i {
-			line-height: 24px;
-		}
-		*/
 	}
 	.tweet-reply {
 		opacity: .4;
@@ -606,6 +593,7 @@ ion-popover-view.fit ion-content {
 	}
 	.tweet-text {
 		font-size: $font-size-large;
+		white-space: pre-wrap;
 	}
 	.timeframe {
 		opacity:.6;
