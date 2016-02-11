@@ -262,6 +262,10 @@ $item-padding-orig: 16px;
 			opacity: .8;
 		}
 	}
+
+	&.user {
+		color: $cmForegroundAlternate;
+	}
 }
 
 .amenities {
