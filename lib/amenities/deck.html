@@ -1,7 +1,7 @@
 <ion-view view-title="Deck" class="amenity-deck" cache-view="false">
 	<ion-nav-title>Deck {{deck}}</ion-nav-title>
 	<!--  on-scroll="locateMapItem()" -->
-	<ion-content ion-sticky delegate-handle="amenity-deck">
-		<cm-deck deck="{{deck}}" show-marker="amenityId"></cm-deck>
+	<ion-content delegate-handle="amenity-deck">
+		<cm-deck deck="{{deck}}" show-marker="amenityId" scroll-delegate="amenity-deck"></cm-deck>
 	</ion-content>
 </ion-view>

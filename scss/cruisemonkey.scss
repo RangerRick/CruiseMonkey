@@ -451,6 +451,11 @@ ion-popover-view.fit ion-content {
 }
 
 .user-detail {
+	width: 250px;
+	.room {
+		color: $cmForegroundAlternate;
+		text-decoration: underline;
+	}
 	.profile-info {
 		padding: 10px;
 		img {
