@@ -13,6 +13,7 @@
   * fix <br> showing up when editing a tweet with carriage
     returns
   * fix display of usernames that were posted in mixed case
+  * don't allow updating profile while photo is uploading
 
 * build 40402
   * fix android image picker once and for all (hopefully) by
