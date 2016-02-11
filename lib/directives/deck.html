@@ -1,0 +1,5 @@
+<div class="cm-directive deck">
+	<img ng-src="{{url}}" ng-attr-usermap="#deck-{{deck}}-map" ng-attr-id="deck-{{deck}}-image">
+	<div class="deck-dot" ng-style="dotStyle" ng-if="showMarker"></div>
+	<ng-include src="getMap(deck)" ng-if="showMarker"></ng-include>
+</div>

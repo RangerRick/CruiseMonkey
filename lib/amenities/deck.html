@@ -2,8 +2,6 @@
 	<ion-nav-title>Deck {{deck}}</ion-nav-title>
 	<!--  on-scroll="locateMapItem()" -->
 	<ion-content ion-sticky delegate-handle="amenity-deck">
-		<cm-deck deck="{{deck}}" ng-attr-usemap="#deck-{{deck}}-map" ng-attr-id="deck-{{deck}}-image"></cm-deck>
-		<div id="deck-dot" ng-style="dotStyle"></div>
-		<ng-include src="getMap(deck)"></ng-include>
+		<cm-deck deck="{{deck}}" show-marker="amenityId"></cm-deck>
 	</ion-content>
 </ion-view>
