@@ -4,6 +4,16 @@
 2016.1.0 is intended to be the second major release of CruiseMonkey for JoCo Cruise 2016.
 
 #### Changes
+* build 40403
+  * click an amenity, and see its location in the deck map
+  * if a user has configured room number, click it in the
+    user detail popup to see their location in the deck map
+  * fixed an issue with duplicate users in seamail
+  * make text input font size larger
+  * fix <br> showing up when editing a tweet with carriage
+    returns
+  * fix display of usernames that were posted in mixed case
+
 * build 40402
   * fix android image picker once and for all (hopefully) by
     writing my own stupid plugin rather than relying on the
