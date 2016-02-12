@@ -17,9 +17,8 @@
 				Announcements
 				<i class="icon cm-icon-flag"></i>
 			</ion-item>
-			<ion-item class="item item-icon-right" href="#/tab/info/forums">
-				<span ng-if="!tagForums" class="read"></span>
-				<span ng-if="tagForums" class="unread"></span>
+			<ion-item class="item item-icon-right" ng-click="openForums()">
+				<span class="read"></span>
 				Forums
 				<i class="icon ion-quote"></i>
 			</ion-item>
