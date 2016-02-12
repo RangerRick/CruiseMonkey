@@ -79,7 +79,8 @@
     "https://github.com/RangerRick/photoviewer.git#master",
     "cordova-plugin-crosswalk-webview",
     "https://github.com/christocracy/cordova-plugin-background-fetch.git",
-    "https://github.com/RangerRick/cordova-plugin-simple-image-picker.git"
+    "https://github.com/RangerRick/cordova-plugin-simple-image-picker.git",
+    "https://github.com/EddyVerbruggen/Toast-PhoneGap-Plugin.git"
   ],
   "cordovaPlatforms": [
     {
