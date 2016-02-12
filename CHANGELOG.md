@@ -4,6 +4,12 @@
 2016.1.0 is intended to be the second major release of CruiseMonkey for JoCo Cruise 2016.
 
 #### Changes
+* build 40404
+  * forums link now just opens twit-arr forums, since I
+    didn't have time to implement forum posting before
+    the cruise
+  * fixed a seamail refresh bug
+
 * build 40403
   * click an amenity, and see its location in the deck map
   * if a user has configured room number, click it in the
