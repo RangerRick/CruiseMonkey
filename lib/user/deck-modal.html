@@ -1,0 +1,11 @@
+<ion-modal-view cache-view="false">
+	<ion-header-bar class="bar bar-dark">
+		<div class="buttons">
+			<button class="button button-clear button-yellow" ng-click="closeModal($event)">Close</button>
+		</div>
+		<h1 class="title">Deck {{deck}}</h1>
+	</ion-header-bar>
+	<ion-content delegate-handle="deck-modal">
+		<cm-deck deck="{{deck}}" show-marker="amenityId" scroll-delegate="deck-modal"></cm-deck>
+	</ion-content>
+</ion-modal-view>

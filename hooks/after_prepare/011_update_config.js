@@ -124,7 +124,7 @@ var platformConfig = (function() {
     getConfigFilesByTargetAndParent: function(platform) {
       var configFileData = this.getConfigXml().findall('platform[@name=\'' + platform + '\']/config-file');
 
-      return _.indexBy(configFileData, function(item) {
+      return _.keyBy(configFileData, function(item) {
         var parent = item.attrib.parent;
         //if parent attribute is undefined /* or */, set parent to top level elementree selector
         if (!parent || parent === '/*' || parent === '*/') {
@@ -292,7 +292,7 @@ var platformConfig = (function() {
       var xcodeProject = xcode.project(targetFile);
       xcodeProject.parse(function(err) {
         if (err) {
-          throw new Error('Failed to parse ' + targetFile + ': ' + err);
+          throw new Error('Failed to parse ' + targetFile + ': ' + JSON.stringify(err));
         }
         _.each(configItems, function(item) {
           if (item.data.attrib && item.data.attrib.name && item.data.attrib.value) {

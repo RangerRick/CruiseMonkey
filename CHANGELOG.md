@@ -4,6 +4,32 @@
 2016.1.0 is intended to be the second major release of CruiseMonkey for JoCo Cruise 2016.
 
 #### Changes
+* build 40404
+  * forums link now just opens twit-arr forums, since I
+    didn't have time to implement forum posting before
+    the cruise
+  * fixed a seamail refresh bug
+
+* build 40403
+  * click an amenity, and see its location in the deck map
+  * if a user has configured room number, click it in the
+    user detail popup to see their location in the deck map
+  * fixed an issue with duplicate users in seamail
+  * make text input font size larger
+  * fix <br> showing up when editing a tweet with carriage
+    returns
+  * fix display of usernames that were posted in mixed case
+  * don't allow updating profile while photo is uploading
+
+* build 40402
+  * fix android image picker once and for all (hopefully) by
+    writing my own stupid plugin rather than relying on the
+    cordova camera plugin
+  * fix likes not showing as liked on the tweet detail view
+
+* build 40401
+  * fix crash on Android browsers that don't support
+    Object.assign API
 
 * build 40400
   * read-only support for forums

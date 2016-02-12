@@ -3,7 +3,7 @@
   "version": "2016.1.0",
   "minSdk": "14",
   "description": "Keep Track of Your Cruise",
-  "build": 40400,
+  "build": 40404,
   "dependencies": {
     "feedparser": "*",
     "googleapis": "*",
@@ -15,12 +15,12 @@
     "bower": "*",
     "commonmark": "*",
     "cordova-android": "*",
-    "cordova-config-utils": "^2.1.0",
+    "cordova-config-utils": "git+https://github.com/RangerRick/cordova-config-utils.git#master",
     "css-loader": "^0.23.1",
     "eslint": "^1.10.3",
     "eslint-friendly-formatter": "^1.2.2",
     "eslint-loader": "^1.2.0",
-    "exports-loader": "^0.6.2",
+    "exports-loader": "^0.6.3",
     "expose-loader": "^0.7.1",
     "file-loader": "^0.8.5",
     "fs.extra": "*",
@@ -31,7 +31,7 @@
     "jshint": "*",
     "jshint-stylish": "*",
     "line-reader": "*",
-    "lodash": "^4.2.1",
+    "lodash": "^4.3.0",
     "mocha": "^2.4.5",
     "moment": "^2.11.2",
     "moment-timezone": "^0.5.0",
@@ -78,7 +78,9 @@
     "https://github.com/RangerRick/cordova-HTTP.git",
     "https://github.com/RangerRick/photoviewer.git#master",
     "cordova-plugin-crosswalk-webview",
-    "https://github.com/christocracy/cordova-plugin-background-fetch.git"
+    "https://github.com/christocracy/cordova-plugin-background-fetch.git",
+    "https://github.com/RangerRick/cordova-plugin-simple-image-picker.git",
+    "https://github.com/EddyVerbruggen/Toast-PhoneGap-Plugin.git"
   ],
   "cordovaPlatforms": [
     {
@@ -93,7 +95,7 @@
     },
     {
       "platform": "android",
-      "version": "5.0.0",
+      "version": "5.1.0",
       "locator": "android"
     }
   ],
@@ -105,9 +107,9 @@
     }
   },
   "scripts": {
-    "setup": "bower install && npm install && ionic state reset && npm run lint && npm run test",
-    "build": "npm run lint && npm run test && webpack --colors --display-error-details && ionic build",
-    "prepare": "npm run lint && npm run test && webpack --colors --display-error-details && ionic prepare",
+    "setup": "bower install && npm install && ionic state reset",
+    "build": "webpack --colors --display-error-details && ionic build",
+    "prepare": "webpack --colors --display-error-details && ionic prepare",
     "increment": "bin/update-build-number.js",
     "release": "npm run lint && npm run test && webpack --colors --display-error-details --env=production && ionic build --release && bin/sign-android.sh",
     "verbose-build": "npm run lint && npm run test && webpack --debug --colors --display-modules --display-chunks --display-error-details --display-origins --display-reasons",

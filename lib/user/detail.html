@@ -1,17 +1,8 @@
 <ion-popover-view class="fit user-detail">
-	<!--
-	<ion-header-bar class="bar-dark">
-		<h1 class="title">{{user.display_name}}</h1>
-		<div class="buttons">
-			<button class="button yellow icon ion-close-circled" ng-click="closeModal()"></button>
-		</div>
-	</ion-header-bar>
-	-->
 	<ion-content scroll="false" class="profile-info" delegate-handle="user-info">
 		<div class="row"><div class="col col-center"><img cm-cache img-src="{{twitarrRoot}}api/v2/user/photo/{{user.username}}" ng-if="twitarrRoot &amp;&amp; user.username" /></div></div>
-		<div class="row" ng-if="user.display_name"><div class="col col-center"><p class="title">{{user.display_name}}</p></div></div>
-		<div class="row"><div class="col col-center"><p>@{{user.username}}</p></div></div>
-		<div class="row" ng-if="user.room_number &amp;&amp; user.room_number > 0"><div class="col col-center"><p>Room # {{user.room_number}}</p></div></div>
+		<div class="row"><cm-user-display class="col col-center" username="user.username"></cm-user></div>
+		<div class="row" ng-if="user.room_number &amp;&amp; user.room_number > 0"><div class="col col-center"><p class="room" ng-click="openRoom()">Room # {{user.room_number}}</p></div></div>
 		<div class="row" ng-if="user.username !== me.username"><div class="col col-center"><button ng-click="sendSeamail(user.username, $event)" class="button button-navy">Send Seamail</button></div></div>
 	</ion-content>
 </ion-popover-view>

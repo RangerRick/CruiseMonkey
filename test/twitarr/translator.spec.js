@@ -32,6 +32,11 @@ describe('Twit-Arr Translator', function() {
 			assert.equal(translator.decode('this &amp;amp; that'), 'this &amp; that');
 			assert.equal(translator.format('this &amp;amp; that'), 'this &amp; that');
 		});
+
+		it('handles <br> properly', function() {
+			assert.equal(translator.decode('this \'quoted\' thing<br><br />yeah'), 'this \'quoted\' thing<br><br />yeah');
+			assert.equal(translator.format('this \'quoted\' thing<br><br />yeah'), 'this \'quoted\' thing<br><br />yeah');
+		});
 	});
 
 	describe('emoji handling', function() {

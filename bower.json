@@ -2,10 +2,10 @@
   "name": "CruiseMonkey",
   "private": "true",
   "dependencies": {
-    "angular": "1.4.8",
-    "angular-animate": "~1.4.8",
-    "angular-mocks": "1.4.8",
-    "angular-sanitize": "~1.4.8",
+    "angular": "1.5.0",
+    "angular-animate": "~1.5.0",
+    "angular-mocks": "1.5.0",
+    "angular-sanitize": "~1.5.0",
     "angular-ui-router": "~0.2.15",
     "angular-uuid4": "~0.3.1",
     "base64": "~0.3.0",
@@ -27,13 +27,12 @@
     "angular-cache": "~4.5.0",
     "ng-file-model": "*",
     "angular-file-upload": "~2.2.0",
-    "angular-promise-queue": "~1.0.1",
     "moment-timezone": "^0.5.0"
   },
   "resolutions": {
     "angular-ui-router": "~0.2.15",
-    "angular": "1.4.8",
-    "angular-animate": "~1.4.8",
-    "angular-sanitize": "~1.4.8"
+    "angular": "1.5.0",
+    "angular-animate": "~1.5.0",
+    "angular-sanitize": "~1.5.0"
   }
 }

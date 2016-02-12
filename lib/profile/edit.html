@@ -50,7 +50,7 @@
 					</label>
 				</ion-item>
 				<ion-item class="text-right">
-					<button class="button button-dark" ng-disabled="form.$invalid || !isModified()">Save</button>
+					<button class="button button-dark" ng-disabled="form.$invalid || !isModified() || photoUploading">Save</button>
 					<button class="button button-assertive" ng-click="reset($event)" ng-disabled="form.$invalid || !isModified()" ng-click="reset($event)">Reset</button>
 				</ion-item>
 			</form>

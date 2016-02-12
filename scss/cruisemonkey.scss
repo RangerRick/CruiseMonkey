@@ -237,6 +237,64 @@ $item-padding-orig: 16px;
 
 .cm-directive {
 	z-index: $z-index-view-above;
+
+	&.deck {
+		img {
+			display: block;
+			width: 95%;
+			max-width: 500px;
+			margin: auto;
+			margin-bottom: 10px;
+			padding: 10px;
+			user-drag: none;
+			-moz-user-select: none;
+			-webkit-user-drag: none;
+		}
+
+		div.deck-dot {
+			border-radius: 50%;
+			width: 50px;
+			height: 50px;
+			margin-top: -25px;
+			margin-left: -15px;
+			position: absolute;
+			z-index: $z-index-bar;
+			opacity: .8;
+		}
+	}
+
+	&.user {
+		color: $cmForegroundAlternate;
+	}
+}
+
+.amenities {
+	/*
+	.summary {
+		margin-right: 62px;
+	}
+	*/
+	.description {
+		padding-right: 20px;
+	}
+}
+
+.amenity-deck {
+	.deck-title {
+		padding: 10px;
+		font-size: $font-size-large;
+		font-weight: bold;
+	}
+	.deck-description {
+		padding: 10px;
+		font-size: $font-size-base;
+	}
+	&.popover {
+		width: 200px;
+		&.wide {
+			width: 300px;
+		}
+	}
 }
 
 .announcements {
@@ -393,6 +451,11 @@ ion-popover-view.fit ion-content {
 }
 
 .user-detail {
+	width: 250px;
+	.room {
+		color: $cmForegroundAlternate;
+		text-decoration: underline;
+	}
 	.profile-info {
 		padding: 10px;
 		img {
@@ -528,22 +591,10 @@ ion-popover-view.fit ion-content {
 .twitarr {
 	.tweet-input {
 		textarea {
+			font-size: $font-size-large;
 			background-color: transparent;
 			width: 100%;
 		}
-		/*
-		.button-emoji {
-			min-width: 24px;
-			min-height: 24px;
-			width: 32px;
-			height: 32px;
-			border: 0;
-			padding: 0;
-		}
-		.button-emoji > i {
-			line-height: 24px;
-		}
-		*/
 	}
 	.tweet-reply {
 		opacity: .4;
@@ -555,6 +606,7 @@ ion-popover-view.fit ion-content {
 	}
 	.tweet-text {
 		font-size: $font-size-large;
+		white-space: pre-wrap;
 	}
 	.timeframe {
 		opacity:.6;
@@ -642,7 +694,7 @@ ion-popover-view.fit ion-content {
 }
 
 .seamail {
-	p {
+	p, textarea {
 		font-size: $font-size-large;
 		color: $cmForeground;
 	}
@@ -925,18 +977,6 @@ ion-item.item.item-text-wrap.list-entry.unofficial.even {
 		&.has-tabs {
 			bottom: $tabs-height + $pager-height;
 		}
-	}
-
-	img {
-		display: block;
-		width: 90%;
-		max-width: 500px;
-		margin: auto;
-		margin-bottom: 10px;
-		padding: 10px;
-		user-drag: none;
-		-moz-user-select: none;
-		-webkit-user-drag: none;
 	}
 }
 
