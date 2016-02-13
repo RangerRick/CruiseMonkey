@@ -1,4 +1,4 @@
-<ion-popover-view class="fit user-detail">
+<ion-popover-view class="fit user-detail" ng-click="closeUserDetail($event)">
 	<ion-content scroll="false" class="profile-info" delegate-handle="user-info">
 		<div class="row"><div class="col col-center"><img cm-cache img-src="{{twitarrRoot}}api/v2/user/photo/{{user.username}}" ng-if="twitarrRoot &amp;&amp; user.username" /></div></div>
 		<div class="row"><cm-user-display class="col col-center" username="user.username"></cm-user></div>

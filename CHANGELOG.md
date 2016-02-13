@@ -4,6 +4,15 @@
 2016.1.0 is intended to be the second major release of CruiseMonkey for JoCo Cruise 2016.
 
 #### Changes
+* build 40406
+  * any part of the user popup is now clickable to make
+    it go away
+  * fix a problem where subsequent new seamails would always
+    include the last user you mailed
+
+* build 40405
+  * open forum post in the system browser
+
 * build 40404
   * forums link now just opens twit-arr forums, since I
     didn't have time to implement forum posting before
