@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <link href='https://fonts.googleapis.com/css?family=Chivo:900' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/github-dark.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/print.css" media="print">
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <title>Cruisemonkey by RangerRick</title>
+  </head>
+
+  <body>
+    <div id="container">
+      <div class="inner">
+
+        <header>
+          <h1>Cruisemonkey</h1>
+          <h2>CruiseMonkey Source Code</h2>
+        </header>
+
+        <section id="downloads" class="clearfix">
+          <a href="https://github.com/RangerRick/CruiseMonkey/zipball/master" id="download-zip" class="button"><span>Download .zip</span></a>
+          <a href="https://github.com/RangerRick/CruiseMonkey/tarball/master" id="download-tar-gz" class="button"><span>Download .tar.gz</span></a>
+          <a href="https://github.com/RangerRick/CruiseMonkey" id="view-on-github" class="button"><span>View on GitHub</span></a>
+        </section>
+
+        <hr>
+
+        <section id="main_content">
+          <p><a href="https://waffle.io/RangerRick/CruiseMonkey"><img src="https://badge.waffle.io/RangerRick/CruiseMonkey.png?label=ready&amp;title=Ready" alt="Stories in Ready"></a>
+<a href="https://travis-ci.org/RangerRick/CruiseMonkey"><img src="https://travis-ci.org/RangerRick/CruiseMonkey.png" alt="Build Status"></a></p>
+
+<h1>
+<a id="cruisemonkey" class="anchor" href="#cruisemonkey" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>CruiseMonkey</h1>
+
+<p>CruiseMonkey is an HTML5 app for use on <a href="http://jococruisecrazy.com/">JoCo Cruise Crazy</a>.  It is designed to be used while on the cruise for viewing and organizing events, getting information about the ship, and more.</p>
+
+<h1>
+<a id="requirements" class="anchor" href="#requirements" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Requirements</h1>
+
+<ul>
+<li>iOS: Any device supporting iOS 6 or higher</li>
+<li>Android: Any device supporting Android 4.0.3 or higher</li>
+<li>Web: A browser capable of modern HTML5</li>
+</ul>
+
+<h1>
+<a id="download" class="anchor" href="#download" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Download</h1>
+
+<p>The latest release version of CruiseMonkey is available in the following app stores:</p>
+
+<ul>
+<li><a href="https://itunes.apple.com/us/app/cruisemonkey/id597303284?mt=8">iOS App Store</a></li>
+<li><a href="http://www.amazon.com/Benjamin-Reed-CruiseMonkey/dp/B00BBOMRDW">Amazon Apps for Android</a></li>
+<li><a href="https://play.google.com/store/apps/details?id=com.raccoonfink.cruisemonkey&amp;hl=en_GB">Google Play Store</a></li>
+</ul>
+
+<h1>
+<a id="twit-arr" class="anchor" href="#twit-arr" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Twit-Arr</h1>
+
+<p>CruiseMonkey works just fine in read-only mode, but if you want to be able to create and favorite events, as well as use some of the other features for CruiseMonkey, you must log in with a twit-arr account <a href="https://cm.raccoonfink.com/">on my test Twit-Arr server first!</a></p>
+
+<h1>
+<a id="beta-testing" class="anchor" href="#beta-testing" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Beta Testing</h1>
+
+<ul>
+<li>Android (Google Play): Just follow <a href="https://play.google.com/apps/testing/com.raccoonfink.cruisemonkey">this link to opt-in to betas</a> on the Google Play store.</li>
+<li>iOS: <a href="mailto:cruisemonkey@raccoonfink.com">email me</a> and I will send you an invite for iOS testing.  The limit for testers is now 2000 users, so there is no worry about having too many this year!</li>
+</ul>
+
+<h1>
+<a id="bugs-and-enhancement-requests" class="anchor" href="#bugs-and-enhancement-requests" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Bugs and Enhancement Requests</h1>
+
+<h2>
+<a id="opening-an-issue-bug-or-enhancement" class="anchor" href="#opening-an-issue-bug-or-enhancement" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Opening an Issue (Bug or Enhancement)</h2>
+
+<ul>
+<li>Twit-Arr: If you have found a bug or have an enhancement request for twit-arr, report it at the <a href="https://github.com/walkeriniraq/twitarr/issues">Twit-Arr github page</a>.  You will need to create a GitHub account to do so.</li>
+<li>CruiseMonkey: Bugs and enhancement requests can be reported at the <a href="https://github.com/RangerRick/CruiseMonkey/issues">CruiseMonkey github page</a>.  You will need to create a GitHub account to do so.</li>
+</ul>
+
+<h1>
+<a id="quick-start-developing" class="anchor" href="#quick-start-developing" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Quick-Start Developing</h1>
+
+<h2>
+<a id="pre-reqs" class="anchor" href="#pre-reqs" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Pre-reqs</h2>
+
+<p>Before you can build CruiseMonkey, you must first install <a href="http://nodejs.org/">Node.JS</a>.  Once you have done that, run the following commands to set up your environment:</p>
+
+<ol>
+<li>Install "global" commands through NPM: <code>npm install -g ionic cordova bower webpack webpack-cli</code>
+</li>
+<li>Install local node requirements through NPM: <code>npm install</code>
+</li>
+<li>Install JavaScript browser requirements through Bower: <code>bower install</code>
+</li>
+<li>Set up one or more platforms: <code>cordova platform add browser</code> -- see <code>cordova platform</code> for all platforms you can add.  You will need to add any platforms to which you wish to target</li>
+</ol>
+
+<h2>
+<a id="compiling-the-javascript" class="anchor" href="#compiling-the-javascript" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Compiling the Javascript</h2>
+
+<ul>
+<li>To compile the JavaScript once, run: <code>npm run build</code>
+</li>
+<li>To continuously compile the JavaScript as you edit: <code>npm run watch</code>
+</li>
+</ul>
+
+<h2>
+<a id="starting-a-browser-session-for-this-project" class="anchor" href="#starting-a-browser-session-for-this-project" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Starting a browser session for this project</h2>
+
+<ol>
+<li>Ensure <a href="https://github.com/walkeriniraq/twitarr">Twit-arr</a> is running as well as MongoDb for it</li>
+<li>
+<code>ionic run browser</code>
+
+<ul>
+<li>you can exchange browser for the platform of your choice</li>
+</ul>
+</li>
+</ol>
+
+<h2>
+<a id="starting-an-emulator" class="anchor" href="#starting-an-emulator" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Starting an Emulator</h2>
+
+<ul>
+<li>Android: <code>npm run android</code>
+</li>
+<li>iOS: <code>npm run ios</code>
+</li>
+</ul>
+
+<p>Note that if you run <code>npm run watch</code> in one window and then start the emulator in another, you can live-edit code and it will auto-refresh in the emulator.</p>
+
+<h2>
+<a id="other-commands" class="anchor" href="#other-commands" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Other Commands</h2>
+
+<ul>
+<li>
+<code>npm run verbose-build</code>: Do a "verbose" webpack build, which can give more information on what is being done during compilation.</li>
+<li>
+<code>npm run genymotion</code>: Run the Android build in the Genymotion emulator rather than the (slower) Android emulator.  (Requires a Genymotion installation.)</li>
+<li>
+<code>npm run release</code>: Run webpack and build in release mode.  This makes a smaller, faster build with unreadable JavaScript.</li>
+</ul>
+
+<h1>
+<a id="contact" class="anchor" href="#contact" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Contact</h1>
+
+<ul>
+<li>E-Mail: You can reach me (Benjamin Reed) at <a href="mailto:cruisemonkey@raccoonfink.com">cruisemonkey@raccoonfink.com</a>.</li>
+<li>Slack: Join us in #twitarr and #cruisemonkey on <a href="http://cm.raccoonfink.com/slack/">Slack</a>.</li>
+<li>Forums: You can also discuss CruiseMonkey on the <a href="http://www.jonathancoulton.com/forums/index.php?p=/discussion/2448/twit-arr-and-cruisemonkey-2016">JoCo Forums</a>.</li>
+</ul>
+
+<h1>
+<a id="licensing" class="anchor" href="#licensing" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Licensing</h1>
+
+<p>CruiseMonkey by Benjamin Reed is licensed under the <a href="http://creativecommons.org/licenses/by-nc-sa/4.0/">Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License</a>.
+<img src="http://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png" alt="" title="Creative Commons by-nc-sa"></p>
+
+<h1>
+<a id="release-notes" class="anchor" href="#release-notes" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Release Notes</h1>
+
+<p>The release notes can now be found <a href="CHANGELOG.md">here</a>.</p>
+        </section>
+
+        <footer>
+          Cruisemonkey is maintained by <a href="https://github.com/RangerRick">RangerRick</a><br>
+          This page was generated by <a href="https://pages.github.com">GitHub Pages</a>. Tactile theme by <a href="https://twitter.com/jasonlong">Jason Long</a>.
+        </footer>
+
+        
+      </div>
+    </div>
+  </body>
+</html>
