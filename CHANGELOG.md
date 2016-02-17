@@ -1,3 +1,19 @@
+<a name="2016.1.1"></a>
+## 2016.1.1
+
+2016.1.0 is a small bugfix release that will probably not get released in time.  ;)
+
+#### Changes
+* build 40407
+  * last-minute updated karaoke list
+  * some small bugfixes to "Clear Cache"
+  * make sure we're logged in before trying anything
+    that requires login (fixes "Loading..." on Seamail
+    when you're not logged in)
+  * another fix for leftover usernames when posting
+    new Seamail twice during a single session
+  * fix for tweets not refreshing after changes
+
 <a name="2016.1.0"></a>
 ## 2016.1.0
 
