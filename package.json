@@ -13,7 +13,7 @@
   "devDependencies": {
     "assert-plus": "^1.0.0",
     "bower": "*",
-    "commonmark": "*",
+    "commonmark": "0.25.0",
     "cordova-android": "*",
     "cordova-config-utils": "git+https://github.com/RangerRick/cordova-config-utils.git#master",
     "css-loader": "^0.23.1",
