@@ -6,7 +6,7 @@
   "build": 40407,
   "dependencies": {
     "feedparser": "*",
-    "googleapis": "*",
+    "googleapis": "5.2.0",
     "moment": "*",
     "request": "*"
   },
