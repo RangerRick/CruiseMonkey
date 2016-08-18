@@ -48,7 +48,7 @@
     "twitter-text": "^1.13.3",
     "url-loader": "^0.5.7",
     "uuid": "^2.0.1",
-    "webpack": "^1.12.12",
+    "webpack": "^1.13.2",
     "yargs": "^3.32.0"
   },
   "cordovaPlugins": [
