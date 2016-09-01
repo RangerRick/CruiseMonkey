@@ -40,7 +40,7 @@
     "node-sass": "^3.4.2",
     "phantomjs": "^2.1.3",
     "phantomjs-prebuilt": "^2.1.3",
-    "sass-loader": "^3.1.2",
+    "sass-loader": "^4.0.1",
     "script-loader": "^0.6.1",
     "shelljs": "*",
     "string-hash": "^1.1.0",
