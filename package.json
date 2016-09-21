@@ -7,7 +7,7 @@
   "dependencies": {
     "feedparser": "*",
     "googleapis": "*",
-    "moment": "*",
+    "moment": "2.15.1",
     "request": "*"
   },
   "devDependencies": {
