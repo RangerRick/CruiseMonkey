@@ -5,7 +5,7 @@
   "description": "Keep Track of Your Cruise",
   "build": 40407,
   "dependencies": {
-    "feedparser": "*",
+    "feedparser": "1.1.5",
     "googleapis": "*",
     "moment": "*",
     "request": "*"
