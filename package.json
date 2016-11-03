@@ -8,7 +8,7 @@
     "feedparser": "*",
     "googleapis": "*",
     "moment": "*",
-    "request": "*"
+    "request": "2.78.0"
   },
   "devDependencies": {
     "assert-plus": "^1.0.0",
