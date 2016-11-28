@@ -43,7 +43,7 @@
     "sass-loader": "^3.1.2",
     "script-loader": "^0.6.1",
     "shelljs": "*",
-    "string-hash": "^1.1.0",
+    "string-hash": "^1.1.1",
     "style-loader": "^0.13.0",
     "twitter-text": "^1.13.3",
     "url-loader": "^0.5.7",
