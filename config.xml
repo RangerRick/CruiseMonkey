@@ -1,18 +1,21 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<widget android-versionCode="40407" id="com.raccoonfink.cruisemonkey" ios-CFBundleVersion="40407" version="2016.1.1" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0" xmlns:android="http://schemas.android.com/apk/res/android">
+<widget android-versionCode="40408" id="com.raccoonfink.cruisemonkey" ios-CFBundleVersion="40408" version="2017.1.0" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0" xmlns:android="http://schemas.android.com/apk/res/android">
   <name>CruiseMonkey</name>
   <description>Keep Track of Your Cruise</description>
   <author email="rangerrick@befunk.com" href="https://github.com/RangerRick/CruiseMonkey">Benjamin Reed</author>
   <content src="index.html"/>
   <allow-navigation href="http://*/*"/>
+  <allow-navigation href="gap:*"/>
   <allow-navigation href="https://*/*"/>
   <allow-navigation href="data:*"/>
   <allow-navigation href="cdvfile:*"/>
+  <allow-navigation href="http://localhost:8100"/>
   <allow-intent href="*"/>
   <access origin="http://*/*"/>
   <access origin="https://*/*"/>
   <access origin="data:*"/>
   <access origin="cdvfile:*"/>
+  <access origin="gap:*"/>
   <preference name="webviewbounce" value="false"/>
   <preference name="UIWebViewBounce" value="false"/>
   <preference name="DisallowOverscroll" value="true"/>
@@ -144,11 +147,11 @@
   <config-file parent="NSAppTransportSecurity" platform="ios" target="*-Info.plist">
     <dict>
       <key>NSAllowsArbitraryLoads</key>
-      <true></true>
+      <true/>
     </dict>
   </config-file>
   <config-file parent="UIRequiresFullScreen" platform="ios" target="*-Info.plist">
-    <true></true>
+    <true/>
   </config-file>
   <config-file platform="ios" target="project.pbxproj">
     <build-property name="ENABLE_BITCODE" value="NO"/>

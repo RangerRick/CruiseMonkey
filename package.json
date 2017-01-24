@@ -1,9 +1,9 @@
 {
   "name": "CruiseMonkey",
-  "version": "2016.1.1",
+  "version": "2017.1.0",
   "minSdk": "14",
   "description": "Keep Track of Your Cruise",
-  "build": 40407,
+  "build": 40408,
   "dependencies": {
     "feedparser": "*",
     "googleapis": "*",
@@ -85,17 +85,17 @@
   "cordovaPlatforms": [
     {
       "platform": "browser",
-      "version": "4.0.0",
+      "version": "4.1.0",
       "locator": "browser"
     },
     {
       "platform": "ios",
-      "version": "3.9.2",
+      "version": "4.3.1",
       "locator": "ios"
     },
     {
       "platform": "android",
-      "version": "5.1.0",
+      "version": "6.1.1",
       "locator": "android"
     }
   ],
@@ -108,8 +108,8 @@
   },
   "scripts": {
     "setup": "bower install && npm install && ionic state reset",
-    "build": "webpack --colors --display-error-details && ionic build",
-    "prepare": "webpack --colors --display-error-details && ionic prepare",
+    "build": "webpack --display-error-details && ionic build",
+    "prepare": "webpack --display-error-details && ionic prepare",
     "increment": "bin/update-build-number.js",
     "release": "npm run lint && npm run test && webpack --colors --display-error-details --env=production && ionic build --release && bin/sign-android.sh",
     "verbose-build": "npm run lint && npm run test && webpack --debug --colors --display-modules --display-chunks --display-error-details --display-origins --display-reasons",
