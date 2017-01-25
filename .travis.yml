@@ -3,7 +3,9 @@ notifications:
     - "chat.freenode.net#cruisemonkey"
 language: node_js
 node_js:
-  - '4.2'
+  - 'node'
+  - '6'
+  - '5'
 before_script:
   - './bin/clean.sh'
 before_install:
