@@ -10,7 +10,6 @@
   <allow-navigation href="data:*"/>
   <allow-navigation href="cdvfile:*"/>
   <allow-navigation href="http://localhost:8100"/>
-  <allow-navigation href="http://192.168.211.221:8100"/>
   <allow-intent href="*"/>
   <access origin="http://*/*"/>
   <access origin="https://*/*"/>
@@ -29,12 +28,12 @@
   <preference name="SplashScreenDelay" value="3000"/>
   <preference name="FadeSplashScreen" value="true"/>
   <preference name="FadeSplashScreenDuration" value="1"/>
-  <preference name="android-minSdkVersion" value="14"/>
+  <preference name="android-minSdkVersion" value="17"/>
   <preference name="android-targetSdkVersion" value="19"/>
   <preference name="windows-target-version" value="8.1"/>
   <preference name="windows-phone-target-version" value="8.1"/>
   <preference name="WindowsDefaultUriPrefix" value="ms-appx://"/>
-  <preference name="xwalkVersion" value="15+"/>
+  <preference name="xwalkVersion" value="22+"/>
   <preference name="xwalkCommandLine" value="--disable-pull-to-refresh-effect"/>
   <preference name="xwalkMode" value="embedded"/>
   <preference name="xwalkMultipleApk" value="true"/>
