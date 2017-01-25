@@ -16,7 +16,7 @@
     "ionicons": "*",
     "javascript-state-machine": "~2.3.5",
     "jquery": "~2.1.4",
-    "ng-file-upload": "~11.0.0",
+    "ng-file-upload": "~12.2.13",
     "ngCordova": "~0.1.24-alpha",
     "lokijs": "master",
     "ion-sticky": "~1.0.4",
@@ -27,7 +27,7 @@
     "angular-cache": "~4.5.0",
     "ng-file-model": "*",
     "angular-file-upload": "~2.2.0",
-    "moment-timezone": "^0.5.0"
+    "moment-timezone": "~0.5.0"
   },
   "resolutions": {
     "angular-ui-router": "~0.4.0",
