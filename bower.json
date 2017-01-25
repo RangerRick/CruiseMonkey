@@ -24,7 +24,7 @@
     "winstore-jscompat": "https://github.com/MSOpenTech/winstore-jscompat.git",
     "ngFitText": "~4.2.1",
     "ionic-toast": "~0.2.0",
-    "angular-cache": "~4.5.0",
+    "angular-cache": "~4.6.0",
     "ng-file-model": "*",
     "angular-file-upload": "~2.2.0",
     "moment-timezone": "~0.5.0"
