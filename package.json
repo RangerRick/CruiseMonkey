@@ -3,7 +3,7 @@
   "version": "2017.1.0",
   "minSdk": "14",
   "description": "Keep Track of Your Cruise",
-  "build": 40408,
+  "build": 40409,
   "dependencies": {
     "feedparser": "*",
     "googleapis": "*",
@@ -120,7 +120,7 @@
     "pack-release": "npm run pack -- --env=production",
     "build": "npm run pack && ionic build",
     "prepare": "npm run pack && ionic prepare",
-    "increment": "bin/update-build-number.js",
+    "increment": "bin/update-build-number.js && npm run prepare",
     "release": "npm run lint && npm run test && npm run pack-release && ionic build --release --buildConfig build.json && bin/sign-android.sh",
     "verbose-build": "npm run lint && npm run test && npm run pack -- --display-modules --display-chunks --display-error-details --display-origins --display-reasons",
     "genymotion": "ionic run -slc android",
