@@ -2,10 +2,12 @@
 # http://git-scm.com/docs/gitignore
 
 index.html
+.DS_Store
 .index.html
 *.swp
 www.zip
 npm-debug.log
+build.json
 bower_components/
 node_modules/
 platforms/

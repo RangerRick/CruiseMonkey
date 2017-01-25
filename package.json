@@ -62,7 +62,14 @@
     "cordova-plugin-statusbar",
     "cordova-plugin-whitelist",
     "ionic-plugin-keyboard",
-    "cordova-plugin-camera",
+    {
+      "id": "cordova-plugin-camera",
+      "locator": "https://github.com/apache/cordova-plugin-camera.git",
+      "variables": {
+        "CAMERA_USAGE_DESCRIPTION": "Used to take photos to post to Twit-arr.",
+        "PHOTOLIBRARY_USAGE_DESCRIPTION": "Used to select photos to post to Twit-arr."
+      }
+    },
     "https://github.com/zfoltin/cordova-plugin-app-event.git",
     "cordova-plugin-inappbrowser",
     "cordova-plugin-spinner-dialog",
@@ -80,7 +87,8 @@
     "cordova-plugin-crosswalk-webview",
     "https://github.com/christocracy/cordova-plugin-background-fetch.git",
     "https://github.com/RangerRick/cordova-plugin-simple-image-picker.git",
-    "https://github.com/EddyVerbruggen/Toast-PhoneGap-Plugin.git"
+    "https://github.com/EddyVerbruggen/Toast-PhoneGap-Plugin.git",
+    "https://github.com/apache/cordova-plugin-camera.git"
   ],
   "cordovaPlatforms": [
     {
@@ -113,7 +121,7 @@
     "build": "npm run pack && ionic build",
     "prepare": "npm run pack && ionic prepare",
     "increment": "bin/update-build-number.js",
-    "release": "npm run lint && npm run test && npm run pack-release && ionic build --release && bin/sign-android.sh",
+    "release": "npm run lint && npm run test && npm run pack-release && ionic build --release --buildConfig build.json && bin/sign-android.sh",
     "verbose-build": "npm run lint && npm run test && npm run pack -- --display-modules --display-chunks --display-error-details --display-origins --display-reasons",
     "genymotion": "ionic run -slc android",
     "android": "ionic emulate -slc android",
