@@ -8,7 +8,6 @@
     "angular-sanitize": "~1.5.11",
     "angular-ui-router": "~0.4.0",
     "angular-uuid4": "~0.3.1",
-    "base64": "~0.3.0",
     "classlist": "~2014.12.13",
     "es5-shim": "~4.4.1",
     "html5shiv": "~3.7.3",
@@ -26,7 +25,7 @@
     "ionic-toast": "~0.2.0",
     "angular-cache": "~4.6.0",
     "ng-file-model": "*",
-    "angular-file-upload": "~2.2.0",
+    "angular-file-upload": "~2.4.1",
     "moment-timezone": "~0.5.0"
   },
   "resolutions": {
