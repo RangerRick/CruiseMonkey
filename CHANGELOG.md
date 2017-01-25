@@ -1,3 +1,13 @@
+<a name="2017.1.0"></a>
+# [2017.1.0](https://github.com/RangerRick/CruiseMonkey/compare/v2016.1.1+40407...v2017.1.0) (2017-01-25)
+
+### Features
+
+* **about:** update copyright, remove paypal link ([788487b](https://github.com/RangerRick/CruiseMonkey/commit/788487b))
+* **events:** remove event add/edit, changed "my" to "saved" ([f468927](https://github.com/RangerRick/CruiseMonkey/commit/f468927))
+* **karaoke:** updated karaoke list ([dc3bcdd](https://github.com/RangerRick/CruiseMonkey/commit/dc3bcdd))
+* **settings:** do not try to auto-detect "on a boat" ([cc0672b](https://github.com/RangerRick/CruiseMonkey/commit/cc0672b))
+
 <a name="2016.1.1"></a>
 ## 2016.1.1
 

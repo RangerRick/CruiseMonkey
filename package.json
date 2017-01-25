@@ -14,6 +14,7 @@
     "assert-plus": "^1.0.0",
     "bower": "*",
     "commonmark": "*",
+    "conventional-changelog-cli": "^1.2.0",
     "cordova-android": "*",
     "cordova-config-utils": "git+https://github.com/RangerRick/cordova-config-utils.git#master",
     "css-loader": "^0.26.1",
@@ -128,6 +129,7 @@
     "ios": "ionic emulate -slc --address=localhost ios",
     "device": "ionic run --device -slc ios",
     "watch": "webpack --colors --display-error-details --watch",
+    "changelog": "conventional-changelog -p angular -i CHANGELOG.md -s -u",
     "lint": "eslint . --ext .js",
     "test": "mocha test"
   }
