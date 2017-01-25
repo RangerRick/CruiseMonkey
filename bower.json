@@ -22,7 +22,7 @@
     "ion-sticky": "~1.0.4",
     "ionic-filter-bar": "~1.1.1",
     "winstore-jscompat": "https://github.com/MSOpenTech/winstore-jscompat.git",
-    "ngFitText": "~3.3.3",
+    "ngFitText": "~4.2.1",
     "ionic-toast": "~0.2.0",
     "angular-cache": "~4.5.0",
     "ng-file-model": "*",
