@@ -6,8 +6,6 @@ node_js:
   - 'node'
   - '6'
   - '5'
-before_script:
-  - './bin/clean.sh'
 before_install:
   - 'npm install -g ionic cordova bower webpack webpack-cli mocha'
   - 'npm install'
