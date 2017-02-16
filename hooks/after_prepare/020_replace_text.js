@@ -48,7 +48,9 @@ if (rootdir) {
   var configobj = JSON.parse(fs.readFileSync(ourconfigfile, 'utf8'));
   var exec = require('child_process').exec;
 
-  exec('/usr/libexec/PlistBuddy -c "Set :CFBundleVersion ' + configobj.build + '" platforms/ios/CruiseMonkey/CruiseMonkey-Info.plist', puts);
+  if (fs.existsSync('platforms/ios/CruiseMonkey/CruiseMonkey-Info.plist')) {
+    exec('/usr/libexec/PlistBuddy -c "Set :CFBundleVersion ' + configobj.build + '" platforms/ios/CruiseMonkey/CruiseMonkey-Info.plist', puts);
+  }
 
   var roots = [
     'platforms/android/assets/www',
