@@ -3,7 +3,7 @@
   "version": "2017.1.0",
   "minSdk": "14",
   "description": "Keep Track of Your Cruise",
-  "build": 40411,
+  "build": 40412,
   "dependencies": {
     "feedparser": "*",
     "googleapis": "*",
@@ -65,11 +65,7 @@
     "ionic-plugin-keyboard",
     {
       "id": "cordova-plugin-camera",
-      "locator": "https://github.com/apache/cordova-plugin-camera.git",
-      "variables": {
-        "CAMERA_USAGE_DESCRIPTION": "Used to take photos to post to Twit-arr.",
-        "PHOTOLIBRARY_USAGE_DESCRIPTION": "Used to select photos to post to Twit-arr."
-      }
+      "locator": "https://github.com/apache/cordova-plugin-camera.git"
     },
     "https://github.com/zfoltin/cordova-plugin-app-event.git",
     "cordova-plugin-inappbrowser",

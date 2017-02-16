@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<widget android-versionCode="40411" id="com.raccoonfink.cruisemonkey" ios-CFBundleVersion="40411" version="2017.1.0" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0" xmlns:android="http://schemas.android.com/apk/res/android">
+<widget android-versionCode="40412" id="com.raccoonfink.cruisemonkey" ios-CFBundleVersion="40412" version="2017.1.0" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0" xmlns:android="http://schemas.android.com/apk/res/android">
   <name>CruiseMonkey</name>
   <description>Keep Track of Your Cruise</description>
   <author email="rangerrick@befunk.com" href="https://github.com/RangerRick/CruiseMonkey">Benjamin Reed</author>
@@ -152,6 +152,12 @@
       <key>NSAllowsArbitraryLoads</key>
       <true/>
     </dict>
+  </config-file>
+  <config-file platform="ios" target="*-Info.plist">
+    <key>NSCameraUsageDescription</key>
+    <string>Used to take photos to post to Twit-arr.</string>
+    <key>NSPhotoLibraryUsageDescription</key>
+    <string>Used to select photos to post to Twit-arr.</string>
   </config-file>
   <config-file parent="UIRequiresFullScreen" platform="ios" target="*-Info.plist">
     <true/>
