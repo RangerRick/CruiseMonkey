@@ -10,7 +10,7 @@
 		<!--<button class="button button-icon icon-yellow cm-icon-plus" ng-click="addEvent($event)" ng-if="u.loggedIn()"></button>-->
 		<button class="button button-icon icon cm-icon-search" ng-click="showFilterBar()"></button>
 	</ion-nav-buttons>
-	<ion-content ion-sticky scroll="true" padding="false" id="event-content" delegate-handle="event-scroll" ng-click="closeKeyboard()">
+	<ion-content scroll="true" padding="false" id="event-content" delegate-handle="event-scroll" ng-click="closeKeyboard()">
 		<ion-refresher pulling-text="Pull to refresh..." on-refresh="doRefresh()"></ion-refresher>
 		<ion-list>
 			<span ng-repeat="entry in events track by entry.getHash()" id="{{entry.getId()}}">

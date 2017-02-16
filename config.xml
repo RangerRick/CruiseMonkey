@@ -10,6 +10,7 @@
   <allow-navigation href="data:*"/>
   <allow-navigation href="cdvfile:*"/>
   <allow-navigation href="http://localhost:8100"/>
+  <allow-navigation href="*"/>
   <allow-intent href="*"/>
   <access origin="http://*/*"/>
   <access origin="https://*/*"/>

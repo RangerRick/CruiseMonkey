@@ -18,7 +18,7 @@
     "ng-file-upload": "~12.2.13",
     "ngCordova": "~0.1.24-alpha",
     "lokijs": "master",
-    "ion-sticky": "~1.0.4",
+    "ion-sticky": "~1.0.7",
     "ionic-filter-bar": "~1.1.1",
     "winstore-jscompat": "https://github.com/MSOpenTech/winstore-jscompat.git",
     "ngFitText": "~4.2.1",
