@@ -1,9 +1,9 @@
 {
   "name": "CruiseMonkey",
-  "version": "2017.1.0",
+  "version": "2017.1.1",
   "minSdk": "14",
   "description": "Keep Track of Your Cruise",
-  "build": 40412,
+  "build": 40413,
   "dependencies": {
     "feedparser": "*",
     "googleapis": "*",
