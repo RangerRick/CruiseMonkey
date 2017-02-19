@@ -155,8 +155,10 @@
   </config-file>
   <config-file platform="ios" target="*-Info.plist">
     <key>NSCameraUsageDescription</key>
-    <key>NSPhotoLibraryUsageDescription</key>
     <string>Used to take photos to post to Twit-arr.</string>
+  </config-file>
+  <config-file platform="ios" target="*-Info.plist">
+    <key>NSPhotoLibraryUsageDescription</key>
     <string>Used to select photos to post to Twit-arr.</string>
   </config-file>
   <config-file parent="UIRequiresFullScreen" platform="ios" target="*-Info.plist">
