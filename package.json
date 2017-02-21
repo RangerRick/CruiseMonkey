@@ -63,10 +63,6 @@
     "cordova-plugin-statusbar",
     "cordova-plugin-whitelist",
     "ionic-plugin-keyboard",
-    {
-      "id": "cordova-plugin-camera",
-      "locator": "https://github.com/apache/cordova-plugin-camera.git"
-    },
     "https://github.com/zfoltin/cordova-plugin-app-event.git",
     "cordova-plugin-inappbrowser",
     "cordova-plugin-spinner-dialog",
@@ -85,7 +81,7 @@
     "https://github.com/christocracy/cordova-plugin-background-fetch.git",
     "https://github.com/RangerRick/cordova-plugin-simple-image-picker.git",
     "https://github.com/EddyVerbruggen/Toast-PhoneGap-Plugin.git",
-    "https://github.com/apache/cordova-plugin-camera.git"
+    "cordova-plugin-camera"
   ],
   "cordovaPlatforms": [
     {

@@ -68,6 +68,10 @@
   <feature name="Toast">
     <param name="ios-package" onload="true" value="Toast"/>
   </feature>
+  <plugin name="cordova-plugin-camera"              source="npm" >
+    <variable name="CAMERA_USAGE_DESCRIPTION" value="Used to take photos to post to Twit-arr." />
+    <variable name="PHOTOLIBRARY_USAGE_DESCRIPTION" value="Used to select photos to post to Twit-arr." />
+  </plugin>
   <platform name="ios">
     <preference name="KeyboardDisplayRequiresUserAction" value="false"/>
     <icon src="resources/ios/icon/icon.png" width="57" height="57"/>
