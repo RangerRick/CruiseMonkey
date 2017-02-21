@@ -13,7 +13,7 @@
 	</ion-nav-buttons>
 	<ion-content scroll="true" delegate-handle="deck-list">
 		<ion-slide-box show-pager="false" active-slide="currentSlide" on-slide-changed="slideChanged($index)">
-			<ion-slide ng-repeat="d in [2,3,4,5,6,7,8,9,10,11,12,13,14,15]">
+			<ion-slide ng-repeat="d in [1,2,3,4,5,6,7,8,9,10,11]">
 				<div class="box" show-pager="false" ng-switch="shouldBeVisible(d)">
 					<!--<img ng-switch-when="true" ng-src="{{urls[d]}}" id="deck{{d}}"></img>-->
 					<cm-deck deck="{{d}}" ng-switch-when="true"></cm-deck>
@@ -25,7 +25,7 @@
 	<ion-nav-footer>
 		<ion-footer-bar class="cm-slider bar-clear">
 			<div class="slider-pager">
-				<span class="slider-pager-page" ng-repeat="d in [2,3,4,5,6,7,8,9,10,11,12,13,14,15]" ng-class="{active: d === deck}"><i class="icon ion-record"></i></span>
+				<span class="slider-pager-page" ng-repeat="d in [1,2,3,4,5,6,7,8,9,10,11]" ng-class="{active: d === deck}"><i class="icon ion-record"></i></span>
 			</div>
 		</ion-footer-bar>
 	</ion-nav-footer>
