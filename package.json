@@ -45,7 +45,7 @@
     "script-loader": "^0.7.0",
     "shelljs": "*",
     "string-hash": "^1.1.0",
-    "style-loader": "^0.13.0",
+    "style-loader": "^0.14.0",
     "twitter-text": "^1.13.3",
     "url-loader": "^0.5.7",
     "uuid": "^3.0.1",
