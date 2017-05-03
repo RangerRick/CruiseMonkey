@@ -50,7 +50,7 @@
     "url-loader": "^0.5.7",
     "uuid": "^3.0.1",
     "webpack": "^1.12.12",
-    "yargs": "^6.6.0"
+    "yargs": "^8.0.1"
   },
   "cordovaPlugins": [
     "cordova-plugin-console",
