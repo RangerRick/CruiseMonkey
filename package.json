@@ -1,21 +1,38 @@
 {
   "name": "CruiseMonkey",
   "version": "2018.1.0",
-  "minSdk": "21",
+  "minSdk": "23",
   "description": "Keep Track of Your Cruise",
-  "build": 410020,
+  "build": 410023,
   "dependencies": {
     "com-sarriaroman-photoviewer": "git+https://github.com/RangerRick/photoviewer.git#master",
     "com.raccoonfink.cordova.plugins.http": "git+https://github.com/RangerRick/cordova-HTTP.git",
     "com.red_folder.phonegap.plugin.backgroundservice": "git+https://github.com/Red-Folder/bgs-core.git",
-    "cordova-android": "^6.2.3",
+    "cordova-android": "^6.4.0",
+    "cordova-ios": "^4.5.4",
     "cordova-plugin-app-event": "git+https://github.com/zfoltin/cordova-plugin-app-event.git",
     "cordova-plugin-background-fetch": "git+https://github.com/christocracy/cordova-plugin-background-fetch.git#4.0.4",
+    "cordova-plugin-camera": "^4.0.2",
+    "cordova-plugin-chrome-apps-system-memory": "~1.1.1",
+    "cordova-plugin-console": "^1.1.0",
+    "cordova-plugin-datepicker": "~0.9.3",
+    "cordova-plugin-device": "~1.1.4",
+    "cordova-plugin-dialogs": "~1.3.1",
+    "cordova-plugin-file": "~4.3.2-dev",
+    "cordova-plugin-file-transfer": "~1.6.1",
+    "cordova-plugin-filepath": "~1.0.2",
+    "cordova-plugin-inappbrowser": "~1.6.1",
     "cordova-plugin-json-storage": "git+https://github.com/OpenNMS/cordova-plugin-json-storage.git",
+    "cordova-plugin-network-information": "~1.3.1",
+    "cordova-plugin-spinner-dialog": "~1.3.1",
+    "cordova-plugin-splashscreen": "~4.0.1",
+    "cordova-plugin-statusbar": "git+https://github.com/apache/cordova-plugin-statusbar.git#master",
+    "cordova-plugin-whitelist": "~1.3.1",
     "cordova-plugin-x-toast": "git+https://github.com/EddyVerbruggen/Toast-PhoneGap-Plugin.git",
     "de.appplant.cordova.plugin.local-notification": "git+https://github.com/katzer/cordova-plugin-local-notifications.git#0.8.5",
     "feedparser": "*",
     "googleapis": "*",
+    "ionic-plugin-keyboard": "~2.2.1",
     "moment": "*",
     "request": "*"
   },
@@ -24,6 +41,7 @@
     "bower": "*",
     "commonmark": "*",
     "conventional-changelog-cli": "^1.2.0",
+    "cordova-common": "^2.2.1",
     "cordova-config-utils": "git+https://github.com/RangerRick/cordova-config-utils.git#master",
     "css-loader": "^0.26.1",
     "eslint": "^3.14.0",
@@ -61,14 +79,12 @@
     "yargs": "^6.6.0"
   },
   "cordovaPlugins": [
-    "cordova-plugin-console",
     "cordova-plugin-device",
     "cordova-plugin-file",
     "cordova-plugin-file-transfer",
     "cordova-plugin-network-information",
     "cordova-plugin-dialogs",
     "cordova-plugin-splashscreen",
-    "cordova-plugin-statusbar",
     "cordova-plugin-whitelist",
     "ionic-plugin-keyboard",
     "https://github.com/zfoltin/cordova-plugin-app-event.git",
@@ -87,25 +103,56 @@
     "https://github.com/christocracy/cordova-plugin-background-fetch.git#4.0.4",
     "https://github.com/RangerRick/cordova-plugin-simple-image-picker.git",
     "https://github.com/EddyVerbruggen/Toast-PhoneGap-Plugin.git",
+    "cordova-plugin-console",
+    "https://github.com/apache/cordova-plugin-statusbar.git#master",
     "cordova-plugin-camera"
   ],
   "cordovaPlatforms": [
     {
       "platform": "ios",
-      "version": "4.3.1",
+      "version": "4.5.4",
       "locator": "ios"
     },
     {
       "platform": "android",
-      "version": "6.2.3",
+      "version": "6.4.0",
       "locator": "android"
     }
   ],
+  "cordova": {
+    "plugins": {
+      "cordova-plugin-chrome-apps-system-memory": {},
+      "cordova-plugin-file-transfer": {},
+      "cordova-plugin-datepicker": {},
+      "cordova-plugin-splashscreen": {},
+      "cordova-plugin-file": {},
+      "cordova-plugin-spinner-dialog": {},
+      "ionic-plugin-keyboard": {},
+      "cordova-plugin-device": {},
+      "cordova-plugin-filepath": {},
+      "cordova-plugin-dialogs": {},
+      "cordova-plugin-network-information": {},
+      "cordova-plugin-whitelist": {},
+      "cordova-plugin-inappbrowser": {},
+      "cordova-plugin-background-fetch": {},
+      "de.appplant.cordova.plugin.local-notification": {},
+      "cordova-plugin-app-event": {},
+      "com.raccoonfink.cordova.plugins.http": {},
+      "cordova-plugin-json-storage": {},
+      "com.red_folder.phonegap.plugin.backgroundservice": {},
+      "cordova-plugin-x-toast": {},
+      "cordova-plugin-console": {},
+      "cordova-plugin-statusbar": {},
+      "cordova-plugin-camera": {}
+    },
+    "platforms": [
+      "ios",
+      "android"
+    ]
+  },
   "config": {
     "ghooks": {
-      "pre-push": "npm run test",
-      "post-merge": "npm install",
-      "post-rewrite": "npm install"
+      "pre-push": "npm run test"
     }
   },
   "scripts": {
@@ -125,38 +172,5 @@
     "changelog": "conventional-changelog -p angular -i CHANGELOG.md -s -u",
     "lint": "eslint . --ext .js",
     "test": "mocha test"
-  },
-  "cordova": {
-    "plugins": {
-      "cordova-plugin-camera": {
-        "CAMERA_USAGE_DESCRIPTION": "Used to take photos to post to Twit-arr.",
-        "PHOTOLIBRARY_USAGE_DESCRIPTION": "Used to select photos to post to Twit-arr."
-      },
-      "cordova-plugin-statusbar": {},
-      "cordova-plugin-chrome-apps-system-memory": {},
-      "cordova-plugin-file-transfer": {},
-      "cordova-plugin-datepicker": {},
-      "cordova-plugin-splashscreen": {},
-      "cordova-plugin-console": {},
-      "cordova-plugin-file": {},
-      "cordova-plugin-spinner-dialog": {},
-      "ionic-plugin-keyboard": {},
-      "cordova-plugin-device": {},
-      "cordova-plugin-filepath": {},
-      "cordova-plugin-dialogs": {},
-      "cordova-plugin-network-information": {},
-      "cordova-plugin-whitelist": {},
-      "cordova-plugin-inappbrowser": {},
-      "cordova-plugin-background-fetch": {},
-      "de.appplant.cordova.plugin.local-notification": {},
-      "cordova-plugin-app-event": {},
-      "com.raccoonfink.cordova.plugins.http": {},
-      "cordova-plugin-json-storage": {},
-      "com.red_folder.phonegap.plugin.backgroundservice": {},
-      "cordova-plugin-x-toast": {}
-    },
-    "platforms": [
-      "android"
-    ]
   }
 }

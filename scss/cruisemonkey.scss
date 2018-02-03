@@ -1,4 +1,4 @@
-$ionicons-font-path: "../bower_components/ionic/release/fonts";
+$ionicons-font-path: "../bower_components/ionic/fonts";
 
 $fontPath: "../www/fonts";
 
@@ -128,6 +128,22 @@ $z-index-bar: 9;
 
 @import "../bower_components/ionic/scss/ionic";
 @import "../bower_components/ionic-filter-bar/scss/ionic.filter.bar";
+
+.platform-ios.platform-cordova {
+	&:not(.fullscreen) {
+		.filter-bar .bar-header:not(.bar-subheader) {
+			height: $bar-height + $ios-statusbar-height;
+			height: calc(constant(safe-area-inset-top) + #{$bar-height});
+			height: calc(env(safe-area-inset-top) + #{$bar-height});
+
+			&.item-input-inset .item-input-wrapper {
+				margin-top: $ios-statusbar-height !important;
+				margin-top: constant(safe-area-inset-top) !important;
+				margin-top: env(safe-area-inset-top) !important;
+			}
+		}
+	}
+}
 
 .filter-bar {
 	.bar-dark .button.button-clear {

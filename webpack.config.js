@@ -30,7 +30,8 @@ var plugins = [
 	new webpack.ProvidePlugin({
 		$: 'jquery',
 		jQuery: 'jquery',
-		'window.jQuery': 'jquery'
+		'window.jQuery': 'jquery',
+		Promise: 'es6-promise-promise'
 	}),
 	new webpack.optimize.CommonsChunkPlugin({
 		name: 'vendor',
@@ -59,12 +60,12 @@ var options = {
 			'es5-shim',
 			'classlist',
 			'winstore-jscompat/winstore-jscompat',
-			'ionic/release/js/ionic',
+			'ionic/js/ionic',
 			'angular',
 			'angular-animate',
 			'angular-sanitize',
 			'angular-ui-router',
-			'ionic/release/js/ionic-angular',
+			'ionic/js/ionic-angular',
 			'ngCordova'
 		],
 		app: [
