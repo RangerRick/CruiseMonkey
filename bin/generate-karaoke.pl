@@ -24,38 +24,55 @@ print "done\n";
 
 my $results = {};
 
-print "* parsing Karaoke data... ";
-my @dls = $tree->look_down('_tag', 'dl');
+#print "* parsing Karaoke data... ";
+#my @dls = $tree->look_down('_tag', 'dl');
+#
+#for my $dl (@dls) {
+#	for my $dt ($dl->look_down('_tag', 'dt')) {
+#		my $artist = $dt->as_trimmed_text();
+#		$artist = encode('UTF-8', $artist);
+#
+#		my $dd = $dt->right();
+#		for my $br ($dd->look_down('_tag', 'br')) {
+#			$br->replace_with('########');
+#		}
+#		my @songs;
+#		for my $song (split(/\#\#\#\#\#\#\#\#/, $dd->as_trimmed_text())) {
+#			$song =~ s/^\s*(.*?)\s*$/$1/;
+#			$song = encode('UTF-8', $song);
+#			push(@songs, $song)
+#		}
+#
+#		my $lc_artist = lc($artist);
+#
+#		if (exists $results->{$lc_artist}) {
+#			push(@{$results->{$lc_artist}->{'songs'}}, @songs);
+#		} else {
+#			$results->{$lc_artist} = {
+#				display_name => $artist,
+#				songs => \@songs
+#			}
+#		}
+#	}
+#}
+#print "done\n";
 
-for my $dl (@dls) {
-	for my $dt ($dl->look_down('_tag', 'dt')) {
-		my $artist = $dt->as_trimmed_text();
-		$artist = encode('UTF-8', $artist);
-
-		my $dd = $dt->right();
-		for my $br ($dd->look_down('_tag', 'br')) {
-			$br->replace_with('########');
-		}
-		my @songs;
-		for my $song (split(/\#\#\#\#\#\#\#\#/, $dd->as_trimmed_text())) {
-			$song =~ s/^\s*(.*?)\s*$/$1/;
-			$song = encode('UTF-8', $song);
-			push(@songs, $song)
-		}
-
-		my $lc_artist = lc($artist);
-
-		if (exists $results->{$lc_artist}) {
-			push(@{$results->{$lc_artist}->{'songs'}}, @songs);
-		} else {
-			$results->{$lc_artist} = {
-				display_name => $artist,
-				songs => \@songs
-			}
-		}
+open(FILEIN, "resources/JoCoKaraokeSongCatalog.txt") or die "Failed to open list: $!\n";
+while (my $line = <FILEIN>) {
+	chomp($line);
+	my ($artist, $song) = split(/\t/, $line);
+	my $lc_artist = lc($artist);
+	$artist = encode('UTF-8', $artist);
+	$song = encode('UTF-8', $song);
+	if (not exists $results->{$lc_artist}) {
+		$results->{$lc_artist} = {
+			display_name => $artist,
+			songs => [],
+		};
 	}
+	push(@{$results->{$lc_artist}->{'songs'}}, $song);
 }
-print "done\n";
+close(FILEIN);
 
 print "* Making karaoke list:\n";
 my $json_list = [];
