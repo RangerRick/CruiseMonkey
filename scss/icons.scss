@@ -12,9 +12,6 @@
 .cm-icon-calendar {
 	@extend .ion-calendar;
 }
-.cm-icon-today {
-	@extend .ion-ios-information-outline;
-}
 .cm-icon-camera {
 	@extend .ion-camera;
 }
@@ -29,6 +26,9 @@
 }
 .cm-icon-email {
 	@extend .ion-email;
+}
+.cm-icon-film {
+	@extend .ion-ios-film;
 }
 .cm-icon-filter {
 	@extend .ion-levels;
@@ -96,6 +96,9 @@
 .cm-icon-settings {
 	@extend .ion-settings;
 }
+.cm-icon-today {
+	@extend .ion-ios-information-outline;
+}
 
 .platform-android {
 	.cm-icon-calendar {
@@ -112,6 +115,9 @@
 	}
 	.cm-icon-email {
 		@extend .ion-android-mail;
+	}
+	.cm-icon-film {
+		@extend .ion-android-film;
 	}
 	.cm-icon-filter {
 		@extend .ion-android-options;
