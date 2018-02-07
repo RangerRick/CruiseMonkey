@@ -57,6 +57,7 @@
     "jsdom": "^9.9.1",
     "jshint": "*",
     "jshint-stylish": "*",
+    "json-loader": "^0.5.7",
     "line-reader": "*",
     "lodash": "^4.5.0",
     "mocha": "^3.2.0",

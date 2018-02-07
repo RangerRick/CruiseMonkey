@@ -13,7 +13,7 @@
     "es5-shim": "4.4.1",
     "html5shiv": "3.7.3",
     "ionic": "https://github.com/ionic-team/ionic-bower.git#1.3.5",
-    "ionicons": "*",
+    "ionicons": "2.0.1",
     "javascript-state-machine": "2.3.5",
     "jquery": "2.2.4",
     "ng-file-upload": "11.0.0",

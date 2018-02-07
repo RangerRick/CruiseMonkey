@@ -1,0 +1,58 @@
+<ion-view class="today" title="Themes &amp; Ports">
+	<ion-content class="today" delegate-handle="today">
+		<div class="spinner" ng-if="!ready">
+			<ion-spinner></ion-spinner>
+		</div>
+		<span ng-if="ready">
+			<ion-list>
+				<span ng-repeat="day in todayData track by day.date">
+					<ion-item class="item-divider">
+						<span ng-if="day.dayNumber > 0">Day {{day.dayNumber}}: </span>{{day.displayDate}}
+					</ion-item>
+					<ion-item class="row">
+						<div class="col col-20">
+							Port:
+						</div>
+						<div class="col col-80 item-text-wrap" ng-if="day.port">
+							{{day.port}}
+						</div>
+						<div class="col col-80" ng-if="!day.port">
+							At sea.
+						</div>
+					</ion-item>
+					<ion-item class="item-borderless row" ng-if="day.arrives">
+						<div class="col col-20">
+							Arrive:
+						</div>
+						<div class="col col-80 item-text-wrap">
+							{{day.arrives}}
+						</div>
+					</ion-item>
+					<ion-item class="item-borderless row" ng-if="day.departs">
+						<div class="col col-20">
+							Depart:
+						</div>
+						<div class="col col-80 item-text-wrap">
+							{{day.departs}}
+						</div>
+					</ion-item>
+					<ion-item class="row" ng-if="day.theme">
+						<div class="col col-20">
+							Theme:
+						</div>
+						<div class="col col-80 item-text-wrap">
+							{{day.theme}}
+						</div>
+					</ion-item>
+					<ion-item class="item-borderless row" ng-if="day.theme_description">
+						<div class="col col-20">
+							&nbsp;
+						</div>
+						<div class="col col-80 item-text-wrap" ng-bind-html="day.theme_description">
+						</div>
+					</ion-item>
+				</span>
+			</ion-list>
+		</span>
+	</ion-content>
+</ion-view>

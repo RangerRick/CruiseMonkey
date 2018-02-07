@@ -1,0 +1,64 @@
+<ion-view class="today" title="Today">
+	<!--
+	<ion-nav-buttons side="secondary">
+		<button class="button button-icon icon cm-icon-people" ng-click="openUserList($event)"></button>
+	</ion-nav-buttons>
+	-->
+	<ion-content class="today padded" delegate-handle="today">
+		<div class="spinner" ng-if="!ready">
+			<ion-spinner></ion-spinner>
+		</div>
+		<span ng-if="ready">
+			<ion-list ng-if="error">
+				<ion-item class="item-borderless day">
+					<span ng-if="day > 0">Day {{day}}: </span>{{date}}
+				</ion-item>
+				<ion-item class="item-borderless item-text-wrap">
+					<br><br>
+					<div class="header">:(</div>
+					<br><br>
+					<div class="content">I have no idea what's going on today.</div>
+				</ion-item>
+			</ion-list>
+			<ion-list ng-if="!error">
+				<ion-item class="item-borderless day">
+					<span ng-if="day > 0">Day {{day}}: </span>{{date}}
+				</ion-item>
+				<ion-item class="item-borderless item-text-wrap port" ng-if="today.port">
+					<div class="header">Today's Port:</div>
+					<div class="content">
+						{{today.port}}
+					</div>
+					<div class="content">
+						<span ng-if="today.arrives">Arrives: {{today.arrives}}</span>
+						<span ng-if="today.arrives && today.departs"><br></span>
+						<span ng-if="today.departs">Departs: {{today.departs}}</span>
+					</div>
+				</ion-item>
+				<ion-item class="item-borderless item-text-wrap port" ng-if="!today.port">
+					<div class="header">We are at sea!</div>
+				</ion-item>
+				<br>
+				<ion-item class="item-borderless item-text-wrap theme" ng-if="today.theme">
+					<div class="header">Today's Theme:</div>
+					<div class="content">{{today.theme}}</div>
+					<!-- <span ng-if="today.theme_description"><br></span> -->
+					<div class="description" ng-if="today.theme_description" ng-bind-html="today.theme_description"></div>
+					<span ng-if="today.theme_description && today.theme_description_extra"><br></span>
+					<div class="description-extra" ng-if="today.theme_description_extra" ng-bind-html="today.theme_description_extra"></div>
+				</ion-item>
+				<span ng-if="tomorrow"><br><!--<br>--></span>
+				<ion-item class="item-borderless item-text-wrap coming-up" ng-if="tomorrow">
+					<div class="header">Tomorrow's Port:</div>
+					<div class="content" ng-if="tomorrow.port">{{tomorrow.port}}</div>
+					<div class="content" ng-if="!tomorrow.port">At sea</div>
+					<div class="content" ng-if="tomorrow.arrives">Arrives: {{tomorrow.arrives}}</div>
+					<div class="content" ng-if="tomorrow.departs">Departs: {{tomorrow.departs}}</div>
+					<span ng-if="tomorrow.theme"><br></span>
+					<div class="header" ng-if="tomorrow.theme">Tomorrow's Theme:</div>
+					<div class="content" ng-if="tomorrow.theme">{{tomorrow.theme}}</div>
+				</ion-item>
+			</ion-list>
+		</span>
+	</ion-content>
+</ion-view>

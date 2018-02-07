@@ -1,0 +1,51 @@
+ion-content.padded {
+	padding-left: 5px;
+	padding-right: 5px;
+}
+.today {
+	.has-header {
+		// fix 1px space at the top of the header in today-list
+		padding-top: 0;
+	}
+	.centered {
+		text-align: center;
+	}
+	.day {
+		font-size: 150%;
+		line-height: 150%;
+		font-weight: bolder;
+	}
+
+	.header {
+		font-size: 140%;
+		line-height: 140%;
+		font-weight: bolder;
+	}
+
+	.content {
+		font-size: 120%;
+		line-height: 120%;
+	}
+
+	.theme {
+		.content {
+			font-size: 130%;
+			line-height: 130%;
+			font-weight: bolder;
+		}
+	}
+
+	div.spinner {
+		margin: auto;
+		position: fixed;
+		top: 0; left: 0; bottom: 0; right: 0;
+		padding-top: 50%;
+		text-align: center;
+		z-index: 999;
+	}
+	/*
+	.spinner svg {
+		padding-top: 50%;
+	}
+	*/
+}
