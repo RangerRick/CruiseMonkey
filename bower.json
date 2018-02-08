@@ -34,6 +34,7 @@
     "angular-ui-router": "0.2.15",
     "angular": "1.5.11",
     "angular-animate": "1.5.11",
-    "angular-sanitize": "1.5.11"
+    "angular-sanitize": "1.5.11",
+    "ionic": "master"
   }
 }
