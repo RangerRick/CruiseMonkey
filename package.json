@@ -3,7 +3,7 @@
   "version": "2018.1.2",
   "minSdk": "23",
   "description": "Keep Track of Your Cruise",
-  "build": 410026,
+  "build": 410027,
   "dependencies": {
     "com-sarriaroman-photoviewer": "git+https://github.com/RangerRick/photoviewer.git#master",
     "com.raccoonfink.cordova.plugins.http": "git+https://github.com/RangerRick/cordova-HTTP.git",
