@@ -970,6 +970,10 @@ ion-item.item.item-text-wrap.list-entry.unofficial.even {
 	-moz-user-select: none;
 	-webkit-user-drag: none;
 
+	.icon-blank {
+		color: transparent;
+	}
+
 	div.placeholder {
 		width: 220px;
 		margin: auto;
