@@ -1,7 +1,7 @@
 <ion-popover-view class="fit stream-type-chooser">
 	<ion-content>
 		<ion-list>
-			<ion-item ng-repeat="streamType in streamTypes" ng-click="setStreamType(streamType.type, $event)">{{streamType.description()}}</ion-item>
+			<ion-item ng-repeat="streamType in streamTypes" ng-if="streamType.enabled()" ng-click="setStreamType(streamType.type, $event)">{{streamType.description()}}</ion-item>
 		</ion-list>
 	</ion-content>
 </ion-popover-view>
