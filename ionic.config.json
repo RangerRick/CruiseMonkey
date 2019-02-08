@@ -1,8 +1,12 @@
 {
   "name": "CruiseMonkey",
-  "app_id": "com.raccoonfink.cruisemonkey",
+  "integrations": {
+    "cordova": {}
+  },
+  "type": "ionic1",
   "watchPatterns": [
     "www/**/*",
     "!www/lib/**/*"
-  ]
+  ],
+  "id": "com.raccoonfink.cruisemonkey"
 }

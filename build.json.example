@@ -1,12 +1,14 @@
 {
     "ios": {
         "debug": {
+            "buildFlag": [ "-UseModernBuildSystem=0" ],
             "codeSignIdentity": "iPhone Development",
             "provisioningProfile": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
             "developmentTeam": "ABCDEFGHIJ",
             "packageType": "development"
         },
         "release": {
+            "buildFlag": [ "-UseModernBuildSystem=0" ],
             "codeSignIdentity": "iPhone Distribution",
             "provisioningProfile": "yyyyyyyy-yyyy-yyyy-yyyy-yyyyyyyyyyyy",
             "developmentTeam": "ABCDEFGHIJ",
