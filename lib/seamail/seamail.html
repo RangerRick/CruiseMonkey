@@ -5,8 +5,8 @@
 	<ion-content class="seamail" delegate-handle="seamail">
 		<ion-list>
 			<ion-item ng-repeat="message in seamail.messages track by message._hash" class="item item-avatar item-text-wrap">
-				<cm-user-avatar username="message.author"></cm-user-avatar>
-				<cm-user-display username="message.author"></cm-user-display>
+				<cm-user-avatar username="message.author.username"></cm-user-avatar>
+				<cm-user-display username="message.author.username"></cm-user-display>
 				<p class="description" ng-bind-html="message.text"></p>
 				<div class="timestamp">{{message.timestamp.fromNow()}}</div>
 			</ion-item>

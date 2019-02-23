@@ -1,6 +1,6 @@
 <ion-view title="Twit-Arr" class="twitarr">
 	<ion-nav-title ng-click="openStreamTypePopover($event)">
-		{{streamTypes[streamType].description()}}
+		{{streamTypes[$storage.streamType].description()}}
 		<span style="font-size: x-small">&#9660;</span>
 	</ion-nav-title>
 	<ion-nav-buttons side="secondary">
@@ -18,7 +18,7 @@
 			<ion-item ng-if="!error &amp;&amp; entries &amp;&amp; entries.length === 0" class="item-text-wrap">
 				There are no posts in the Twit-Arr stream.
 			</ion-item>
-			<cm-tweet ng-repeat="tweet in entries | cmfilter:streamTypes[streamType].filter:user.username track by tweet.tracker" allow-recursion="true"></cm-tweet>
+			<cm-tweet ng-repeat="tweet in entries | cmfilter:streamTypes[$storage.streamType].filter:user.username track by tweet.tracker" allow-recursion="true"></cm-tweet>
 		</ion-list>
 		<ion-infinite-scroll on-infinite="loadMore()" ng-if="entries.length < 500 &amp;&amp; !done" distance="10%"></ion-infinite-scroll>
 	</ion-content>

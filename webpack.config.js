@@ -30,8 +30,7 @@ var plugins = [
 	new webpack.ProvidePlugin({
 		$: 'jquery',
 		jQuery: 'jquery',
-		'window.jQuery': 'jquery',
-		Promise: 'es6-promise-promise'
+		'window.jQuery': 'jquery'
 	}),
 	new webpack.optimize.CommonsChunkPlugin({
 		name: 'vendor',

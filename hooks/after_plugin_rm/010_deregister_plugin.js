@@ -15,4 +15,4 @@ process.env.CORDOVA_PLUGINS.split(',').forEach(function (plugin) {
   }
 });
 
-fs.writeFile('package.json', JSON.stringify(packageJSON, null, 2));
+fs.writeFileSync('package.json', JSON.stringify(packageJSON, null, 2));
