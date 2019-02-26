@@ -281,6 +281,7 @@ $item-padding-orig: 16px;
 
 	&.user {
 		color: $cmForegroundAlternate;
+
 	}
 }
 
@@ -351,6 +352,25 @@ $item-padding-orig: 16px;
 		@include button-style($button-blue-bg, $button-blue-border, $button-blue-active-bg, $button-blue-active-border, $button-blue-text);
 		@include button-clear($button-blue-bg);
 		@include button-outline($button-blue-border);
+	}
+}
+
+$button-tiny-ratio: 0.7;
+
+.button-tiny {
+  padding: 2px $button-small-padding*$button-tiny-ratio 1px;
+  min-width: $button-small-height * $button-tiny-ratio;
+  min-height: ($button-small-height * $button-tiny-ratio) + 2;
+  font-size: $button-small-font-size * $button-tiny-ratio;
+  line-height: (($button-small-height - $button-border-width) * $button-tiny-ratio) - 1;
+
+  .icon:before,
+  &.icon:before,
+  &.icon-left:before,
+  &.icon-right:before {
+    font-size: ($button-small-icon-size * $button-tiny-ratio);
+    line-height: ($button-small-icon-size * $button-tiny-ratio) + 1;
+    margin-top: 1px;
 	}
 }
 
@@ -583,6 +603,10 @@ ion-popover-view.fit ion-content {
 		display: inline;
 		margin: 5px;
 	}
+}
+
+.display-starred {
+	vertical-align: middle;
 }
 
 .display-name {

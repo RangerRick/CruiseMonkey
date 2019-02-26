@@ -96,6 +96,12 @@
 .cm-icon-settings {
 	@extend .ion-settings;
 }
+.cm-icon-starred {
+	@extend .ion-ios-star;
+}
+.cm-icon-unstarred {
+	@extend .ion-ios-star-outline;
+}
 .cm-icon-today {
 	@extend .ion-ios-information-outline;
 }
@@ -160,6 +166,12 @@
 	}
 	.cm-icon-settings {
 		@extend .ion-android-settings;
+	}
+	.cm-icon-starred {
+		@extend .ion-android-star;
+	}
+	.cm-icon-unstarred {
+		@extend .ion-android-star-outline;
 	}
 }
 .platform-ios {
@@ -234,5 +246,11 @@
 	}
 	.cm-icon-settings {
 		@extend .ion-ios-cog;
+	}
+	.cm-icon-starred {
+		@extend .ion-ios-star;
+	}
+	.cm-icon-unstarred {
+		@extend .ion-ios-star-outline;
 	}
 }

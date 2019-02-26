@@ -16,6 +16,7 @@
     "ionicons": "2.0.1",
     "javascript-state-machine": "2.3.5",
     "jquery": "2.2.4",
+    "ng-debounce": "0.1.7",
     "ng-file-upload": "11.0.0",
     "ngCordova": "0.1.24-alpha",
     "lokijs": "1.5.2",
