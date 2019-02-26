@@ -1,14 +1,14 @@
 {
   "name": "cruisemonkey",
   "version": "2019.1.0",
-  "minSdk": "23",
+  "minSdk": "26",
   "description": "Keep Track of Your Cruise",
-  "build": 410030,
+  "build": 410032,
   "dependencies": {
     "@ionic/pro": "^2.0.4",
-    "com-sarriaroman-photoviewer": "git+https://github.com/sarriaroman/photoviewer.git",
+    "com-sarriaroman-photoviewer": "1.1.18",
     "com.red_folder.phonegap.plugin.backgroundservice": "git+https://github.com/Red-Folder/bgs-core.git",
-    "cordova-android": "^6.4.0",
+    "cordova-android": "6.4.0",
     "cordova-android-support-gradle-release": "^2.0.1",
     "cordova-browser": "^5.0.4",
     "cordova-ios": "^5.0.0",
@@ -96,7 +96,6 @@
     "ionic-plugin-keyboard",
     "cordova-plugin-spinner-dialog",
     "https://github.com/Red-Folder/bgs-core.git",
-    "com-sarriaroman-photoviewer",
     "cordova-plugin-background-fetch",
     "https://github.com/RangerRick/cordova-plugin-simple-image-picker.git",
     "cordova-plugin-x-toast",
@@ -110,7 +109,6 @@
     "cordova-plugin-datepicker",
     "cordova-android-support-gradle-release",
     "cordova-plugin-chrome-apps-system-memory@~1.1.1",
-    "git+https://github.com/zfoltin/cordova-plugin-app-event.git",
     "git+https://github.com/OpenNMS/cordova-plugin-json-storage.git",
     "cordova-plugin-statusbar",
     "cordova-plugin-camera@^4.0.3",
@@ -129,7 +127,6 @@
     "cordova-plugin-console@^1.1.0",
     "cordova-plugin-compat@^1.2.0",
     "cordova-android-support-gradle-release@^2.0.1",
-    "https://github.com/sarriaroman/photoviewer.git",
     "cordova-plugin-advanced-http@~2.0.4",
     "cordova-plugin-background-fetch@5.4.1",
     "cordova-plugin-chrome-apps-system-memory@^1.1.1",
@@ -139,7 +136,8 @@
     "cordova-plugin-statusbar@^2.4.2",
     "cordova-plugin-x-toast@^2.7.2",
     "ionic-plugin-keyboard@^2.2.1",
-    "cordova-plugin-local-notification@0.9.0-beta.3"
+    "cordova-plugin-local-notification@0.9.0-beta.3",
+    "com-sarriaroman-photoviewer@1.1.18"
   ],
   "cordovaPlatforms": [
     {
@@ -178,14 +176,14 @@
       "cordova-plugin-filepath": {},
       "cordova-plugin-datepicker": {},
       "cordova-android-support-gradle-release": {},
-      "com-sarriaroman-photoviewer": {},
       "cordova-plugin-advanced-http": {},
-      "cordova-plugin-local-notification": {}
+      "cordova-plugin-local-notification": {},
+      "com-sarriaroman-photoviewer": {}
     },
     "platforms": [
-      "android",
       "browser",
-      "ios"
+      "ios",
+      "android"
     ]
   },
   "config": {
