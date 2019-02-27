@@ -53,7 +53,7 @@ Before you can build CruiseMonkey, you must first install [Node.JS](http://nodej
 1. Install "global" commands through NPM: `npm install -g ionic cordova bower webpack webpack-cli`
 2. Install JavaScript browser requirements through Bower: `bower install`
 3. Install local node requirements through NPM: `npm install`
-4. Set up one or more platforms: `cordova platform add ios` or `cordova platform android`.  You will need to add any platforms to which you wish to target.
+4. Set up one or more platforms: `cordova platform add ios@5.0.0` or `cordova platform add android@6.4.0`.  You will need to add any platforms to which you wish to target.
 
 Compiling the Javascript
 ------------------------
