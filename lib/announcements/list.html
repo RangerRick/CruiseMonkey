@@ -2,7 +2,7 @@
 	<ion-content>
 		<ion-refresher pulling-text="Pull to refresh..." on-refresh="doRefresh()"></ion-refresher>
 		<ion-list>
-			<ion-item class="item item-text-wrap" ng-repeat="announcement in announcements track by announcement.id">
+			<ion-item class="item item-text-wrap" ng-repeat="announcement in $storage['cruisemonkey.announcements'] track by announcement.id">
 				<div>
 				</div>
 				<p class="description" ng-bind-html="announcement.text"></p>

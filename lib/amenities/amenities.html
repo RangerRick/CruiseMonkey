@@ -7,8 +7,8 @@
 			<span ng-repeat="amenity in amenities">
 				<ion-item class="item-divider event-header yellow" ng-if="amenity.type === 'deck'">Deck {{amenity.getFloor()}}</ion-item>
 				<ion-item class="item-icon-right item-text-wrap" ng-if="amenity.type === 'amenity'">
-					<div class="summary" ng-bind-html="highlight(amenity.getSummary(), searchString)"></div>
-					<div class="description" ng-show="amenity.getDescription()" ng-bind-html="highlight(amenity.getDescription(), searchString)"></div>
+					<div class="summary" ng-bind-html="highlight(amenity.getSummary(), $storage['cruisemonkey.amenities.searchString'])"></div>
+					<div class="description" ng-show="amenity.getDescription()" ng-bind-html="highlight(amenity.getDescription(), $storage['cruisemonkey.amenities.searchString'])"></div>
 					<i ng-if="amenity.getIcon()" class="icon {{amenity.getIcon()}}"></i>
 				</ion-item>
 			</span>
