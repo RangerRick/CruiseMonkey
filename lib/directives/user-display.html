@@ -2,4 +2,5 @@
 	<span class="display-name user-sizeable" ng-bind-html="user.displayName" ng-if="user &amp;&amp; user.displayName"></span>
 	<span class="display-handle user-sizeable" ng-bind-html="user.displayHandle" ng-if="user &amp;&amp; user.displayHandle"></span>
 	<button ng-class="'display-starred button button-icon button-tiny icon ' + (user.starred ? 'cm-icon-starred' : 'cm-icon-unstarred')" ng-click="toggleStarred($event, user.username)" ng-if="user && user.username && user.username !== me.username"></button>
+	<span class="display-name user-sizeable">&#8203;</span>
 </span>
