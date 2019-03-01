@@ -412,6 +412,7 @@ a.tab-item:hover {
 	h1.title {
 		/* font-size: 24px; */
 		font-size: $font-size-large;
+		line-height: $line-height-large;
 		font-weight: bolder;
 	}
 }
@@ -468,6 +469,7 @@ ion-popover-view.fit ion-content {
 	.heading {
 		font-weight: bold;
 		font-size: $font-size-large;
+		line-height: $line-height-large;
 		border-top: 2px solid $cmDetailBackground;
 		border-bottom: 2px solid $cmDetailBackground;
 		background-color: darken($cmBackgroundAlternate, 10%);
@@ -523,6 +525,7 @@ ion-popover-view.fit ion-content {
 .read:after {
 	color: transparent;
 	font-size: $font-size-large;
+	line-height: $line-height-large;
 	content: "●";
 }
 .unread {
@@ -531,6 +534,7 @@ ion-popover-view.fit ion-content {
 .unread:after {
 	color: red;
 	font-size: $font-size-large;
+	line-height: $line-height-large;
 	content: "●";
 }
 
@@ -634,6 +638,7 @@ ion-popover-view.fit ion-content {
 	.tweet-input {
 		textarea {
 			font-size: $font-size-large;
+			line-height: $line-height-large;
 			background-color: transparent;
 			width: 100%;
 		}
@@ -648,6 +653,7 @@ ion-popover-view.fit ion-content {
 	}
 	.tweet-text {
 		font-size: $font-size-large;
+		line-height: $line-height-large;
 		white-space: pre-wrap;
 	}
 	.timeframe {
@@ -738,6 +744,7 @@ ion-popover-view.fit ion-content {
 .seamail {
 	p, textarea {
 		font-size: $font-size-large;
+		line-height: $line-height-large;
 		color: $cmForeground;
 	}
 	.users {
@@ -943,6 +950,7 @@ ion-item.item.item-text-wrap.list-entry.unofficial.even {
 	.event-header {
 		font-family: $headingFont;
 		font-size: $font-size-large;
+		line-height: $line-height-large;
 		padding: 5px;
 		color: $headingColor;
 		background-color: $headingBG;
@@ -955,6 +963,7 @@ ion-item.item.item-text-wrap.list-entry.unofficial.even {
 
 .summary {
 	font-size: $font-size-large;
+	line-height: $line-height-large;
 	font-weight: 900;
 	padding: 2px;
 	margin-right: 62px;
@@ -976,6 +985,7 @@ ion-item.item.item-text-wrap.list-entry.unofficial.even {
 	margin-top: 12px;
 	padding: 2px;
 	font-size: $font-size-large;
+	line-height: $line-height-large;
 }
 
 .name {
