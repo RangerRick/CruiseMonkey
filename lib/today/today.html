@@ -17,7 +17,7 @@
 					<br><br>
 					<div class="header">:(</div>
 					<br><br>
-					<div class="content">I have no idea what's going on today.</div>
+					<div class="content">No port or theme info for today.</div>
 				</ion-item>
 			</ion-list>
 			<ion-list ng-if="!error">
@@ -58,6 +58,19 @@
 					<div class="header" ng-if="tomorrow.theme">Tomorrow's Theme:</div>
 					<div class="content" ng-if="tomorrow.theme">{{tomorrow.theme}}</div>
 				</ion-item>
+			</ion-list>
+			<span ng-if="announcements && announcements.length > 0"><br><!--<br>--></span>
+			<ion-list ng-if="announcements && announcements.length > 0">
+				<ion-item class="header announcement-header">Announcements:</ion-item>
+				<span ng-repeat="announcement in announcements">
+						<ion-item class="item-text-wrap announcement-text">
+							<p twitter-html="announcement.text"></p>
+							<div class="announcement-stamp">
+								- {{announcement.timestamp.fromNow()}}
+								by <cm-user-display username="announcement.author.username" hide-starred="true"></cm-user-display>
+							</div>
+						</ion-item>
+				</span>
 			</ion-list>
 		</span>
 	</ion-content>
