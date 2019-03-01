@@ -3,7 +3,7 @@
   "version": "2019.1.2",
   "minSdk": "23",
   "description": "Keep Track of Your Cruise",
-  "build": 410037,
+  "build": 410038,
   "dependencies": {
     "@ionic/pro": "^2.0.4",
     "com-sarriaroman-photoviewer": "1.1.18",
