@@ -1,0 +1,35 @@
+.conduct {
+  h1 {
+    font-size: $font-size-large * 1.5;
+    line-height: $line-height-large * 1.5;
+    border-bottom: 1px solid black;
+  }
+  h2 {
+    font-size: $font-size-large;
+    line-height: $line-height-large;
+    padding-bottom: 0.5em;
+  }
+  .para {
+    padding-bottom: 1em;
+    p span {
+      font-size: $font-size-base * 1.1;
+      line-height: $line-height-base * 1.1;
+      white-space: pre-line;
+    }
+    li span {
+      font-size: $font-size-base;
+      line-height: $line-height-base;
+      white-space: pre-line;
+    }
+  }
+
+  .para-text {
+    padding-top: 0.5em;
+  }
+  .section {
+    padding-bottom: 1em;
+  }
+  .bar .title {
+    vertical-align: bottom !important;
+  }
+}

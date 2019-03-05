@@ -1,0 +1,12 @@
+<ion-list class="conduct">
+  <ion-item class="item-borderless" ng-if="!hideConductHeader"><h1>Code of Conduct</h1></ion-item>
+  <ion-item class="item-borderless item-text-wrap section" ng-repeat="section in conduct.sections">
+    <h2 ng-if="section.header">{{section.header}}</h2>
+    <span ng-repeat="para in section.paragraphs" class="para">
+      <p twitter-html="para.text" ng-if="para.text" class="para-text"></p>
+      <ul ng-if="para.list" class="para-list">
+        <li ng-repeat="entry in para.list" twitter-html="entry"></li>
+      </ul>
+    </span>
+  </ion-item>
+</ion-list>
