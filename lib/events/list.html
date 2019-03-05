@@ -9,7 +9,8 @@
 	<ion-nav-buttons side="secondary">
 		<button class="button button-icon icon cm-icon-search" ng-click="showFilterBar()"></button>
 	</ion-nav-buttons>
-	<ion-content ion-sticky scroll="true" padding="false" id="event-content" delegate-handle="event-scroll" ng-click="closeKeyboard()">
+	<ion-content  ng-show="sections.calendar === false"><ion-item class="item-text-wrap">The calendar has been administratively disabled on Twit-Arr.</ion-item></ion-content>
+	<ion-content ion-sticky scroll="true" padding="false" id="event-content" delegate-handle="event-scroll" ng-click="closeKeyboard()" ng-show="sections.calendar !== false">
 		<ion-refresher pulling-text="Pull to refresh..." on-refresh="doRefresh()"></ion-refresher>
 		<ion-list>
 			<span ng-repeat="entry in events track by entry.getHash()" id="{{entry.getId()}}">

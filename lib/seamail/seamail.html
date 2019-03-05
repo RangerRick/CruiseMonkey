@@ -2,7 +2,8 @@
 	<ion-nav-buttons side="secondary">
 		<button class="button button-icon icon cm-icon-people" ng-click="openUserList($event)"></button>
 	</ion-nav-buttons>
-	<ion-content class="seamail" delegate-handle="seamail">
+	<ion-content  ng-show="sections.seamail === false"><ion-item class="item-text-wrap">Seamail has been administratively disabled on Twit-Arr.</ion-item></ion-content>
+	<ion-content class="seamail" delegate-handle="seamail" ng-show="sections.seamail !== false">
 		<ion-list>
 			<ion-item ng-repeat="message in seamail.messages track by message._hash" class="item item-avatar item-text-wrap">
 				<cm-user-avatar username="message.author.username"></cm-user-avatar>
