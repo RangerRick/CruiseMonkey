@@ -17,7 +17,7 @@
 				<span ng-bind-html="error" style="padding-left: 20px"></span>
 			</ion-item>
 			<ion-item ng-if="!error &amp;&amp; entries &amp;&amp; entries.length === 0" class="item-text-wrap">
-				There are no posts in the Twit-Arr stream.
+				There are no posts in the {{getStreamType()}} Twit-Arr stream.
 			</ion-item>
 			<!-- <cm-tweet ng-repeat="tweet in entries | cmfilter:streamTypes[$storage.streamType].filter:user.username track by tweet.id" allow-recursion="true"></cm-tweet> -->
 			<cm-tweet ng-repeat="tweet in entries track by tweet.id" allow-recursion="true"></cm-tweet>
