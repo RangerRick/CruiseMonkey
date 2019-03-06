@@ -2,10 +2,12 @@
 /*.eot
 /*.otf
 /*.svg
+/*.svgz
 /*.ttf
 /*.woff
 /*.woff2
 /*.gif
 /*.png
+/*.pdf
 !/Icon*.png
 /css/

@@ -120,8 +120,12 @@ var options = {
 				loader: 'url?limit=10000&mimetype=application/font-woff'
 			},
 			{
-				test: /\.svg(\?v=\d+\.\d+\.\d+)?$/,
+				test: /\.svgz?(\?v=\d+\.\d+\.\d+)?$/,
 				/*loader: 'url?limit=10000&mimetype=image/svg+xml'*/
+				loader: 'file'
+			},
+			{
+				test: /\.pdf$/,
 				loader: 'file'
 			},
 			{
