@@ -1,3 +1,47 @@
+<a name="2019.1.3"></a>
+## [2019.1.3](https://github.com/RangerRick/CruiseMonkey/compare/v2019.1.2+410038...v2019.1.3) (2019-03-06)
+
+
+### Bug Fixes
+
+* **login:** fix account creation and reset links ([d861c9e](https://github.com/RangerRick/CruiseMonkey/commit/d861c9e))
+* **seamail:** only show loading if logged in ([f8f2add](https://github.com/RangerRick/CruiseMonkey/commit/f8f2add))
+* **stream:** fix background fetch in tweet stream ([d08e047](https://github.com/RangerRick/CruiseMonkey/commit/d08e047))
+* **stream:** hide liked/starred when not logged in ([cd898e6](https://github.com/RangerRick/CruiseMonkey/commit/cd898e6))
+
+
+### Features
+
+* add code-of-conduct ([9c6eaee](https://github.com/RangerRick/CruiseMonkey/commit/9c6eaee))
+* support administratively disabling sections ([7f82e95](https://github.com/RangerRick/CruiseMonkey/commit/7f82e95))
+* **decks:** updated deck images for 2019 Oosterdam ([206e1f1](https://github.com/RangerRick/CruiseMonkey/commit/206e1f1))
+* **stream:** say which filter when there are no tweets ([d25a7f9](https://github.com/RangerRick/CruiseMonkey/commit/d25a7f9))
+* **twitarr:** add text retrieval ([90a7e68](https://github.com/RangerRick/CruiseMonkey/commit/90a7e68))
+
+
+
+<a name="2019.1.2"></a>
+## [2019.1.2+410038](https://github.com/RangerRick/CruiseMonkey/compare/v2019.1.2+410037...v2019.1.2+410038) (2019-03-01)
+
+
+### Bug Fixes
+
+* **events:** fix "Loading..." showing on first load ([0467bc0](https://github.com/RangerRick/CruiseMonkey/commit/0467bc0))
+* **http:** typo in parameter-handling for DELETE ([e50bac0](https://github.com/RangerRick/CruiseMonkey/commit/e50bac0))
+* **stream:** actually load cached tweets properly ([12b381f](https://github.com/RangerRick/CruiseMonkey/commit/12b381f))
+* **stream:** fix a potential ID collision when updating ([939a260](https://github.com/RangerRick/CruiseMonkey/commit/939a260))
+* **text:** fix text layout in a number of places ([308d246](https://github.com/RangerRick/CruiseMonkey/commit/308d246))
+* **ui:** beef up tweet display code to be better about missing images ([3ac55df](https://github.com/RangerRick/CruiseMonkey/commit/3ac55df))
+* **user:** improve user avatar loading ([8369ce6](https://github.com/RangerRick/CruiseMonkey/commit/8369ce6))
+
+
+### Features
+
+* **stream:** improve filtering, also refresh when changing stars ([f95dbfa](https://github.com/RangerRick/CruiseMonkey/commit/f95dbfa))
+* **today:** show announcements newest to oldest in "today" ([75dae05](https://github.com/RangerRick/CruiseMonkey/commit/75dae05))
+
+
+
 <a name="2017.1.0"></a>
 # [2017.1.0](https://github.com/RangerRick/CruiseMonkey/compare/v2016.1.1+40407...v2017.1.0) (2017-01-25)
 
