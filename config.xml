@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='utf-8'?>
-<widget android-versionCode="410039" id="com.raccoonfink.cruisemonkey" ios-CFBundleVersion="410039" version="2019.1.3" xmlns="http://www.w3.org/ns/widgets" xmlns:android="http://schemas.android.com/apk/res/android" xmlns:cdv="http://cordova.apache.org/ns/1.0">
+<widget android-versionCode="410040" id="com.raccoonfink.cruisemonkey" ios-CFBundleVersion="410040" version="2019.1.4" xmlns="http://www.w3.org/ns/widgets" xmlns:android="http://schemas.android.com/apk/res/android" xmlns:cdv="http://cordova.apache.org/ns/1.0">
     <name>CruiseMonkey</name>
     <description>Keep Track of Your Cruise</description>
     <author email="rangerrick@befunk.com" href="https://github.com/RangerRick/CruiseMonkey">Benjamin Reed</author>
