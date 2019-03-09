@@ -3,7 +3,7 @@
   "version": "2019.1.4",
   "minSdk": "23",
   "description": "Keep Track of Your Cruise",
-  "build": 410041,
+  "build": 410040,
   "dependencies": {
     "@ionic/pro": "^2.0.4",
     "com-sarriaroman-photoviewer": "1.1.18",
@@ -13,7 +13,7 @@
     "cordova-browser": "^5.0.4",
     "cordova-ios": "^5.0.0",
     "cordova-plugin-advanced-http": "^2.0.4",
-    "cordova-plugin-background-fetch": "^5.3.0",
+    "cordova-plugin-background-fetch": "^5.4.1",
     "cordova-plugin-badge": "^0.8.8",
     "cordova-plugin-camera": "^4.0.3",
     "cordova-plugin-chrome-apps-system-memory": "^1.1.1",
@@ -96,6 +96,7 @@
     "ionic-plugin-keyboard",
     "cordova-plugin-spinner-dialog",
     "https://github.com/Red-Folder/bgs-core.git",
+    "cordova-plugin-background-fetch",
     "https://github.com/RangerRick/cordova-plugin-simple-image-picker.git",
     "cordova-plugin-x-toast",
     "cordova-plugin-file-transfer",
@@ -127,7 +128,7 @@
     "cordova-plugin-compat@^1.2.0",
     "cordova-android-support-gradle-release@^2.0.1",
     "cordova-plugin-advanced-http@~2.0.4",
-    "cordova-plugin-background-fetch@5.3.0",
+    "cordova-plugin-background-fetch@5.4.1",
     "cordova-plugin-chrome-apps-system-memory@^1.1.1",
     "cordova-plugin-device@^2.0.2",
     "cordova-plugin-filepath@^1.5.1",
@@ -155,6 +156,7 @@
       "cordova-plugin-chrome-apps-system-memory": {},
       "cordova-plugin-spinner-dialog": {},
       "ionic-plugin-keyboard": {},
+      "cordova-plugin-background-fetch": {},
       "cordova-plugin-json-storage": {},
       "com.red_folder.phonegap.plugin.backgroundservice": {},
       "cordova-plugin-x-toast": {},
@@ -176,8 +178,7 @@
       "cordova-android-support-gradle-release": {},
       "cordova-plugin-advanced-http": {},
       "cordova-plugin-local-notification": {},
-      "com-sarriaroman-photoviewer": {},
-      "cordova-plugin-background-fetch": {}
+      "com-sarriaroman-photoviewer": {}
     },
     "platforms": [
       "browser",
