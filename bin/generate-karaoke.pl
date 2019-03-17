@@ -77,17 +77,22 @@ close(FILEIN);
 print "* Making karaoke list:\n";
 my $json_list = [];
 my $id = 1;
+my $obj = {};
 for my $lc_artist (sort keys %$results) {
 	my $artist_name = $results->{$lc_artist}->{'display_name'};
+	my $entries = [];
 	for my $song (sort { lc($a) cmp lc($b) } @{$results->{$lc_artist}->{'songs'}}) {
 #		my $id = MIME::Base64::encode($artist_name . ':' . $song);
 #		chomp($id);
 #		$id =~ s/\=+$//;
 		push(@{$json_list}, [$id++, $results->{$lc_artist}->{'display_name'}, $song]);
+		push(@{$entries}, { 'id' => $id++, 'song' => $song });
 	}
+	$obj->{$artist_name} = $entries;
 }
 
 my $json = JSON::PP->new();
+$json->canonical(1);
 my $json_text = $json->encode($json_list);
 
 print "Found " . scalar(@{$json_list}) . " entries.  Writing them to disk... ";
@@ -95,3 +100,9 @@ open (FILEOUT, '>www/data/karaoke-list.js') or die "Can't write to karaoke-list.
 print FILEOUT $json_text;
 close (FILEOUT);
 print "done\n";
+
+$json_text = $json->encode($obj);
+
+open (FILEOUT, '>www/data/karaoke.json') or die "Can't write to karaoke.json: $!\n";
+print FILEOUT $json_text;
+close (FILEOUT);
