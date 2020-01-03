@@ -5,13 +5,17 @@
   "description": "Keep Track of Your Cruise",
   "build": 410043,
   "dependencies": {
+    "@capacitor/android": "^1.4.0",
+    "@capacitor/cli": "^1.4.0",
+    "@capacitor/core": "^1.4.0",
+    "@capacitor/ios": "^1.4.0",
     "@ionic/pro": "^2.0.4",
     "com-sarriaroman-photoviewer": "1.1.18",
     "com.red_folder.phonegap.plugin.backgroundservice": "git+https://github.com/Red-Folder/bgs-core.git",
-    "cordova-android": "6.4.0",
-    "cordova-android-support-gradle-release": "^2.0.1",
+    "cordova-android": "^8.1.0",
+    "cordova-android-support-gradle-release": "^3.0.1",
     "cordova-browser": "^5.0.4",
-    "cordova-ios": "^5.0.0",
+    "cordova-ios": "^5.1.1",
     "cordova-plugin-advanced-http": "^2.0.4",
     "cordova-plugin-badge": "^0.8.8",
     "cordova-plugin-camera": "^4.0.3",
@@ -105,7 +109,6 @@
     "cordova-plugin-whitelist",
     "cordova-plugin-filepath",
     "cordova-plugin-datepicker",
-    "cordova-android-support-gradle-release",
     "cordova-plugin-chrome-apps-system-memory@~1.1.1",
     "git+https://github.com/OpenNMS/cordova-plugin-json-storage.git",
     "cordova-plugin-statusbar",
@@ -124,7 +127,7 @@
     "cordova-plugin-spinner-dialog@~1.3.1",
     "cordova-plugin-console@^1.1.0",
     "cordova-plugin-compat@^1.2.0",
-    "cordova-android-support-gradle-release@^2.0.1",
+    "cordova-android-support-gradle-release@^3.0.1",
     "cordova-plugin-advanced-http@~2.0.4",
     "cordova-plugin-chrome-apps-system-memory@^1.1.1",
     "cordova-plugin-device@^2.0.2",
@@ -178,8 +181,7 @@
     },
     "platforms": [
       "browser",
-      "ios",
-      "android"
+      "ios"
     ]
   },
   "config": {

@@ -1,0 +1,121 @@
+<?xml version='1.0' encoding='utf-8'?>
+<widget version="1.0.0" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
+  <access origin="*" />
+  
+  <feature name="PhotoViewer">
+    <param name="android-package" value="com.sarriaroman.PhotoViewer.PhotoViewer"/>
+  </feature>
+
+  <feature name="BackgroundServicePlugin">
+    <param name="android-package" value="com.red_folder.phonegap.plugin.backgroundservice.BackgroundServicePlugin"/>
+  </feature>
+
+  <feature name="CordovaHttpPlugin">
+    <param name="android-package" value="com.synconset.cordovahttp.CordovaHttpPlugin"/>
+  </feature>
+
+  <feature name="Badge">
+    <param name="android-package" value="de.appplant.cordova.plugin.badge.Badge"/>
+  </feature>
+
+  <feature name="Camera">
+    <param name="android-package" value="org.apache.cordova.camera.CameraLauncher"/>
+  </feature>
+
+  <feature name="ChromeSystemMemory">
+    <param name="android-package" value="org.chromium.ChromeSystemMemory"/>
+  </feature>
+
+  <feature name="DatePickerPlugin">
+    <param name="android-package" value="com.plugin.datepicker.DatePickerPlugin"/>
+  </feature>
+
+  <feature name="Device">
+    <param name="android-package" value="org.apache.cordova.device.Device"/>
+  </feature>
+
+  <feature name="Notification">
+    <param name="android-package" value="org.apache.cordova.dialogs.Notification"/>
+  </feature>
+
+  <feature name="File">
+    <param name="android-package" value="org.apache.cordova.file.FileUtils"/>
+    <param name="onload" value="true"/>
+  </feature>
+
+  <feature name="FileTransfer">
+    <param name="android-package" value="org.apache.cordova.filetransfer.FileTransfer"/>
+  </feature>
+
+  <feature name="FilePath">
+    <param name="android-package" value="com.hiddentao.cordova.filepath.FilePath"/>
+    <param name="onload" value="true"/>
+  </feature>
+
+  <feature name="InAppBrowser">
+    <param name="android-package" value="org.apache.cordova.inappbrowser.InAppBrowser"/>
+  </feature>
+
+  <feature name="LocalJSONStorage">
+    <param name="android-package" value="org.opennms.cordova.storage.LocalStoragePlugin"/>
+  </feature>
+
+  <feature name="CordovaKeychain">
+    <param name="android-package" value="com.synconset.KeychainPlugin"/>
+    <param name="onload" value="true"/>
+  </feature>
+
+  <feature name="LocalNotification">
+    <param name="android-package" value="de.appplant.cordova.plugin.localnotification.LocalNotification"/>
+  </feature>
+
+  <feature name="NetworkStatus">
+    <param name="android-package" value="org.apache.cordova.networkinformation.NetworkManager"/>
+  </feature>
+
+  <feature name="ImagePickerPlugin">
+    <param name="android-package" value="com.raccoonfink.imagepicker.ImagePickerPlugin"/>
+  </feature>
+
+  <feature name="SpinnerDialog">
+    <param name="android-package" value="hu.dpal.phonegap.plugins.SpinnerDialog"/>
+  </feature>
+
+  <feature name="StatusBar">
+    <param name="android-package" value="org.apache.cordova.statusbar.StatusBar"/>
+    <param name="onload" value="true"/>
+  </feature>
+
+  <feature name="Whitelist">
+    <param name="android-package" value="org.apache.cordova.whitelist.WhitelistPlugin"/>
+    <param name="onload" value="true"/>
+  </feature>
+
+  <feature name="Toast">
+    <param name="android-package" value="nl.xservices.plugins.Toast"/>
+  </feature>
+
+  <feature name="Keyboard">
+    <param name="android-package" value="io.ionic.keyboard.IonicKeyboard"/>
+    <param name="onload" value="true"/>
+  </feature>
+
+  
+  <preference name="webviewbounce" value="false" />
+  <preference name="UIWebViewBounce" value="false" />
+  <preference name="DisallowOverscroll" value="true" />
+  <preference name="BackupWebStorage" value="none" />
+  <preference name="AutoHideSplashScreen" value="false" />
+  <preference name="AndroidPersistentFileLocation" value="Internal" />
+  <preference name="SplashScreen" value="screen" />
+  <preference name="SplashScreenDelay" value="3000" />
+  <preference name="StatusBarStyle" value="lightcontent" />
+  <preference name="FadeSplashScreen" value="true" />
+  <preference name="FadeSplashScreenDuration" value="1" />
+  <preference name="android-minSdkVersion" value="23" />
+  <preference name="android-targetSdkVersion" value="26" />
+  <preference name="windows-target-version" value="8.1" />
+  <preference name="windows-phone-target-version" value="8.1" />
+  <preference name="WindowsDefaultUriPrefix" value="ms-appx://" />
+  <preference name="SplashShowOnlyFirstTime" value="false" />
+</widget>

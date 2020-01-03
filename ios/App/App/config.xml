@@ -1,0 +1,107 @@
+<?xml version='1.0' encoding='utf-8'?>
+<widget version="1.0.0" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
+  <access origin="*" />
+  
+  <feature name="PhotoViewer">
+    <param name="ios-package" value="PhotoViewer"/>
+  </feature>
+
+  <feature name="CordovaHttpPlugin">
+    <param name="ios-package" value="CordovaHttpPlugin"/>
+  </feature>
+
+  <feature name="Badge">
+    <param name="ios-package" value="APPBadge"/>
+  </feature>
+
+  <feature name="Camera">
+    <param name="ios-package" value="CDVCamera"/>
+  </feature>
+
+  <feature name="ChromeSystemMemory">
+    <param name="ios-package" value="ChromeSystemMemory"/>
+  </feature>
+
+  <feature name="DatePicker">
+    <param name="ios-package" value="DatePicker"/>
+  </feature>
+
+  <feature name="Device">
+    <param name="ios-package" value="CDVDevice"/>
+  </feature>
+
+  <feature name="Notification">
+    <param name="ios-package" value="CDVNotification"/>
+  </feature>
+
+  <feature name="File">
+    <param name="ios-package" value="CDVFile"/>
+    <param name="onload" value="true"/>
+  </feature>
+
+  <feature name="FileTransfer">
+    <param name="ios-package" value="CDVFileTransfer"/>
+  </feature>
+
+  <feature name="InAppBrowser">
+    <param name="ios-package" value="CDVInAppBrowser"/>
+    <param name="onload" value="true"/>
+  </feature>
+  <feature name="UIInAppBrowser">
+    <param name="ios-package" value="CDVUIInAppBrowser"/>
+    <param name="onload" value="true"/>
+  </feature>
+  <feature name="WKInAppBrowser">
+    <param name="ios-package" value="CDVWKInAppBrowser"/>
+    <param name="onload" value="true"/>
+  </feature>
+
+  <feature name="LocalJSONStorage">
+    <param name="ios-package" value="ONMSJSONStorage"/>
+  </feature>
+
+  <feature name="CordovaKeychain">
+    <param name="ios-package" value="CDVKeychain"/>
+    <param name="onload" value="true"/>
+  </feature>
+
+  <feature name="LocalNotification">
+    <param name="ios-package" value="APPLocalNotification" onload="true"/>
+    <param name="onload" value="true"/>
+  </feature>
+
+  <feature name="NetworkStatus">
+    <param name="ios-package" value="CDVConnection"/>
+  </feature>
+
+  <feature name="SpinnerDialog">
+    <param name="ios-package" value="CDVSpinnerDialog"/>
+  </feature>
+
+  <feature name="Toast">
+    <param name="ios-package" value="Toast"/>
+  </feature>
+
+  <feature name="Keyboard">
+    <param name="ios-package" value="IonicKeyboard" onload="true"/>
+  </feature>
+
+  
+  <preference name="webviewbounce" value="false" />
+  <preference name="UIWebViewBounce" value="false" />
+  <preference name="DisallowOverscroll" value="true" />
+  <preference name="BackupWebStorage" value="none" />
+  <preference name="AutoHideSplashScreen" value="false" />
+  <preference name="AndroidPersistentFileLocation" value="Internal" />
+  <preference name="SplashScreen" value="screen" />
+  <preference name="SplashScreenDelay" value="3000" />
+  <preference name="StatusBarStyle" value="lightcontent" />
+  <preference name="FadeSplashScreen" value="true" />
+  <preference name="FadeSplashScreenDuration" value="1" />
+  <preference name="android-minSdkVersion" value="23" />
+  <preference name="android-targetSdkVersion" value="26" />
+  <preference name="windows-target-version" value="8.1" />
+  <preference name="windows-phone-target-version" value="8.1" />
+  <preference name="WindowsDefaultUriPrefix" value="ms-appx://" />
+  <preference name="SplashShowOnlyFirstTime" value="false" />
+</widget>

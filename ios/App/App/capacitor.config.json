@@ -1,0 +1,28 @@
+{
+  "appId": "com.raccoonfink.cruisemonkey",
+  "appName": "CruiseMonkey",
+  "bundledWebRuntime": false,
+  "npmClient": "npm",
+  "webDir": "www",
+  "cordova": {
+    "preferences": {
+      "webviewbounce": "false",
+      "UIWebViewBounce": "false",
+      "DisallowOverscroll": "true",
+      "BackupWebStorage": "none",
+      "AutoHideSplashScreen": "false",
+      "AndroidPersistentFileLocation": "Internal",
+      "SplashScreen": "screen",
+      "SplashScreenDelay": "3000",
+      "StatusBarStyle": "lightcontent",
+      "FadeSplashScreen": "true",
+      "FadeSplashScreenDuration": "1",
+      "android-minSdkVersion": "23",
+      "android-targetSdkVersion": "26",
+      "windows-target-version": "8.1",
+      "windows-phone-target-version": "8.1",
+      "WindowsDefaultUriPrefix": "ms-appx://",
+      "SplashShowOnlyFirstTime": "false"
+    }
+  }
+}
