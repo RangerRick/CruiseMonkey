@@ -1,0 +1,41 @@
+version: 2.1
+jobs:
+  build:
+    working_directory: ~/cruisemonkey
+    docker:
+      - image: circleci/node:10
+    steps:
+      - checkout
+      - run:
+          name: npm-install-global
+          command: 'sudo npm install -g npm@latest ionic bower webpack webpack-cli mocha'
+      - restore_cache:
+          # Read about caching dependencies: https://circleci.com/docs/2.0/caching/
+          keys:
+            - dependency-cache-{{ .Branch }}-{{ checksum "package-lock.json" }}-{{ checksum "bower.json" }}
+            - dependency-cache-{{ .Branch }}
+            - dependency-cache-
+      - run:
+          name: npm-install
+          command: npm install
+      - save_cache:
+          key: dependency-cache-{{ .Branch }}-{{ checksum "package-lock.json" }}-{{ checksum "bower.json" }}
+          paths:
+            - ./node_modules
+            - ./bower_components
+      - run: # run tests
+          name: test
+          command: npm test
+#      - run: # run coverage report
+#          name: code-coverage
+#          command: './node_modules/.bin/nyc report --reporter=text-lcov'
+#      - store_artifacts: # special step to save test results as as artifact
+#          # Upload test summary for display in Artifacts: https://circleci.com/docs/2.0/artifacts/ 
+#          path: test-results.xml
+#          prefix: tests
+#      - store_artifacts: # for display in Artifacts: https://circleci.com/docs/2.0/artifacts/ 
+#          path: coverage
+#          prefix: coverage
+#      - store_test_results: # for display in Test Summary: https://circleci.com/docs/2.0/collect-test-data/
+#          path: test-results.xml
+#      # See https://circleci.com/docs/2.0/deployment-integrations/ for deploy examples
