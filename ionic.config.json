@@ -1,7 +1,10 @@
 {
   "name": "CruiseMonkey",
   "integrations": {
-    "cordova": {}
+    "cordova": {
+      "enabled": false
+    },
+    "capacitor": {}
   },
   "type": "ionic1",
   "watchPatterns": [
