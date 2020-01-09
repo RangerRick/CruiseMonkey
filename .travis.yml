@@ -5,7 +5,7 @@ language: node_js
 node_js:
   - 'node'
 before_install:
-  - 'npm install -g ionic cordova bower webpack webpack-cli mocha'
+  - 'npm install -g ionic bower'
   - 'npm install'
 script: npm test
 cache:

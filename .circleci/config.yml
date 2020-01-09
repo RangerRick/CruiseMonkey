@@ -10,7 +10,7 @@ jobs:
       - checkout
       - run:
           name: npm-install-global
-          command: 'sudo npm install -g npm@latest ionic bower webpack webpack-cli mocha'
+          command: 'sudo npm install -g ionic bower'
       - restore_cache:
           # Read about caching dependencies: https://circleci.com/docs/2.0/caching/
           keys:
@@ -30,7 +30,8 @@ jobs:
           command: npm test
       - irc/notify:
           server: 'irc.freenode.net' # default: IRC_SERVER environment varible.
-          channel: '#cruisemonkey' # required parmater
+          channel: '#cruisemonkey' # required parameter
+          nick: 'circle-monkey' # default: `circleci-bot`
           message: webhook # default: "Your CircleCI Job has completed."
 #      - run: # run coverage report
 #          name: code-coverage
