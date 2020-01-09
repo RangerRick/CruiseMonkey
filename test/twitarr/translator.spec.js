@@ -1,8 +1,7 @@
 'use strict';
 
 var assert = require('assert-plus');
-var jsdom = require('jsdom').jsdom;
-document = jsdom( '<html/>' );
+require('jsdom-global')();
 
 describe('Twit-Arr Translator', function() {
 	var translator = require('../../lib/twitarr/translator');

@@ -1,6 +1,6 @@
 $ionicons-font-path: "../bower_components/ionic/fonts";
 
-$fontPath: "../www/fonts";
+$fontPath: "../lib/fonts";
 
 @font-face {
 	font-family: Hero;
@@ -127,7 +127,7 @@ $z-index-view-above: 3;
 $z-index-bar: 9;
 
 @import "../bower_components/ionic/scss/ionic";
-@import "../bower_components/ionic-filter-bar/scss/ionic.filter.bar";
+@import "../node_modules/ionic-filter-bar/scss/ionic.filter.bar";
 
 .platform-ios.platform-cordova {
 	&:not(.fullscreen) {

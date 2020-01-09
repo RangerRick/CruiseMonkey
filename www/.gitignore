@@ -1,4 +1,4 @@
-/*.bundle.js
+/*.bundle.*
 /*.eot
 /*.otf
 /*.svg
@@ -9,5 +9,7 @@
 /*.gif
 /*.png
 /*.pdf
+images/*.png
+images/*.svg
 !/Icon*.png
 /css/
