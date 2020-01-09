@@ -1,4 +1,6 @@
 version: 2.1
+orbs:
+  irc: circleci/irc@0.1.0
 jobs:
   build:
     working_directory: ~/cruisemonkey
@@ -26,6 +28,10 @@ jobs:
       - run: # run tests
           name: test
           command: npm test
+      - irc/notify:
+          server: 'irc.freenode.net' # default: IRC_SERVER environment varible.
+          channel: '#cruisemonkey' # required parmater
+          message: webhook # default: "Your CircleCI Job has completed."
 #      - run: # run coverage report
 #          name: code-coverage
 #          command: './node_modules/.bin/nyc report --reporter=text-lcov'
