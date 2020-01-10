@@ -24,5 +24,8 @@
       "WindowsDefaultUriPrefix": "ms-appx://",
       "SplashShowOnlyFirstTime": "false"
     }
+  },
+  "server": {
+    "url": "http://localhost:8100"
   }
 }
