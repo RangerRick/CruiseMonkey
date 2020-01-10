@@ -8,5 +8,5 @@
 	<cm-user-display username="tweet.author.username"></cm-user-display>
 	<p class="tweet-text user-sizeable" twitter-html="tweet.text"></p>
 	<img cm-cache img-src="{{getImageURL()}}" ng-if="hasImageURL()" style="width: 100%; max-width: 400px" ng-click="i.show(tweet.photo.id, $event)" />
-	<p class="timeframe user-sizeable">{{tweet.display_timestamp}}</p>
+	<p class="timeframe user-sizeable">{{timestamp}}</p>
 </ion-item>
