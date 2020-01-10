@@ -10,8 +10,7 @@
     "ionicons": "2.0.1",
     "javascript-state-machine": "2.3.5",
     "jquery": "2.2.4",
-    "winstore-jscompat": "https://github.com/MSOpenTech/winstore-jscompat.git",
-    "ionic-toast": "0.4.1"
+    "winstore-jscompat": "https://github.com/MSOpenTech/winstore-jscompat.git"
   },
   "resolutions": {
     "angular-ui-router": "0.2.15",
