@@ -33,9 +33,13 @@ module.exports = {
   rules: {
     /** keep these */
     'object-curly-newline': [ 'warn', {
-      'ObjectExpression': 'always',
+      'ObjectExpression': {
+        'multiline': true,
+        'minProperties': 2,
+      },
       'ObjectPattern': {
         'multiline': true,
+        'minProperties': 2,
       }
     }],
     /** remove these after refactoring */
