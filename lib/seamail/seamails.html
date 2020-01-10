@@ -11,7 +11,7 @@
 		<ion-list>
 			<ion-item class="item-text-wrap" ng-if="!UserService.loggedIn()">You must be logged in to view your Seamail discussions.</ion-item>
 			<ion-item class="item-text-wrap" ng-if="seamails &amp;&amp; seamails.length === 0 &amp;&amp; user.loggedIn">You have no Seamail discussions.</ion-item>
-			<ion-item ng-repeat="seamail in seamails track by seamail.id" class="item-text-wrap" href="#/tab/seamail/{{seamail.id}}">
+			<ion-item ng-repeat="seamail in seamails track by seamail.id" class="item-text-wrap" href="#!/tab/seamail/{{seamail.id}}">
 				<div class="title"><span class="unread" ng-if="seamail.is_unread"></span> {{seamail.subject}}</div>
 				<div class="messages">{{seamail.messages}}</div>
 				<div class="timestamp">{{seamail.timestamp.format('dddd, MMMM Do, h:mma')}}</div>

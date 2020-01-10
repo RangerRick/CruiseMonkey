@@ -2,7 +2,7 @@
 	<ion-content delegate-handle="forums-scroll">
 		<ion-refresher pulling-text="Pull to refresh..." on-refresh="doRefresh()"></ion-refresher>
 		<ion-list>
-			<ion-item ng-repeat="forum in forums track by forum.id" href="#/tab/info/forums/{{forum.id}}">
+			<ion-item ng-repeat="forum in forums track by forum.id" href="#!/tab/info/forums/{{forum.id}}">
 				<span class="item-note">
 					{{forum.posts}}
 				</span>
