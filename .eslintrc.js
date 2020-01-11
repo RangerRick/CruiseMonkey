@@ -33,13 +33,21 @@ module.exports = {
   rules: {
     /** keep these */
     'object-curly-newline': [ 'warn', {
-      'ObjectExpression': {
-        'multiline': true,
-        'minProperties': 2,
+      ExportDeclaration: {
+        multiline: true,
+        minProperties: 6,
       },
-      'ObjectPattern': {
-        'multiline': true,
-        'minProperties': 2,
+      ImportDeclaration: {
+        multiline: true,
+        minProperties: 6,
+      },
+      ObjectExpression: {
+        multiline: true,
+        minProperties: 2,
+      },
+      ObjectPattern: {
+        multiline: true,
+        minProperties: 2,
       }
     }],
     /** remove these after refactoring */
