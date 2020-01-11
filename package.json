@@ -23,7 +23,7 @@
     "angular-sanitize": "~1.6.10",
     "angular-ui-router": "^0.4.3",
     "angular-uuid4": "~0.3.1",
-    "axios": "^0.19.0",
+    "axios": "^0.19.1",
     "cordova-promise-fs": "^1.2.5",
     "deep-equal": "^2.0.1",
     "ion-sticky": "git+https://github.com/Poordeveloper/ion-sticky.git#1.0.7",
