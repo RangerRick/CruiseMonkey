@@ -20,7 +20,7 @@
     "angular-file-upload": "^2.5.0",
     "angular-mocks": "~1.6.10",
     "angular-pouchdb": "^5.0.2",
-    "angular-sanitize": "~1.6.10",
+    "angular-sanitize": "~1.7.9",
     "angular-ui-router": "^0.4.3",
     "angular-uuid4": "~0.3.1",
     "axios": "^0.19.1",
