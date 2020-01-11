@@ -26,6 +26,7 @@
     }
   },
   "server": {
-    "url": "http://localhost:8100"
+    "url": "http://localhost:8100",
+    "originalUrl": "http://localhost:8100"
   }
 }

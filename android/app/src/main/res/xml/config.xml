@@ -6,20 +6,12 @@
     <param name="android-package" value="com.sarriaroman.PhotoViewer.PhotoViewer"/>
   </feature>
 
-  <feature name="BackgroundServicePlugin">
-    <param name="android-package" value="com.red_folder.phonegap.plugin.backgroundservice.BackgroundServicePlugin"/>
-  </feature>
-
   <feature name="CordovaHttpPlugin">
     <param name="android-package" value="com.silkimen.cordovahttp.CordovaHttpPlugin"/>
   </feature>
 
   <feature name="Badge">
     <param name="android-package" value="de.appplant.cordova.plugin.badge.Badge"/>
-  </feature>
-
-  <feature name="Camera">
-    <param name="android-package" value="org.apache.cordova.camera.CameraLauncher"/>
   </feature>
 
   <feature name="ChromeSystemMemory">
@@ -47,11 +39,6 @@
     <param name="android-package" value="org.apache.cordova.filetransfer.FileTransfer"/>
   </feature>
 
-  <feature name="FilePath">
-    <param name="android-package" value="com.hiddentao.cordova.filepath.FilePath"/>
-    <param name="onload" value="true"/>
-  </feature>
-
   <feature name="CordovaKeychain">
     <param name="android-package" value="com.synconset.KeychainPlugin"/>
     <param name="onload" value="true"/>
@@ -65,22 +52,8 @@
     <param name="android-package" value="org.apache.cordova.networkinformation.NetworkManager"/>
   </feature>
 
-  <feature name="ImagePickerPlugin">
-    <param name="android-package" value="com.raccoonfink.imagepicker.ImagePickerPlugin"/>
-  </feature>
-
   <feature name="SpinnerDialog">
     <param name="android-package" value="hu.dpal.phonegap.plugins.SpinnerDialog"/>
-  </feature>
-
-  <feature name="StatusBar">
-    <param name="android-package" value="org.apache.cordova.statusbar.StatusBar"/>
-    <param name="onload" value="true"/>
-  </feature>
-
-  <feature name="Whitelist">
-    <param name="android-package" value="org.apache.cordova.whitelist.WhitelistPlugin"/>
-    <param name="onload" value="true"/>
   </feature>
 
   <feature name="Keyboard">

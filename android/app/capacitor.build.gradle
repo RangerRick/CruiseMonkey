@@ -11,11 +11,9 @@ apply from: "../capacitor-cordova-android-plugins/cordova.variables.gradle"
 dependencies {
     implementation project(':capacitor-data-storage-sqlite')
     implementation "com.squareup.okhttp3:okhttp-urlconnection:3.10.0"
-    implementation "com.android.support:support-v4:27.+"
     implementation "com.android.support:support-v4:26.+"
 }
 apply from: "../../node_modules/com-sarriaroman-photoviewer/src/android/photoviewer.gradle"
-apply from: "../../node_modules/cordova-android-support-gradle-release/cordova-android-support-gradle-release.gradle"
 apply from: "../../node_modules/cordova-plugin-badge/src/android/badge.gradle"
 apply from: "../../node_modules/cordova-plugin-local-notification/src/android/build/localnotification.gradle"
 
