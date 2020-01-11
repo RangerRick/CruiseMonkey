@@ -21,7 +21,7 @@
     "angular-mocks": "~1.6.10",
     "angular-pouchdb": "^5.0.2",
     "angular-sanitize": "~1.6.10",
-    "angular-ui-router": "^0.4.3",
+    "angular-ui-router": "^1.0.24",
     "angular-uuid4": "~0.3.1",
     "axios": "^0.19.1",
     "cordova-promise-fs": "^1.2.5",
