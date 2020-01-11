@@ -49,7 +49,7 @@
     "@babel/preset-typescript": "^7.7.7",
     "@babel/register": "^7.7.7",
     "@capacitor/cli": "1.4.0",
-    "@ionic/v1-toolkit": "^1.0.22",
+    "@ionic/v1-toolkit": "^2.0.18",
     "@typescript-eslint/eslint-plugin": "^2.15.0",
     "@typescript-eslint/parser": "^2.15.0",
     "assert-plus": "^1.0.0",
