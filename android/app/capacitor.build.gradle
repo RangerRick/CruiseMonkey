@@ -11,9 +11,7 @@ apply from: "../capacitor-cordova-android-plugins/cordova.variables.gradle"
 dependencies {
 
     implementation "com.squareup.okhttp3:okhttp-urlconnection:3.10.0"
-    implementation "com.android.support:support-v4:24.1.1+"
-    implementation "com.android.support:support-v4:25.+"
-    implementation "com.android.support:appcompat-v7:25.+"
+    implementation "com.android.support:support-v4:27.+"
     implementation "com.android.support:support-v4:26.+"
 }
 apply from: "../../node_modules/com-sarriaroman-photoviewer/src/android/photoviewer.gradle"
