@@ -151,7 +151,7 @@
     "watch": "webpack --colors --display-error-details --watch",
     "changelog": "conventional-changelog -p angular -i CHANGELOG.md -s -u",
     "lint": "eslint lib --ext .js --ext .ts",
-    "test": "mocha test",
+    "test": "npm run lint && npm run build && mocha test",
     "resources": "cordova-res ios && cordova-res android && node resources/generate-resources.js"
   }
 }
