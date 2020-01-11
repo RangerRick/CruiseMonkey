@@ -62,7 +62,7 @@
     "com-sarriaroman-photoviewer": "1.2.4",
     "com.red_folder.phonegap.plugin.backgroundservice": "git+https://github.com/Red-Folder/bgs-core.git",
     "commonmark": "^0.29.0",
-    "conventional-changelog-cli": "^1.2.0",
+    "conventional-changelog-cli": "^2.0.31",
     "copy-webpack-plugin": "^5.1.1",
     "cordova-android": "^8.1.0",
     "cordova-android-support-gradle-release": "^3.0.1",
