@@ -1,5 +1,5 @@
-var uuid = require('uuid/index');
+const uuid = require('uuid/index');
 
-require.extensions['.png'] = function() {
+require.extensions['.png'] = () => {
 	return uuid.v4() + '.png';
 };

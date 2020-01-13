@@ -1,20 +1,23 @@
+/* global describe: true */
+/* global it: true */
+
 const assert = require('assert-plus');
 require('jsdom-global')();
 
-var moment = require('moment-timezone');
+const moment = require('moment-timezone');
 
-var model = require('../../lib/data/Model');
+const model = require('../../lib/data/Model');
 
 describe('Model', function() {
 	describe('CMEvent', function() {
 		it('should create a basic event', function() {
-			var start   = moment('1980-01-01 00:00');
-			var middle  = moment('1980-01-01 00:50');
-			var end     = moment('1980-01-01 01:00');
-			var tooOld  = moment('1979-01-01');
-			var tooLate = moment('1991-01-01');
+			const start   = moment('1980-01-01 00:00');
+			const middle  = moment('1980-01-01 00:50');
+			const end     = moment('1980-01-01 01:00');
+			const tooOld  = moment('1979-01-01');
+			const tooLate = moment('1991-01-01');
 
-			cmevent = new model.CMEvent({
+			const cmevent = new model.CMEvent({
 				summary: 'Event summary.',
 				start_time: start.format(),
 				end_time: end.format()
