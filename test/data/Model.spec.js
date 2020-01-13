@@ -1,3 +1,6 @@
+/* global describe: true */
+/* global it: true */
+
 const assert = require('assert-plus');
 
 const moment = require('moment-timezone');

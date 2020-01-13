@@ -32,24 +32,7 @@ module.exports = {
   ],
   rules: {
     /** keep these */
-    'object-curly-newline': [ 'warn', {
-      ExportDeclaration: {
-        multiline: true,
-        minProperties: 6,
-      },
-      ImportDeclaration: {
-        multiline: true,
-        minProperties: 6,
-      },
-      ObjectExpression: {
-        multiline: true,
-        minProperties: 2,
-      },
-      ObjectPattern: {
-        multiline: true,
-        minProperties: 2,
-      }
-    }],
+    'object-curly-newline': 'warn',
     /** remove these after refactoring */
     '@typescript-eslint/camelcase': 'off',
     '@typescript-eslint/explicit-function-return-type': 'off',
