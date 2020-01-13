@@ -6,7 +6,7 @@
   "build": 410043,
   "dependencies": {
     "@babel/runtime": "^7.8.0",
-    "@babel/runtime-corejs2": "^7.7.7",
+    "@babel/runtime-corejs2": "^7.8.0",
     "@capacitor/android": "^1.4.0",
     "@capacitor/core": "1.4.0",
     "@capacitor/ios": "^1.4.0",
