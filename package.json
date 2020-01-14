@@ -53,7 +53,7 @@
     "@capacitor/cli": "1.4.0",
     "@ionic/v1-toolkit": "^2.0.18",
     "@typescript-eslint/eslint-plugin": "^2.15.0",
-    "@typescript-eslint/parser": "^2.15.0",
+    "@typescript-eslint/parser": "^2.16.0",
     "assert-plus": "^1.0.0",
     "babel-eslint": "^10.0.3",
     "babel-loader": "^8.0.6",
