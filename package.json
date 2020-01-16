@@ -51,7 +51,7 @@
     "@babel/preset-typescript": "^7.8.3",
     "@babel/register": "^7.8.3",
     "@capacitor/cli": "1.4.0",
-    "@ionic/v1-toolkit": "^2.0.19",
+    "@ionic/v1-toolkit": "^2.0.20",
     "@typescript-eslint/eslint-plugin": "^2.16.0",
     "@typescript-eslint/parser": "^2.16.0",
     "assert-plus": "^1.0.0",
