@@ -104,7 +104,7 @@
     "mocha": "^3.2.0",
     "ng-fittext": "^4.2.3",
     "ngtemplate-loader": "^2.0.1",
-    "node-sass": "^4.13.0",
+    "node-sass": "^4.13.1",
     "phantomjs-prebuilt": "^2.1.16",
     "sass-loader": "^8.0.2",
     "script-loader": "^0.7.0",
