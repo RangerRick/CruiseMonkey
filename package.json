@@ -11,7 +11,7 @@
     "@capacitor/core": "1.4.0",
     "@capacitor/ios": "^1.4.0",
     "@ionic-native/core": "^5.19.1",
-    "@ionic-native/file": "^5.19.1",
+    "@ionic-native/file": "^5.20.0",
     "@ionic-native/http": "^5.19.1",
     "@ionic/pwa-elements": "^1.4.1",
     "angular": "~1.6.10",
