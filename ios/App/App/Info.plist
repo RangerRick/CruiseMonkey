@@ -38,8 +38,14 @@
 		<key>NSAllowsArbitraryLoads</key>
 		<true/>
 	</dict>
+        <key>NSBluetoothAlwaysUsageDescription</key>
+        <string>This app would like to scan for iBeacons.</string>
+        <key>NSBluetoothPeripheralUsageDescription</key>
+        <string>This app would like to scan for iBeacons.</string>
 	<key>NSCameraUsageDescription</key>
 	<string>To Take Photos and Video</string>
+        <key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+        <string>This app would like to scan for iBeacons both while in use and while in the background.</string>
 	<key>NSLocationAlwaysUsageDescription</key>
 	<string>Always allow Geolocation?</string>
 	<key>NSLocationWhenInUseUsageDescription</key>

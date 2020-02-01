@@ -4,3 +4,6 @@ project(':capacitor-android').projectDir = new File('../node_modules/@capacitor/
 
 include ':capacitor-data-storage-sqlite'
 project(':capacitor-data-storage-sqlite').projectDir = new File('../node_modules/capacitor-data-storage-sqlite/android')
+
+include ':capacitor-ibeacon'
+project(':capacitor-ibeacon').projectDir = new File('../node_modules/capacitor-ibeacon/android')
