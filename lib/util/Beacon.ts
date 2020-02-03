@@ -44,22 +44,13 @@ angular.module('cruisemonkey.util.Beacon', [
     });
   };
 
-  const didChangeAuthorizationStatus = (result) => {
-    $log.debug(`Beacon: didChangeAuthorization => ${result.state}`);
+  const authorizationStatusChanged = (result) => {
+    $log.debug(`Beacon: authorizationStatusChanged => ${result.state}`);
     sendNotification('Change Authorization Status', `Authorization status changed to ${result.state}`);
   };
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const didDetermineStateForRegion = (result) => {
-    $log.debug(`Beacon: didDetermineStateForRegion: ${result.region.uuid} (${result.region.identifier}) => ${result.state}`);
-    sendNotification(
-      `Determined State for ${result.region.identifier}`,
-      `State determined for region ${result.region.uuid} (${result.region.identifier}) => ${result.state}`
-    );
-  };
-
-  const didRange = (result) => {
-    $log.debug(`Beacon: didRange: ${result.regions.length} beacons.`);
+  const ranged = (result) => {
+    $log.debug(`Beacon: ranged: ${result.regions.length} beacons.`);
     sendNotification(
       `Ranged ${result.regions.length} regions`,
       'Ranged regions:\n' + result.regions.map((region) => `* ${region.uuid}`).join('\n'),
@@ -107,12 +98,15 @@ angular.module('cruisemonkey.util.Beacon', [
   $ionicPlatform.ready(() => {
     return $q.all(
       $q.when(IBeacon.addListener('error', wrap(onError))),
-      $q.when(IBeacon.addListener('didChangeAuthorizationStatus', wrap(didChangeAuthorizationStatus))),
-//      $q.when(IBeacon.addListener('didDetermineStateForRegion', wrap(didDetermineStateForRegion))),
-      $q.when(IBeacon.addListener('didRange', wrap(didRange))),
-      $q.when(IBeacon.addListener('didStartMonitoringForRegion', wrap(didStartMonitoringForRegion))),
-      $q.when(IBeacon.addListener('didEnterRegion', wrap(didEnterRegion))),
-      $q.when(IBeacon.addListener('didExitRegion', wrap(didExitRegion))),
+      $q.when(IBeacon.addListener('authorizationStatusChanged', wrap(authorizationStatusChanged))),
+      $q.when(IBeacon.addListener('ranged', wrap(ranged))),
+      $q.when(IBeacon.addListener('startedMonitoring', wrap(didStartMonitoringForRegion))),
+      $q.when(IBeacon.addListener('enteredRegion', wrap(didEnterRegion))),
+      $q.when(IBeacon.addListener('leftRegion', wrap(didExitRegion))),
+    );
+  }).then(() => {
+    return $q.all(
+      $q.when(IBeacon.requestAlwaysAuthorization()),
     );
   }).then(() => {
     deferred.resolve();
