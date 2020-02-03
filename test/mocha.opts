@@ -1,4 +1,0 @@
---reporter spec
---recursive
---growl
---compilers css:test/null-compiler.js
