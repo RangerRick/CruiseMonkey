@@ -10,6 +10,7 @@
 	</ion-header-bar>
 	<ion-content>
 		<ion-list>
+			<cm-tweet class="item row tweet-reply" tweet="referencedTweet" allow-recursion="false" hide-controls="true" ng-if="type === 'reply' &amp;&amp; referencedTweet &amp;&amp; referencedTweet.text"></cm-tweet>
 			<div class="item row">
 				<button class="col col-10 button button-clear button-dark button-emoji" ng-click="showEmoji($event)"><i class="icon ion-happy-outline"></i></button>
 				<div class="item-input-inset tweet-input col">
@@ -37,10 +38,6 @@
 					</div>
 				</div>
 			</span>
-			<div class="item item-text-wrap tweet-reply" ng-if="type === 'reply' &amp;&amp; referencedTweet &amp;&amp; referencedTweet.text">
-				<span class="tweet-text user-sizeable">{{referencedTweet.author.username}}</span>:
-				<span class="tweet-text user-sizeable" twitter-html="referencedTweet.text"></span>
-			</div>
 		</ion-list>
 	</ion-content>
 </ion-modal-view>
