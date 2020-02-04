@@ -15,6 +15,7 @@
     "@ionic-native/http": "^5.20.0",
     "@ionic-native/local-notifications": "^5.20.0",
     "@ionic/pwa-elements": "^1.4.2",
+    "@types/expect": "^24.3.0",
     "angular": "~1.5.11",
     "angular-animate": "~1.5.11",
     "angular-cache": "^4.6.0",
@@ -56,6 +57,7 @@
     "@capacitor/cli": "1.5.0",
     "@ionic/cli": "^6.0.1",
     "@ionic/v1-toolkit": "^3.0.1",
+    "@types/jest": "^25.1.1",
     "@typescript-eslint/eslint-plugin": "^2.19.0",
     "@typescript-eslint/parser": "^2.19.0",
     "assert-plus": "^1.0.0",
@@ -101,12 +103,12 @@
     "html-loader": "^0.5.5",
     "imports-loader": "^0.8.0",
     "ionic-plugin-keyboard": "^2.2.1",
+    "jest": "^25.1.0",
     "jsdom": "^16.1.0",
     "jsdom-global": "^3.0.2",
     "line-reader": "*",
     "lodash": "^4.17.15",
     "mini-css-extract-plugin": "^0.9.0",
-    "mocha": "^7.0.0",
     "ng-fittext": "^4.2.3",
     "ngtemplate-loader": "^2.0.1",
     "node-sass": "^4.13.1",
@@ -128,6 +130,11 @@
   "config": {
     "ghooks": {
       "pre-push": "npm run test"
+    }
+  },
+  "jest": {
+    "moduleNameMapper": {
+      ".*\\.png$": "<rootDir>/test/dummy.js"
     }
   },
   "scripts": {

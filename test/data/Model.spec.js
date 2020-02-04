@@ -2,15 +2,15 @@
 /* global it: true */
 
 const assert = require('assert-plus');
-require('jsdom-global')();
+// require('jsdom-global')();
 
 const moment = require('moment-timezone');
 
 const model = require('../../lib/data/Model');
 
-describe('Model', function() {
-	describe('CMEvent', function() {
-		it('should create a basic event', function() {
+describe('Model', () => {
+	describe('CMEvent', () => {
+		test('should create a basic event', () => {
 			const start   = moment('1980-01-01 00:00');
 			const middle  = moment('1980-01-01 00:50');
 			const end     = moment('1980-01-01 01:00');

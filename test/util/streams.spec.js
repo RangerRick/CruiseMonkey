@@ -6,8 +6,8 @@ var moment = require('moment');
 var datetime = require('../../lib/util/datetime');
 var streamUtil = require('../../lib/util/streams');
 
-describe('Streams Utilities', function() {
-	it('turn timestamp strings into moments', function() {
+describe('Streams Utilities', () => {
+	test('turn timestamp strings into moments', () => {
 		var chunk = require('./streams.limit-3.json');
 		assert.arrayOfObject(chunk);
 		assert.equal(3, chunk.length);
@@ -23,7 +23,7 @@ describe('Streams Utilities', function() {
 		assert.ok(datetime.create('2016-02-04T19:29:32.439Z').isSame(chunk[2].timestamp));
 	});
 
-	it('merge 2 sets of overlapping streams', function() {
+	test('merge 2 sets of overlapping streams', () => {
 		var firstChunk = streamUtil.normalize(require('./streams.limit-3.json'));
 		var secondChunk = streamUtil.normalize(require('./streams.limit-2-page-1.json'));
 
@@ -37,7 +37,7 @@ describe('Streams Utilities', function() {
 		assert.equal('56b4ea05aaebbc7e94000009', combined[3].id);
 	});
 
-	it('merge 3 sets of overlapping streams', function() {
+	test('merge 3 sets of overlapping streams', () => {
 		var firstChunk = streamUtil.normalize([{
 			id: '1',
 			timestamp: '2016-01-01T01:00:00Z'
