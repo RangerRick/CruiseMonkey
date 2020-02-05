@@ -22,7 +22,7 @@
     "angular-mocks": "~1.5.11",
     "angular-pouchdb": "^5.0.2",
     "angular-sanitize": "~1.5.11",
-    "angular-ui-router": "^0.2.15",
+    "angular-ui-router": "^1.0.25",
     "angular-uuid4": "~0.3.1",
     "axios": "^0.19.2",
     "capacitor-data-storage-sqlite": "^1.4.0-dev.8",
