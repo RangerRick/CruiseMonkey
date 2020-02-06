@@ -1,4 +1,4 @@
-{
+module.exports = {
   "presets": [
     ["@babel/preset-env", {
       "targets": {
@@ -9,15 +9,12 @@
       "useBuiltIns": "usage",
       "corejs": 2
     }],
-    "@babel/preset-typescript"
+    ["@babel/preset-typescript", { "allExtensions": true }],
   ],
   "plugins": [
     "angularjs-annotate",
     ["module-resolver", {
       "root": [
-        "src/main/assets/modules",
-        "src/main/assets/js",
-        "src/main/assets/style",
         "node_modules"
       ]
       }],
@@ -34,4 +31,4 @@
     "@babel/plugin-transform-modules-commonjs",
     "@babel/plugin-transform-regenerator"
   ]
-}
+};

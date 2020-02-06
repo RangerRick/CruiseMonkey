@@ -1,17 +1,20 @@
 {
   "compilerOptions": {
-    "target": "es6",
-    "module": "amd",
-    "moduleResolution": "node",
+    "allowJs": true,
     "allowSyntheticDefaultImports": true,
     "declaration": true,
     "esModuleInterop": true,
     "experimentalDecorators": true,
-    "sourceMap": true,
-    "allowJs": true,
-    "lib": [ "es6", "dom", "es2017" ],
+    "forceConsistentCasingInFileNames": true,
+    "lib": [ "dom", "esnext" ],
+    "module": "esnext",
+    "moduleResolution": "node",
+    "outDir": "dist",
+    "resolveJsonModule": true,
     "skipLibCheck": true,
-    "outDir": "dist"
+    "sourceMap": true,
+    "strict": true,
+    "target": "es6"
   },
   "include": [
     "lib"
