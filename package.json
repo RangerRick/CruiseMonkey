@@ -15,13 +15,11 @@
     "@ionic-native/http": "^5.20.0",
     "@ionic-native/local-notifications": "^5.20.0",
     "@ionic/pwa-elements": "^1.4.2",
-    "@types/expect": "^24.3.0",
     "angular": "~1.5.11",
     "angular-animate": "~1.5.11",
     "angular-cache": "^4.6.0",
     "angular-file-upload": "^2.5.0",
     "angular-mocks": "~1.5.11",
-    "angular-pouchdb": "^5.0.2",
     "angular-sanitize": "~1.5.11",
     "angular-ui-router": "^0.2.15",
     "angular-uuid4": "~0.3.1",
@@ -29,7 +27,6 @@
     "capacitor-data-storage-sqlite": "^1.4.0-dev.8",
     "capacitor-ibeacon": "https://github.com/RangerRick/capacitor-ibeacon.git#master",
     "cordova-promise-fs": "^1.2.5",
-    "deep-equal": "^2.0.1",
     "ion-sticky": "git+https://github.com/Poordeveloper/ion-sticky.git#1.0.7",
     "ionic-filter-bar": "git+https://github.com/djett41/ionic-filter-bar.git#v1.1.1",
     "jquery": "^3.4.1",
@@ -40,8 +37,6 @@
     "ng-file-model": "0.0.5",
     "ng-file-upload": "^12.2.13",
     "ngstorage": "^0.3.11",
-    "pouchdb": "^7.1.1",
-    "runtypes": "^4.1.0",
     "rxjs": "^6.5.4",
     "twitarr": "git+https://github.com/RangerRick/twitarr-client-api.git#master",
     "urijs": "^1.19.2"
@@ -57,6 +52,8 @@
     "@capacitor/cli": "1.5.0",
     "@ionic/cli": "^6.0.1",
     "@ionic/v1-toolkit": "^3.0.1",
+    "@types/angular": "~1.5.11",
+    "@types/expect": "^24.3.0",
     "@types/jest": "^25.1.1",
     "@typescript-eslint/eslint-plugin": "^2.19.0",
     "@typescript-eslint/parser": "^2.19.0",
@@ -135,7 +132,11 @@
   "jest": {
     "moduleNameMapper": {
       ".*\\.png$": "<rootDir>/test/dummy.js"
-    }
+    },
+    "moduleFileExtensions": [
+      "ts",
+      "js"
+    ]
   },
   "scripts": {
     "setup": "bower install && npx cap sync",
@@ -154,7 +155,8 @@
     "watch": "webpack --colors --display-error-details --watch",
     "changelog": "conventional-changelog -p angular -i CHANGELOG.md -s -u",
     "lint": "eslint lib --ext .js --ext .ts",
-    "test": "npm run lint && npm run build && mocha test",
+    "test": "npm run lint && npm run build && jest",
+    "watch-test": "npm run build && jest --watch",
     "resources": "cordova-res ios && cordova-res android && node resources/generate-resources.js"
   }
 }
