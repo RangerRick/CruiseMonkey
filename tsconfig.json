@@ -1,0 +1,19 @@
+{
+  "compilerOptions": {
+    "target": "es6",
+    "module": "amd",
+    "moduleResolution": "node",
+    "allowSyntheticDefaultImports": true,
+    "declaration": true,
+    "esModuleInterop": true,
+    "experimentalDecorators": true,
+    "sourceMap": true,
+    "allowJs": true,
+    "lib": [ "es6", "dom", "es2017" ],
+    "skipLibCheck": true,
+    "outDir": "dist"
+  },
+  "include": [
+    "lib"
+  ]
+}
