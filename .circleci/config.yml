@@ -1,41 +1,55 @@
 version: 2.1
+
+commands:
+  cached-checkout:
+      description: "checkout with caching"
+      steps:
+        - restore_cache:
+            name: Restore Git Cache
+            keys:
+              - git-{{ .Branch }}-{{ .Revision }}
+              - git-{{ .Branch }}-
+              - git-
+        - checkout:
+            name: Check Out Code
+        - run:
+            name: Fetch from Git
+            command: |
+              git fetch origin
+              git config user.name 'CircleCI Automated Commit'
+              git config user.email 'github@raccoonfink.com'
+        - save_cache:
+            name: Save Git Cache
+            key: git-{{ .Branch }}-{{ .Revision }}
+            paths:
+              - ".git"
+  cached-npm-install:
+      description: run "npm install", updating cache
+      steps:
+        - restore_cache:
+            name: Restore Package Cache
+            keys:
+              - npm-packages-{{ .Branch }}-{{ checksum "package-lock.json" }}{{ checksum "bower.json" }}
+              - npm-packages-{{ .Branch }}
+              - npm-packages-
+        - run:
+            name: Install Node Dependencies
+            command: npm --pure-lockfile --prefer-offline --no-progress install
+        - save_cache:
+            name: Save Package Cache
+            key: npm-packages-{{ .Branch }}-{{ checksum "package-lock.json" }}{{ checksum "bower.json" }}
+            paths:
+              - bower_components/
+              - node_modules/
+
 jobs:
   build:
     working_directory: ~/cruisemonkey
     docker:
       - image: circleci/node:10
     steps:
-      - checkout
-      - run:
-          name: npm-install-global
-          command: 'sudo npm install -g ionic bower'
-      - restore_cache:
-          # Read about caching dependencies: https://circleci.com/docs/2.0/caching/
-          keys:
-            - dependency-cache-{{ .Branch }}-{{ checksum "package-lock.json" }}-{{ checksum "bower.json" }}
-            - dependency-cache-{{ .Branch }}
-            - dependency-cache-
-      - run:
-          name: npm-install
-          command: npm install
-      - save_cache:
-          key: dependency-cache-{{ .Branch }}-{{ checksum "package-lock.json" }}-{{ checksum "bower.json" }}
-          paths:
-            - ./node_modules
-            - ./bower_components
+      - cached-checkout
+      - cached-npm-install
       - run: # run tests
           name: test
-          command: npm test
-#      - run: # run coverage report
-#          name: code-coverage
-#          command: './node_modules/.bin/nyc report --reporter=text-lcov'
-#      - store_artifacts: # special step to save test results as as artifact
-#          # Upload test summary for display in Artifacts: https://circleci.com/docs/2.0/artifacts/ 
-#          path: test-results.xml
-#          prefix: tests
-#      - store_artifacts: # for display in Artifacts: https://circleci.com/docs/2.0/artifacts/ 
-#          path: coverage
-#          prefix: coverage
-#      - store_test_results: # for display in Test Summary: https://circleci.com/docs/2.0/collect-test-data/
-#          path: test-results.xml
-#      # See https://circleci.com/docs/2.0/deployment-integrations/ for deploy examples
+          command: npm run test
