@@ -24,7 +24,6 @@
     "angular-ui-router": "^0.2.15",
     "angular-uuid4": "~0.3.1",
     "axios": "^0.19.2",
-    "capacitor-data-storage-sqlite": "^1.4.0-dev.8",
     "capacitor-ibeacon": "https://github.com/RangerRick/capacitor-ibeacon.git#master",
     "cordova-promise-fs": "^1.2.5",
     "ion-sticky": "git+https://github.com/Poordeveloper/ion-sticky.git#1.0.7",
@@ -37,6 +36,7 @@
     "ng-file-model": "0.0.5",
     "ng-file-upload": "^12.2.13",
     "ngstorage": "^0.3.11",
+    "pure-uuid": "^1.6.0",
     "rxjs": "^6.5.4",
     "twitarr": "git+https://github.com/RangerRick/twitarr-client-api.git#master",
     "urijs": "^1.19.2"
@@ -55,6 +55,7 @@
     "@types/angular": "~1.5.11",
     "@types/expect": "^24.3.0",
     "@types/jest": "^25.1.1",
+    "@types/moment-timezone": "^0.5.12",
     "@typescript-eslint/eslint-plugin": "^2.19.0",
     "@typescript-eslint/parser": "^2.19.0",
     "assert-plus": "^1.0.0",
@@ -119,7 +120,6 @@
     "typescript": "^3.7.5",
     "update-notifier": "^4.0.0",
     "url-loader": "^3.0.0",
-    "uuid": "^3.4.0",
     "webpack": "^4.41.2",
     "webpack-cli": "^3.3.10",
     "yargs": "^15.1.0"
