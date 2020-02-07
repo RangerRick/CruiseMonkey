@@ -24,5 +24,10 @@
       "WindowsDefaultUriPrefix": "ms-appx://",
       "SplashShowOnlyFirstTime": "false"
     }
+  },
+  "plugins": {
+    "keyboard": {
+      "resize": "ionic"
+    }
   }
 }

@@ -56,11 +56,6 @@
     <param name="android-package" value="hu.dpal.phonegap.plugins.SpinnerDialog"/>
   </feature>
 
-  <feature name="Keyboard">
-    <param name="android-package" value="io.ionic.keyboard.IonicKeyboard"/>
-    <param name="onload" value="true"/>
-  </feature>
-
   
   <preference name="webviewbounce" value="false" />
   <preference name="UIWebViewBounce" value="false" />
