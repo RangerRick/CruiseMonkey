@@ -59,6 +59,20 @@
 						<input class="col col-67" type="range" name="bgi" ng-model="$parent.settings.backgroundInterval" min="60" max="600" value="{{settings.backgroundInterval}}" />
 					</div>
 				</label>
+				<label class="item item-toggle item-text-wrap">
+					Advanced Sync:
+					<span class="toggle">
+						<input type="checkbox" ng-model="$parent.settings.enableAdvancedSync" value="{{settings.enableAdvancedSync}}" />
+						<div class="track">
+							<div class="handle"></div>
+						</div>
+					</span>
+					<div class="row">
+						<div class="smaller wide">
+							Whether to use location services to enable background updates while at sea.
+						</div>
+					</div>
+				</label>
 				<ion-item class="text-right">
 					<button class="button button-dark" ng-disabled="form.$invalid || isUnchanged()">Save</button>
 					<button class="button button-assertive" ng-click="resetSettings($event)" ng-disabled="form.$invalid">Default</button>
