@@ -1,4 +1,5 @@
-/*.bundle.js
+/[0-9].js
+/*.bundle.*
 /*.eot
 /*.otf
 /*.svg

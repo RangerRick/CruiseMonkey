@@ -5,6 +5,7 @@ index.html
 .DS_Store
 .index.html
 *.swp
+.vscode
 www.zip
 npm-debug.log
 build.json

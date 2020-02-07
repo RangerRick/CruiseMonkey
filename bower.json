@@ -25,7 +25,6 @@
     "angular-cache": "4.6.0",
     "ng-file-model": "*",
     "angular-file-upload": "2.5.0",
-    "moment-timezone": "0.5.0",
     "loki-cordova-fs-adapter": "https://github.com/cosmith/loki-cordova-fs-adapter.git#master"
   },
   "resolutions": {
