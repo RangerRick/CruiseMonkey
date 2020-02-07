@@ -1,7 +1,9 @@
+import 'capacitor-ibeacon';
 import { BackgroundManager } from '../../lib/util/BackgroundManager';
-import moment from 'moment';
+import moment from 'moment-timezone';
 
-let manager;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+let manager: any;
 
 beforeEach(() => {
   manager = new BackgroundManager();
@@ -47,7 +49,7 @@ describe('BackgroundManager', () => {
     });
     test('2 seen', () => {
       manager._seenUUIDs.set('DEADBEEF-0000-0000-0000-000000000000', moment());
-      manager._seenUUIDs.set('DEADBEEF-0000-0000-0000-000000000001', moment().subtract(57, 'minutes'));
+      manager._seenUUIDs.set('DEADBEEF-0000-0000-0000-000000000001', moment().subtract(27, 'minutes'));
       expect(manager.getPingableUUIDs()).toEqual([
         'DEADBEEF-0000-0000-0000-000000000002',
         'DEADBEEF-0000-0000-0000-000000000003',
@@ -56,7 +58,7 @@ describe('BackgroundManager', () => {
     test('2 seen, 1 out of date', () => {
       manager._seenUUIDs.set('DEADBEEF-0000-0000-0000-000000000000', moment());
       manager._seenUUIDs.set('DEADBEEF-0000-0000-0000-000000000001', moment().subtract(5, 'minutes'));
-      manager._seenUUIDs.set('DEADBEEF-0000-0000-0000-000000000002', moment().subtract(63, 'minutes'));
+      manager._seenUUIDs.set('DEADBEEF-0000-0000-0000-000000000002', moment().subtract(33, 'minutes'));
       expect(manager.getPingableUUIDs()).toEqual([
         'DEADBEEF-0000-0000-0000-000000000002',
         'DEADBEEF-0000-0000-0000-000000000003',
@@ -235,7 +237,7 @@ describe('BackgroundManager', () => {
       manager._isActive = false;
       manager._enabled = false;
       mockStateChanges(manager);
-      manager.isActive = true;
+      manager.setActive();
       setTimeout(() => {
         expect(manager.startScanning).toHaveBeenCalledTimes(0);
         expect(manager.stopScanning).toHaveBeenCalledTimes(1);
@@ -248,7 +250,7 @@ describe('BackgroundManager', () => {
       manager._isActive = false;
       manager._enabled = true;
       mockStateChanges(manager);
-      manager.isActive = true;
+      manager.setActive();
       setTimeout(() => {
         expect(manager.startScanning).toHaveBeenCalledTimes(0);
         expect(manager.stopScanning).toHaveBeenCalledTimes(1);
@@ -264,7 +266,7 @@ describe('BackgroundManager', () => {
       manager._isActive = true;
       manager._enabled = false;
       mockStateChanges(manager);
-      manager.isActive = false;
+      manager.setInactive();
       setTimeout(() => {
         expect(manager.startScanning).toHaveBeenCalledTimes(0);
         expect(manager.stopScanning).toHaveBeenCalledTimes(1);
@@ -277,7 +279,7 @@ describe('BackgroundManager', () => {
       manager._isActive = true;
       manager._enabled = true;
       mockStateChanges(manager);
-      manager.isActive = false;
+      manager.setInactive();
       setTimeout(() => {
         expect(manager.startScanning).toHaveBeenCalledTimes(1);
         expect(manager.stopScanning).toHaveBeenCalledTimes(0);
@@ -293,7 +295,7 @@ describe('BackgroundManager', () => {
       manager._isActive = false;
       manager._enabled = false;
       mockStateChanges(manager);
-      manager.enabled = true;
+      manager.enable();
       setTimeout(() => {
         expect(manager.startScanning).toHaveBeenCalledTimes(1);
         expect(manager.stopScanning).toHaveBeenCalledTimes(0);
@@ -306,7 +308,7 @@ describe('BackgroundManager', () => {
       manager._isActive = true;
       manager._enabled = false;
       mockStateChanges(manager);
-      manager.enabled = true;
+      manager.enable();
       setTimeout(() => {
         expect(manager.startScanning).toHaveBeenCalledTimes(0);
         expect(manager.stopScanning).toHaveBeenCalledTimes(1);
@@ -322,7 +324,7 @@ describe('BackgroundManager', () => {
       manager._isActive = false;
       manager._enabled = true;
       mockStateChanges(manager);
-      manager.enabled = false;
+      manager.disable();
       setTimeout(() => {
         expect(manager.startScanning).toHaveBeenCalledTimes(0);
         expect(manager.stopScanning).toHaveBeenCalledTimes(1);
@@ -335,7 +337,7 @@ describe('BackgroundManager', () => {
       manager._isActive = true;
       manager._enabled = true;
       mockStateChanges(manager);
-      manager.enabled = false;
+      manager.disable();
       setTimeout(() => {
         expect(manager.startScanning).toHaveBeenCalledTimes(0);
         expect(manager.stopScanning).toHaveBeenCalledTimes(1);
@@ -369,7 +371,7 @@ describe('BackgroundManager', () => {
       expect(manager.ping).toHaveBeenCalledTimes(0);
     });
     test('isActive = true, enabled = true', (done) => {
-      manager.pingAttemptInterval = moment.duration(1, 'milliseconds');
+      manager.minUpdate = moment.duration(1, 'milliseconds');
       manager._isActive = true;
       manager._enabled = true;
       manager.ping = jest.fn();
