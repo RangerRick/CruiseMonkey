@@ -10,4 +10,5 @@
 /*.png
 /*.pdf
 !/Icon*.png
+/images/*.png
 /css/

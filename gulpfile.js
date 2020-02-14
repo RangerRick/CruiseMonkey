@@ -1,11 +1,13 @@
-'use strict';
+const run = require('gulp-run-command').default;
 
-var gulp = require('gulp');
-var run = require('gulp-run-command').default;
+const sass = (done) => {
+  return run('npm run build')().then(done);
+};
 
-gulp.task('default', ['sass']);
-gulp.task('sass', run('npm run pack'));
+const watch = (done) => {
+  return run('npm run watch')().then(done);
+};
 
-gulp.task('watch', function() {
-  exec('npm run watch');
-});
+exports.sass = sass;
+exports.watch = watch;
+exports.default = sass;

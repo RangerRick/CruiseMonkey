@@ -1,6 +1,5 @@
-var assert = require('assert-plus');
-var jsdom = require('jsdom').jsdom;
-document = jsdom( '<html/>' );
+const assert = require('assert-plus');
+require('jsdom-global')();
 
 var moment = require('moment-timezone');
 
