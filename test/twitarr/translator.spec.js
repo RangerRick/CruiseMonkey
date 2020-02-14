@@ -1,7 +1,4 @@
-'use strict';
-
-var assert = require('assert-plus');
-require('jsdom-global')();
+const assert = require('assert-plus');
 
 describe('Twit-Arr Translator', function() {
 	var translator = require('../../lib/twitarr/translator');
