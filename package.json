@@ -1,9 +1,9 @@
 {
   "name": "cruisemonkey",
-  "version": "2019.1.6",
+  "version": "2020.1.0",
   "minSdk": "23",
   "description": "Keep Track of Your Cruise",
-  "build": 410043,
+  "build": 410044,
   "dependencies": {
     "@ionic/pro": "^2.0.4",
     "com-sarriaroman-photoviewer": "1.1.18",
