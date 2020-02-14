@@ -60,8 +60,10 @@
 					</div>
 				</label>
 				<ion-item class="text-right">
-					<button class="button button-dark" ng-disabled="form.$invalid || isUnchanged()">Save</button>
-					<button class="button button-assertive" ng-click="resetSettings($event)" ng-disabled="form.$invalid">Default</button>
+					<div>
+						<button class="button button-dark" ng-disabled="form.$invalid || isUnchanged()">Save</button>
+						<button class="button button-assertive" ng-click="resetSettings($event)" ng-disabled="form.$invalid">Default</button>
+					</div>
 				</ion-item>
 			</form>
 
