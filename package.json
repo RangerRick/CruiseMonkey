@@ -244,11 +244,11 @@
     ]
   },
   "scripts": {
-    "setup": "bower install && npm install && ionic cordova prepare --no-build",
+    "setup": "bower install && npm --pure-lockfile --prefer-offline install && ionic cordova prepare --no-build",
     "pack": "webpack --colors --display-error-details",
     "build": "npm run pack -- --mode=development --optimize-minimize=false",
     "build-release": "npm run pack -- --mode=production --optimize-minimize=true",
-    "prepare-tree": "npm run build && npx cap sync",
+    "prepare-tree": "ionic cordova prepare --no-build && npm run build",
     "increment": "bin/update-build-number.js && npm run prepare-tree",
     "release": "npm run lint && npm run test && npm run build-release && npx cap copy",
     "verbose-build": "npm run lint && npm run test && npm run build -- --display-modules --display-chunks --display-error-details --display-origins --display-reasons",
