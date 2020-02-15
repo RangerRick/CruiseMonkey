@@ -1,6 +1,6 @@
 <ion-item class="tweet item item-avatar item-text-wrap" id="{{tweet.id}}" ng-attr-href="{{ allowRecursion? '#/tab/twitarr/' + tweet.id : undefined }}">
 	<cm-user-avatar username="tweet.author.username"></cm-user-avatar>
-	<span class="item-note commands" ng-if="user.loggedIn">
+	<span class="item-note commands" ng-if="user.loggedIn && !hideControls">
 		<button class="button button-icon button-small icon cm-icon-reply" ng-click="reply(tweet, $event)" ng-if="tweet.author.username !== user.username"></button>
 		<button class="button button-icon button-small icon ion-android-more-vertical" ng-click="showOptions(tweet, $event)" ng-if="tweet.author.username === user.username"></button>
 		<button ng-class="'button button-icon button-small icon ' + (isLiked(tweet)? 'cm-icon-favorited':'cm-icon-unfavorited')" ng-click="toggleLike(tweet, $event)"></button>

@@ -22,7 +22,6 @@
     "ion-sticky": "1.0.7",
     "ionic-filter-bar": "1.1.1",
     "winstore-jscompat": "https://github.com/MSOpenTech/winstore-jscompat.git",
-    "ionic-toast": "0.4.1",
     "angular-cache": "4.6.0",
     "ng-file-model": "*",
     "angular-file-upload": "2.5.0",

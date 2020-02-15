@@ -635,6 +635,9 @@ ion-popover-view.fit ion-content {
 @import "../lib/today/today";
 
 .twitarr {
+	.bar .title {
+		margin: 10px;
+	}
 	.tweet-input {
 		textarea {
 			font-size: $font-size-large;

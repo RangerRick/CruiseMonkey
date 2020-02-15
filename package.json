@@ -46,6 +46,7 @@
     "feedparser": "*",
     "googleapis": "47.0.0",
     "ionic-plugin-keyboard": "^2.2.1",
+    "ionic-toast": "^0.4.1",
     "jquery": "^3.4.1",
     "luxon": "^1.22.0",
     "moment": "^2.24.0",
