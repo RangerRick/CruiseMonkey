@@ -30,6 +30,7 @@
     "ionic-filter-bar": "git+https://github.com/djett41/ionic-filter-bar.git#v1.1.1",
     "jquery": "^3.4.1",
     "loki-cordova-fs-adapter": "^1.0.2",
+    "lokijs": "^1.5.8",
     "moment": "^2.11.2",
     "moment-timezone": "^0.5.27",
     "ng-cordova": "^0.1.27-alpha",
