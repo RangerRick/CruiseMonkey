@@ -19,9 +19,6 @@ const debugMode = true;
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 declare const angular: any;
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-declare const ionic: any;
-
 const BEACON_PREFIX = 'DEADBEEF-0000-0000-0000-';
 
 const randomInteger = (min: number, max: number, inclusive = false) => {
@@ -39,24 +36,18 @@ const zeroPad = (input: string, length: number): string => {
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const sendNotification = async (title: string, message: string) => {
-  console.warn('BackgroundManager event: ' + message);
-  if (debugMode) {
-    /*
+  // console.warn('BackgroundManager event: ' + message);
+  // @ts-ignore
+  if (debugMode && window && window.cordova && window.cordova.plugins && window.cordova.plugins.notification.local) {
     try {
-      const enabled = await LocalNotifications.areEnabled();
-      if (enabled) {
-        await LocalNotifications.schedule({
-          notifications: [{
-            id: Date.now(),
-            title: title,
-            body: message,
-          }],
-        });
-      }
+      // @ts-ignore
+      window.cordova.plugins.notification.local.schedule({
+        title: title,
+        text: message,
+      });
     } catch (err) {
-      console.debug(`LocalNotification: title="${title}", message="${message}"`);
+      console.debug(`BackgroundManager event: title="${title}", message="${message}"`);
     }
-    */
   }
 };
 
@@ -94,8 +85,8 @@ export class BackgroundManager {
   private _scanUUIDs = [] as string[];
   private _seenUUIDs = new Map<string, Moment>();
 
-  private _pingInterval = null as number | null;
-  private _callbackInterval = null as number | null;
+  private _pingInterval = null as any | null;
+  private _callbackInterval = null as any | null;
 
   private _errorListeners = [] as Array<errorHandler>;
 
