@@ -1,0 +1,55 @@
+version: 2.1
+
+commands:
+  cached-checkout:
+      description: "checkout with caching"
+      steps:
+        - restore_cache:
+            name: Restore Git Cache
+            keys:
+              - git-{{ .Branch }}-{{ .Revision }}
+              - git-{{ .Branch }}-
+              - git-
+        - checkout:
+            name: Check Out Code
+        - run:
+            name: Fetch from Git
+            command: |
+              git fetch origin
+              git config user.name 'CircleCI Automated Commit'
+              git config user.email 'github@raccoonfink.com'
+        - save_cache:
+            name: Save Git Cache
+            key: git-{{ .Branch }}-{{ .Revision }}
+            paths:
+              - ".git"
+  cached-npm-install:
+      description: run "npm install", updating cache
+      steps:
+        - restore_cache:
+            name: Restore Package Cache
+            keys:
+              - npm-packages-{{ .Branch }}-{{ checksum "package-lock.json" }}{{ checksum "bower.json" }}
+              - npm-packages-{{ .Branch }}
+              - npm-packages-
+        - run:
+            name: Install Node Dependencies
+            command: npm --pure-lockfile --prefer-offline --no-progress install
+        - save_cache:
+            name: Save Package Cache
+            key: npm-packages-{{ .Branch }}-{{ checksum "package-lock.json" }}{{ checksum "bower.json" }}
+            paths:
+              - bower_components/
+              - node_modules/
+
+jobs:
+  build:
+    working_directory: ~/cruisemonkey
+    docker:
+      - image: circleci/node:10
+    steps:
+      - cached-checkout
+      - cached-npm-install
+      - run: # run tests
+          name: test
+          command: npm run test
