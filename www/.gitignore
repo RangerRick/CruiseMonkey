@@ -13,4 +13,5 @@
 images/*.png
 images/*.svg
 !/Icon*.png
+/images/*.png
 /css/

@@ -9,8 +9,8 @@
 	<ion-content scroll="true" padding="false" delegate-handle="seamails" ng-click="closeKeyboard()" ng-show="sections.seamail !== false">
 		<ion-refresher pulling-text="Pull to refresh..." on-refresh="doRefresh()"></ion-refresher>
 		<ion-list>
-			<ion-item class="item-text-wrap" ng-if="!UserService.loggedIn()">You must be logged in to view your Seamail discussions.</ion-item>
-			<ion-item class="item-text-wrap" ng-if="seamails &amp;&amp; seamails.length === 0 &amp;&amp; user.loggedIn">You have no Seamail discussions.</ion-item>
+			<ion-item class="item-text-wrap" ng-if="!user.loggedIn">You must be logged in to view your Seamail discussions.</ion-item>
+			<ion-item class="item-text-wrap" ng-if="user.loggedIn &amp;&amp; seamails &amp;&amp; seamails.length === 0 &amp;&amp; user.loggedIn">You have no Seamail discussions.</ion-item>
 			<ion-item ng-repeat="seamail in seamails track by seamail.id" class="item-text-wrap" ui-sref="tab.seamail-view({id: seamail.id})">
 				<div class="title"><span class="unread" ng-if="seamail.is_unread"></span> {{seamail.subject}}</div>
 				<div class="messages">{{seamail.messages}}</div>

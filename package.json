@@ -3,7 +3,7 @@
   "version": "2020.1.0",
   "minSdk": "23",
   "description": "Keep Track of Your Cruise",
-  "build": 410043,
+  "build": 410044,
   "dependencies": {
     "@babel/runtime": "^7.8.4",
     "@babel/runtime-corejs2": "^7.8.4",
@@ -90,6 +90,7 @@
     "eslint": "^6.8.0",
     "eslint-friendly-formatter": "^4.0.1",
     "eslint-loader": "^3.0.3",
+    "eslint-plugin-jest": "^23.7.0",
     "exports-loader": "^0.7.0",
     "expose-loader": "^0.7.5",
     "file-loader": "^5.0.2",
@@ -101,8 +102,8 @@
     "html-loader": "^0.5.5",
     "imports-loader": "^0.8.0",
     "jest": "^25.1.0",
+    "jest-environment-jsdom-sixteen": "^1.0.1",
     "jsdom": "^16.1.0",
-    "jsdom-global": "^3.0.2",
     "line-reader": "*",
     "lodash": "^4.17.15",
     "mini-css-extract-plugin": "^0.9.0",
@@ -136,17 +137,21 @@
       "ts",
       "js"
     ],
+    "testEnvironment": "jest-environment-jsdom-sixteen",
+    "testMatch": [
+      "**/test/**/*.spec.js",
+      "**/test/**/*.spec.ts"
+    ],
     "transformIgnorePatterns": [
       "<rootDir>/bower_components/",
       "<rootDir>/node_modules/(?!(capacitor-ibeacon)/)"
     ]
   },
   "scripts": {
-    "setup": "bower install && npx cap sync",
+    "setup": "bower install && npm --pure-lockfile --prefer-offline --no-progress install && npx cap sync",
     "pack": "webpack --colors --display-error-details",
     "build": "npm run pack -- --mode=development --optimize-minimize=false",
     "build-release": "npm run pack -- --mode=production --optimize-minimize=true",
-    "prepare": "npm run setup",
     "prepare-tree": "npm run build && npx cap sync",
     "increment": "bin/update-build-number.js && npm run prepare-tree",
     "release": "npm run lint && npm run test && npm run build-release && npx cap copy",

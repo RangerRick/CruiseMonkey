@@ -1,3 +1,5 @@
+'use strict';
+
 const run = require('gulp-run-command').default;
 
 const sass = (done) => {
@@ -8,6 +10,8 @@ const watch = (done) => {
   return run('npm run watch')().then(done);
 };
 
-exports.sass = sass;
-exports.watch = watch;
-exports.default = sass;
+exports = {
+  sass,
+  watch,
+  default: sass,
+};
