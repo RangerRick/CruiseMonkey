@@ -1,11 +1,8 @@
-/* global describe: true */
-/* global it: true */
+import { equal } from 'assert-plus';
 
-const assert = require('assert-plus');
+import moment from 'moment-timezone';
 
-const moment = require('moment-timezone');
-
-const model = require('../../lib/data/Model');
+import { CMEvent } from '../../lib/data/Model';
 
 describe('Model', function() {
 	describe('CMEvent', function() {
@@ -16,17 +13,17 @@ describe('Model', function() {
 			const tooOld  = moment('1979-01-01');
 			const tooLate = moment('1991-01-01');
 
-			const cmevent = new model.CMEvent({
+			const cmevent = new CMEvent({
 				summary: 'Event summary.',
 				start_time: start.format(),
 				end_time: end.format()
 			});
 
-			assert.equal(cmevent.matchesDate(start), true);
-			assert.equal(cmevent.matchesDate(end), true);
-			assert.equal(cmevent.matchesDate(middle), true);
-			assert.equal(cmevent.matchesDate(tooOld), false);
-			assert.equal(cmevent.matchesDate(tooLate), false);
+			equal(cmevent.matchesDate(start), true);
+			equal(cmevent.matchesDate(end), true);
+			equal(cmevent.matchesDate(middle), true);
+			equal(cmevent.matchesDate(tooOld), false);
+			equal(cmevent.matchesDate(tooLate), false);
 		});
 	});
 });
