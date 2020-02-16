@@ -242,6 +242,7 @@
     "changelog": "conventional-changelog -p angular -i CHANGELOG.md -s -u",
     "lint": "eslint lib --ext .js --ext .ts",
     "test": "npm run lint && npm run build && jest",
+    "watch-test": "jest --watch",
     "resources": "cordova-res ios && cordova-res android"
   }
 }
