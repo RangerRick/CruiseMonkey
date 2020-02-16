@@ -53,7 +53,7 @@ const sendNotification = async (title: string, message: string) => {
 
 type errorHandler = (err: Error) => void;
 
-const inPlugin = async (callback: Function) => {
+const inLocationPlugin = async (callback: Function) => {
   return new Promise((resolve, reject) => {
     try {
       // @ts-ignore
@@ -117,7 +117,33 @@ export class BackgroundManager {
   }
 
   public async init() {
-    return inPlugin(async (IBeacon: any) => {
+    // @ts-ignore
+    if (window.BackgroundFetch) {
+      // @ts-ignore
+      const BackgroundFetch = window.BackgroundFetch;
+
+      const fetchCallback = async () => {
+        try {
+          console.info('BackgroundManager: initiating background fetch.');
+          this.triggerCallbacks();
+          BackgroundFetch.finish();
+        } catch (err) {
+          BackgroundFetch.finish();
+          console.error('BackgroundManager: background fetch failed: ' + JSON.stringify(err));
+        }
+      };
+
+      const fetchErrorCallback = (err: any) => {
+        console.error('BackgroundManager: background fetch failed: ' + JSON.stringify(err));
+      };
+
+      console.info('BackgroundManager: configuring background fetch.');
+      BackgroundFetch.configure(fetchCallback, fetchErrorCallback, {
+        minimumFetchInterval: 15, // minutes
+      });
+    }
+
+    return inLocationPlugin(async (IBeacon: any) => {
       console.info('BackgroundManager: initializing.');
       const delegate = new IBeacon.Delegate();
 
@@ -229,7 +255,7 @@ export class BackgroundManager {
     console.info(`BackgroundManager.enableScan(): scanning ${this.scanUUIDs.length} regions.`);
     sendNotification('Starting Scanning', `Starting scanning ${this.scanUUIDs.length} regions.`);
     const ret = this.scanUUIDs.map((uuid, index) => {
-      inPlugin(async (IBeacon: any) => {
+      inLocationPlugin(async (IBeacon: any) => {
         const beaconRegion = new IBeacon.BeaconRegion(`JoCo-${index}`, uuid);
         await IBeacon.startMonitoringForRegion(beaconRegion);
       })
@@ -243,7 +269,7 @@ export class BackgroundManager {
   }
 
   protected async disableScan() {
-    return inPlugin(async (IBeacon: any) => {
+    return inLocationPlugin(async (IBeacon: any) => {
       // const { regions } = await IBeacon.getMonitoredRegions();
       const regions = await IBeacon.getMonitoredRegions();
       console.info(`BackgroundManager.disableScan(): stopping scanning ${regions.length} regions.`);
@@ -270,7 +296,7 @@ export class BackgroundManager {
     }
     console.warn(`BackgroundManager.ping(): pinging one of ${uuids.length} UUIDs.`);
 
-    return inPlugin(async (IBeacon: any) => {
+    return inLocationPlugin(async (IBeacon: any) => {
       const isAdvertising = await IBeacon.isAdvertising();
       if (isAdvertising) {
         console.warn('BackgroundManager.ping(): already advertising; stopping and restarting.');
