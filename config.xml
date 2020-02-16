@@ -3,7 +3,7 @@
     <name>CruiseMonkey</name>
     <description>Keep Track of Your Cruise</description>
     <author email="rangerrick@befunk.com" href="https://github.com/RangerRick/CruiseMonkey">Benjamin Reed</author>
-    <content original-src="index.html" src="http://192.168.211.228:8100" />
+    <content src="index.html" />
     <allow-navigation href="http://*/*" />
     <allow-navigation href="gap:*" />
     <allow-navigation href="https://*/*" />
@@ -171,16 +171,37 @@
         <splash height="960" src="resources/ios/splash/Default@2x~iphone.png" width="640" />
         <splash height="480" src="resources/ios/splash/Default~iphone.png" width="320" />
         <config-file parent="NSCameraUsageDescription" target="*-Info.plist">
-            <string>Used to take photos to post to Twit-arr.</string>
+            <string>CruiseMonkey would like to take photos to post to Twit-arr.</string>
         </config-file>
         <config-file parent="NSPhotoLibraryUsageDescription" target="*-Info.plist">
-            <string>Used to select photos to post to Twit-arr.</string>
+            <string>CruiseMonkey would like to select photos to post to Twit-arr.</string>
         </config-file>
         <config-file parent="NSLocationWhenInUseUsageDescription" target="*-Info.plist">
-            <string>Used to add locations to photos in Twit-arr.</string>
+            <string>CruiseMonkey would like to add locations to photos in Twit-arr.</string>
         </config-file>
         <config-file parent="NSPhotoLibraryAddUsageDescription" target="*-Info.plist">
-            <string>Used when saving a photo from Twit-arr.</string>
+            <string>CruiseMonkey would like to save photos from Twit-arr.</string>
+        </config-file>
+        <config-file parent="NSLocationWhenInUseUsageDescription" target="*-Info.plist">
+            <string>CruiseMonkey would like to scan for other Sea Monkeys while in use.</string>
+        </config-file>
+        <config-file parent="NSLocationAlwaysAndWhenInUseUsageDescription" target="*-Info.plist">
+            <string>CruiseMonkey would like to scan for other Sea Monkeys.</string>
+        </config-file>
+        <config-file parent="NSLocationAlwaysUsageDescription" target="*-Info.plist">
+            <string>CruiseMonkey would like to scan for other Sea Monkeys.</string>
+        </config-file>
+        <config-file parent="NSLocationWhenInUseUsageDescription" target="*-Info.plist">
+            <string>CruiseMonkey would like to scan for other Sea Monkeys while in use.</string>
+        </config-file>
+        <config-file parent="NSLocationAlwaysAndWhenInUseUsageDescription" target="*-Info.plist">
+            <string>CruiseMonkey would like to scan for other Sea monkeys.</string>
+        </config-file>
+        <config-file parent="NSBluetoothAlwaysUsageDescription" target="*-Info.plist">
+            <string>CruiseMonkey would like to scan for other Sea Monkeys.</string>
+        </config-file>
+        <config-file parent="NSBluetoothPeripheralUsageDescription" target="*-Info.plist">
+            <string>CruiseMonkey would like to scan for other Sea Monkeys.</string>
         </config-file>
         <config-file parent="NSAppTransportSecurity" target="*-Info.plist">
             <dict>
@@ -191,8 +212,13 @@
         <config-file parent="UIRequiresFullScreen" target="*-Info.plist">
             <true />
         </config-file>
-        <config-file target="project.pbxproj">
-            <build-property name="ENABLE_BITCODE" value="NO" />
+        <config-file parent="UIBackgroundModes" target="*-Info.plist">
+            <array>
+                <string>bluetooth-central</string>
+                <string>bluetooth-peripheral</string>
+                <string>fetch</string>
+                <string>location</string>
+            </array>
         </config-file>
         <config-file parent="UISupportedInterfaceOrientations" target="*-Info.plist">
             <array>
@@ -239,5 +265,4 @@
     <plugin name="com-sarriaroman-photoviewer" spec="^1.2.4" />
     <plugin name="ionic-plugin-keyboard" spec="^2.2.1" />
     <plugin name="com.unarin.cordova.beacon" spec="^3.8.1" />
-    <allow-navigation href="http://192.168.211.228:8100" sessionid="f47f0527" />
 </widget>
