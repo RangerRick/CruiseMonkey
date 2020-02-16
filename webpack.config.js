@@ -43,6 +43,13 @@ module.exports = {
         }],
       },
       {
+        test: require.resolve('lokijs'),
+        use: [{
+          loader: 'expose-loader',
+          options: 'loki',
+        }],
+      },
+      {
         test: /\.html$/,
         use: [
           'ngtemplate-loader',
@@ -139,7 +146,7 @@ if (mode === 'production') {
           mangle: {
             keep_classnames: true,
             keep_fnames: true,
-            reserved: [ '$element', '$super', '$scope', '$uib', '$', 'jQuery', 'exports', 'require', 'angular', 'ionic', 'cordova' ],
+            reserved: [ '$element', '$interval', '$super', '$scope', '$timout', '$uib', '$', 'jQuery', 'exports', 'require', 'angular', 'ionic', 'cordova' ],
           },
           compress: true,
         }

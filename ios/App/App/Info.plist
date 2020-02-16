@@ -38,24 +38,31 @@
 		<key>NSAllowsArbitraryLoads</key>
 		<true/>
 	</dict>
-        <key>NSBluetoothAlwaysUsageDescription</key>
-        <string>This app would like to scan for iBeacons.</string>
-        <key>NSBluetoothPeripheralUsageDescription</key>
-        <string>This app would like to scan for iBeacons.</string>
+	<key>NSBluetoothAlwaysUsageDescription</key>
+	<string>CruiseMonkey would like to scan for other Sea Monkeys.</string>
+	<key>NSBluetoothPeripheralUsageDescription</key>
+	<string>CruiseMonkey would like to scan for other Sea Monkeys.</string>
 	<key>NSCameraUsageDescription</key>
-	<string>To Take Photos and Video</string>
-        <key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
-        <string>This app would like to scan for iBeacons both while in use and while in the background.</string>
+	<string>CruiseMonkey would like to take photos to post to Twit-arr.</string>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+	<string>CruiseMonkey would like to scan for other Sea monkeys.</string>
 	<key>NSLocationAlwaysUsageDescription</key>
-	<string>Always allow Geolocation?</string>
+	<string>CruiseMonkey would like to scan for other Sea Monkeys.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>Allow Geolocation?</string>
+	<string>CruiseMonkey would like to scan for other Sea Monkeys while in use.</string>
 	<key>NSMicrophoneUsageDescription</key>
 	<string>To Record Audio With Video</string>
 	<key>NSPhotoLibraryAddUsageDescription</key>
-	<string>Store camera photos to camera</string>
+	<string>CruiseMonkey would like to save photos from Twit-arr.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
-	<string>To Pick Photos from Library</string>
+	<string>CruiseMonkey would like to select photos to post to Twit-arr.</string>
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>bluetooth-central</string>
+		<string>bluetooth-peripheral</string>
+		<string>fetch</string>
+		<string>location</string>
+	</array>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
 	<key>UIMainStoryboardFile</key>

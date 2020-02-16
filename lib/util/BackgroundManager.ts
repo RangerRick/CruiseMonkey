@@ -434,7 +434,7 @@ if (window.angular) {
     'ng',
     'cruisemonkey.Settings',
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  ]).factory('BackgroundManager', ($log: ILogService, $q: IQService, $rootScope: IRootScopeService, $timeout: ITimeoutService, $ionicPlatform: any, SettingsService: any) => {
+  ]).factory('BackgroundManager', /* @ngInject */ ($log: ILogService, $q: IQService, $rootScope: IRootScopeService, $ionicPlatform: any, SettingsService: any) => {
     $log.info('AngularBackgroundManager: initializing.');
     const manager = new BackgroundManager();
     $ionicPlatform.ready(() => {
