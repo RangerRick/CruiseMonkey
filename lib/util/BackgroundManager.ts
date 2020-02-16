@@ -14,7 +14,7 @@ interface IBeaconRegion {
   minor: number;
 }
 
-const debugMode = true;
+const debugMode = false;
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 declare const angular: any;
@@ -55,25 +55,24 @@ type errorHandler = (err: Error) => void;
 
 const inPlugin = async (callback: Function) => {
   return new Promise((resolve, reject) => {
-    // @ts-ignore
-    if (window && window.cordova && window.cordova.plugins && window.cordova.plugins.locationManager) {
-      try {
+    try {
+      // @ts-ignore
+      if (window && window.cordova && window.cordova.plugins && window.cordova.plugins.locationManager) {
         // @ts-ignore
         const result = callback(window.cordova.plugins.locationManager);
         // console.debug('returning: ' + JSON.stringify(result));
         return resolve(result);
-      } catch (err) {
-        return reject(err);
       }
+      console.warn('cordova.plugins.locationManager NOT found');
+      return reject();
+    } catch (err) {
+      return reject(err);
     }
-
-    console.warn('cordova.plugins.locationManager NOT found');
-    return reject();
   });
 };
 
 export class BackgroundManager {
-  public minUpdate = moment.duration(5, 'minutes');
+  private _minUpdate: Duration;
 
   protected lastRegion = null as IBeaconRegion | null;
   protected lastUpdateTime = null as Moment | null;
@@ -85,13 +84,36 @@ export class BackgroundManager {
   private _scanUUIDs = [] as string[];
   private _seenUUIDs = new Map<string, Moment>();
 
-  private _pingInterval = null as any | null;
-  private _callbackInterval = null as any | null;
+  private _callbackInterval = undefined as any;
+  private _lastCallbackTime = moment(0);
 
   private _errorListeners = [] as Array<errorHandler>;
 
+  public get minUpdate() {
+    return this._minUpdate;
+  }
+  public set minUpdate(duration: Duration) {
+    this._minUpdate = duration;
+    this.initializeCallback();
+  }
+
   public get maxUpdate() {
     return moment.duration(this.minUpdate.asMilliseconds() * 6, 'milliseconds');
+  }
+
+  public constructor() {
+    // set default update interval
+    this._minUpdate = moment.duration(5, 'minutes');
+  }
+
+  private initializeCallback() {
+    if (this._callbackInterval) {
+      clearInterval(this._callbackInterval);
+    }
+    this._callbackInterval = setInterval(() => {
+      console.info(`BackgroundManager: calling ${this._updateCallbacks.length} callbacks (interval: ${this.minUpdate.asMinutes()} minutes)`);
+      this.triggerCallbacks();
+    }, this.minUpdate.asMilliseconds());
   }
 
   public async init() {
@@ -131,11 +153,6 @@ export class BackgroundManager {
     } else {
       await this.disable();
     }
-
-    this._callbackInterval = setInterval(() => {
-      console.info(`BackgroundManager: calling ${this._updateCallbacks.length} callbacks (interval: ${this.minUpdate.asMinutes()} minutes)`);
-      this.triggerCallbacks();
-    }, this.minUpdate.asMilliseconds());
   }
 
   public async setInactive() {
@@ -145,10 +162,6 @@ export class BackgroundManager {
       await this.onInactive();
     } else {
       await this.disable();
-    }
-    if (this._callbackInterval != null) {
-      clearInterval(this._callbackInterval);
-      this._callbackInterval = null;
     }
   }
 
@@ -169,7 +182,6 @@ export class BackgroundManager {
   public async disable() {
     this._enabled = false;
     await this.stopScanning();
-    await this.stopPing();
     return this._enabled;
   }
 
@@ -192,13 +204,11 @@ export class BackgroundManager {
   protected async onActive() {
     console.info('BackgroundManager.onActive()');
     await this.stopScanning();
-    await this.startPing();
   }
 
   protected async onInactive() {
     console.info('BackgroundManager.onInactive()');
     await this.startScanning();
-    await this.stopPing();
   }
 
   protected async startScanning() {
@@ -234,7 +244,8 @@ export class BackgroundManager {
 
   protected async disableScan() {
     return inPlugin(async (IBeacon: any) => {
-      const { regions } = await IBeacon.getMonitoredRegions();
+      // const { regions } = await IBeacon.getMonitoredRegions();
+      const regions = await IBeacon.getMonitoredRegions();
       console.info(`BackgroundManager.disableScan(): stopping scanning ${regions.length} regions.`);
       sendNotification('Stopping Scanning', `Stopping scanning ${regions.length} regions.`);
   
@@ -250,42 +261,14 @@ export class BackgroundManager {
     await this.startScanning();
   }
 
-  protected async startPing() {
-    console.debug('BackgroundManager.startPing()');
-    if (!this.isActive) {
-      console.warn('BackgroundManager.startPing() called, but we are not active; skipping.');
-      return;
-    }
-    if (!this.enabled) {
-      console.warn('BackgroundManager.startPing() called, but we are disabled; skipping.');
-      return;
-    }
-
-    if (this._pingInterval !== null) {
-      console.warn('BackgroundManager.startPing(): ping is already running!');
-      return;
-    }
-
-    await this.ping();
-    this._pingInterval = setInterval(() => {
-      this.ping();
-    }, this.minUpdate.asMilliseconds());
-  }
-
-  protected async stopPing() {
-    console.info('BackgroundManager.stopPing()');
-    if (this._pingInterval !== null) {
-      clearInterval(this._pingInterval);
-    }
-    this._pingInterval = null;
-  }
-
   protected async ping() {
+    console.warn('BackgroundManager.ping()');
     const uuids = this.getPingableUUIDs();
     if (uuids.length === 0) {
       console.warn('BackgroundManager.ping(): no pingable UUIDs; skipping.');
       return;
     }
+    console.warn(`BackgroundManager.ping(): pinging one of ${uuids.length} UUIDs.`);
 
     return inPlugin(async (IBeacon: any) => {
       const isAdvertising = await IBeacon.isAdvertising();
@@ -379,12 +362,23 @@ export class BackgroundManager {
   }
 
   protected triggerCallbacks() {
+    const now = moment();
+    const threshold = this._lastCallbackTime.add(this.minUpdate);
+    if (now.isBefore(threshold)) {
+      console.warn(`BackgroundManager.triggerCallbacks: too soon (${now.format()} < ${threshold.format()}); skipping.`);
+      return;
+    }
+
     sendNotification('Triggering Callbacks', `Triggering ${this._updateCallbacks.length} callbacks.`);
 
     for (const callback of this._updateCallbacks) {
       if (callback !== null) {
         callback();
       }
+    }
+
+    if (this.isActive) {
+      this.ping();
     }
   }
 
