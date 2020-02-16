@@ -9,7 +9,7 @@ const {
 
 import moment from 'moment-timezone';
 import { Moment, Duration } from 'moment';
-import { IQService, IPromise, IRootScopeService, ILogService, ITimeoutService } from 'angular';
+import { IQService, IPromise, IRootScopeService, ILogService } from 'angular';
 
 const debugMode = true;
 
