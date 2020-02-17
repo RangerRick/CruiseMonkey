@@ -195,10 +195,6 @@ export class BackgroundManager {
 
   protected async startScanning() {
     console.debug('BackgroundManager.startScanning()');
-    if (this.isActive) {
-      console.warn('BackgroundManager.startScanning() called, but we are currently active; skipping.');
-      return;
-    }
     if (!this.enabled) {
       console.warn('BackgroundManager.startScanning() called, but we are disabled; skipping.');
       return;
@@ -470,16 +466,37 @@ if (window.angular) {
       manager.cancelUpdate(id);
     };
 
-    $rootScope.$on('cruisemonkey.user.settings-changed', async (ev, settings) => {
-      console.debug('AngularBackgroundManager.settings-changed:', angular.toJson(settings));
+    let initialized = false;
 
-      $rootScope.$watch('sections', () => {
-        $timeout(() => {
-          if (!$rootScope.isSectionEnabled('advanced_sync')) {
-            disable();
-          }
-        }, 10);
-      });
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    $rootScope.$watch('sections', (newValue: any) => {
+      if (newValue['cruise_monkey_advanced_sync'] === undefined) {
+        return;
+      }
+      $timeout(() => {
+        if (!initialized) {
+          SettingsService.getEnableAdvancedSync().then((advancedSyncEnabled: boolean) => {
+            return SettingsService.getBackgroundInterval().then((backgroundInterval: number) => {
+              setInterval(moment.duration(backgroundInterval, 'seconds'));
+              if (advancedSyncEnabled) {
+                return enable();
+              } else {
+                return disable();
+              }
+            });
+          }).finally(() => {
+            initialized = true;
+          });
+        }
+
+        if (!$rootScope.isSectionEnabled('advanced_sync')) {
+          disable();
+        }
+      }, 10);
+    });
+
+  $rootScope.$on('cruisemonkey.user.settings-changed', async (ev, settings) => {
+      console.debug('AngularBackgroundManager.settings-changed:', angular.toJson(settings));
 
       let shouldRestart = false;
       const actions = [] as Function[];
