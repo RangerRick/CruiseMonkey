@@ -415,8 +415,13 @@ a.tab-item:hover {
 		line-height: $line-height-large;
 		font-weight: bolder;
 	}
-	.title {
-		margin: 10px;
+}
+
+ion-modal-view {
+	.bar-header {
+		.title {
+			margin: 10px;
+		}
 	}
 }
 
