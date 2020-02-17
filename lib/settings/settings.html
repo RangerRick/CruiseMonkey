@@ -2,7 +2,7 @@
 	<ion-content has-header="true" scroll="true">
 		<ion-list>
 			<span ng-controller="CMLoginCtrl">
-				<form class="logout-form" novalidate ng-if="user.loggedIn" style="pointer-events: none">
+				<form class="logout-form" novalidate ng-if="user.loggedIn">
 					<ion-item class="heading notop">Log Out</ion-item>
 					<ion-item>Currently logged in as: {{user.username}}</ion-item>
 					<ion-item class="text-right">
