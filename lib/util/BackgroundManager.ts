@@ -148,9 +148,7 @@ export class BackgroundManager {
   public async setActive() {
     console.info('BackgroundManager.setActive()');
     this._isActive = true;
-    if (this.enabled) {
-      await this.onActive();
-    } else {
+    if (!this.enabled) {
       await this.disable();
     }
   }
@@ -158,9 +156,7 @@ export class BackgroundManager {
   public async setInactive() {
     console.info('BackgroundManager.setActive()');
     this._isActive = false;
-    if (this.enabled) {
-      await this.onInactive();
-    } else {
+    if (!this.enabled) {
       await this.disable();
     }
   }
@@ -171,11 +167,7 @@ export class BackgroundManager {
 
   public async enable() {
     this._enabled = true;
-    if (this.isActive) {
-      await this.onActive();
-    } else {
-      await this.onInactive();
-    }
+    await this.startScanning();
     return this._enabled;
   }
 
@@ -199,16 +191,6 @@ export class BackgroundManager {
     if (newCount !== oldCount) {
       this.resetScanning();
     }
-  }
-
-  protected async onActive() {
-    console.info('BackgroundManager.onActive()');
-    await this.stopScanning();
-  }
-
-  protected async onInactive() {
-    console.info('BackgroundManager.onInactive()');
-    await this.startScanning();
   }
 
   protected async startScanning() {
