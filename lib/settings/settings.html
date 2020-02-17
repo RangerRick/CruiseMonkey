@@ -60,7 +60,7 @@
 						<input class="col col-67" type="range" name="bgi" ng-model="$parent.settings.backgroundInterval" min="60" max="600" value="{{settings.backgroundInterval}}" />
 					</div>
 				</label>
-				<label class="item item-toggle item-text-wrap" platform="ios">
+				<label class="item item-toggle item-text-wrap" ng-if="platform === 'ios' && isSectionEnabled('advanced_sync')">
 					Advanced Sync:
 					<span class="toggle">
 						<input type="checkbox" ng-model="$parent.settings.enableAdvancedSync" value="{{settings.enableAdvancedSync}}" />
@@ -71,6 +71,17 @@
 					<div class="row">
 						<div class="smaller wide">
 							Whether to use location services to enable background updates while at sea.
+						</div>
+					</div>
+				</label>
+				<label class="item item-text-wrap" ng-if="!isSectionEnabled('advanced_sync')">
+					Advanced Sync:
+					<div class="row">
+						<div class="smaller wide" ng-if="platform === 'ios'">
+							Advanced Sync has been administratively disabled on Twit-Arr.
+						</div>
+						<div class="smaller wide" ng-if="platform !== 'ios'">
+							This platform does not support advanced sync.
 						</div>
 					</div>
 				</label>
