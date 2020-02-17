@@ -26,8 +26,8 @@
     }
   },
   "plugins": {
-    "keyboard": {
-      "resize": "ionic"
+    "Keyboard": {
+      "resize": "native"
     }
   }
 }
