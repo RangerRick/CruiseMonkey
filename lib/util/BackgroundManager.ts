@@ -482,9 +482,9 @@ if (window.angular) {
       }
 
       if (shouldRestart) {
-        return disable().then(async () => {
+        return disable().then(() => {
           for (const action of actions) {
-            await action();
+            action();
           }
           if (enabled) {
             return enable().then(() => {
@@ -495,8 +495,8 @@ if (window.angular) {
           }
           return enabled;
         }).catch((err) => {
-          $log.error(`Failed to restart AngularBackgroundManager: ${err.message}`);
-          return $q.reject(err.message);
+          $log.error('Failed to restart AngularBackgroundManager: ' + angular.toJson(err));
+          return $q.reject(err);
         });
       }
     });
