@@ -609,11 +609,61 @@ ion-popover-view.fit ion-content {
 }
 
 .emoji-popover {
+	padding: 10px;
 	img.emoji {
 		width: 40px;
 		height: 40px;
-		display: inline;
+		display: inline-block;
 		margin: 5px;
+	}
+}
+
+i {
+	&.emoji {
+		width: 20px;
+		height: 20px;
+		display: inline-block;
+		background-size: 20px 20px;
+		background-repeat: no-repeat;
+	}
+	&.emoji.large {
+		width: 40px;
+		height: 40px;
+		background-size: 40px 40px;
+	}
+
+	&.buffet {
+		background-image: url('../lib/emoji/images/buffet-80.png')
+	}
+	&.die {
+		background-image: url('../lib/emoji/images/die-80.png')
+	}
+	&.fez {
+		background-image: url('../lib/emoji/images/fez-80.png')
+	}
+	&.hottub {
+		background-image: url('../lib/emoji/images/hottub-80.png')
+	}
+	&.joco {
+		background-image: url('../lib/emoji/images/joco-80.png')
+	}
+	&.pirate {
+		background-image: url('../lib/emoji/images/pirate-80.png')
+	}
+	&.ship {
+		background-image: url('../lib/emoji/images/ship-80.png')
+	}
+	&.ship-front {
+		background-image: url('../lib/emoji/images/ship-front-80.png')
+	}
+	&.towel-monkey {
+		background-image: url('../lib/emoji/images/towel-monkey-80.png')
+	}
+	&.tropical-drink {
+		background-image: url('../lib/emoji/images/tropical-drink-80.png')
+	}
+	&.zombie {
+		background-image: url('../lib/emoji/images/zombie-80.png')
 	}
 }
 
