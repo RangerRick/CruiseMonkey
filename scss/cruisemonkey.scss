@@ -415,6 +415,9 @@ a.tab-item:hover {
 		line-height: $line-height-large;
 		font-weight: bolder;
 	}
+	.title {
+		margin: 10px;
+	}
 }
 
 ion-popover-view.fit {
@@ -635,9 +638,6 @@ ion-popover-view.fit ion-content {
 @import "../lib/today/today";
 
 .twitarr {
-	.bar .title {
-		margin: 10px;
-	}
 	.tweet-input {
 		textarea {
 			font-size: $font-size-large;
