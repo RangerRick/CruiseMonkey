@@ -5,6 +5,10 @@
 	<ion-content  ng-show="sections.seamail === false"><ion-item class="item-text-wrap">Seamail has been administratively disabled on Twit-Arr.</ion-item></ion-content>
 	<ion-content class="seamail" delegate-handle="seamail" ng-show="sections.seamail !== false">
 		<ion-list>
+			<form name="newMessageForm" ng-submit="postMessage()" novalidate class="item item-text-wrap item-button-right">
+				<textarea id="seamail-text" required wrap="soft" ng-model="newMessage.text" ng-trim="true" placeholder="Add a message to this discussion..." style="resize: none; width: 100%" rows="2"></textarea>
+				<button class="button button-icon icon cm-icon-send footer-btn icon-navy" style="float: right" ng-disabled="form.$invalid"></button>
+			</form>
 			<ion-item ng-repeat="message in seamail.messages track by message._hash" class="item item-avatar item-text-wrap">
 				<cm-user-avatar username="message.author.username"></cm-user-avatar>
 				<cm-user-display username="message.author.username"></cm-user-display>
@@ -13,12 +17,14 @@
 			</ion-item>
 		</ion-list>
 	</ion-content>
+	<!--
 	<form name="newMessageForm" ng-submit="postMessage()" novalidate>
 		<ion-footer-bar class="bar-light message-footer">
-			<textarea required wrap="soft" ng-model="newMessage.text" ng-trim="true" placeholder="Add a message to this discussion..." style="resize: none; width: 100%" rows="2"></textarea>
+			<textarea id="seamail-text" required wrap="soft" ng-focus="focusTextArea($event)" ng-model="newMessage.text" ng-trim="true" placeholder="Add a message to this discussion..." style="resize: none; width: 100%" rows="2"></textarea>
 			<div class="footer-btn-wrap">
 				<button class="button button-icon icon cm-icon-send footer-btn icon-navy" style="float: right" ng-disabled="form.$invalid"></button>
 			</div>
 		</ion-footer-bar>
 	</form>
+-->
 </ion-view>
