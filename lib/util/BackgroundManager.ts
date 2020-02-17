@@ -226,6 +226,11 @@ export class BackgroundManager {
 
   protected async disableScan() {
     const { regions } = await IBeacon.getMonitoredRegions();
+
+    if (regions.length === 0) {
+      return;
+    }
+
     console.info(`BackgroundManager.disableScan(): stopping scanning ${regions.length} regions.`);
     sendNotification('Stopping Scanning', `Stopping scanning ${regions.length} regions.`);
 
