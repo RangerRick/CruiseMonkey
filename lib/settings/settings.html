@@ -2,14 +2,14 @@
 	<ion-content has-header="true" scroll="true">
 		<ion-list>
 			<span ng-controller="CMLoginCtrl">
-				<form class="logout-form" novalidate ng-if="user.loggedIn">
+				<span class="logout-form" novalidate ng-if="user.loggedIn">
 					<ion-item class="heading notop">Log Out</ion-item>
 					<ion-item>Currently logged in as: {{user.username}}</ion-item>
 					<ion-item class="text-right">
 						<button class="button button-dark" ng-click="logOut()" style="margin-top: 0; margin-bottom: 0">Log Out</button>
 					</ion-item>
-				</form>
-				<form class="login-form" novalidate ng-if="!user.loggedIn" ng-submit="logIn(user)">
+				</span>
+				<span class="login-form" novalidate ng-if="!user.loggedIn">
 					<span ng-if="rejectedCoC">
 						<ion-item class="heading">Code of Conduct</ion-item>
 						<ion-item class="item item-text-wrap">
@@ -33,12 +33,12 @@
 					</ion-item>
 					<ion-item class="text-right notop">
 						<span class="input-label"></span>
-						<button class="button button-dark" ng-disabled="form.$invalid || !canSubmit(user)" style="margin-top: 0; margin-bottom: 0">Log In</button>
+						<button class="button button-dark" ng-disabled="!canSubmit(user)" ng-click="logIn(user)" style="margin-top: 0; margin-bottom: 0">Log In</button>
 					</ion-item>
-				</form>
+				</span>
 			</span>
 
-			<form class="settings-form" novalidate ng-submit="saveSettings()">
+			<span class="settings-form" novalidate>
 				<ion-item class="heading">Network Configuration</ion-item>
 				<ion-item class="item item-input">
 					<span class="input-label">Twit-Arr URL:</span>
@@ -76,22 +76,22 @@
 				</label>
 				<ion-item class="text-right">
 					<div>
-						<button class="button button-dark" ng-disabled="form.$invalid || isUnchanged()">Save</button>
-						<button class="button button-assertive" ng-click="resetSettings($event)" ng-disabled="form.$invalid">Default</button>
+						<button class="button button-dark" ng-disabled="isUnchanged()" ng-click="saveSettings()">Save</button>
+						<button class="button button-assertive" ng-click="resetSettings($event)">Default</button>
 					</div>
 				</ion-item>
-			</form>
+			</span>
 
-			<form class="cache-form" novalidate ng-submit="clearCache()">
+			<span class="cache-form" novalidate>
 				<ion-item class="heading">Clear Cache</ion-item>
 				<label class="item item-input item-text-wrap item-stacked-label nobottom">
 					<span class="input-label">Clear Cache</span>
 					<p>Reset locally cached data.  You should never need to do this, but if CruiseMonkey is acting weird, it may help.</p>
 				</label>
 				<ion-item class="text-right notop">
-					<button class="button button-dark">Clear Cache</button>
+					<button class="button button-dark" ng-click="clearCache()">Clear Cache</button>
 				</ion-item>
-			</form>
+			</span>
 
 		</ion-list>
 	</ion-content>

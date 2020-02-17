@@ -1,7 +1,7 @@
 <ion-view view-title="Edit Profile" class="profile">
 	<ion-content>
 		<ion-list>
-			<form>
+			<span>
 				<label class="item item-input item-profile">
 					<span class="input-label">Profile Photo:</span>
 					<div class="img-container" on-tap="replaceImage($event)" ng-if="!p.hasNative()">
@@ -14,8 +14,8 @@
 				<div class="item" ng-if="photoUploading">
 					<progress value="{{photoUploading}}" max="100"></progress>
 				</div>
-			</form>
-			<form novalidate ng-submit="save()">
+			</span>
+			<span novalidate>
 				<ion-item class="item">
 					<div class="input-label">Display Name:</div>
 					<input type="text" ng-model="user.display_name">
@@ -50,10 +50,10 @@
 					</label>
 				</ion-item>
 				<ion-item class="text-right">
-					<button class="button button-dark" ng-disabled="form.$invalid || !isModified() || photoUploading">Save</button>
-					<button class="button button-assertive" ng-click="reset($event)" ng-disabled="form.$invalid || !isModified()" ng-click="reset($event)">Reset</button>
+					<button class="button button-dark" ng-disabled="!isModified() || photoUploading" ng-click="save()">Save</button>
+					<button class="button button-assertive" ng-click="reset($event)" ng-disabled="!isModified()" ng-click="reset($event)">Reset</button>
 				</ion-item>
-			</form>
+			</span>
 		</ion-list>
 	</ion-content>
 </ion-view>

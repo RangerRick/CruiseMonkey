@@ -1,12 +1,12 @@
 <ion-modal-view ng-class="'fit seamail'" ng-controller="NewSeamailCtrl" cache-view="false">
-	<form name="seamailForm">
+	<span name="seamailForm">
 	<ion-header-bar class="bar-dark">
 		<div class="buttons">
 			<button class="button button-clear button-yellow" ng-click="closeModal($event)">Close</button>
 		</div>
 		<h1 class="title">New Seamail</h1>
 		<div class="buttons">
-			<button class="button button-clear button-yellow" ng-click="postSeamail($event, message)" ng-disabled="form.$invalid">Send</button>
+			<button class="button button-clear button-yellow" ng-click="postSeamail($event, message)"></button>Send</button>
 		</div>
 	</ion-header-bar>
 	<ion-content>
@@ -20,5 +20,5 @@
 			</label>
 		</ion-list>
 	</ion-content>
-	</form>
+</span>
 </ion-modal-view>
