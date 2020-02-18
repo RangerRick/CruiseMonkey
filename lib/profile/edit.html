@@ -5,10 +5,10 @@
 				<label class="item item-input item-profile">
 					<span class="input-label">Profile Photo:</span>
 					<div class="img-container" on-tap="replaceImage($event)" ng-if="!p.hasNative()">
-						<img ng-src="{{getImageUrl()}}" ng-if="twitarrRoot &amp;&amp; user.username" />
+						<img cm-cache cm-src="{{getImageUrl()}}" ng-if="twitarrRoot &amp;&amp; user.username" />
 					</div>
 					<div class="img-container" on-touch="replaceImage($event)" ng-if="p.hasNative()">
-						<img ng-src="{{getImageUrl()}}" ng-if="twitarrRoot &amp;&amp; user.username" />
+						<img cm-cache cm-src="{{getImageUrl()}}" ng-if="twitarrRoot &amp;&amp; user.username" />
 					</div>
 				</label>
 				<div class="item" ng-if="photoUploading">

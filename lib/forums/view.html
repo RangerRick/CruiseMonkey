@@ -8,7 +8,7 @@
 			<h2>{{forum.subject}}</h2>
 		</ion-item>
 		<ion-item class="item item-avatar item-text-wrap" ng-repeat="post in forum.posts track by post.id">
-			<img cm-cache img-src="{{twitarrRoot + 'api/v2/user/photo/' + post.author.username}}" ng-click="openUser(post.author.username, $event)" ng-if="twitarrRoot &amp;&amp; post.author &amp;&amp; post.author.username" />
+			<img cm-cache cm-src="{{twitarrRoot + 'api/v2/user/photo/' + post.author.username}}" ng-click="openUser(post.author.username, $event)" ng-if="twitarrRoot &amp;&amp; post.author &amp;&amp; post.author.username" />
 			<span class="item-note timestamp">
 				{{post.timestamp.fromNow()}}
 			</span>
@@ -18,7 +18,7 @@
 			</span>
 			<p ng-bind-html="post.text"></p>
 			<div ng-if="post.photos &amp;&amp; post.photos.length > 0">
-				<img class="post-photo" ng-repeat="photo in post.photos" cm-cache img-src="{{twitarrRoot + 'api/v2/photo/small_thumb/' + photo.id}}" ng-if="twitarrRoot &amp;&amp; photo.id" on-tap="showImage(photo.id, $event)" />
+				<img class="post-photo" ng-repeat="photo in post.photos" cm-cache cm-src="{{twitarrRoot + 'api/v2/photo/small_thumb/' + photo.id}}" ng-if="twitarrRoot &amp;&amp; photo.id" on-tap="showImage(photo.id, $event)" />
 			</div>
 		</ion-item>
 	</ion-content>

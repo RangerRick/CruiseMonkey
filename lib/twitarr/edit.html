@@ -26,7 +26,7 @@
 			</div>
 			<!-- ng-click="removePhoto($event)" -->
 			<div class="item item-image" ng-if="twitarrRoot &amp;&amp; tweet.photo">
-				<img cm-cache img-src="{{twitarrRoot}}api/v2/photo/small_thumb/{{tweet.photo}}" style="width: 100%" />
+				<img cm-cache cm-src="{{twitarrRoot}}api/v2/photo/small_thumb/{{tweet.photo}}" style="width: 100%" />
 			</div>
 			<div class="item" ng-if="photoUploading">
 				<progress value="{{photoUploading}}" max="100"></progress>

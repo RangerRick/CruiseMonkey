@@ -25,7 +25,7 @@
 						<i class="icon icon-navy cm-icon-flag" ng-if="currentEvents.includes(entry.getId())"></i>
 					</div>
 					<div class="time">Time: {{entry.getDisplayTime()}}</div>
-					<div class="createdBy" ng-if="entry.isOfficial()"><img ng-src="{{officialIcon}}" style="max-height: 14px" ng-if="entry.isOfficial()" /> Official Event</div>
+					<div class="createdBy" ng-if="entry.isOfficial()"><img cm-cache cm-src="{{officialIcon}}" style="max-height: 14px" ng-if="entry.isOfficial()" /> Official Event</div>
 					<div class="location" ng-if="entry.getLocation()">Location: <span ng-bind-html="highlight(entry.getLocation(), searchString)"></span></div>
 					<div class="description" ng-if="entry.getDescription()" ng-bind-html="highlight(entry.getFormattedDescription(), searchString)"></div>
 					</span>

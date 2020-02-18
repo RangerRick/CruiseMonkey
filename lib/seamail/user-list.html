@@ -14,13 +14,13 @@
 				</span>
 			</div>
 			<span class="user" ng-click="openUser(user.username, $event)" ng-repeat="user in seamail.users track by user.username">
-				<img cm-cache img-src="{{twitarrRoot}}api/v2/user/photo/{{user.username}}" title="{{user.display_name}}" ng-if="twitarrRoot &amp;&amp; user.username" /> {{user.username}}
+				<img cm-cache cm-src="{{twitarrRoot}}api/v2/user/photo/{{user.username}}" title="{{user.display_name}}" ng-if="twitarrRoot &amp;&amp; user.username" /> {{user.username}}
 			</span>
 		</div>
 	</span>
 	<div class="users list-view" ng-if="listView">
 		<span class="user" ng-click="openUser(user.username, $event)" ng-repeat="user in seamail.users track by user.username">
-			<img cm-cache img-src="{{twitarrRoot}}api/v2/user/photo/{{user.username}}" title="{{user.display_name}}" ng-if="twitarrRoot &amp;&amp; user.username" /> {{user.username}}
+			<img cm-cache cm-src="{{twitarrRoot}}api/v2/user/photo/{{user.username}}" title="{{user.display_name}}" ng-if="twitarrRoot &amp;&amp; user.username" /> {{user.username}}
 		</span>
 	</div>
 </span>
