@@ -29,9 +29,5 @@
     "Keyboard": {
       "resize": "native"
     }
-  },
-  "server": {
-    "url": "http://192.168.211.228:8100",
-    "cleartext": true
   }
 }
