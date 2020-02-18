@@ -160,6 +160,10 @@ ion-tabs {
 	@include tabs-standard-color('tabs-color-active-cm', $cmDetailBackground, $cmDetailForeground);
 }
 
+.platform-android .tabs-striped .tabs {
+	border-bottom: 0;
+}
+
 @import "./icons";
 
 $button-yellow-bg: $cmBackground;

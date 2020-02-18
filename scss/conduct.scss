@@ -1,4 +1,8 @@
 .conduct {
+  border: 0;
+  h1.title {
+    border-bottom: 0;
+  }
   h1 {
     font-size: $font-size-large * 1.5;
     line-height: $line-height-large * 1.5;
