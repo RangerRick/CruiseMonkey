@@ -11,7 +11,7 @@ import moment from 'moment-timezone';
 import { Moment, Duration } from 'moment';
 import { IQService, IPromise, IRootScopeService, ILogService, ITimeoutService } from 'angular';
 
-const debugMode = true;
+const debugMode = false;
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 declare const angular: any;
