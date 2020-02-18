@@ -14,10 +14,6 @@
     <param name="android-package" value="de.appplant.cordova.plugin.badge.Badge"/>
   </feature>
 
-  <feature name="DatePickerPlugin">
-    <param name="android-package" value="com.plugin.datepicker.DatePickerPlugin"/>
-  </feature>
-
   <feature name="Device">
     <param name="android-package" value="org.apache.cordova.device.Device"/>
   </feature>
@@ -33,11 +29,6 @@
 
   <feature name="FileTransfer">
     <param name="android-package" value="org.apache.cordova.filetransfer.FileTransfer"/>
-  </feature>
-
-  <feature name="CordovaKeychain">
-    <param name="android-package" value="com.synconset.KeychainPlugin"/>
-    <param name="onload" value="true"/>
   </feature>
 
   <feature name="LocalNotification">
