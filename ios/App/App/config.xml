@@ -14,10 +14,6 @@
     <param name="ios-package" value="APPBadge"/>
   </feature>
 
-  <feature name="ChromeSystemMemory">
-    <param name="ios-package" value="ChromeSystemMemory"/>
-  </feature>
-
   <feature name="DatePicker">
     <param name="ios-package" value="DatePicker"/>
   </feature>

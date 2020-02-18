@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		2FAD9763203C412B000D30F8 /* config.xml in Resources */ = {isa = PBXBuildFile; fileRef = 2FAD9762203C412B000D30F8 /* config.xml */; };
+		444E38E523FB6794009F8873 /* MemoryInfoPlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = 444E38E423FB6794009F8873 /* MemoryInfoPlugin.swift */; };
+		444E38E723FB696B009F8873 /* MemoryInfoPlugin.m in Sources */ = {isa = PBXBuildFile; fileRef = 444E38E623FB696B009F8873 /* MemoryInfoPlugin.m */; };
 		50379B232058CBB4000EE86E /* capacitor.config.json in Resources */ = {isa = PBXBuildFile; fileRef = 50379B222058CBB4000EE86E /* capacitor.config.json */; };
 		504EC3081FED79650016851F /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 504EC3071FED79650016851F /* AppDelegate.swift */; };
 		504EC30D1FED79650016851F /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 504EC30B1FED79650016851F /* Main.storyboard */; };
@@ -19,6 +21,8 @@
 
 /* Begin PBXFileReference section */
 		2FAD9762203C412B000D30F8 /* config.xml */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = config.xml; sourceTree = "<group>"; };
+		444E38E423FB6794009F8873 /* MemoryInfoPlugin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = MemoryInfoPlugin.swift; path = "local-plugins/MemoryInfoPlugin.swift"; sourceTree = "<group>"; };
+		444E38E623FB696B009F8873 /* MemoryInfoPlugin.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = MemoryInfoPlugin.m; path = "local-plugins/MemoryInfoPlugin.m"; sourceTree = "<group>"; };
 		50379B222058CBB4000EE86E /* capacitor.config.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = capacitor.config.json; sourceTree = "<group>"; };
 		504EC3041FED79650016851F /* App.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = App.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		504EC3071FED79650016851F /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -81,6 +85,8 @@
 				504EC3131FED79650016851F /* Info.plist */,
 				2FAD9762203C412B000D30F8 /* config.xml */,
 				50B271D01FEDC1A000F3C39B /* public */,
+				444E38E423FB6794009F8873 /* MemoryInfoPlugin.swift */,
+				444E38E623FB696B009F8873 /* MemoryInfoPlugin.m */,
 			);
 			path = App;
 			sourceTree = "<group>";
@@ -128,6 +134,7 @@
 				TargetAttributes = {
 					504EC3031FED79650016851F = {
 						CreatedOnToolsVersion = 9.2;
+						LastSwiftMigration = 1130;
 						ProvisioningStyle = Automatic;
 					};
 				};
@@ -223,6 +230,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				504EC3081FED79650016851F /* AppDelegate.swift in Sources */,
+				444E38E523FB6794009F8873 /* MemoryInfoPlugin.swift in Sources */,
+				444E38E723FB696B009F8873 /* MemoryInfoPlugin.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -360,6 +369,7 @@
 			baseConfigurationReference = FC68EB0AF532CFC21C3344DD /* Pods-App.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 410044;
 				DEVELOPMENT_TEAM = LLGKFX3ZJT;
@@ -371,6 +381,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.raccoonfink.cruisemonkey;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG USE_PUSH";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 4.2;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -381,6 +392,7 @@
 			baseConfigurationReference = AF51FD2D460BCFE21FA515B2 /* Pods-App.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 410044;
 				DEVELOPMENT_TEAM = LLGKFX3ZJT;

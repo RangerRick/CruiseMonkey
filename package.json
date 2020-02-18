@@ -76,7 +76,6 @@
     "cordova-ios": "^5.1.1",
     "cordova-plugin-advanced-http": "^2.4.0",
     "cordova-plugin-badge": "^0.8.8",
-    "cordova-plugin-chrome-apps-system-memory": "^1.1.1",
     "cordova-plugin-datepicker": "^0.9.3",
     "cordova-plugin-device": "^2.0.3",
     "cordova-plugin-dialogs": "^2.0.2",

@@ -14,10 +14,6 @@
     <param name="android-package" value="de.appplant.cordova.plugin.badge.Badge"/>
   </feature>
 
-  <feature name="ChromeSystemMemory">
-    <param name="android-package" value="org.chromium.ChromeSystemMemory"/>
-  </feature>
-
   <feature name="DatePickerPlugin">
     <param name="android-package" value="com.plugin.datepicker.DatePickerPlugin"/>
   </feature>
