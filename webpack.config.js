@@ -1,19 +1,16 @@
 const webpack = require('webpack');
+const exec = require('child_process').exec;
 const fs = require('fs');
 const path = require('path');
-const process = require('process');
-const pkginfo = require('./package.json');
 
 const TerserPlugin = require('terser-webpack-plugin');
 
 const configfile = path.join(__dirname, 'package.json');
 const configobj  = JSON.parse(fs.readFileSync(configfile, 'utf8'));
 const argv = require('yargs').argv;
-// const cloneDeep = require('lodash').cloneDeep;
 
 const mode = argv.mode ? argv.mode : 'development';
 
-// process.exit(0);
 
 module.exports = {
   entry: {
@@ -154,3 +151,14 @@ if (mode === 'production') {
     ],
   };
 }
+
+module.exports.plugins.push({
+  apply: (compiler) => {
+    compiler.hooks.afterEmit.tap('AfterEmitPlugin', () => {
+      exec('npx cap copy', (err, stdout, stderr) => {
+        if (stdout) process.stdout.write(stdout);
+        if (stderr) process.stderr.write(stderr);
+      });
+    });
+  },
+});
