@@ -12,6 +12,7 @@ import { Moment, Duration } from 'moment';
 import { IQService, IPromise, IRootScopeService, ILogService, ITimeoutService } from 'angular';
 
 const debugMode = false;
+const KV_SCAN_REGION_COUNT_KEY = 'cordova.backgroundManager.scanRegionCount';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 declare const angular: any;
@@ -31,6 +32,7 @@ const zeroPad = (input: string, length: number): string => {
 };
 
 const sendNotification = async (title: string, message: string) => {
+  console.debug(`BackgroundManager event: title="${title}", message="${message}"`);
   if (debugMode) {
     try {
       const enabled = await LocalNotifications.areEnabled();
@@ -44,7 +46,7 @@ const sendNotification = async (title: string, message: string) => {
         });
       }
     } catch (err) {
-      console.debug(`BackgroundManager event: title="${title}", message="${message}"`);
+      // console.debug(`BackgroundManager event: title="${title}", message="${message}"`);
     }
   }
 };
@@ -52,12 +54,16 @@ const sendNotification = async (title: string, message: string) => {
 type errorHandler = (err: Error) => void;
 
 export class BackgroundManager {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  public kv: any;
+
   private _minUpdate = moment.duration(5, 'minutes');
 
   protected lastRegion = null as IBeaconRegion | null;
   protected lastUpdateTime = null as Moment | null;
 
-  private _updateCallbacks = [] as Array<Function | null>;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  private _updateCallbacks = [] as Array<(() => Promise<any>) | null>;
   private _isActive = true;
   private _enabled = false;
   private _scanRegionCount = 4;
@@ -74,8 +80,10 @@ export class BackgroundManager {
     return this._minUpdate;
   }
   public set minUpdate(duration: Duration) {
-    this._minUpdate = duration;
-    this.initializeCallback();
+    if (this._minUpdate.asMilliseconds() !== duration.asMilliseconds()) {
+      this._minUpdate = duration;
+      this.initializeCallback();
+    }
   }
 
   public get maxUpdate() {
@@ -91,9 +99,9 @@ export class BackgroundManager {
     if (this._callbackInterval) {
       clearInterval(this._callbackInterval);
     }
-    this._callbackInterval = setInterval(() => {
+    this._callbackInterval = setInterval(async () => {
       console.info(`BackgroundManager: calling ${this._updateCallbacks.length} callbacks (interval: ${this.minUpdate.asMinutes()} minutes)`);
-      this.triggerCallbacks();
+      await this.triggerCallbacks();
     }, this.minUpdate.asMilliseconds());
   }
 
@@ -106,7 +114,7 @@ export class BackgroundManager {
       const fetchCallback = async () => {
         try {
           console.info('BackgroundManager: initiating background fetch.');
-          this.triggerCallbacks();
+          await this.triggerCallbacks();
           BackgroundFetch.finish();
         } catch (err) {
           BackgroundFetch.finish();
@@ -139,6 +147,7 @@ export class BackgroundManager {
       return this.enteredRegion(result.region);
     });
     await IBeacon.requestAlwaysAuthorization();
+    this.initializeCallback();
   }
 
   public get isActive() {
@@ -154,7 +163,7 @@ export class BackgroundManager {
   }
 
   public async setInactive() {
-    console.info('BackgroundManager.setActive()');
+    console.info('BackgroundManager.setInactive()');
     this._isActive = false;
     if (!this.enabled) {
       await this.disable();
@@ -177,11 +186,11 @@ export class BackgroundManager {
     return this._enabled;
   }
 
-  protected get scanRegionCount() {
+  public get scanRegionCount() {
     return this._scanRegionCount;
   }
 
-  protected set scanRegionCount(count: number) {
+  public set scanRegionCount(count: number) {
     const oldCount = this._scanRegionCount;
     // must be at least one region
     const newCount = Math.max(count, 1);
@@ -190,6 +199,13 @@ export class BackgroundManager {
 
     if (newCount !== oldCount) {
       this.resetScanning();
+    }
+
+    if (this.kv) {
+      console.debug(`BackgroundManager.scanRegionCount: updating kv ${KV_SCAN_REGION_COUNT_KEY}=${this._scanRegionCount}`);
+      this.kv.set(KV_SCAN_REGION_COUNT_KEY, this._scanRegionCount);
+    } else {
+      console.debug('BackgroundManager.scanRegionCount: kv not yet initialized.');
     }
   }
 
@@ -279,8 +295,8 @@ export class BackgroundManager {
   }
 
   private updateScanUUIDs() {
-    if (this._scanUUIDs.length !== this._scanRegionCount) {
-      this._scanUUIDs = this.getRegionUUIDs(this._scanRegionCount);
+    if (this._scanUUIDs.length !== this.scanRegionCount) {
+      this._scanUUIDs = this.getRegionUUIDs(this.scanRegionCount);
     }
     return this._scanUUIDs;
   }
@@ -311,7 +327,7 @@ export class BackgroundManager {
 
   protected getPingableUUIDs() {
     const seenUUIDs = this.updateSeenUUIDs();
-    return this.getRegionUUIDs(this._scanRegionCount).filter((uuid) => {
+    return this.getRegionUUIDs(this.scanRegionCount).filter((uuid) => {
       return !seenUUIDs.get(uuid);
     });
   }
@@ -327,21 +343,21 @@ export class BackgroundManager {
     return `${BEACON_PREFIX}${zeroPad(value, 12)}`;
   }
 
-  protected doUpdate(region: IBeaconRegion) {
+  protected async doUpdate(region: IBeaconRegion) {
     console.debug(`BackgroundManager.doUpdate(): ${region.uuid}`);
     const now = moment();
     this.lastUpdateTime = now;
     const index = this.getIndex(region.uuid);
-    if (index > this._scanRegionCount) {
+    if (index > this.scanRegionCount) {
       console.warn(`Received ping outside of expected scan range: ${region.uuid}`);
     }
     // simple LRU, `add` always appends, first in the list is oldest
     this._seenUUIDs.delete(region.uuid);
     this._seenUUIDs.set(region.uuid, now);
-    this.triggerCallbacks();
+    await this.triggerCallbacks();
   }
 
-  protected triggerCallbacks() {
+  protected async triggerCallbacks() {
     const now = moment();
     const threshold = this._lastCallbackTime.add(this.minUpdate);
     if (now.isBefore(threshold)) {
@@ -351,32 +367,41 @@ export class BackgroundManager {
 
     sendNotification('Triggering Callbacks', `Triggering ${this._updateCallbacks.length} callbacks.`);
 
-    for (const callback of this._updateCallbacks) {
+    await Promise.all(this._updateCallbacks.map(async (callback, index) => {
       if (callback !== null) {
-        callback();
+        try {
+          console.debug(`BackgroundManager.triggerCallbacks: triggering callback #${index}.`);
+          const result = await callback();
+          console.debug(`BackgroundManager.triggerCallbacks: finished callback #${index}: ` + JSON.stringify(result));
+        } catch (err) {
+          console.warn('BackgroundManager.triggerCallbacks: callback failed with error: ' + JSON.stringify(err));
+        }
       }
-    }
+    }));
 
     if (this.isActive) {
-      this.ping();
+      await this.ping();
     }
   }
 
   protected slowDown() {
-    const oldCount = this._scanRegionCount;
-    this._scanRegionCount = Math.max(1, this._scanRegionCount - 1);
-    console.debug(`BackgroundManager.slowDown(): ${oldCount} => ${this._scanRegionCount}`);
+    const oldCount = this.scanRegionCount;
+    this.scanRegionCount = Math.max(1, oldCount - 1);
+    console.debug(`BackgroundManager.slowDown(): ${oldCount} => ${this.scanRegionCount}`);
   }
 
   protected speedUp() {
-    const oldCount = this._scanRegionCount;
-    this._scanRegionCount++;
-    console.debug(`BackgroundManager.speedUp(): ${oldCount} => ${this._scanRegionCount}`);
+    const oldCount = this.scanRegionCount;
+    this.scanRegionCount++;
+    console.debug(`BackgroundManager.speedUp(): ${oldCount} => ${this.scanRegionCount}`);
   }
 
-  public onUpdate(callback: () => void) {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  public onUpdate(callback: () => Promise<any>) {
     this._updateCallbacks.push(callback);
-    return this._updateCallbacks.length - 1;
+    const id = this._updateCallbacks.length - 1;
+    console.debug(`BackgroundManager.onUpdate(): registered callback #${id}`);
+    return id;
   }
 
   public cancelUpdate(index: number) {
@@ -415,31 +440,58 @@ export class BackgroundManager {
 if (window.angular) {
   window.angular.module('cruisemonkey.util.BackgroundManager', [
     'ng',
+    'cruisemonkey.DB',
     'cruisemonkey.Settings',
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  ]).factory('BackgroundManager', /* @ngInject */ ($ionicPlatform: any, $log: ILogService, $q: IQService, $rootScope: IRootScopeService, $timeout: ITimeoutService, SettingsService: any) => {
+  ]).factory('BackgroundManager', /* @ngInject */ ($ionicPlatform: any, $log: ILogService, $q: IQService, $rootScope: IRootScopeService, $timeout: ITimeoutService, kv: any, SettingsService: any) => {
     $log.info('AngularBackgroundManager: initializing.');
     const manager = new BackgroundManager();
-    $ionicPlatform.ready(() => {
-      $log.debug('AngularBackgroundManager: Ionic is ready.');
-      manager.init();
-    });
+    manager.kv = kv;
 
-    App.addListener('appStateChange', (state: AppState) => {
-      console.debug(`BackgroundManager.appStateChange: isActive=${state.isActive}`);
-      sendNotification(`App state changed: ${state.isActive}`, `App state changed: ${manager.isActive} => ${state.isActive}`);
-      state.isActive ? manager.setActive() : manager.setInactive();
-    });
+    const doEnableDisable = () => {
+      return kv.get(KV_SCAN_REGION_COUNT_KEY).then((scanRegionCount: number) => {
+        manager.scanRegionCount = scanRegionCount || 4;
+        return SettingsService.getBackgroundInterval();
+      }).then((backgroundInterval: number) => {
+        $log.debug(`AngularBackgroundManager.doEnableDisable(): background refresh interval is ${backgroundInterval} seconds.`);
+        manager.minUpdate = moment.duration(backgroundInterval, 'seconds');
+        return SettingsService.getEnableAdvancedSync();
+      }).then((enableAdvancedSync: boolean) => {
+        const sectionEnabled = Boolean($rootScope.isSectionEnabled('advanced_sync'));
+        $log.debug(`AngularBackgroundManager.doEnableDisable(): Advanced Sync is ${enableAdvancedSync? 'enabled':'disabled'} by the user and ${sectionEnabled? 'enabled':'disabled'} by the Twit-Arr admins.`);
+        if (enableAdvancedSync && sectionEnabled) {
+          if (!manager.enabled) {
+            return $q.when(manager.enable() as IPromise<boolean>);
+          }
+        } else {
+          if (manager.enabled) {
+            return $q.when(manager.disable() as IPromise<boolean>);
+          }
+        }
+        return $q.when('No changes needed.');
+      });
+    };
 
-    let enabled = true;
-    SettingsService.getEnableAdvancedSync().then((enableAdvancedSync: boolean) => {
-      enabled = enableAdvancedSync;
+    const ready = $ionicPlatform.ready(() => {
+      $log.debug('AngularBackgroundManager.init(): Ionic is ready.');
+
+      return $q.when(manager.init() as IPromise<void>);
+    }).then(() => {
+      return doEnableDisable();
+    }).then(() => {
+      $log.debug('AngularBackgroundManager.init(): finished initializing.');
+      return true;
+    }).catch((err: unknown) => {
+      $log.error('AngularBackgroundManager.init(): failed: ' + angular.toJson(err));
+      return $q.reject(err);
     });
 
     const enable = () => {
       if ($rootScope.isSectionEnabled('advanced_sync')) {
         $log.debug('AngularBackgroundManager.enable()');
-        return $q.when(manager.enable() as IPromise<boolean>);
+        return ready.then(() => {
+          return $q.when(manager.enable() as IPromise<boolean>);
+        });
       } else {
         $log.warn('AngularBackgroundManager.enable(): advanced_sync has been disabled by the Twit-Arr admins.');
         return $q.reject();
@@ -448,92 +500,76 @@ if (window.angular) {
 
     const disable = () => {
       $log.debug('AngularBackgroundManager.disable()');
-      return $q.when(manager.disable() as IPromise<boolean>);
+      return ready.then(() => {
+        return $q.when(manager.disable() as IPromise<boolean>);
+      });
     };
 
     const setInterval = (interval: Duration) => {
-      manager.minUpdate = interval;
-      return interval;
+      return ready.then(() => {
+        manager.minUpdate = interval;
+        return interval;
+      });
     };
 
-    const onUpdate = (callback: () => void) => {
-      return $q.when(manager.onUpdate(() => {
-        $rootScope.$evalAsync(callback);
-      }));
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const onUpdate = (callback: () => Promise<any>) => {
+      return ready.then(() => {
+        $log.debug('AngularBackgroundManager.onUpdate(): adding callback');
+        return $q.when(manager.onUpdate(() => {
+          $log.debug('AngularBackgroundManager.onUpdate(): callback triggered');
+          return new Promise((resolve, reject) => {
+            $timeout(() => {
+              $log.debug('AngularBackgroundManager.onUpdate(): running callback');
+              try {
+                const ret = callback();
+                ret
+                  .then((result) => resolve(result))
+                  .catch((err) => reject(err));
+              } catch (err) {
+                reject(err);
+              }
+              $log.debug('AngularBackgroundManager.onUpdate(): finished running callback');
+            }, 0);
+          });
+        }));
+      });
     };
 
     const cancelUpdate = (id: number) => {
-      manager.cancelUpdate(id);
+      return ready.then(() => {
+        return manager.cancelUpdate(id);
+      });
     };
 
-    let initialized = false;
-
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    $rootScope.$watch('sections', (newValue: any) => {
+    $rootScope.$watch('sections', (newValue: any /*, oldValue: any */) => {
       if (newValue['cruise_monkey_advanced_sync'] === undefined) {
         return;
       }
-      $timeout(() => {
-        if (!initialized) {
-          SettingsService.getEnableAdvancedSync().then((advancedSyncEnabled: boolean) => {
-            return SettingsService.getBackgroundInterval().then((backgroundInterval: number) => {
-              setInterval(moment.duration(backgroundInterval, 'seconds'));
-              if (advancedSyncEnabled) {
-                return enable();
-              } else {
-                return disable();
-              }
-            });
-          }).finally(() => {
-            initialized = true;
-          });
-        }
-
-        if (!$rootScope.isSectionEnabled('advanced_sync')) {
-          disable();
-        }
-      }, 10);
+      $timeout(doEnableDisable, 0);
     });
 
-  $rootScope.$on('cruisemonkey.user.settings-changed', async (ev, settings) => {
+  $rootScope.$on('cruisemonkey.user.settings-changed', (ev, settings) => {
       console.debug('AngularBackgroundManager.settings-changed:', angular.toJson(settings));
-
-      let shouldRestart = false;
-      const actions = [] as Function[];
 
       if (settings.old) {
         if (settings.new.backgroundInterval !== settings.old.backgroundInterval) {
           $log.debug(`AngularBackgroundManager: background interval refresh has changed from ${settings.old.backgroundInterval} seconds to ${settings.new.backgroundInterval} seconds.`);
-          shouldRestart = true;
-          actions.push(() => {
-            setInterval(moment.duration(settings.new.backgroundInterval, 'seconds'));
-          });
+          setInterval(moment.duration(settings.new.backgroundInterval, 'seconds'));
         }
         if (settings.new.enableAdvancedSync !== settings.old.enableAdvancedSync) {
           $log.debug(`AngularBackgroundManager: advanced sync has changed from ${settings.old.enableAdvancedSync} to ${settings.new.enableAdvancedSync}.`);
-          shouldRestart = true;
-          enabled = settings.new.enableAdvancedSync;
         }
       }
 
-      if (shouldRestart) {
-        return disable().then(() => {
-          for (const action of actions) {
-            action();
-          }
-          if (enabled) {
-            return enable().then(() => {
-              return enabled;
-            });
-          } else {
-            $log.warn(`AngularBackgroundManager: restart requested, but advanced sync is disabled.`);
-          }
-          return enabled;
-        }).catch((err) => {
-          $log.error('Failed to restart AngularBackgroundManager: ' + angular.toJson(err));
-          return $q.reject(err);
-        });
-      }
+      $timeout(doEnableDisable, 0);
+    });
+
+    App.addListener('appStateChange', (state: AppState) => {
+      console.debug(`BackgroundManager.appStateChange: isActive=${state.isActive}`);
+      sendNotification(`App state changed: ${state.isActive}`, `App state changed: ${manager.isActive} => ${state.isActive}`);
+      state.isActive ? manager.setActive() : manager.setInactive();
     });
 
     return {

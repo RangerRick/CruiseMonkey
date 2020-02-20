@@ -46,6 +46,7 @@
 	<script src="cordova.js"></script>
 	<script>
 		var isMobile = false;
+		window.skipLocalNotificationReady = true;
 
 		ionic.Platform.ready(function() {
 			console.log('Platform is ready.  Bootstrapping.');
