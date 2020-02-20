@@ -92,7 +92,7 @@
     "eslint-plugin-jest": "^23.7.0",
     "exports-loader": "^0.7.0",
     "expose-loader": "^0.7.5",
-    "file-loader": "^5.0.2",
+    "file-loader": "^5.1.0",
     "fs.extra": "*",
     "ghooks": "^2.0.0",
     "gulp": "^4.0.0",
