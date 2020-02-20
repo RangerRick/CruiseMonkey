@@ -13,12 +13,13 @@
 	<ion-content delegate-handle="karaoke-scroll" ng-click="closeKeyboard()">
 		<div class="list searchable">
 			<div class="item artist-entry"
-				collection-repeat="entry in entries track by entry[0]"
+				collection-repeat="entry in entries"
 				collection-item-width="'100%'"
 				collection-item-height="60" ng-style="{height: '60px'}">
-				<span class="artist" ng-bind-html="highlight(entry[1], searchString)"></span>
+				<span class="artist" ng-bind-html="highlight(entry.artist, searchString)"></span>
+				<span class="metadata" ng-if="entry.metadata" ng-bind-html="'(' + entry.metadata + ')'"></span>
 				<br>
-				<span class="song" ng-bind-html="highlight(entry[2], searchString)"></span>
+				<span class="song" ng-bind-html="highlight(entry.title, searchString)"></span>
 			</div>
 		</div>
 	</ion-content>
