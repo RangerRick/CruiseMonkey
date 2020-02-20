@@ -38,12 +38,24 @@
 				</span>
 			</span>
 
-			<span class="settings-form" novalidate>
-				<ion-item class="heading">Network Configuration</ion-item>
-				<ion-item class="item item-input">
-					<span class="input-label">Twit-Arr URL:</span>
+			<span class="twitarr-form" novalidate>
+				<ion-item class="heading">Twit-Arr Server</ion-item>
+				<ion-radio icon="ion-ios-circle-filled" class="item-icon-left" ng-model="settings.twitarrRootSelector" ng-value="'https://twitarr.com/'"             ng-class="settings.twitarrRootSelector === 'https://twitarr.com/' ? 'checked' : 'unchecked'">Twit-Arr Server on Nieuw Amsterdam</ion-radio>
+				<ion-radio icon="ion-ios-circle-filled" class="item-icon-left" ng-model="settings.twitarrRootSelector" ng-value="'http://joco.hollandamerica.com/'"  ng-class="settings.twitarrRootSelector === 'http://joco.hollandamerica.com/' ? 'checked' : 'unchecked'">Unencrypted Fallback 1 (Local DNS)</ion-radio>
+				<ion-radio icon="ion-ios-circle-filled" class="item-icon-left" ng-model="settings.twitarrRootSelector" ng-value="'http://10.114.238.135/'"           ng-class="settings.twitarrRootSelector === 'http://10.114.238.135/' ? 'checked' : 'unchecked'">Unencrypted Fallback 2 (IP)</ion-radio>
+				<ion-radio icon="ion-ios-circle-filled" class="item-icon-left" ng-model="settings.twitarrRootSelector" ng-value="'http://10.114.238.136/'"           ng-class="settings.twitarrRootSelector === 'http://10.114.238.136/' ? 'checked' : 'unchecked'">Unencrypted Fallback 3 (Host IP)</ion-radio>
+				<ion-radio icon="ion-ios-circle-filled" class="item-icon-left" ng-model="settings.twitarrRootSelector" ng-value="'https://twitarr.wookieefive.net/'" ng-class="settings.twitarrRootSelector === 'https://twitarr.wookieefive.net/' ? 'checked' : 'unchecked'">Dev Test Server (Off-Ship Only)</ion-radio>
+				<ion-radio icon="ion-ios-circle-filled" class="item-icon-left" ng-model="settings.twitarrRootSelector" ng-value="'custom'"                           ng-class="settings.twitarrRootSelector === 'custom' ? 'checked' : 'unchecked'">Custom Server URL:</ion-radio>
+				<ion-item class="item item-icon-left item-input" ng-if="settings.twitarrRootSelector === 'custom'">
+					<i></i>
 					<input type="url" name="twitarrRoot" ng-model="settings.twitarrRoot" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="off" />
 				</ion-item>
+				<ion-item class="item item-icon-left" ng-if="settings.twitarrRootSelector !== 'custom'">
+					<i></i>
+					&nbsp;&nbsp; {{settings.twitarrRootSelector}}
+				</ion-item>
+				<ion-item class="item"></ion-item>
+				<ion-item class="heading">Advanced Settings</ion-item>
 				<label class="item item-input item-stacked-label item-text-wrap">
 					<span class="input-label wide">
 						Status Check Interval:

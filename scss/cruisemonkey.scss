@@ -453,6 +453,9 @@ ion-popover-view.fit ion-content {
 	padding-right: 10px;
 }
 
+$radio-icon-circle-checked: "\f400";
+$radio-icon-circle-unchecked: "\f401";
+
 .settings {
 	$settings-border-color: $cmBackgroundAlternate;
 	.login-form {
@@ -478,6 +481,25 @@ ion-popover-view.fit ion-content {
 			border-radius: 3px;
 		}
 	}
+
+	.radio-content .item-content {
+		background-color: transparent !important;
+	}
+
+	label.item-radio.checked > div.radio-content > i.radio-icon {
+		&::before {
+			content: $radio-icon-circle-checked !important;
+		}
+		visibility: visible;
+	}
+
+	label.item-radio.unchecked > div.radio-content > i.radio-icon {
+		&::before {
+			content: $radio-icon-circle-unchecked !important;
+		}
+		visibility: visible;
+	}
+
 	.heading {
 		font-weight: bold;
 		font-size: $font-size-large;
