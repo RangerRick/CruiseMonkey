@@ -55,15 +55,15 @@
 					</div>
 					<div class="range row">
 						<div class="col col-33">
-							<span>{{settings.backgroundInterval}} seconds</span>
+							<span>{{settings.backgroundInterval / 60}} minute(s)</span>
 						</div>
-						<input class="col col-67" type="range" name="bgi" ng-model="$parent.settings.backgroundInterval" min="60" max="600" value="{{settings.backgroundInterval}}" />
+						<input class="col col-67" type="range" name="bgi" ng-model="settings.backgroundInterval" value="{{settings.backgroundInterval}}" min="60" max="600" step="60" />
 					</div>
 				</label>
 				<label class="item item-toggle item-text-wrap" ng-if="platform === 'ios' && isSectionEnabled('advanced_sync')">
 					Advanced Sync:
 					<span class="toggle">
-						<input type="checkbox" ng-model="$parent.settings.enableAdvancedSync" value="{{settings.enableAdvancedSync}}" />
+						<input type="checkbox" ng-model="settings.enableAdvancedSync" />
 						<div class="track">
 							<div class="handle"></div>
 						</div>
