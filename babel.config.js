@@ -5,7 +5,7 @@ module.exports = {
         "node": "current",
         "browsers": [ "last 2 versions", "safari >= 7", "> 5%" ]
       },
-      "modules": "umd",
+      "modules": "commonjs",
       "useBuiltIns": "usage",
       "corejs": 2
     }],
