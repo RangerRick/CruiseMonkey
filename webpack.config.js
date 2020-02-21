@@ -40,13 +40,6 @@ module.exports = {
         }],
       },
       {
-        test: require.resolve('lokijs'),
-        use: [{
-          loader: 'expose-loader',
-          options: 'loki',
-        }],
-      },
-      {
         test: /\.html$/,
         use: [
           'ngtemplate-loader',
