@@ -38,6 +38,7 @@ module.exports = {
     /** remove these after refactoring */
     '@typescript-eslint/camelcase': 'off',
     '@typescript-eslint/explicit-function-return-type': 'off',
+    '@typescript-eslint/no-explicit-any': 'off',
     '@typescript-eslint/no-var-requires': 'off',
     'no-redeclare': 'warn',
     'no-var': 'warn',

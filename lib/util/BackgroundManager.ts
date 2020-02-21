@@ -14,7 +14,6 @@ import { IQService, IPromise, IRootScopeService, ILogService, ITimeoutService } 
 const debugMode = false;
 const KV_SCAN_REGION_COUNT_KEY = 'cordova.backgroundManager.scanRegionCount';
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 declare const angular: any;
 const BEACON_PREFIX = 'DEADBEEF-0000-0000-0000-';
 
@@ -54,7 +53,6 @@ const sendNotification = async (title: string, message: string) => {
 type errorHandler = (err: Error) => void;
 
 export class BackgroundManager {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   public kv: any;
 
   private _minUpdate = moment.duration(5, 'minutes');
@@ -62,7 +60,6 @@ export class BackgroundManager {
   protected lastRegion = null as IBeaconRegion | null;
   protected lastUpdateTime = null as Moment | null;
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private _updateCallbacks = [] as Array<(() => Promise<any>) | null>;
   private _isActive = true;
   private _enabled = false;
@@ -70,7 +67,6 @@ export class BackgroundManager {
   private _scanUUIDs = [] as string[];
   private _seenUUIDs = new Map<string, Moment>();
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private _callbackInterval = undefined as any;
   private _lastCallbackTime = moment(0);
 
@@ -122,7 +118,6 @@ export class BackgroundManager {
         }
       };
 
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const fetchErrorCallback = (err: any) => {
         console.error('BackgroundManager: background fetch failed: ' + JSON.stringify(err));
       };
@@ -396,7 +391,6 @@ export class BackgroundManager {
     console.debug(`BackgroundManager.speedUp(): ${oldCount} => ${this.scanRegionCount}`);
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   public onUpdate(callback: () => Promise<any>) {
     this._updateCallbacks.push(callback);
     const id = this._updateCallbacks.length - 1;
@@ -442,7 +436,6 @@ if (window.angular) {
     'ng',
     'cruisemonkey.DB',
     'cruisemonkey.Settings',
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   ]).factory('BackgroundManager', /* @ngInject */ ($ionicPlatform: any, $log: ILogService, $q: IQService, $rootScope: IRootScopeService, $timeout: ITimeoutService, kv: any, SettingsService: any) => {
     $log.info('AngularBackgroundManager: initializing.');
     const manager = new BackgroundManager();
@@ -512,7 +505,6 @@ if (window.angular) {
       });
     };
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const onUpdate = (callback: () => Promise<any>) => {
       return ready.then(() => {
         $log.debug('AngularBackgroundManager.onUpdate(): adding callback');
@@ -542,7 +534,6 @@ if (window.angular) {
       });
     };
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     $rootScope.$watch('sections', (newValue: any /*, oldValue: any */) => {
       if (newValue['cruise_monkey_advanced_sync'] === undefined) {
         return;

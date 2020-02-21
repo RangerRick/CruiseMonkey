@@ -2,7 +2,6 @@ import 'capacitor-ibeacon';
 import { BackgroundManager } from '../../lib/util/BackgroundManager';
 import moment from 'moment-timezone';
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 let manager: any;
 
 beforeEach(() => {
