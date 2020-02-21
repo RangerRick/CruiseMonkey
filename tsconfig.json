@@ -2,6 +2,7 @@
   "compilerOptions": {
     "allowJs": true,
     "allowSyntheticDefaultImports": true,
+    "assumeChangesOnlyAffectDirectDependencies": true,
     "declaration": true,
     "esModuleInterop": true,
     "experimentalDecorators": true,
