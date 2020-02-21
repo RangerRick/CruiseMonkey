@@ -6,8 +6,8 @@ android {
         applicationId "com.raccoonfink.cruisemonkey"
         minSdkVersion 21
         targetSdkVersion 28
-        versionCode 410044
-        versionName "2020.1.0"
+        versionCode 410045
+        versionName "2020.1.1"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {

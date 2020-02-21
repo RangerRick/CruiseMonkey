@@ -1,9 +1,9 @@
 {
   "name": "cruisemonkey",
-  "version": "2020.1.0",
+  "version": "2020.1.1",
   "minSdk": "23",
   "description": "Keep Track of Your Cruise",
-  "build": 410044,
+  "build": 410045,
   "dependencies": {
     "@babel/runtime": "^7.8.4",
     "@babel/runtime-corejs2": "^7.8.4",
