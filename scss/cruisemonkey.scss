@@ -210,9 +210,48 @@ $item-padding-orig: 16px;
 }
 
 .tweet.item {
+	&.item-avatar.not-expanded, &.item-avatar.not-expanded .item-content {
+		min-height: 10px !important;
+		ion-content {
+			min-height: 10px !important;
+		}
+	}
+
 	.item-content {
 		padding-right: $item-padding;
 	}
+}
+
+.item {
+	.muffle {
+		pointer-events: none;
+		opacity: 0.6;
+		width: 100%;
+	}
+
+	&.not-expanded {
+		.expand {
+			display: none;
+		}
+	}
+	
+	&.expanded {
+		.muffle {
+			display: none;
+		}
+	}
+}
+.seamail .message.item {
+	&.item-avatar.not-expanded, &.item-avatar.not-expanded .item-content {
+		min-height: 10px !important;
+		ion-content {
+			min-height: 10px !important;
+		}
+	}
+}
+
+ion-content.seamail > ion-scroll {
+	height: 100%;
 }
 
 .icon {

@@ -1,12 +1,17 @@
-<ion-item class="tweet item item-avatar item-text-wrap" id="{{tweet.id}}" ng-href="{{getLinkURL($event)}}">
-	<cm-user-avatar username="tweet.author.username"></cm-user-avatar>
-	<span class="item-note commands" ng-if="user.loggedIn && !hideControls">
-		<button class="button button-icon button-small icon ion-android-more-vertical" ng-click="showOptions(tweet, $event)" ng-if="tweet.author.username === user.username"></button>
-		<button class="button button-icon button-small icon cm-icon-reply" ng-click="reply(tweet, $event)" ng-if="tweet.author.username !== user.username"></button>
-		<button ng-class="'button button-icon button-small icon ' + (isLiked(tweet)? 'cm-icon-favorited':'cm-icon-unfavorited')" ng-click="toggleLike(tweet, $event)" ng-if="tweet.author.username !== user.username"></button>
+<ion-item class="tweet item item-avatar item-text-wrap" id="{{tweet.id}}" ng-class="getClass()" on-tap="tweetClicked($event)">
+	<cm-user-avatar username="tweet.author.username" class="expand"></cm-user-avatar>
+	<span class="expand">
+		<span class="item-note commands" ng-if="user.loggedIn && !hideControls">
+			<button class="button button-icon button-small icon ion-android-more-vertical" on-tap="showOptions(tweet, $event)" ng-if="tweet.author.username === user.username"></button>
+			<button class="button button-icon button-small icon cm-icon-reply" on-tap="reply(tweet, $event)" ng-if="tweet.author.username !== user.username"></button>
+			<button ng-class="'button button-icon button-small icon ' + (isLiked(tweet)? 'cm-icon-favorited':'cm-icon-unfavorited')" on-tap="toggleLike(tweet, $event)" ng-if="tweet.author.username !== user.username"></button>
+		</span>
+		<cm-user-display username="tweet.author.username" hide-starred="muffled"></cm-user-display>
+		<p class="tweet-text user-sizeable" twitter-html="tweet.text"></p>
+		<img cm-cache cm-src="{{getImageURL()}}" ng-if="hasImageURL()" style="width: 100%; max-width: 400px" on-tap="i.show(tweet.photo.id, $event)" />
+		<p class="timeframe user-sizeable">{{timestamp}}</p>
 	</span>
-	<cm-user-display username="tweet.author.username"></cm-user-display>
-	<p class="tweet-text user-sizeable" twitter-html="tweet.text"></p>
-	<img cm-cache cm-src="{{getImageURL()}}" ng-if="hasImageURL()" style="width: 100%; max-width: 400px" ng-click="i.show(tweet.photo.id, $event)" />
-	<p class="timeframe user-sizeable">{{timestamp}}</p>
+	<span class="muffle" on-tap="expand()">
+		muffled: @{{tweet.author.username}}
+	</span>
 </ion-item>

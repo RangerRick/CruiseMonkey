@@ -1,11 +1,11 @@
 <ion-view title="Tweet" class="twitarr">
 	<ion-nav-title>
-		<span ng-click="scrollTop()">Tweet</span>
+		<span on-tap="scrollTop()">Tweet</span>
 	</ion-nav-title>
 	<ion-content delegate-handle="tweet-detail">
-		<ion-refresher pulling-text="Pull to refresh..." on-refresh="doRefresh()"></ion-refresher>
+		<ion-refresher pulling-text="Pull to refresh..." on-refresh="pullToRefresh()"></ion-refresher>
 		<ion-list>
-			<cm-tweet ng-repeat="tweet in $storage['cruisemonkey.twitarr.tweet.tweets'] track by tweet.tracker" allow-recursion="false"></cm-tweet>
+			<cm-tweet ng-repeat="tweet in tweets track by tweet.tracker" allow-recursion="false"></cm-tweet>
 		</ion-list>
 	</ion-content>
 </ion-view>
