@@ -1,11 +1,11 @@
 <ion-modal-view ng-class="'fit twitarr'">
 	<ion-header-bar class="bar-dark">
 		<div class="buttons">
-			<button class="button button-clear button-yellow" ng-click="closeModal($event)">Close</button>
+			<button class="button button-clear button-yellow" on-tap="closeModal($event)">Close</button>
 		</div>
 		<h1 class="title">{{title || 'New Tweet'}}</h1>
 		<div class="buttons">
-			<button class="button button-clear button-icon icon cm-icon-send button-yellow" ng-click="postTweet($event, tweet, originalTweet)" ng-disabled="photoUploading || !tweet.text || !isModified(tweet)"></button>
+			<button class="button button-clear button-icon icon cm-icon-send button-yellow" on-tap="postTweet($event, tweet, originalTweet)" ng-disabled="photoUploading || !tweet.text || !isModified(tweet)"></button>
 		</div>
 	</ion-header-bar>
 	<ion-content>
@@ -17,14 +17,14 @@
 								ng-if="type === 'reply' &amp;&amp; referencedTweet &amp;&amp; referencedTweet.text"
 			></cm-tweet>
 			<div class="item row">
-				<button class="col col-10 button button-clear button-dark button-emoji" ng-click="showEmoji($event)"><i class="icon ion-happy-outline"></i></button>
+				<button class="col col-10 button button-clear button-dark button-emoji" on-tap="showEmoji($event)"><i class="icon ion-happy-outline"></i></button>
 				<div class="item-input-inset tweet-input col">
 					<label class="item-input-wrapper">
 						<textarea id="tweet-text" rows="8" ng-model="tweet.text" placeholder="Post Text" required></textarea>
 					</label>
 				</div>
 			</div>
-			<!-- ng-click="removePhoto($event)" -->
+			<!-- on-tap="removePhoto($event)" -->
 			<div class="item item-image" ng-if="twitarrRoot &amp;&amp; tweet.photo">
 				<img cm-cache cm-src="{{twitarrRoot}}api/v2/photo/small_thumb/{{tweet.photo}}" style="width: 100%" />
 			</div>

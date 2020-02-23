@@ -7,7 +7,7 @@
 					{{forum.posts}}
 				</span>
 				<h2 class="title">{{forum.subject}}</h2>
-				<div class="last-reply">Last reply: {{forum.timestamp.fromNow()}} by <span ng-click="openUser(forum.last_post_username, $event)">{{forum.last_post_display_name}}</span></div>
+				<div class="last-reply">Last reply: {{forum.timestamp.fromNow()}} by <span on-tap="openUser(forum.last_post_username, $event)">{{forum.last_post_display_name}}</span></div>
 			</ion-item>
 		</ion-list>
 	</ion-content>

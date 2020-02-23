@@ -50,8 +50,8 @@
 					</label>
 				</ion-item>
 				<ion-item class="text-right">
-					<button class="button button-dark" ng-disabled="!isModified() || photoUploading" ng-click="save()">Save</button>
-					<button class="button button-assertive" ng-click="reset($event)" ng-disabled="!isModified()" ng-click="reset($event)">Reset</button>
+					<button class="button button-dark" ng-disabled="!isModified() || photoUploading" on-tap="save()">Save</button>
+					<button class="button button-assertive" ng-disabled="!isModified()" on-tap="reset($event)">Reset</button>
 				</ion-item>
 			</span>
 		</ion-list>

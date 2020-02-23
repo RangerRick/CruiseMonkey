@@ -1,8 +1,8 @@
 <ion-view view-title="Amenities" class="amenities event-list searchable">
 	<ion-nav-buttons side="secondary">
-		<button class="button button-icon icon cm-icon-search" ng-click="showFilterBar()"></button>
+		<button class="button button-icon icon cm-icon-search" on-tap="showFilterBar()"></button>
 	</ion-nav-buttons>
-	<ion-content ion-sticky delegate-handle="amenities" ng-click="closeKeyboard()">
+	<ion-content ion-sticky delegate-handle="amenities" on-tap="closeKeyboard()">
 		<ion-list>
 			<span ng-repeat="amenity in amenities">
 				<ion-item class="item-divider event-header yellow" ng-if="amenity.type === 'deck'">Deck {{amenity.getFloor()}}</ion-item>

@@ -1,6 +1,6 @@
 <ion-view view-title="Karaoke" class="event-list karaoke searchable">
 	<ion-nav-buttons side="secondary">
-		<button class="button button-icon icon cm-icon-search" ng-click="showFilterBar()"></button>
+		<button class="button button-icon icon cm-icon-search" on-tap="showFilterBar()"></button>
 	</ion-nav-buttons>
 	<style>
 	.artist-entry {
@@ -10,7 +10,7 @@
 		line-height: 22px;
 	}
 	</style>
-	<ion-content delegate-handle="karaoke-scroll" ng-click="closeKeyboard()">
+	<ion-content delegate-handle="karaoke-scroll" on-tap="closeKeyboard()">
 		<div class="list searchable">
 			<div class="item artist-entry"
 				collection-repeat="entry in entries"

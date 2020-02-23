@@ -2,24 +2,24 @@
 	<span ng-if="!listView">
 		<div class="users" ng-if="userList.closed &amp;&amp; seamail.users.length >= 3">
 			<div class="toggle">
-				<span ng-click="toggle($event)">
+				<span on-tap="toggle($event)">
 					<i class="icon ion-android-arrow-dropright-circle"></i> {{seamail.users.length}} Users
 				</span>
 			</div>
 		</div>
 		<div class="users" ng-if="!userList.closed || seamail.users.length <= 2">
 			<div class="toggle" ng-if="seamail.users.length >= 3">
-				<span ng-click="toggle($event)">
+				<span on-tap="toggle($event)">
 					<i class="icon ion-android-arrow-dropdown-circle"></i> Hide Users
 				</span>
 			</div>
-			<span class="user" ng-click="openUser(user.username, $event)" ng-repeat="user in seamail.users track by user.username">
+			<span class="user" on-tap="openUser(user.username, $event)" ng-repeat="user in seamail.users track by user.username">
 				<img cm-cache cm-src="{{twitarrRoot}}api/v2/user/photo/{{user.username}}" title="{{user.display_name}}" ng-if="twitarrRoot &amp;&amp; user.username" /> {{user.username}}
 			</span>
 		</div>
 	</span>
 	<div class="users list-view" ng-if="listView">
-		<span class="user" ng-click="openUser(user.username, $event)" ng-repeat="user in seamail.users track by user.username">
+		<span class="user" on-tap="openUser(user.username, $event)" ng-repeat="user in seamail.users track by user.username">
 			<img cm-cache cm-src="{{twitarrRoot}}api/v2/user/photo/{{user.username}}" title="{{user.display_name}}" ng-if="twitarrRoot &amp;&amp; user.username" /> {{user.username}}
 		</span>
 	</div>

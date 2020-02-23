@@ -1,6 +1,6 @@
 <ion-view title="Code of Conduct" class="conduct">
   <ion-nav-buttons side="secondary">
-    <button class="button button-yellow button-clear" ng-click="accept($event)" ng-show="rejectedCoC">Accept</button>
+    <button class="button button-yellow button-clear" on-tap="accept($event)" ng-show="rejectedCoC">Accept</button>
   </ion-nav-buttons>
   <ion-content>
     <span ng-include="conductTemplate"></span>
