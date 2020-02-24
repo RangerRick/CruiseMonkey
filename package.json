@@ -34,7 +34,7 @@
     "localforage": "^1.7.3",
     "localforage-cordovasqlitedriver": "^1.8.0",
     "moment": "^2.11.2",
-    "moment-timezone": "^0.5.27",
+    "moment-timezone": "^0.5.28",
     "ng-cordova": "^0.1.27-alpha",
     "ng-debounce": "^1.0.1",
     "ng-file-model": "0.0.5",
