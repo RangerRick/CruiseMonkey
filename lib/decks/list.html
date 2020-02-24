@@ -3,8 +3,8 @@
 		Deck {{deck}}
 	</ion-nav-title>
 	<ion-nav-buttons side="secondary">
-		<button class="button button-clear" ng-click="previous()"><i ng-class="'icon cm-icon-nav-left' + (hasPrevious? '':' icon-blank')"></i></button>
-		<button class="button button-clear" ng-click="next()"><i ng-class="'icon cm-icon-nav-right' + (hasNext? '':' icon-blank')"></i></button>
+		<button class="button button-clear" on-tap="previous()"><i ng-class="'icon cm-icon-nav-left' + (hasPrevious? '':' icon-blank')"></i></button>
+		<button class="button button-clear" on-tap="next()"><i ng-class="'icon cm-icon-nav-right' + (hasNext? '':' icon-blank')"></i></button>
 	</ion-nav-buttons>
 	<ion-content scroll="true" delegate-handle="deck-list">
 		<ion-slide-box show-pager="false" active-slide="currentSlide" on-slide-changed="slideChanged($index)">

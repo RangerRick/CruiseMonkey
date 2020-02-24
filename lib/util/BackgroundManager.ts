@@ -450,7 +450,8 @@ if (window.angular) {
         manager.minUpdate = moment.duration(backgroundInterval, 'seconds');
         return SettingsService.getEnableAdvancedSync();
       }).then((enableAdvancedSync: boolean) => {
-        const sectionEnabled = Boolean($rootScope.isSectionEnabled('advanced_sync'));
+        // @ts-ignore
+        const sectionEnabled = Boolean.of($rootScope.isSectionEnabled('advanced_sync'));
         $log.debug(`AngularBackgroundManager.doEnableDisable(): Advanced Sync is ${enableAdvancedSync? 'enabled':'disabled'} by the user and ${sectionEnabled? 'enabled':'disabled'} by the Twit-Arr admins.`);
         if (enableAdvancedSync && sectionEnabled) {
           if (!manager.enabled) {

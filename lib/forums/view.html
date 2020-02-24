@@ -1,5 +1,5 @@
 <ion-view class="forums">
-	<ion-nav-title ng-click="scrollTop()">
+	<ion-nav-title on-tap="scrollTop()">
 		Forum Detail
 	</ion-nav-title>
 	<ion-content ion-sticky delegate-handle="forum-scroll">
@@ -8,7 +8,7 @@
 			<h2>{{forum.subject}}</h2>
 		</ion-item>
 		<ion-item class="item item-avatar item-text-wrap" ng-repeat="post in forum.posts track by post.id">
-			<img cm-cache cm-src="{{twitarrRoot + 'api/v2/user/photo/' + post.author.username}}" ng-click="openUser(post.author.username, $event)" ng-if="twitarrRoot &amp;&amp; post.author &amp;&amp; post.author.username" />
+			<img cm-cache cm-src="{{twitarrRoot + 'api/v2/user/photo/' + post.author.username}}" on-tap="openUser(post.author.username, $event)" ng-if="twitarrRoot &amp;&amp; post.author &amp;&amp; post.author.username" />
 			<span class="item-note timestamp">
 				{{post.timestamp.fromNow()}}
 			</span>
@@ -24,11 +24,11 @@
 	</ion-content>
 	<ion-footer-bar class="bar-dark">
 		<div class="buttons">
-			<button class="button button-icon icon cm-icon-nav-left" ng-click="previousPage()" ng-if="forum.prev_page != null"></button>
+			<button class="button button-icon icon cm-icon-nav-left" on-tap="previousPage()" ng-if="forum.prev_page != null"></button>
 		</div>
 		<h1 class="title">Page {{page+1}}</h1>
 		<div class="buttons">
-			<button class="button button-icon icon cm-icon-nav-right" ng-click="nextPage()" ng-if="forum.next_page != null"></button>
+			<button class="button button-icon icon cm-icon-nav-right" on-tap="nextPage()" ng-if="forum.next_page != null"></button>
 		</div>
 	</ion-footer-bar>
 </ion-view>

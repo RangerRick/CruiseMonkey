@@ -6,7 +6,7 @@
 					<ion-item class="heading notop">Log Out</ion-item>
 					<ion-item>Currently logged in as: {{user.username}}</ion-item>
 					<ion-item class="text-right">
-						<button class="button button-dark" ng-click="logOut()" style="margin-top: 0; margin-bottom: 0">Log Out</button>
+						<button class="button button-dark" on-tap="logOut()" style="margin-top: 0; margin-bottom: 0">Log Out</button>
 					</ion-item>
 				</span>
 				<span class="login-form" novalidate ng-if="!user.loggedIn">
@@ -15,13 +15,13 @@
 						<ion-item class="item item-text-wrap">
 							<p>You must read and accept the Code of Conduct before logging in:</p>
 							<br>
-							<button class="button button-dark" ng-click="viewConduct($event)">View the Code of Conduct</button>
+							<button class="button button-dark" on-tap="viewConduct($event)">View the Code of Conduct</button>
 						</ion-item>
 					</span>
 					<ion-item class="heading">Log In</ion-item>
 					<ion-item class="item item-text-wrap">
-						<p>Need a Twit-arr account? <a ng-click="goToTwitarr()" style="text-decoration:underline;cursor:pointer">Create one here.</a></p>
-						<p>Lost your password? <a ng-click="goToLostPassword()" style="text-decoration:underline;cursor:pointer">Reset it here.</a></p>
+						<p>Need a Twit-arr account? <a on-tap="goToTwitarr()" style="text-decoration:underline;cursor:pointer">Create one here.</a></p>
+						<p>Lost your password? <a on-tap="goToLostPassword()" style="text-decoration:underline;cursor:pointer">Reset it here.</a></p>
 					</ion-item>
 					<ion-item class="item item-input">
 						<span class="input-label">Username:</span>
@@ -33,7 +33,7 @@
 					</ion-item>
 					<ion-item class="text-right notop">
 						<span class="input-label"></span>
-						<button class="button button-dark" ng-disabled="!canSubmit(user)" ng-click="logIn(user)" style="margin-top: 0; margin-bottom: 0">Log In</button>
+						<button class="button button-dark" ng-disabled="!canSubmit(user)" on-tap="logIn(user)" style="margin-top: 0; margin-bottom: 0">Log In</button>
 					</ion-item>
 				</span>
 			</span>
@@ -98,8 +98,8 @@
 				</label>
 				<ion-item class="text-right">
 					<div>
-						<button class="button button-dark" ng-disabled="isUnchanged()" ng-click="saveSettings()">Save</button>
-						<button class="button button-assertive" ng-click="resetSettings($event)">Default</button>
+						<button class="button button-dark" ng-disabled="isUnchanged()" on-tap="saveSettings()">Save</button>
+						<button class="button button-assertive" on-tap="resetSettings($event)">Default</button>
 					</div>
 				</ion-item>
 			</span>
@@ -111,7 +111,7 @@
 					<p>Reset locally cached data.  You should never need to do this, but if CruiseMonkey is acting weird, it may help.</p>
 				</label>
 				<ion-item class="text-right notop">
-					<button class="button button-dark" ng-click="clearCache()">Clear Cache</button>
+					<button class="button button-dark" on-tap="clearCache()">Clear Cache</button>
 				</ion-item>
 			</span>
 

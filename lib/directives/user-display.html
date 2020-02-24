@@ -1,6 +1,6 @@
-<span class="cm-directive user" ng-click="u.open(user.username, $event)">
+<span class="cm-directive user" on-tap="u.open(user.username, $event)">
 	<span class="display-name user-sizeable" ng-bind-html="user.displayName" ng-if="user &amp;&amp; user.displayName"></span>
 	<span class="display-handle user-sizeable" ng-bind-html="user.displayHandle" ng-if="user &amp;&amp; user.displayHandle"></span>
-	<button ng-class="'display-starred button button-icon button-tiny icon ' + (user.starred ? 'cm-icon-starred' : 'cm-icon-unstarred')" ng-click="toggleStarred($event, user.username)" ng-if="!hideStarred && user && user.username && me.username && user.username !== me.username"></button>
+	<button ng-class="'display-starred button button-icon button-tiny icon ' + (user.starred ? 'cm-icon-starred' : 'cm-icon-unstarred')" on-tap="toggleStarred($event, user.username)" ng-if="!hideStarred && user && user.username && me.username && user.username !== me.username"></button>
 	<span class="display-name user-sizeable">&#8203;</span>
 </span>

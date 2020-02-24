@@ -1,16 +1,16 @@
 <ion-view title="Twit-Arr" class="twitarr">
-	<ion-nav-title ng-click="openStreamTypePopover($event)">
+	<ion-nav-title on-tap="openStreamTypePopover($event)">
 		{{streamTypes[getStreamType()].description()}}
 		<span style="font-size: x-small">&#9660;</span>
 	</ion-nav-title>
 	<ion-nav-buttons side="secondary">
-		<button class="button button-icon icon cm-icon-compose" ng-click="t.new($event)" ng-if="user.loggedIn"></button>
+		<button class="button button-icon icon cm-icon-compose" on-tap="t.new($event)" ng-if="user.loggedIn"></button>
 	</ion-nav-buttons>
 	<!-- <span class="unread-count" ng-if="unreadCount &amp;&amp; unreadCount > 0">{{unreadCount}}</span> -->
 	<!-- on-scroll="updateTopVisible()" -->
 	<ion-content  ng-show="sections.stream === false"><ion-item class="item-text-wrap">The tweet stream has been administratively disabled on Twit-Arr.</ion-item></ion-content>
-	<ion-content scroll="true" padding="false" delegate-handle="twitarr" ng-click="closeKeyboard()" ng-show="sections.stream !== false">
-		<ion-refresher pulling-text="Pull to refresh..." on-refresh="doRefresh(true)"></ion-refresher>
+	<ion-content scroll="true" padding="false" delegate-handle="twitarr" on-tap="closeKeyboard()" ng-show="sections.stream !== false">
+		<ion-refresher pulling-text="Pull to refresh..." on-refresh="pullToRefresh(true)"></ion-refresher>
 		<ion-list delegate-handle="twitarr-stream">
 			<ion-item ng-if="error" class="item item-text-wrap item-icon-left">
 				<i class="icon ion-alert-circled yellow"></i>

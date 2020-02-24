@@ -1,20 +1,28 @@
 <ion-view class="seamail" title="Seamail">
 	<ion-nav-buttons side="secondary">
-		<button class="button button-icon icon cm-icon-people" ng-click="openUserList($event)"></button>
+		<button class="button button-icon icon cm-icon-people" on-tap="openUserList($event)"></button>
 	</ion-nav-buttons>
-	<ion-content  ng-show="sections.seamail === false"><ion-item class="item-text-wrap">Seamail has been administratively disabled on Twit-Arr.</ion-item></ion-content>
-	<ion-content class="seamail" delegate-handle="seamail" ng-show="sections.seamail !== false">
-		<ion-list>
-			<span name="newMessageForm" novalidate class="item item-text-wrap item-button-right">
-				<textarea id="seamail-text" required wrap="soft" ng-model="newMessage.text" ng-trim="true" placeholder="Add a message to this discussion..." style="resize: none; width: 100%" rows="2"></textarea>
-				<button class="button button-icon icon cm-icon-send footer-btn icon-navy" style="float: right" ng-click="postMessage()"></button>
-			</span>
-			<ion-item ng-repeat="message in seamail.messages track by message._hash" class="item item-avatar item-text-wrap">
-				<cm-user-avatar username="message.author.username"></cm-user-avatar>
-				<cm-user-display username="message.author.username"></cm-user-display>
-				<p class="description" ng-bind-html="message.text"></p>
-				<div class="timestamp">{{message.timestamp.fromNow()}}</div>
-			</ion-item>
-		</ion-list>
+	<ion-content ng-show="sections.seamail === false"><ion-item class="item-text-wrap">Seamail has been administratively disabled on Twit-Arr.</ion-item></ion-content>
+	<ion-content class="seamail" ng-show="sections.seamail !== false" scroll="false">
+		<span name="newMessageForm" novalidate class="item item-text-wrap item-button-right" ng-show="sections.seamail !== false">
+			<textarea id="seamail-text" required wrap="soft" ng-model="newMessage.text" ng-trim="true" placeholder="Add a message to this discussion..." style="resize: none; width: 100%" rows="2"></textarea>
+			<button class="button button-icon icon cm-icon-send footer-btn icon-navy" style="float: right" on-tap="postMessage()"></button>
+		</span>
+		<ion-scroll zooming="false" delegate-handle="seamail">
+			<ion-refresher pulling-text="Pull to refresh..." on-refresh="pullToRefresh()"></ion-refresher>
+			<ion-list>
+				<ion-item ng-repeat="message in seamail.messages track by message._hash" class="item item-avatar item-text-wrap message"  ng-class="getClass(message)" on-tap="messageClicked(message, $event)">
+					<cm-user-avatar username="message.author.username" class="expand"></cm-user-avatar>
+					<span class="expand">
+						<cm-user-display username="message.author.username"></cm-user-display>
+						<p class="description" ng-bind-html="message.text"></p>
+						<div class="timestamp">{{message.timestamp.fromNow()}}</div>
+					</span>
+					<span class="muffle" on-tap="expand()">
+						muffled: @{{message.author.username}}
+					</span>
+				</ion-item>
+			</ion-list>
+		</ion-scroll>
 	</ion-content>
 </ion-view>
