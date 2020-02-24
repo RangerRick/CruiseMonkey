@@ -10,7 +10,7 @@
     "@capacitor/android": "^1.5.0",
     "@capacitor/core": "1.5.0",
     "@capacitor/ios": "^1.5.0",
-    "@ionic-native/badge": "^5.21.5",
+    "@ionic-native/badge": "^5.21.6",
     "@ionic-native/core": "^5.21.5",
     "@ionic-native/file": "^5.21.6",
     "@ionic-native/http": "^5.21.6",
