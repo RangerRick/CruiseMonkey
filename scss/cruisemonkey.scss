@@ -1089,12 +1089,18 @@ ion-item.item.item-text-wrap.list-entry.unofficial.even {
 		font-family: $headingFont;
 		font-size: $font-size-large;
 		line-height: $line-height-large;
-		padding: 5px;
+		padding-top: 6px;
+		padding-right: 10px;
+		padding-bottom: 6px;
 		color: $headingColor;
 		background-color: $headingBG;
 		margin-top: -1;
 		margin-bottom: 0;
 		border-color: $cmDetailBackground;
+		i.icon {
+			font-size: 16px;
+			line-height: 19px;
+		}
 	}
 
 }
