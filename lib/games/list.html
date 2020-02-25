@@ -1,0 +1,21 @@
+<ion-view view-title="Games" class="event-list games searchable">
+	<ion-nav-buttons side="secondary">
+		<button class="button button-icon icon cm-icon-search" on-tap="showFilterBar()"></button>
+	</ion-nav-buttons>
+	<style>
+	.artist-entry {
+		left: 0;
+		right: 0;
+		background-color: white;
+		line-height: 22px;
+	}
+	</style>
+	<ion-content delegate-handle="game-scroll" on-tap="closeKeyboard()">
+		<div class="list searchable">
+			<div class="item item-text-wrap game-entry" ng-repeat="entry in entries">
+				<span class="count item-note" ng-bind-html="entry.count"></span>
+				<span class="name" ng-bind-html="highlight(entry.title, searchString)"></span>
+			</div>
+		</div>
+	</ion-content>
+</ion-view>

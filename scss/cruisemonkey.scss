@@ -663,6 +663,16 @@ $radio-icon-circle-unchecked: "\f401";
 		}
 	}
 }
+
+.games {
+	.name {
+		vertical-align: text-top;
+	}
+	.count {
+		vertical-align: text-top;
+	}
+}
+
 .karaoke {
 	.artist-entry {
 		padding: 8px;
