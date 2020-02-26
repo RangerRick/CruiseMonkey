@@ -225,7 +225,7 @@ $item-padding-orig: 16px;
 .item {
 	.muffle {
 		pointer-events: none;
-		opacity: 0.6;
+		opacity: 0.8;
 		width: 100%;
 	}
 
@@ -654,7 +654,7 @@ $radio-icon-circle-unchecked: "\f401";
 			font-size: $font-size-large;
 		}
 		.last-reply {
-			opacity:.6;
+			opacity:.8;
 			font-size: $font-size-base;
 		}
 		.post-photo {
@@ -683,7 +683,7 @@ $radio-icon-circle-unchecked: "\f401";
 		.metadata {
 			float: right;
 			font-size: smaller;
-			opacity:0.6;
+			opacity:0.8;
 		}
 	}
 }
@@ -762,11 +762,11 @@ i {
 	padding-left: 5px;
 	font-size: $font-size-small;
 	font-weight: 300;
-	opacity:.6;
+	opacity:.8;
 }
 
 .timestamp {
-	color: rgba($cmForeground,0.6);
+	color: rgba($cmForeground,0.8);
 	font-size: $font-size-base;
 }
 
@@ -795,7 +795,7 @@ i {
 		white-space: pre-wrap;
 	}
 	.timeframe {
-		opacity:.6;
+		opacity:.8;
 		font-size: $font-size-base;
 	}
 	.item-note {
@@ -849,7 +849,7 @@ i {
 	}
 
 	.transparent {
-		background: rgba(0,0,0,0.7);
+		background: rgba(0,0,0,0.8);
 	}
 
 	.slider {
