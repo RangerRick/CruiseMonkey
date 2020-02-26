@@ -55,6 +55,22 @@
 				</ion-item>
 				<ion-item class="item"></ion-item>
 				<ion-item class="heading">Advanced Settings</ion-item>
+				<label class="item item-toggle item-text-wrap">
+					<span class="input-label wide">
+						Show Pronouns:
+					</span>
+					<span class="toggle">
+						<input type="checkbox" ng-model="settings.showPronouns" />
+						<div class="track">
+							<div class="handle"></div>
+						</div>
+					</span>
+					<div class="row">
+						<div class="smaller wide">
+							Whether to show pronouns in the tweet stream and seamail threads.
+						</div>
+					</div>
+				</label>
 				<label class="item item-input item-stacked-label item-text-wrap">
 					<span class="input-label wide">
 						Status Check Interval:
@@ -66,13 +82,15 @@
 					</div>
 					<div class="range row">
 						<div class="col col-33">
-							<span>{{settings.backgroundInterval / 60}} minute(s)</span>
+							<span ng-bind-html="(settings.backgroundInterval / 60) + ' minute(s)'"></span>
 						</div>
 						<input class="col col-67" type="range" name="bgi" ng-model="settings.backgroundInterval" value="{{settings.backgroundInterval}}" min="60" max="600" step="60" />
 					</div>
 				</label>
 				<label class="item item-toggle item-text-wrap" ng-if="platform === 'ios' && isSectionEnabled('advanced_sync')">
-					Advanced Sync:
+					<span class="input-label wide">
+						Advanced Sync:
+					</span>
 					<span class="toggle">
 						<input type="checkbox" ng-model="settings.enableAdvancedSync" />
 						<div class="track">
@@ -86,7 +104,9 @@
 					</div>
 				</label>
 				<label class="item item-text-wrap" ng-if="!isSectionEnabled('advanced_sync')">
-					Advanced Sync:
+					<span class="input-label wide">
+						Advanced Sync:
+					</span>
 					<div class="row">
 						<div class="smaller wide" ng-if="platform === 'ios'">
 							Advanced Sync has been administratively disabled on Twit-Arr.
