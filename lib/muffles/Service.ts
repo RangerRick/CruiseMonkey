@@ -2,12 +2,14 @@ import angular, { IRootScopeService, ILogService } from 'angular';
 import { IQService, IPromise } from "angular";
 
 const KV_USER_MUFFLES_KEY = 'user.muffles';
+const KV_USER_MUFFLES_USERNAME_KEY = 'user.muffles.user';
 
 import '../data/DB';
 
 class MuffleService {
   public ready: IPromise<void>;
   private muffles = [] as string[];
+  private username?: string;
 
   /* @ngInject */
   constructor(private $log: ILogService, private $q: IQService, private $rootScope: IRootScopeService, private kv: any) {
@@ -16,10 +18,23 @@ class MuffleService {
         $log.debug(`MuffleService: ${muffles.length} muffle(s) loaded from cache.`);
         this.muffles = muffles;
       }
-      return this.muffles;
+      return this.kv.get(KV_USER_MUFFLES_USERNAME_KEY).then((username: string) => {
+        this.username = username;
+        return this.muffles;
+      }).catch(() => {
+        return this.muffles;
+      });
     });
 
     $rootScope.$on('cruisemonkey.user.updated', (_ev: any, newUser: any) => {
+      if (newUser.username && newUser.loggedIn) {
+        if (newUser.username !== this.username) {
+          this.muffles = [];
+          this.username = newUser.username;
+          kv.set(KV_USER_MUFFLES_KEY, this.muffles);
+          kv.set(KV_USER_MUFFLES_USERNAME_KEY, this.username);
+        }
+      }
       const index = this.muffles.indexOf(newUser.username);
       if (index >= 0) {
         this.muffles.splice(index, 1);
