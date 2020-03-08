@@ -18,6 +18,14 @@ class MuffleService {
       }
       return this.muffles;
     });
+
+    $rootScope.$on('cruisemonkey.user.updated', (_ev: any, newUser: any) => {
+      const index = this.muffles.indexOf(newUser.username);
+      if (index >= 0) {
+        this.muffles.splice(index, 1);
+        this.kv.set(KV_USER_MUFFLES_KEY, this.muffles);
+      }
+    });
   }
 
   isMuffled(username: string) {
