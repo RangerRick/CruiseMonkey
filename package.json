@@ -124,7 +124,7 @@
     "url-loader": "^3.0.0",
     "webpack": "^4.42.0",
     "webpack-cli": "^3.3.11",
-    "yargs": "^15.3.0"
+    "yargs": "^15.3.1"
   },
   "config": {
     "ghooks": {
