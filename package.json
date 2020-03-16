@@ -62,7 +62,7 @@
     "@types/jest": "^25.1.4",
     "@types/lodash.debounce": "^4.0.6",
     "@types/moment-timezone": "^0.5.12",
-    "@typescript-eslint/eslint-plugin": "^2.22.0",
+    "@typescript-eslint/eslint-plugin": "^2.23.0",
     "@typescript-eslint/parser": "^2.23.0",
     "assert-plus": "^1.0.0",
     "babel-eslint": "^10.1.0",
