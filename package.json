@@ -14,7 +14,7 @@
     "@ionic-native/core": "^5.22.0",
     "@ionic-native/file": "^5.23.0",
     "@ionic-native/http": "^5.22.0",
-    "@ionic-native/local-notifications": "^5.22.0",
+    "@ionic-native/local-notifications": "^5.23.0",
     "@ionic/pwa-elements": "^1.5.1",
     "angular": "~1.5.11",
     "angular-animate": "~1.5.11",
