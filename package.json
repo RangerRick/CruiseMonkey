@@ -107,7 +107,7 @@
     "jest": "^25.2.3",
     "jest-environment-jsdom-sixteen": "^1.0.3",
     "jetifier": "^1.6.5",
-    "jsdom": "^16.2.1",
+    "jsdom": "^16.2.2",
     "line-reader": "*",
     "lodash": "^4.17.15",
     "mini-css-extract-plugin": "^0.9.0",
