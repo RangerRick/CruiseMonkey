@@ -117,7 +117,7 @@
     "phantomjs-prebuilt": "^2.1.16",
     "sass-loader": "^8.0.2",
     "script-loader": "^0.7.0",
-    "shelljs": "^0.8.3",
+    "shelljs": "^0.8.4",
     "string-hash": "^1.1.0",
     "style-loader": "^1.2.0",
     "twitter-text": "^3.1.0",
