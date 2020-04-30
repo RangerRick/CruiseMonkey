@@ -5,7 +5,7 @@
   "description": "Keep Track of Your Cruise",
   "build": 410047,
   "dependencies": {
-    "@babel/runtime": "^7.9.2",
+    "@babel/runtime": "^7.9.6",
     "@babel/runtime-corejs2": "^7.9.6",
     "@capacitor/android": "^2.0.1",
     "@capacitor/core": "^2.0.2",
