@@ -63,7 +63,7 @@
     "@types/lodash.debounce": "^4.0.6",
     "@types/moment-timezone": "^0.5.13",
     "@typescript-eslint/eslint-plugin": "^2.31.0",
-    "@typescript-eslint/parser": "^2.31.0",
+    "@typescript-eslint/parser": "^2.32.0",
     "assert-plus": "^1.0.0",
     "babel-eslint": "^10.1.0",
     "babel-loader": "^8.1.0",
