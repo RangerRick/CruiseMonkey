@@ -11,7 +11,7 @@
     "@capacitor/core": "^2.0.2",
     "@capacitor/ios": "^2.1.0",
     "@ionic-native/badge": "^5.25.0",
-    "@ionic-native/core": "^5.25.0",
+    "@ionic-native/core": "^5.26.0",
     "@ionic-native/file": "^5.25.0",
     "@ionic-native/http": "^5.26.0",
     "@ionic-native/local-notifications": "^5.25.0",
