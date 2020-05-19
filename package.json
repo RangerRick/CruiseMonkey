@@ -74,7 +74,7 @@
     "com-sarriaroman-photoviewer": "1.2.4",
     "commonmark": "^0.29.1",
     "conventional-changelog-cli": "^1.2.0",
-    "copy-webpack-plugin": "^5.1.1",
+    "copy-webpack-plugin": "^6.0.1",
     "cordova-android": "^8.1.0",
     "cordova-browser": "^6.0.0",
     "cordova-ios": "^5.1.1",
