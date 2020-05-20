@@ -34,7 +34,7 @@
     "localforage": "^1.7.3",
     "localforage-cordovasqlitedriver": "^1.8.0",
     "lodash.debounce": "^4.0.8",
-    "moment": "^2.25.3",
+    "moment": "^2.26.0",
     "moment-timezone": "^0.5.31",
     "ng-cordova": "^0.1.27-alpha",
     "ng-debounce": "^1.0.1",
