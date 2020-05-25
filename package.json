@@ -71,7 +71,7 @@
     "babel-plugin-module-resolver": "^4.0.0",
     "bower": "^1.8.8",
     "cache-loader": "^4.1.0",
-    "com-sarriaroman-photoviewer": "1.2.4",
+    "com-sarriaroman-photoviewer": "1.2.5",
     "commonmark": "^0.29.1",
     "conventional-changelog-cli": "^1.2.0",
     "copy-webpack-plugin": "^6.0.1",
