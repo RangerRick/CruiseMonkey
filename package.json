@@ -55,7 +55,7 @@
     "@babel/preset-typescript": "^7.10.1",
     "@babel/register": "^7.10.1",
     "@capacitor/cli": "^2.1.2",
-    "@ionic/cli": "^6.9.3",
+    "@ionic/cli": "^6.10.0",
     "@ionic/v1-toolkit": "^3.2.3",
     "@types/angular": "~1.7.0",
     "@types/expect": "^24.3.0",
