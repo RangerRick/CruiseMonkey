@@ -100,7 +100,7 @@
     "fs.extra": "*",
     "ghooks": "^2.0.0",
     "gulp": "^4.0.0",
-    "gulp-cli": "^2.2.1",
+    "gulp-cli": "^2.3.0",
     "gulp-run-command": "0.0.10",
     "html-loader": "^1.1.0",
     "imports-loader": "^0.8.0",
