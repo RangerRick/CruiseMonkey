@@ -9,7 +9,7 @@
     "@babel/runtime-corejs2": "^7.10.2",
     "@capacitor/android": "^2.2.0",
     "@capacitor/core": "^2.1.2",
-    "@capacitor/ios": "^2.1.2",
+    "@capacitor/ios": "^2.2.0",
     "@ionic-native/badge": "^5.26.0",
     "@ionic-native/core": "^5.26.0",
     "@ionic-native/file": "^5.26.0",
