@@ -75,7 +75,7 @@
     "commonmark": "^0.29.1",
     "conventional-changelog-cli": "^1.2.0",
     "copy-webpack-plugin": "^6.0.3",
-    "cordova-android": "^8.1.0",
+    "cordova-android": "^9.0.0",
     "cordova-browser": "^6.0.0",
     "cordova-ios": "^5.1.1",
     "cordova-plugin-advanced-http": "^2.5.1",
