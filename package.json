@@ -53,7 +53,7 @@
     "@babel/polyfill": "^7.10.4",
     "@babel/preset-env": "^7.10.4",
     "@babel/preset-typescript": "^7.10.4",
-    "@babel/register": "^7.10.4",
+    "@babel/register": "^7.10.5",
     "@capacitor/cli": "^2.2.1",
     "@ionic/cli": "^6.10.1",
     "@ionic/v1-toolkit": "^3.2.3",
