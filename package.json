@@ -73,7 +73,7 @@
     "cache-loader": "^4.1.0",
     "com-sarriaroman-photoviewer": "1.2.5",
     "commonmark": "^0.29.1",
-    "conventional-changelog-cli": "^1.2.0",
+    "conventional-changelog-cli": "^2.1.1",
     "copy-webpack-plugin": "^6.0.3",
     "cordova-android": "^8.1.0",
     "cordova-browser": "^6.0.0",
