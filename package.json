@@ -44,7 +44,7 @@
     "pure-uuid": "^1.6.1",
     "rxjs": "^6.6.0",
     "twitarr": "git+https://github.com/RangerRick/twitarr-client-api.git#master",
-    "urijs": "^1.19.2"
+    "urijs": "^1.19.10"
   },
   "devDependencies": {
     "@babel/core": "^7.10.5",
