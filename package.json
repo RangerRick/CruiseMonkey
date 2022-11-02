@@ -56,7 +56,7 @@
     "@babel/register": "^7.10.5",
     "@capacitor/cli": "^2.2.1",
     "@ionic/cli": "^6.10.1",
-    "@ionic/v1-toolkit": "^3.2.3",
+    "@ionic/v1-toolkit": "^3.2.20",
     "@types/angular": "~1.7.2",
     "@types/expect": "^24.3.0",
     "@types/jest": "^26.0.4",
